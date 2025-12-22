@@ -13,16 +13,41 @@ class TestRatatuiRuby < Minitest::Test
   def test_paragraph_creation
     p = RatatuiRuby::Paragraph.new(text: "Hello", fg: "red", bg: "black")
     assert_equal "Hello", p.text
-    assert_equal "red", p.fg
-    assert_equal "black", p.bg
+    assert_equal "red", p.style.fg
+    assert_equal "black", p.style.bg
   end
 
   def test_paragraph_defaults
     p = RatatuiRuby::Paragraph.new(text: "Hello")
     assert_equal "Hello", p.text
-    assert_equal :reset, p.fg
-    assert_equal :reset, p.bg
+    assert_nil p.style.fg
+    assert_nil p.style.bg
+    assert_equal [], p.style.modifiers
     assert_nil p.block
+  end
+
+  def test_style_creation
+    s = RatatuiRuby::Style.new(fg: :red, bg: :blue, modifiers: [:bold])
+    assert_equal :red, s.fg
+    assert_equal :blue, s.bg
+    assert_equal [:bold], s.modifiers
+  end
+
+  def test_gauge_creation
+    g = RatatuiRuby::Gauge.new(ratio: 0.5, label: "50%", style: RatatuiRuby::Style.new(fg: :green))
+    assert_equal 0.5, g.ratio
+    assert_equal "50%", g.label
+    assert_equal :green, g.style.fg
+  end
+
+  def test_table_creation
+    header = ["A", "B"]
+    rows = [["1", "2"], ["3", "4"]]
+    widths = [RatatuiRuby::Constraint.length(5), RatatuiRuby::Constraint.length(5)]
+    t = RatatuiRuby::Table.new(header:, rows:, widths:)
+    assert_equal header, t.header
+    assert_equal rows, t.rows
+    assert_equal widths, t.widths
   end
 
   def test_layout_creation
@@ -58,7 +83,7 @@ class TestRatatuiRuby < Minitest::Test
 
   def test_list_creation
     items = ["a", "b"]
-    list = RatatuiRuby::List.new(items: items, selected_index: 1)
+    list = RatatuiRuby::List.new(items:, selected_index: 1)
     assert_equal items, list.items
     assert_equal 1, list.selected_index
   end

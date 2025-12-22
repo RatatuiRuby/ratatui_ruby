@@ -7,18 +7,27 @@ module RatatuiRuby
   # A widget that displays a block of text.
   #
   # [text] the text to display.
-  # [fg] the foreground color (e.g., "red", "blue", "#ffffff").
-  # [bg] the background color.
+  # [style] the style to apply (Style object).
   # [block] an optional Block widget to wrap the paragraph.
-  class Paragraph < Data.define(:text, :fg, :bg, :block)
+  class Paragraph < Data.define(:text, :style, :block)
     # Creates a new Paragraph.
     #
     # [text] the text to display.
-    # [fg] the foreground color.
-    # [bg] the background color.
+    # [style] the style to apply.
     # [block] the block to wrap the paragraph.
-    def initialize(text:, fg: :reset, bg: :reset, block: nil)
+    def initialize(text:, style: Style.default, block: nil)
       super
+    end
+
+    # Support for legacy fg/bg arguments.
+    # [text] the text to display.
+    # [style] the style to apply.
+    # [fg] legacy foreground color.
+    # [bg] legacy background color.
+    # [block] the block to wrap the paragraph.
+    def self.new(text:, style: nil, fg: nil, bg: nil, block: nil)
+      style ||= Style.new(fg:, bg:)
+      super(text:, style:, block:)
     end
   end
 end

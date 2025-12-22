@@ -2,10 +2,12 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  class Paragraph < Data
-    attr_reader text: String
+  class Gauge < Data
+    attr_reader ratio: Float
+    attr_reader label: String?
     attr_reader style: Style
     attr_reader block: Block?
-    def self.new: (text: String, ?style: Style?, ?fg: (String | Symbol)?, ?bg: (String | Symbol)?, ?block: Block?) -> Paragraph
+
+    def self.new: (?ratio: Float, ?label: String?, ?style: Style, ?block: Block?) -> Gauge
   end
 end

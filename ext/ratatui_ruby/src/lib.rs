@@ -5,8 +5,8 @@ use magnus::{define_module, function, prelude::*, Error, IntoValue, Symbol, Valu
 use ratatui::{
     backend::CrosstermBackend,
     layout::{Constraint, Direction, Layout, Rect},
-    style::{Color, Style},
-    widgets::{Block, Borders, List, ListState, Paragraph, Widget},
+    style::{Color, Modifier, Style},
+    widgets::{Block, Borders, Cell, Gauge, List, ListState, Paragraph, Row, Table, Widget},
     Terminal,
 };
 use std::io;
@@ -56,6 +56,54 @@ fn draw(tree: Value) -> Result<(), Error> {
     Ok(())
 }
 
+fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
+    if block_val.is_nil() {
+        return Ok(Block::default());
+    }
+
+    let title: Value = block_val.funcall("title", ())?;
+    let borders_val: Value = block_val.funcall("borders", ())?;
+    let border_color: Value = block_val.funcall("border_color", ())?;
+
+    let mut block = Block::default();
+
+    if !title.is_nil() {
+        let title_str: String = title.funcall("to_s", ())?;
+        block = block.title(title_str);
+    }
+
+    if !borders_val.is_nil() {
+        let borders_array = magnus::RArray::from_value(borders_val).ok_or_else(|| {
+            Error::new(
+                magnus::exception::type_error(),
+                "expected array for borders",
+            )
+        })?;
+        let mut ratatui_borders = Borders::NONE;
+        for i in 0..borders_array.len() {
+            let sym: Symbol = borders_array.entry(i as isize)?;
+            match sym.to_string().as_str() {
+                "all" => ratatui_borders |= Borders::ALL,
+                "top" => ratatui_borders |= Borders::TOP,
+                "bottom" => ratatui_borders |= Borders::BOTTOM,
+                "left" => ratatui_borders |= Borders::LEFT,
+                "right" => ratatui_borders |= Borders::RIGHT,
+                _ => {}
+            }
+        }
+        block = block.borders(ratatui_borders);
+    }
+
+    if !border_color.is_nil() {
+        let color_str: String = border_color.funcall("to_s", ())?;
+        if let Some(color) = parse_color(&color_str) {
+            block = block.border_style(Style::default().fg(color));
+        }
+    }
+
+    Ok(block)
+}
+
 fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Result<(), Error> {
     let class = node.class();
     let class_name = unsafe { class.name() };
@@ -63,69 +111,14 @@ fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Re
     match class_name.as_ref() {
         "RatatuiRuby::Paragraph" => {
             let text: String = node.funcall("text", ())?;
-            let fg: Value = node.funcall("fg", ())?;
-            let bg: Value = node.funcall("bg", ())?;
+            let style_val: Value = node.funcall("style", ())?;
             let block_val: Value = node.funcall("block", ())?;
 
-            let mut style = Style::default();
-            if !fg.is_nil() {
-                let fg_str: String = fg.funcall("to_s", ())?;
-                if let Some(color) = parse_color(&fg_str) {
-                    style = style.fg(color);
-                }
-            }
-            if !bg.is_nil() {
-                let bg_str: String = bg.funcall("to_s", ())?;
-                if let Some(color) = parse_color(&bg_str) {
-                    style = style.bg(color);
-                }
-            }
-
+            let style = parse_style(style_val)?;
             let mut paragraph = Paragraph::new(text).style(style);
 
             if !block_val.is_nil() {
-                let title: Value = block_val.funcall("title", ())?;
-                let borders_val: Value = block_val.funcall("borders", ())?;
-                let border_color: Value = block_val.funcall("border_color", ())?;
-
-                let mut block = Block::default();
-
-                if !title.is_nil() {
-                    let title_str: String = title.funcall("to_s", ())?;
-                    block = block.title(title_str);
-                }
-
-                if !borders_val.is_nil() {
-                    let borders_array =
-                        magnus::RArray::from_value(borders_val).ok_or_else(|| {
-                            Error::new(
-                                magnus::exception::type_error(),
-                                "expected array for borders",
-                            )
-                        })?;
-                    let mut ratatui_borders = Borders::NONE;
-                    for i in 0..borders_array.len() {
-                        let sym: Symbol = borders_array.entry(i as isize)?;
-                        match sym.to_string().as_str() {
-                            "all" => ratatui_borders |= Borders::ALL,
-                            "top" => ratatui_borders |= Borders::TOP,
-                            "bottom" => ratatui_borders |= Borders::BOTTOM,
-                            "left" => ratatui_borders |= Borders::LEFT,
-                            "right" => ratatui_borders |= Borders::RIGHT,
-                            _ => {}
-                        }
-                    }
-                    block = block.borders(ratatui_borders);
-                }
-
-                if !border_color.is_nil() {
-                    let color_str: String = border_color.funcall("to_s", ())?;
-                    if let Some(color) = parse_color(&color_str) {
-                        block = block.border_style(Style::default().fg(color));
-                    }
-                }
-
-                paragraph = paragraph.block(block);
+                paragraph = paragraph.block(parse_block(block_val)?);
             }
 
             paragraph.render(area, buf);
@@ -196,58 +189,126 @@ fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Re
 
             let mut state = ListState::default();
             if !selected_index_val.is_nil() {
-                let index: usize = selected_index_val.try_convert()?;
+                let index: usize = selected_index_val.funcall("to_int", ())?;
                 state.select(Some(index));
             }
 
             let mut list = List::new(items).highlight_symbol(">> ");
 
             if !block_val.is_nil() {
-                let title: Value = block_val.funcall("title", ())?;
-                let borders_val: Value = block_val.funcall("borders", ())?;
-                let border_color: Value = block_val.funcall("border_color", ())?;
-
-                let mut block = Block::default();
-
-                if !title.is_nil() {
-                    let title_str: String = title.funcall("to_s", ())?;
-                    block = block.title(title_str);
-                }
-
-                if !borders_val.is_nil() {
-                    let borders_array =
-                        magnus::RArray::from_value(borders_val).ok_or_else(|| {
-                            Error::new(
-                                magnus::exception::type_error(),
-                                "expected array for borders",
-                            )
-                        })?;
-                    let mut ratatui_borders = Borders::NONE;
-                    for i in 0..borders_array.len() {
-                        let sym: Symbol = borders_array.entry(i as isize)?;
-                        match sym.to_string().as_str() {
-                            "all" => ratatui_borders |= Borders::ALL,
-                            "top" => ratatui_borders |= Borders::TOP,
-                            "bottom" => ratatui_borders |= Borders::BOTTOM,
-                            "left" => ratatui_borders |= Borders::LEFT,
-                            "right" => ratatui_borders |= Borders::RIGHT,
-                            _ => {}
-                        }
-                    }
-                    block = block.borders(ratatui_borders);
-                }
-
-                if !border_color.is_nil() {
-                    let color_str: String = border_color.funcall("to_s", ())?;
-                    if let Some(color) = parse_color(&color_str) {
-                        block = block.border_style(Style::default().fg(color));
-                    }
-                }
-
-                list = list.block(block);
+                list = list.block(parse_block(block_val)?);
             }
 
             ratatui::widgets::StatefulWidget::render(list, area, buf, &mut state);
+        }
+        "RatatuiRuby::Gauge" => {
+            let ratio: f64 = node.funcall("ratio", ())?;
+            let label_val: Value = node.funcall("label", ())?;
+            let style_val: Value = node.funcall("style", ())?;
+            let block_val: Value = node.funcall("block", ())?;
+
+            let mut gauge = Gauge::default().ratio(ratio);
+
+            if !label_val.is_nil() {
+                let label_str: String = label_val.funcall("to_s", ())?;
+                gauge = gauge.label(label_str);
+            }
+
+            if !style_val.is_nil() {
+                gauge = gauge.gauge_style(parse_style(style_val)?);
+            }
+
+            if !block_val.is_nil() {
+                gauge = gauge.block(parse_block(block_val)?);
+            }
+
+            gauge.render(area, buf);
+        }
+        "RatatuiRuby::Table" => {
+            let header_val: Value = node.funcall("header", ())?;
+            let rows_val: Value = node.funcall("rows", ())?;
+            let rows_array = magnus::RArray::from_value(rows_val).ok_or_else(|| {
+                Error::new(magnus::exception::type_error(), "expected array for rows")
+            })?;
+            let widths_val: Value = node.funcall("widths", ())?;
+            let widths_array = magnus::RArray::from_value(widths_val).ok_or_else(|| {
+                Error::new(magnus::exception::type_error(), "expected array for widths")
+            })?;
+            let block_val: Value = node.funcall("block", ())?;
+
+            let mut rows = Vec::new();
+            for i in 0..rows_array.len() {
+                let row_val: Value = rows_array.entry(i as isize)?;
+                let row_array = magnus::RArray::from_value(row_val).ok_or_else(|| {
+                    Error::new(magnus::exception::type_error(), "expected array for row")
+                })?;
+
+                let mut cells = Vec::new();
+                for j in 0..row_array.len() {
+                    let cell_val: Value = row_array.entry(j as isize)?;
+                    let class = cell_val.class();
+                    let class_name = unsafe { class.name() };
+
+                    if class_name.as_ref() == "RatatuiRuby::Paragraph" {
+                        let text: String = cell_val.funcall("text", ())?;
+                        let style_val: Value = cell_val.funcall("style", ())?;
+                        let cell_style = parse_style(style_val)?;
+                        cells.push(Cell::from(text).style(cell_style));
+                    } else if class_name.as_ref() == "RatatuiRuby::Style" {
+                        // Not sure if this makes sense but let's see
+                        cells.push(Cell::from("").style(parse_style(cell_val)?));
+                    } else {
+                        let cell_str: String = cell_val.funcall("to_s", ())?;
+                        cells.push(Cell::from(cell_str));
+                    }
+                }
+                rows.push(Row::new(cells));
+            }
+
+            let mut constraints = Vec::new();
+            for i in 0..widths_array.len() {
+                let constraint_obj: Value = widths_array.entry(i as isize)?;
+                let type_sym: Symbol = constraint_obj.funcall("type", ())?;
+                let value: u16 = constraint_obj.funcall("value", ())?;
+
+                match type_sym.to_string().as_str() {
+                    "length" => constraints.push(Constraint::Length(value)),
+                    "percentage" => constraints.push(Constraint::Percentage(value)),
+                    "min" => constraints.push(Constraint::Min(value)),
+                    _ => {}
+                }
+            }
+
+            let mut table = Table::new(rows, constraints);
+
+            if !header_val.is_nil() {
+                let header_array = magnus::RArray::from_value(header_val).ok_or_else(|| {
+                    Error::new(magnus::exception::type_error(), "expected array for header")
+                })?;
+                let mut header_cells = Vec::new();
+                for i in 0..header_array.len() {
+                    let cell_val: Value = header_array.entry(i as isize)?;
+                    let class = cell_val.class();
+                    let class_name = unsafe { class.name() };
+
+                    if class_name.as_ref() == "RatatuiRuby::Paragraph" {
+                        let text: String = cell_val.funcall("text", ())?;
+                        let style_val: Value = cell_val.funcall("style", ())?;
+                        let cell_style = parse_style(style_val)?;
+                        header_cells.push(Cell::from(text).style(cell_style));
+                    } else {
+                        let cell_str: String = cell_val.funcall("to_s", ())?;
+                        header_cells.push(Cell::from(cell_str));
+                    }
+                }
+                table = table.header(Row::new(header_cells));
+            }
+
+            if !block_val.is_nil() {
+                table = table.block(parse_block(block_val)?);
+            }
+
+            table.render(area, buf);
         }
         _ => {}
     }
@@ -308,6 +369,58 @@ fn poll_event() -> Result<Value, Error> {
 
 fn parse_color(color_str: &str) -> Option<Color> {
     color_str.parse::<Color>().ok()
+}
+
+fn parse_style(style_val: Value) -> Result<Style, Error> {
+    if style_val.is_nil() {
+        return Ok(Style::default());
+    }
+
+    let mut style = Style::default();
+
+    let fg: Value = style_val.funcall("fg", ())?;
+    if !fg.is_nil() {
+        let fg_str: String = fg.funcall("to_s", ())?;
+        if let Some(color) = parse_color(&fg_str) {
+            style = style.fg(color);
+        }
+    }
+
+    let bg: Value = style_val.funcall("bg", ())?;
+    if !bg.is_nil() {
+        let bg_str: String = bg.funcall("to_s", ())?;
+        if let Some(color) = parse_color(&bg_str) {
+            style = style.bg(color);
+        }
+    }
+
+    let modifiers_val: Value = style_val.funcall("modifiers", ())?;
+    if !modifiers_val.is_nil() {
+        let modifiers_array = magnus::RArray::from_value(modifiers_val).ok_or_else(|| {
+            Error::new(
+                magnus::exception::type_error(),
+                "expected array for modifiers",
+            )
+        })?;
+
+        for i in 0..modifiers_array.len() {
+            let sym: Symbol = modifiers_array.entry(i as isize)?;
+            match sym.to_string().as_str() {
+                "bold" => style = style.add_modifier(Modifier::BOLD),
+                "italic" => style = style.add_modifier(Modifier::ITALIC),
+                "dim" => style = style.add_modifier(Modifier::DIM),
+                "reversed" => style = style.add_modifier(Modifier::REVERSED),
+                "underlined" => style = style.add_modifier(Modifier::UNDERLINED),
+                "slow_blink" => style = style.add_modifier(Modifier::SLOW_BLINK),
+                "rapid_blink" => style = style.add_modifier(Modifier::RAPID_BLINK),
+                "crossed_out" => style = style.add_modifier(Modifier::CROSSED_OUT),
+                "hidden" => style = style.add_modifier(Modifier::HIDDEN),
+                _ => {}
+            }
+        }
+    }
+
+    Ok(style)
 }
 
 #[magnus::init]

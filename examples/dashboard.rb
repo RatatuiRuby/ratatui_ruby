@@ -18,8 +18,8 @@ begin
     selected_item = items[selected_index]
 
     sidebar = List.new(
-      items: items,
-      selected_index: selected_index,
+      items:,
+      selected_index:,
       block: Block.new(title: "Files", borders: [:all])
     )
 
@@ -32,7 +32,7 @@ begin
       direction: :horizontal,
       constraints: [
         Constraint.percentage(30),
-        Constraint.min(0)
+        Constraint.min(0),
       ],
       children: [sidebar, main_content]
     )

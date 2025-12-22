@@ -35,7 +35,7 @@ Ruby
 -   **Version:** Strict Ruby 3.4 compatibility (Target `3.4.7` as per cosmoruby).
 -   **Linter:** `RuboCop` inheriting from `vendor/goodcop/base.yml`.
 -   **Style:**
-    -   Use `Data.define` for all value objects (UI Nodes).
+    -   Use `Data.define` for all value objects (UI Nodes). (Prefer `class Foo < Data.define()` over `Foo = Data.define() do`).
     -   Prefer `frozen_string_literal: true`.
     -   Use `Minitest` for testing.
     -   Define types in `.rbs` files.

@@ -9,6 +9,9 @@ require_relative "ratatui_ruby/schema/layout"
 require_relative "ratatui_ruby/schema/block"
 require_relative "ratatui_ruby/schema/constraint"
 require_relative "ratatui_ruby/schema/list"
+require_relative "ratatui_ruby/schema/style"
+require_relative "ratatui_ruby/schema/gauge"
+require_relative "ratatui_ruby/schema/table"
 
 begin
   require_relative "ratatui_ruby/ratatui_ruby"

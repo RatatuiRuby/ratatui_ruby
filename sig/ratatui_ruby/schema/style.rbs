@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class Style < Data
+    attr_reader fg: (String | Symbol)?
+    attr_reader bg: (String | Symbol)?
+    attr_reader modifiers: Array[Symbol]
+
+    def self.new: (?fg: (String | Symbol)?, ?bg: (String | Symbol)?, ?modifiers: Array[Symbol]) -> Style
+    def self.default: () -> Style
+  end
+end

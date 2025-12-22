@@ -11,6 +11,9 @@ module RatatuiRuby
   # [block] an optional Block widget to wrap the list.
   class List < Data.define(:items, :selected_index, :block)
     # Creates a new List.
+    # [items] the items to display.
+    # [selected_index] the selected index.
+    # [block] the block to wrap the list.
     def initialize(items: [], selected_index: nil, block: nil)
       super
     end
