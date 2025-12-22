@@ -40,7 +40,7 @@ Ruby
     -   Use `Minitest` for testing.
     -   Define types in `.rbs` files.
     -   Every line of Ruby must be covered by tests that would survive mutation testing.
-    -   Every public Ruby class/method must be documented for humans in markdown files, and must have `*.rbs` types defined.
+    -   Every public Ruby class/method must be documented for humans in RDoc (preferred) or markdown files (fallback), and must have `*.rbs` types defined.
     -   Every significant architectural and design decision must be documented for contributors in markdown files. Mermaid is allowed.
 
 ### Rust Standards
@@ -99,6 +99,7 @@ Plaintext
 
 -   Follow the `docs/` structure: `index.md` -> `contributors/` | `quickstart.md`.
 -   Documentation should separate "User Guide" (Ruby API for TUI developers) from "Contributor Guide" (Ruby/Rust/Magnus internals).
+-   Don't write .md files for something RDoc (Ruby) or rustdoc (Rust) can generate.
 
 ## 4\. The Ruby <-> Rust Bridge Contract
 

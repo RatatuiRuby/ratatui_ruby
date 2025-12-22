@@ -4,6 +4,13 @@
 [package]
 name = "ratatui_ruby"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
 
 [dependencies]
+magnus = "0.6"
+ratatui = "0.26"
+crossterm = "0.27"
+lazy_static = "1.4"

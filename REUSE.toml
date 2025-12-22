@@ -9,3 +9,9 @@ SPDX-License-Identifier = "CC0-1.0"
 path = 'Gemfile.lock'
 SPDX-FileCopyrightText = "2025 Kerrick Long <me@kerricklong.com>"
 SPDX-License-Identifier = "CC0-1.0"
+
+
+[[annotations]]
+path = 'ext/ratatui_ruby/Cargo.lock'
+SPDX-FileCopyrightText = "2025 Kerrick Long <me@kerricklong.com>"
+SPDX-License-Identifier = "CC0-1.0"

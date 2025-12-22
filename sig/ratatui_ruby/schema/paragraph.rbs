@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class Paragraph < Data
+    attr_reader text: String
+    attr_reader fg: String?
+    attr_reader bg: String?
+    def self.new: (text: String, ?fg: String?, ?bg: String?) -> Paragraph
+  end
+end

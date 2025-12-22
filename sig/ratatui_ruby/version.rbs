@@ -3,7 +3,4 @@
 
 module RatatuiRuby
   VERSION: String
-
-  def self.output: (String, "short" | "long" | "both") -> void
-
 end

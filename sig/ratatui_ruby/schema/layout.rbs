@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class Layout < Data
+    attr_reader direction: Symbol
+    attr_reader children: Array[Paragraph | Layout]
+    def self.new: (?direction: Symbol, ?children: Array[Paragraph | Layout]) -> Layout
+  end
+end

@@ -8,6 +8,26 @@ require "minitest/test_task"
 
 Minitest::TestTask.create
 
+desc "Compile the Rust extension"
+task :compile do
+  Dir.chdir("ext/ratatui_ruby") do
+    sh "cargo build --release"
+    ext = OS.mac? ? "bundle" : "so"
+    src_ext = OS.mac? ? "dylib" : "so"
+    lib_path = "target/release/libratatui_ruby.#{src_ext}"
+    if File.exist?(lib_path)
+      mkdir_p "../../lib/ratatui_ruby"
+      cp lib_path, "../../lib/ratatui_ruby/ratatui_ruby.#{ext}"
+    end
+  end
+end
+
+module OS
+  def self.mac?
+    (/darwin/ =~ RUBY_PLATFORM) != nil
+  end
+end
+
 require "rubocop/rake_task"
 
 RuboCop::RakeTask.new
@@ -33,6 +53,18 @@ Inch::Rake::Suggest.new("doc:suggest", "exe/**/*.rb", "lib/**/*.rb", "sig/**/*.r
   suggest.args << ""
 end
 
+namespace :cargo do
+  desc "Run cargo fmt"
+  task :fmt do
+    sh "cd ext/ratatui_ruby && cargo fmt --all -- --check"
+  end
+
+  desc "Run cargo clippy"
+  task :clippy do
+    sh "cd ext/ratatui_ruby && cargo clippy -- -D warnings"
+  end
+end
+
 namespace :reuse do
   desc "Run the REUSE Tool to confirm REUSE compliance"
   task :lint do
@@ -43,7 +75,7 @@ task(:reuse) { Rake::Task["reuse:lint"].invoke }
 
 namespace :lint do
   multitask docs: %i[rubycritic rdoc:coverage reuse:lint]
-  multitask code: %i[rubocop rubycritic]
+  multitask code: %i[rubocop rubycritic cargo:fmt cargo:clippy]
   multitask licenses: %i[reuse:lint]
   multitask all: %i[docs code licenses]
 end

@@ -9,7 +9,6 @@
 
 - [README](../README.md)
 - [Quickstart](./quickstart.md)
-- [CLI](./cli.md)
 
 
 ## Documentation for Contributors

@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  # https://semver.org/spec/v2.0.0.html
-  VERSION = "0.0.0"
+  # The version of the ratatui_ruby gem.
+  # See https://semver.org/spec/v2.0.0.html
+  VERSION = "0.1.0"
 end
