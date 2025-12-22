@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 # AGENTS.md
 
 ## Project Identity
@@ -11,15 +16,13 @@ Architecture:
 -   **Frontend (Ruby):** Pure `Data` objects (Ruby 3.2+) defining the View Tree. Immediate mode.
 -   **Backend (Rust):** A generic renderer using `ratatui` and `magnus` that traverses the Ruby `Data` tree and renders to the terminal buffer.
 
-## 1\. File & Coding Standards
+## 1. File & Coding Standards
 
 ### Licensing & Copyright (Strict)
 
 Every file must begin with an SPDX-compliant header. Use the following format:
 
-Ruby
-
-```
+```ruby
 # frozen_string_literal: true
 
 # SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
@@ -27,7 +30,7 @@ Ruby
 ```
 
 -   **Ruby/Rust/Config files:** Use comments appropriate for the language (`#` or `//`).
--   **Markdown:** Use HTML comment style \`\`.
+-   **Markdown:** Use HTML comment style `<!-- -->`.
 -   **Exceptions:** `REUSE.toml` manages exceptions (e.g., binary files or `.gitignore`).
 
 ### Ruby Standards
@@ -52,13 +55,11 @@ Ruby
 -   **Linker Flags:** Must handle macOS `-undefined dynamic_lookup`.
 -   Every line of Rust must be covered by tests that would survive mutation testing.
 
-## 2\. Directory Structure Convention
+## 2. Directory Structure Convention
 
 The project follows a standard Gem layout with an `ext/` directory for Rust code.
 
-Plaintext
-
-```
+```plaintext
 /
 ├── .cargo/                 # Cargo configuration (linker flags)
 ├── .github/                # CI/CD workflows
@@ -88,7 +89,7 @@ Plaintext
 └── ratatui_ruby.gemspec
 ```
 
-## 3\. Configuration & Tooling
+## 3. Configuration & Tooling
 
 ### Development Environment
 
@@ -101,16 +102,14 @@ Plaintext
 -   Documentation should separate "User Guide" (Ruby API for TUI developers) from "Contributor Guide" (Ruby/Rust/Magnus internals).
 -   Don't write .md files for something RDoc (Ruby) or rustdoc (Rust) can generate.
 
-## 4\. The Ruby <-> Rust Bridge Contract
+## 4. The Ruby <-> Rust Bridge Contract
 
 ### The Ruby Side (`lib/`)
 
 -   Define UI components as immutable `Data` objects.
 -   **Example:**
 
-    Ruby
-
-    ```
+    ```ruby
     module RatatuiRuby
       Paragraph = Data.define(:text, :style)
     end
@@ -123,7 +122,7 @@ Plaintext
 -   Use `value.class().name()` to switch logic (e.g., match `"RatatuiRuby::Paragraph"`).
 -   Use `funcall` to extract data from the Ruby objects.
 
-## 5\. Deployment / Release
+## 5. Deployment / Release
 
 -   The gem builds a native extension.
 -   Artifact naming: Ensure the output shared library matches Ruby's expectation on macOS (rename `.dylib`to `.bundle` if necessary during the build process in `extconf.rb` or `Rakefile`).

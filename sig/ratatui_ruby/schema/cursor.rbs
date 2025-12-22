@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class Cursor < Data
+    attr_reader x: Integer
+    attr_reader y: Integer
+    def self.new: (x: Integer, y: Integer) -> Cursor
+  end
+end

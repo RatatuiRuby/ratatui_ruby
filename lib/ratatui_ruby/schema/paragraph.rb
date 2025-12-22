@@ -9,13 +9,15 @@ module RatatuiRuby
   # [text] the text to display.
   # [style] the style to apply (Style object).
   # [block] an optional Block widget to wrap the paragraph.
-  class Paragraph < Data.define(:text, :style, :block)
+  class Paragraph < Data.define(:text, :style, :block, :wrap, :align)
     # Creates a new Paragraph.
     #
     # [text] the text to display.
     # [style] the style to apply.
     # [block] the block to wrap the paragraph.
-    def initialize(text:, style: Style.default, block: nil)
+    # [wrap] whether to wrap text at width.
+    # [align] alignment (:left, :center, :right).
+    def initialize(text:, style: Style.default, block: nil, wrap: false, align: :left)
       super
     end
 
@@ -25,9 +27,11 @@ module RatatuiRuby
     # [fg] legacy foreground color.
     # [bg] legacy background color.
     # [block] the block to wrap the paragraph.
-    def self.new(text:, style: nil, fg: nil, bg: nil, block: nil)
+    # [wrap] whether to wrap text at width.
+    # [align] alignment (:left, :center, :right).
+    def self.new(text:, style: nil, fg: nil, bg: nil, block: nil, wrap: false, align: :left)
       style ||= Style.new(fg:, bg:)
-      super(text:, style:, block:)
+      super(text:, style:, block:, wrap:, align:)
     end
   end
 end

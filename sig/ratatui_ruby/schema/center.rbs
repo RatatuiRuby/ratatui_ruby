@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class Center < Data
+    attr_reader child: widget
+    attr_reader width_percent: Integer
+    attr_reader height_percent: Integer
+    def self.new: (child: widget, width_percent: Integer, height_percent: Integer) -> Center
+  end
+end

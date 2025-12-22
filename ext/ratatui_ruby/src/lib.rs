@@ -4,15 +4,15 @@
 use magnus::{define_module, function, prelude::*, Error, IntoValue, Symbol, Value};
 use ratatui::{
     backend::CrosstermBackend,
-    layout::{Constraint, Direction, Layout, Rect},
+    layout::{Alignment, Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style},
     symbols,
     text::Line,
     widgets::{
-        BarChart, Block, Borders, Cell, Chart, Dataset, Gauge, List, ListState, Paragraph, Row,
-        Sparkline, Table, Tabs, Widget,
+        BarChart, Block, Borders, Cell, Chart, Clear, Dataset, Gauge, List, ListState, Paragraph,
+        Row, Sparkline, Table, Tabs, Wrap,
     },
-    Terminal,
+    Frame, Terminal,
 };
 use std::io;
 use std::sync::Mutex;
@@ -54,7 +54,7 @@ fn draw(tree: Value) -> Result<(), Error> {
     if let Some(terminal) = term_lock.as_mut() {
         terminal
             .draw(|f| {
-                if let Err(e) = render_node(f.size(), tree, f.buffer_mut()) {
+                if let Err(e) = render_node(f, f.size(), tree) {
                     eprintln!("Render error: {:?}", e);
                 }
             })
@@ -118,7 +118,7 @@ fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
     Ok(block)
 }
 
-fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Result<(), Error> {
+fn render_node(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let class = node.class();
     let class_name = unsafe { class.name() };
 
@@ -127,6 +127,8 @@ fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Re
             let text: String = node.funcall("text", ())?;
             let style_val: Value = node.funcall("style", ())?;
             let block_val: Value = node.funcall("block", ())?;
+            let wrap: bool = node.funcall("wrap", ())?;
+            let align_sym: Symbol = node.funcall("align", ())?;
 
             let style = parse_style(style_val)?;
             let mut paragraph = Paragraph::new(text).style(style);
@@ -135,7 +137,65 @@ fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Re
                 paragraph = paragraph.block(parse_block(block_val)?);
             }
 
-            paragraph.render(area, buf);
+            if wrap {
+                paragraph = paragraph.wrap(Wrap { trim: true });
+            }
+
+            match align_sym.to_string().as_str() {
+                "center" => paragraph = paragraph.alignment(Alignment::Center),
+                "right" => paragraph = paragraph.alignment(Alignment::Right),
+                _ => {}
+            }
+
+            frame.render_widget(paragraph, area);
+        }
+        "RatatuiRuby::Cursor" => {
+            let x: u16 = node.funcall("x", ())?;
+            let y: u16 = node.funcall("y", ())?;
+            frame.set_cursor(area.x + x, area.y + y);
+        }
+        "RatatuiRuby::Overlay" => {
+            let layers_val: Value = node.funcall("layers", ())?;
+            let layers_array = magnus::RArray::from_value(layers_val).ok_or_else(|| {
+                Error::new(magnus::exception::type_error(), "expected array for layers")
+            })?;
+
+            for i in 0..layers_array.len() {
+                let layer: Value = layers_array.entry(i as isize)?;
+                if let Err(e) = render_node(frame, area, layer) {
+                    eprintln!("Error rendering overlay layer {}: {:?}", i, e);
+                }
+            }
+        }
+        "RatatuiRuby::Center" => {
+            let child: Value = node.funcall("child", ())?;
+            let width_percent: u16 = node.funcall("width_percent", ())?;
+            let height_percent: u16 = node.funcall("height_percent", ())?;
+
+            let popup_layout = Layout::default()
+                .direction(Direction::Vertical)
+                .constraints([
+                    Constraint::Percentage((100 - height_percent) / 2),
+                    Constraint::Percentage(height_percent),
+                    Constraint::Percentage((100 - height_percent) / 2),
+                ])
+                .split(area);
+
+            let vertical_center_area = popup_layout[1];
+
+            let popup_layout_horizontal = Layout::default()
+                .direction(Direction::Horizontal)
+                .constraints([
+                    Constraint::Percentage((100 - width_percent) / 2),
+                    Constraint::Percentage(width_percent),
+                    Constraint::Percentage((100 - width_percent) / 2),
+                ])
+                .split(vertical_center_area);
+
+            let center_area = popup_layout_horizontal[1];
+
+            frame.render_widget(Clear, center_area);
+            render_node(frame, center_area, child)?;
         }
         "RatatuiRuby::Layout" => {
             let direction_sym: Symbol = node.funcall("direction", ())?;
@@ -185,7 +245,7 @@ fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Re
 
                 for i in 0..len {
                     let child: Value = children_array.entry(i as isize)?;
-                    if let Err(e) = render_node(chunks[i], child, buf) {
+                    if let Err(e) = render_node(frame, chunks[i], child) {
                         eprintln!("Error rendering child {}: {:?}", i, e);
                     }
                 }
@@ -216,7 +276,7 @@ fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Re
                 list = list.block(parse_block(block_val)?);
             }
 
-            ratatui::widgets::StatefulWidget::render(list, area, buf, &mut state);
+            frame.render_stateful_widget(list, area, &mut state);
         }
         "RatatuiRuby::Gauge" => {
             let ratio: f64 = node.funcall("ratio", ())?;
@@ -239,7 +299,7 @@ fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Re
                 gauge = gauge.block(parse_block(block_val)?);
             }
 
-            gauge.render(area, buf);
+            frame.render_widget(gauge, area);
         }
         "RatatuiRuby::Table" => {
             let header_val: Value = node.funcall("header", ())?;
@@ -325,7 +385,7 @@ fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Re
                 table = table.block(parse_block(block_val)?);
             }
 
-            table.render(area, buf);
+            frame.render_widget(table, area);
         }
         "RatatuiRuby::Tabs" => {
             let titles_val: Value = node.funcall("titles", ())?;
@@ -348,7 +408,7 @@ fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Re
                 tabs = tabs.block(parse_block(block_val)?);
             }
 
-            tabs.render(area, buf);
+            frame.render_widget(tabs, area);
         }
         "RatatuiRuby::BarChart" => {
             let data_val: magnus::RHash = node.funcall("data", ())?;
@@ -394,7 +454,7 @@ fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Re
                 bar_chart = bar_chart.block(parse_block(block_val)?);
             }
 
-            bar_chart.render(area, buf);
+            frame.render_widget(bar_chart, area);
         }
         "RatatuiRuby::Sparkline" => {
             let data_val: magnus::RArray = node.funcall("data", ())?;
@@ -423,7 +483,7 @@ fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Re
                 sparkline = sparkline.block(parse_block(block_val)?);
             }
 
-            sparkline.render(area, buf);
+            frame.render_widget(sparkline, area);
         }
         "RatatuiRuby::LineChart" => {
             let datasets_val: magnus::RArray = node.funcall("datasets", ())?;
@@ -529,7 +589,7 @@ fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Re
                 chart = chart.block(parse_block(block_val)?);
             }
 
-            chart.render(area, buf);
+            frame.render_widget(chart, area);
         }
         _ => {}
     }
@@ -540,9 +600,10 @@ fn poll_event() -> Result<Value, Error> {
     if crossterm::event::poll(std::time::Duration::from_millis(16))
         .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?
     {
-        if let crossterm::event::Event::Key(key) = crossterm::event::read()
-            .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?
-        {
+        let event = crossterm::event::read()
+            .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
+
+        if let crossterm::event::Event::Key(key) = event {
             if key.kind == crossterm::event::KeyEventKind::Press {
                 let hash = magnus::RHash::new();
                 hash.aset(Symbol::new("type"), Symbol::new("key"))?;
@@ -658,6 +719,7 @@ fn init() -> Result<(), Error> {
 mod tests {
     use super::*;
     use ratatui::style::Color;
+    use ratatui::widgets::Widget;
 
     #[test]
     fn test_parse_color() {

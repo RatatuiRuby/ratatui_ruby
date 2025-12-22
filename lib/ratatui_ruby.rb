@@ -16,6 +16,9 @@ require_relative "ratatui_ruby/schema/tabs"
 require_relative "ratatui_ruby/schema/bar_chart"
 require_relative "ratatui_ruby/schema/sparkline"
 require_relative "ratatui_ruby/schema/line_chart"
+require_relative "ratatui_ruby/schema/cursor"
+require_relative "ratatui_ruby/schema/overlay"
+require_relative "ratatui_ruby/schema/center"
 
 begin
   require_relative "ratatui_ruby/ratatui_ruby"

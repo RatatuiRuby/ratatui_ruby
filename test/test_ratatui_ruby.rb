@@ -181,4 +181,25 @@ class TestRatatuiRuby < Minitest::Test
     assert_equal [0.0, 100.0], chart.y_bounds
     assert_nil chart.block
   end
+
+  def test_center_creation
+    p = RatatuiRuby::Paragraph.new(text: "Hello")
+    center = RatatuiRuby::Center.new(child: p, width_percent: 50, height_percent: 50)
+    assert_equal p, center.child
+    assert_equal 50, center.width_percent
+    assert_equal 50, center.height_percent
+  end
+
+  def test_overlay_creation
+    l1 = RatatuiRuby::Paragraph.new(text: "L1")
+    l2 = RatatuiRuby::Paragraph.new(text: "L2")
+    overlay = RatatuiRuby::Overlay.new(layers: [l1, l2])
+    assert_equal [l1, l2], overlay.layers
+  end
+
+  def test_cursor_creation
+    cursor = RatatuiRuby::Cursor.new(x: 10, y: 5)
+    assert_equal 10, cursor.x
+    assert_equal 5, cursor.y
+  end
 end
