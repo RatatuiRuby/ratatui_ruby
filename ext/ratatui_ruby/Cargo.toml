@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "ratatui_ruby"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
