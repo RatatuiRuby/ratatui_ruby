@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class Sparkline < Data
+    attr_reader data: Array[Integer]
+    attr_reader max: Integer?
+    attr_reader style: Style?
+    attr_reader block: Block?
+    def self.new: (data: Array[Integer], ?max: Integer?, ?style: Style?, ?block: Block?) -> Sparkline
+  end
+end

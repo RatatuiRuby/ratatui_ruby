@@ -148,4 +148,37 @@ class TestRatatuiRuby < Minitest::Test
     assert_nil chart.style
     assert_nil chart.block
   end
+
+  def test_sparkline_creation
+    data = [1, 2, 3]
+    sparkline = RatatuiRuby::Sparkline.new(data:, max: 10)
+    assert_equal data, sparkline.data
+    assert_equal 10, sparkline.max
+  end
+
+  def test_sparkline_defaults
+    data = [1, 2, 3]
+    sparkline = RatatuiRuby::Sparkline.new(data:)
+    assert_equal data, sparkline.data
+    assert_nil sparkline.max
+    assert_nil sparkline.style
+    assert_nil sparkline.block
+  end
+
+  def test_line_chart_creation
+    ds = RatatuiRuby::Dataset.new(name: "test", data: [[0.0, 0.0], [1.0, 1.0]], color: "red")
+    chart = RatatuiRuby::LineChart.new(datasets: [ds], x_labels: ["0", "1"])
+    assert_equal [ds], chart.datasets
+    assert_equal ["0", "1"], chart.x_labels
+  end
+
+  def test_line_chart_defaults
+    ds = RatatuiRuby::Dataset.new(name: "test", data: [[0.0, 0.0]])
+    chart = RatatuiRuby::LineChart.new(datasets: [ds])
+    assert_equal [ds], chart.datasets
+    assert_equal [], chart.x_labels
+    assert_equal [], chart.y_labels
+    assert_equal [0.0, 100.0], chart.y_bounds
+    assert_nil chart.block
+  end
 end

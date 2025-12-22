@@ -14,6 +14,8 @@ require_relative "ratatui_ruby/schema/gauge"
 require_relative "ratatui_ruby/schema/table"
 require_relative "ratatui_ruby/schema/tabs"
 require_relative "ratatui_ruby/schema/bar_chart"
+require_relative "ratatui_ruby/schema/sparkline"
+require_relative "ratatui_ruby/schema/line_chart"
 
 begin
   require_relative "ratatui_ruby/ratatui_ruby"

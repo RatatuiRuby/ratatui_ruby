@@ -6,9 +6,11 @@ use ratatui::{
     backend::CrosstermBackend,
     layout::{Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style},
+    symbols,
     text::Line,
     widgets::{
-        BarChart, Block, Borders, Cell, Gauge, List, ListState, Paragraph, Row, Table, Tabs, Widget,
+        BarChart, Block, Borders, Cell, Chart, Dataset, Gauge, List, ListState, Paragraph, Row,
+        Sparkline, Table, Tabs, Widget,
     },
     Terminal,
 };
@@ -52,9 +54,13 @@ fn draw(tree: Value) -> Result<(), Error> {
     if let Some(terminal) = term_lock.as_mut() {
         terminal
             .draw(|f| {
-                let _ = render_node(f.size(), tree, f.buffer_mut());
+                if let Err(e) = render_node(f.size(), tree, f.buffer_mut()) {
+                    eprintln!("Render error: {:?}", e);
+                }
             })
             .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
+    } else {
+        eprintln!("Terminal is None!");
     }
     Ok(())
 }
@@ -76,22 +82,27 @@ fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
     }
 
     if !borders_val.is_nil() {
-        let borders_array = magnus::RArray::from_value(borders_val).ok_or_else(|| {
-            Error::new(
-                magnus::exception::type_error(),
-                "expected array for borders",
-            )
-        })?;
         let mut ratatui_borders = Borders::NONE;
-        for i in 0..borders_array.len() {
-            let sym: Symbol = borders_array.entry(i as isize)?;
+        if let Some(sym) = Symbol::from_value(borders_val) {
             match sym.to_string().as_str() {
-                "all" => ratatui_borders |= Borders::ALL,
-                "top" => ratatui_borders |= Borders::TOP,
-                "bottom" => ratatui_borders |= Borders::BOTTOM,
-                "left" => ratatui_borders |= Borders::LEFT,
-                "right" => ratatui_borders |= Borders::RIGHT,
+                "all" => ratatui_borders = Borders::ALL,
+                "top" => ratatui_borders = Borders::TOP,
+                "bottom" => ratatui_borders = Borders::BOTTOM,
+                "left" => ratatui_borders = Borders::LEFT,
+                "right" => ratatui_borders = Borders::RIGHT,
                 _ => {}
+            }
+        } else if let Some(borders_array) = magnus::RArray::from_value(borders_val) {
+            for i in 0..borders_array.len() {
+                let sym: Symbol = borders_array.entry(i as isize)?;
+                match sym.to_string().as_str() {
+                    "all" => ratatui_borders |= Borders::ALL,
+                    "top" => ratatui_borders |= Borders::TOP,
+                    "bottom" => ratatui_borders |= Borders::BOTTOM,
+                    "left" => ratatui_borders |= Borders::LEFT,
+                    "right" => ratatui_borders |= Borders::RIGHT,
+                    _ => {}
+                }
             }
         }
         block = block.borders(ratatui_borders);
@@ -160,9 +171,10 @@ fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Re
                     }
                 }
 
-                if ratatui_constraints.is_empty() {
+                // If constraints don't match children, adjust or default
+                if ratatui_constraints.len() != len {
                     ratatui_constraints = (0..len)
-                        .map(|_| Constraint::Percentage(100 / len as u16))
+                        .map(|_| Constraint::Percentage(100 / (len as u16).max(1)))
                         .collect();
                 }
 
@@ -173,7 +185,9 @@ fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Re
 
                 for i in 0..len {
                     let child: Value = children_array.entry(i as isize)?;
-                    let _ = render_node(chunks[i], child, buf);
+                    if let Err(e) = render_node(chunks[i], child, buf) {
+                        eprintln!("Error rendering child {}: {:?}", i, e);
+                    }
                 }
             }
         }
@@ -382,6 +396,141 @@ fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Re
 
             bar_chart.render(area, buf);
         }
+        "RatatuiRuby::Sparkline" => {
+            let data_val: magnus::RArray = node.funcall("data", ())?;
+            let max_val: Value = node.funcall("max", ())?;
+            let style_val: Value = node.funcall("style", ())?;
+            let block_val: Value = node.funcall("block", ())?;
+
+            let mut data_vec = Vec::new();
+            for i in 0..data_val.len() {
+                let val: u64 = data_val.entry(i as isize)?;
+                data_vec.push(val);
+            }
+
+            let mut sparkline = Sparkline::default().data(&data_vec);
+
+            if !max_val.is_nil() {
+                let max: u64 = u64::try_convert(max_val)?;
+                sparkline = sparkline.max(max);
+            }
+
+            if !style_val.is_nil() {
+                sparkline = sparkline.style(parse_style(style_val)?);
+            }
+
+            if !block_val.is_nil() {
+                sparkline = sparkline.block(parse_block(block_val)?);
+            }
+
+            sparkline.render(area, buf);
+        }
+        "RatatuiRuby::LineChart" => {
+            let datasets_val: magnus::RArray = node.funcall("datasets", ())?;
+            let x_labels_val: magnus::RArray = node.funcall("x_labels", ())?;
+            let y_labels_val: magnus::RArray = node.funcall("y_labels", ())?;
+            let y_bounds_val: magnus::RArray = node.funcall("y_bounds", ())?;
+            let block_val: Value = node.funcall("block", ())?;
+
+            let mut datasets = Vec::new();
+            // We need to keep the data alive until the chart is rendered
+            let mut data_storage: Vec<Vec<(f64, f64)>> = Vec::new();
+            let mut name_storage: Vec<String> = Vec::new();
+
+            for i in 0..datasets_val.len() {
+                let ds_val: Value = datasets_val.entry(i as isize)?;
+                let name: String = ds_val.funcall("name", ())?;
+                let data_array: magnus::RArray = ds_val.funcall("data", ())?;
+
+                let mut points = Vec::new();
+                for j in 0..data_array.len() {
+                    let point_array_val: Value = data_array.entry(j as isize)?;
+                    let point_array =
+                        magnus::RArray::from_value(point_array_val).ok_or_else(|| {
+                            Error::new(magnus::exception::type_error(), "expected array for point")
+                        })?;
+                    let x_val: Value = point_array.entry(0)?;
+                    let y_val: Value = point_array.entry(1)?;
+
+                    let x: f64 = x_val.funcall("to_f", ())?;
+                    let y: f64 = y_val.funcall("to_f", ())?;
+                    points.push((x, y));
+                }
+
+                data_storage.push(points);
+                name_storage.push(name);
+            }
+
+            for i in 0..data_storage.len() {
+                let ds_val: Value = datasets_val.entry(i as isize)?;
+                let color_val: Value = ds_val.funcall("color", ())?;
+                let color_str: String = color_val.funcall("to_s", ())?;
+                let color = parse_color(&color_str).unwrap_or(Color::White);
+
+                let ds = Dataset::default()
+                    .name(name_storage[i].clone())
+                    .marker(symbols::Marker::Braille)
+                    .style(Style::default().fg(color))
+                    .data(&data_storage[i]);
+                datasets.push(ds);
+            }
+
+            let mut x_labels = Vec::new();
+            for i in 0..x_labels_val.len() {
+                let label: String = x_labels_val.entry(i as isize)?;
+                x_labels.push(ratatui::text::Span::from(label));
+            }
+
+            let mut y_labels = Vec::new();
+            for i in 0..y_labels_val.len() {
+                let label: String = y_labels_val.entry(i as isize)?;
+                y_labels.push(ratatui::text::Span::from(label));
+            }
+
+            let y_bounds: [f64; 2] = [y_bounds_val.entry(0)?, y_bounds_val.entry(1)?];
+
+            // Calculate x_bounds based on datasets if possible
+            let mut min_x = 0.0;
+            let mut max_x = 0.0;
+            let mut first = true;
+            for ds_data in &data_storage {
+                for (x, _) in ds_data {
+                    if first {
+                        min_x = *x;
+                        max_x = *x;
+                        first = false;
+                    } else {
+                        if *x < min_x {
+                            min_x = *x;
+                        }
+                        if *x > max_x {
+                            max_x = *x;
+                        }
+                    }
+                }
+            }
+
+            // Ensure there's some range
+            if min_x == max_x {
+                max_x = min_x + 1.0;
+            }
+
+            let x_axis = ratatui::widgets::Axis::default()
+                .labels(x_labels)
+                .bounds([min_x, max_x]);
+
+            let y_axis = ratatui::widgets::Axis::default()
+                .labels(y_labels)
+                .bounds(y_bounds);
+
+            let mut chart = Chart::new(datasets).x_axis(x_axis).y_axis(y_axis);
+
+            if !block_val.is_nil() {
+                chart = chart.block(parse_block(block_val)?);
+            }
+
+            chart.render(area, buf);
+        }
         _ => {}
     }
     Ok(())
@@ -517,5 +666,28 @@ mod tests {
         assert_eq!(parse_color("#ffffff"), Some(Color::Rgb(255, 255, 255)));
         assert_eq!(parse_color("#000000"), Some(Color::Rgb(0, 0, 0)));
         assert_eq!(parse_color("invalid"), None);
+    }
+
+    #[test]
+    fn test_sparkline_render() {
+        let mut buf = ratatui::buffer::Buffer::empty(Rect::new(0, 0, 10, 1));
+        let data = vec![1, 2, 3];
+        let sparkline = Sparkline::default().data(&data);
+        sparkline.render(Rect::new(0, 0, 10, 1), &mut buf);
+        // Check if anything was rendered. Braille patterns or blocks.
+        // For Sparkline, it renders something.
+        assert!(buf.content().iter().any(|c| c.symbol() != " "));
+    }
+
+    #[test]
+    fn test_line_chart_render() {
+        let mut buf = ratatui::buffer::Buffer::empty(Rect::new(0, 0, 20, 10));
+        let data = vec![(0.0, 0.0), (1.0, 1.0)];
+        let datasets = vec![Dataset::default().data(&data)];
+        let chart = Chart::new(datasets)
+            .x_axis(ratatui::widgets::Axis::default().bounds([0.0, 1.0]))
+            .y_axis(ratatui::widgets::Axis::default().bounds([0.0, 1.0]));
+        chart.render(Rect::new(0, 0, 20, 10), &mut buf);
+        assert!(buf.content().iter().any(|c| c.symbol() != " "));
     }
 }
