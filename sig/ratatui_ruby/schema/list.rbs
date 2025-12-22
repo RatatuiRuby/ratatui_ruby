@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class List < Data
+    attr_reader items: Array[String]
+    attr_reader selected_index: Integer?
+    attr_reader block: Block?
+    def self.new: (?items: Array[String], ?selected_index: Integer?, ?block: Block?) -> List
+  end
+end

@@ -6,7 +6,7 @@ use ratatui::{
     backend::CrosstermBackend,
     layout::{Constraint, Direction, Layout, Rect},
     style::{Color, Style},
-    widgets::{Block, Borders, Paragraph, Widget},
+    widgets::{Block, Borders, List, ListState, Paragraph, Widget},
     Terminal,
 };
 use std::io;
@@ -136,6 +136,9 @@ fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Re
             let children_array = magnus::RArray::from_value(children_val)
                 .ok_or_else(|| Error::new(magnus::exception::type_error(), "expected array"))?;
 
+            let constraints_val: Value = node.funcall("constraints", ())?;
+            let constraints_array = magnus::RArray::from_value(constraints_val);
+
             let direction = if direction_sym.to_string() == "vertical" {
                 Direction::Vertical
             } else {
@@ -144,12 +147,32 @@ fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Re
 
             let len = children_array.len();
             if len > 0 {
-                let constraints: Vec<Constraint> = (0..len)
-                    .map(|_| Constraint::Percentage(100 / len as u16))
-                    .collect();
+                let mut ratatui_constraints = Vec::new();
+
+                if let Some(arr) = constraints_array {
+                    for i in 0..arr.len() {
+                        let constraint_obj: Value = arr.entry(i as isize)?;
+                        let type_sym: Symbol = constraint_obj.funcall("type", ())?;
+                        let value: u16 = constraint_obj.funcall("value", ())?;
+
+                        match type_sym.to_string().as_str() {
+                            "length" => ratatui_constraints.push(Constraint::Length(value)),
+                            "percentage" => ratatui_constraints.push(Constraint::Percentage(value)),
+                            "min" => ratatui_constraints.push(Constraint::Min(value)),
+                            _ => {}
+                        }
+                    }
+                }
+
+                if ratatui_constraints.is_empty() {
+                    ratatui_constraints = (0..len)
+                        .map(|_| Constraint::Percentage(100 / len as u16))
+                        .collect();
+                }
+
                 let chunks = Layout::default()
                     .direction(direction)
-                    .constraints(constraints)
+                    .constraints(ratatui_constraints)
                     .split(area);
 
                 for i in 0..len {
@@ -157,6 +180,74 @@ fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Re
                     let _ = render_node(chunks[i], child, buf);
                 }
             }
+        }
+        "RatatuiRuby::List" => {
+            let items_val: Value = node.funcall("items", ())?;
+            let items_array = magnus::RArray::from_value(items_val)
+                .ok_or_else(|| Error::new(magnus::exception::type_error(), "expected array"))?;
+            let selected_index_val: Value = node.funcall("selected_index", ())?;
+            let block_val: Value = node.funcall("block", ())?;
+
+            let mut items = Vec::new();
+            for i in 0..items_array.len() {
+                let item: String = items_array.entry(i as isize)?;
+                items.push(item);
+            }
+
+            let mut state = ListState::default();
+            if !selected_index_val.is_nil() {
+                let index: usize = selected_index_val.try_convert()?;
+                state.select(Some(index));
+            }
+
+            let mut list = List::new(items).highlight_symbol(">> ");
+
+            if !block_val.is_nil() {
+                let title: Value = block_val.funcall("title", ())?;
+                let borders_val: Value = block_val.funcall("borders", ())?;
+                let border_color: Value = block_val.funcall("border_color", ())?;
+
+                let mut block = Block::default();
+
+                if !title.is_nil() {
+                    let title_str: String = title.funcall("to_s", ())?;
+                    block = block.title(title_str);
+                }
+
+                if !borders_val.is_nil() {
+                    let borders_array =
+                        magnus::RArray::from_value(borders_val).ok_or_else(|| {
+                            Error::new(
+                                magnus::exception::type_error(),
+                                "expected array for borders",
+                            )
+                        })?;
+                    let mut ratatui_borders = Borders::NONE;
+                    for i in 0..borders_array.len() {
+                        let sym: Symbol = borders_array.entry(i as isize)?;
+                        match sym.to_string().as_str() {
+                            "all" => ratatui_borders |= Borders::ALL,
+                            "top" => ratatui_borders |= Borders::TOP,
+                            "bottom" => ratatui_borders |= Borders::BOTTOM,
+                            "left" => ratatui_borders |= Borders::LEFT,
+                            "right" => ratatui_borders |= Borders::RIGHT,
+                            _ => {}
+                        }
+                    }
+                    block = block.borders(ratatui_borders);
+                }
+
+                if !border_color.is_nil() {
+                    let color_str: String = border_color.funcall("to_s", ())?;
+                    if let Some(color) = parse_color(&color_str) {
+                        block = block.border_style(Style::default().fg(color));
+                    }
+                }
+
+                list = list.block(block);
+            }
+
+            ratatui::widgets::StatefulWidget::render(list, area, buf, &mut state);
         }
         _ => {}
     }

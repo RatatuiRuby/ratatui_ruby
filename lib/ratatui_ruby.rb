@@ -7,6 +7,8 @@ require_relative "ratatui_ruby/version"
 require_relative "ratatui_ruby/schema/paragraph"
 require_relative "ratatui_ruby/schema/layout"
 require_relative "ratatui_ruby/schema/block"
+require_relative "ratatui_ruby/schema/constraint"
+require_relative "ratatui_ruby/schema/list"
 
 begin
   require_relative "ratatui_ruby/ratatui_ruby"

@@ -27,15 +27,47 @@ class TestRatatuiRuby < Minitest::Test
 
   def test_layout_creation
     p = RatatuiRuby::Paragraph.new(text: "Hello")
-    l = RatatuiRuby::Layout.new(direction: :vertical, children: [p])
+    l = RatatuiRuby::Layout.new(direction: :vertical, constraints: [RatatuiRuby::Constraint.percentage(100)], children: [p])
     assert_equal :vertical, l.direction
+    assert_equal 1, l.constraints.length
+    assert_equal :percentage, l.constraints.first.type
+    assert_equal 100, l.constraints.first.value
     assert_equal [p], l.children
   end
 
   def test_layout_defaults
     l = RatatuiRuby::Layout.new
     assert_equal :vertical, l.direction
+    assert_equal [], l.constraints
     assert_equal [], l.children
+  end
+
+  def test_constraint_creation
+    c1 = RatatuiRuby::Constraint.length(10)
+    assert_equal :length, c1.type
+    assert_equal 10, c1.value
+
+    c2 = RatatuiRuby::Constraint.percentage(50)
+    assert_equal :percentage, c2.type
+    assert_equal 50, c2.value
+
+    c3 = RatatuiRuby::Constraint.min(5)
+    assert_equal :min, c3.type
+    assert_equal 5, c3.value
+  end
+
+  def test_list_creation
+    items = ["a", "b"]
+    list = RatatuiRuby::List.new(items: items, selected_index: 1)
+    assert_equal items, list.items
+    assert_equal 1, list.selected_index
+  end
+
+  def test_list_defaults
+    list = RatatuiRuby::List.new
+    assert_equal [], list.items
+    assert_nil list.selected_index
+    assert_nil list.block
   end
 
   def test_nested_layout

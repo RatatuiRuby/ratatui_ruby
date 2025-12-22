@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class Constraint < Data
+    attr_reader type: Symbol
+    attr_reader value: Integer
+    def self.length: (Integer) -> Constraint
+    def self.percentage: (Integer) -> Constraint
+    def self.min: (Integer) -> Constraint
+  end
+end
