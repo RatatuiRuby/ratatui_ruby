@@ -10,6 +10,7 @@
 /pkg/
 /spec/reports/
 /tmp/
+.output.txt
 /ext/ratatui_ruby/target/
 *.bundle
 *.dylib

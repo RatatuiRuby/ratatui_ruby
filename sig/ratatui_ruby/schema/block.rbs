@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class Block < Data
+    attr_reader title: String?
+    attr_reader borders: Array[Symbol]
+    attr_reader border_color: (String | Symbol)?
+    def self.new: (?title: String?, ?borders: Array[Symbol], ?border_color: (String | Symbol)?) -> Block
+  end
+end

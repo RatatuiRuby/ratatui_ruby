@@ -20,8 +20,9 @@ class TestRatatuiRuby < Minitest::Test
   def test_paragraph_defaults
     p = RatatuiRuby::Paragraph.new(text: "Hello")
     assert_equal "Hello", p.text
-    assert_nil p.fg
-    assert_nil p.bg
+    assert_equal :reset, p.fg
+    assert_equal :reset, p.bg
+    assert_nil p.block
   end
 
   def test_layout_creation
@@ -43,5 +44,19 @@ class TestRatatuiRuby < Minitest::Test
     outer = RatatuiRuby::Layout.new(direction: :vertical, children: [inner])
     assert_equal [inner], outer.children
     assert_equal [p], outer.children.first.children
+  end
+
+  def test_block_creation
+    b = RatatuiRuby::Block.new(title: "Title", borders: [:top, :bottom], border_color: "red")
+    assert_equal "Title", b.title
+    assert_equal [:top, :bottom], b.borders
+    assert_equal "red", b.border_color
+  end
+
+  def test_block_defaults
+    b = RatatuiRuby::Block.new
+    assert_nil b.title
+    assert_equal [:all], b.borders
+    assert_nil b.border_color
   end
 end

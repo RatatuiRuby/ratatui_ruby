@@ -4,8 +4,9 @@
 module RatatuiRuby
   class Paragraph < Data
     attr_reader text: String
-    attr_reader fg: String?
-    attr_reader bg: String?
-    def self.new: (text: String, ?fg: String?, ?bg: String?) -> Paragraph
+    attr_reader fg: (String | Symbol)?
+    attr_reader bg: (String | Symbol)?
+    attr_reader block: Block?
+    def self.new: (text: String, ?fg: (String | Symbol)?, ?bg: (String | Symbol)?, ?block: Block?) -> Paragraph
   end
 end

@@ -6,7 +6,7 @@ use ratatui::{
     backend::CrosstermBackend,
     layout::{Constraint, Direction, Layout, Rect},
     style::{Color, Style},
-    widgets::{Paragraph, Widget},
+    widgets::{Block, Borders, Paragraph, Widget},
     Terminal,
 };
 use std::io;
@@ -65,6 +65,7 @@ fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Re
             let text: String = node.funcall("text", ())?;
             let fg: Value = node.funcall("fg", ())?;
             let bg: Value = node.funcall("bg", ())?;
+            let block_val: Value = node.funcall("block", ())?;
 
             let mut style = Style::default();
             if !fg.is_nil() {
@@ -80,7 +81,54 @@ fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Re
                 }
             }
 
-            Paragraph::new(text).style(style).render(area, buf);
+            let mut paragraph = Paragraph::new(text).style(style);
+
+            if !block_val.is_nil() {
+                let title: Value = block_val.funcall("title", ())?;
+                let borders_val: Value = block_val.funcall("borders", ())?;
+                let border_color: Value = block_val.funcall("border_color", ())?;
+
+                let mut block = Block::default();
+
+                if !title.is_nil() {
+                    let title_str: String = title.funcall("to_s", ())?;
+                    block = block.title(title_str);
+                }
+
+                if !borders_val.is_nil() {
+                    let borders_array =
+                        magnus::RArray::from_value(borders_val).ok_or_else(|| {
+                            Error::new(
+                                magnus::exception::type_error(),
+                                "expected array for borders",
+                            )
+                        })?;
+                    let mut ratatui_borders = Borders::NONE;
+                    for i in 0..borders_array.len() {
+                        let sym: Symbol = borders_array.entry(i as isize)?;
+                        match sym.to_string().as_str() {
+                            "all" => ratatui_borders |= Borders::ALL,
+                            "top" => ratatui_borders |= Borders::TOP,
+                            "bottom" => ratatui_borders |= Borders::BOTTOM,
+                            "left" => ratatui_borders |= Borders::LEFT,
+                            "right" => ratatui_borders |= Borders::RIGHT,
+                            _ => {}
+                        }
+                    }
+                    block = block.borders(ratatui_borders);
+                }
+
+                if !border_color.is_nil() {
+                    let color_str: String = border_color.funcall("to_s", ())?;
+                    if let Some(color) = parse_color(&color_str) {
+                        block = block.border_style(Style::default().fg(color));
+                    }
+                }
+
+                paragraph = paragraph.block(block);
+            }
+
+            paragraph.render(area, buf);
         }
         "RatatuiRuby::Layout" => {
             let direction_sym: Symbol = node.funcall("direction", ())?;
@@ -123,9 +171,44 @@ fn poll_event() -> Result<Value, Error> {
             .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?
         {
             if key.kind == crossterm::event::KeyEventKind::Press {
-                if let crossterm::event::KeyCode::Char(c) = key.code {
-                    return Ok(magnus::r_string::RString::new(&c.to_string()).into_value());
+                let hash = magnus::RHash::new();
+                hash.aset(Symbol::new("type"), Symbol::new("key"))?;
+
+                let code = match key.code {
+                    crossterm::event::KeyCode::Char(c) => c.to_string(),
+                    crossterm::event::KeyCode::Up => "up".to_string(),
+                    crossterm::event::KeyCode::Down => "down".to_string(),
+                    crossterm::event::KeyCode::Left => "left".to_string(),
+                    crossterm::event::KeyCode::Right => "right".to_string(),
+                    crossterm::event::KeyCode::Enter => "enter".to_string(),
+                    crossterm::event::KeyCode::Esc => "esc".to_string(),
+                    crossterm::event::KeyCode::Backspace => "backspace".to_string(),
+                    crossterm::event::KeyCode::Tab => "tab".to_string(),
+                    _ => "unknown".to_string(),
+                };
+                hash.aset(Symbol::new("code"), code)?;
+
+                let mut modifiers = Vec::new();
+                if key
+                    .modifiers
+                    .contains(crossterm::event::KeyModifiers::CONTROL)
+                {
+                    modifiers.push("ctrl");
                 }
+                if key.modifiers.contains(crossterm::event::KeyModifiers::ALT) {
+                    modifiers.push("alt");
+                }
+                if key
+                    .modifiers
+                    .contains(crossterm::event::KeyModifiers::SHIFT)
+                {
+                    modifiers.push("shift");
+                }
+                if !modifiers.is_empty() {
+                    hash.aset(Symbol::new("modifiers"), modifiers)?;
+                }
+
+                return Ok(hash.into_value());
             }
         }
     }

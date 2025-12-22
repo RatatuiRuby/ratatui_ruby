@@ -9,13 +9,15 @@ module RatatuiRuby
   # [text] the text to display.
   # [fg] the foreground color (e.g., "red", "blue", "#ffffff").
   # [bg] the background color.
-  class Paragraph < Data.define(:text, :fg, :bg)
+  # [block] an optional Block widget to wrap the paragraph.
+  class Paragraph < Data.define(:text, :fg, :bg, :block)
     # Creates a new Paragraph.
     #
     # [text] the text to display.
     # [fg] the foreground color.
     # [bg] the background color.
-    def initialize(text:, fg: nil, bg: nil)
+    # [block] the block to wrap the paragraph.
+    def initialize(text:, fg: :reset, bg: :reset, block: nil)
       super
     end
   end

@@ -6,7 +6,8 @@
 require "bundler/gem_tasks"
 require "minitest/test_task"
 
-Minitest::TestTask.create
+# Ruby tests are handled by test:ruby
+# Cargo tests are handled by test:rust
 
 desc "Compile the Rust extension"
 task :compile do
@@ -63,6 +64,11 @@ namespace :cargo do
   task :clippy do
     sh "cd ext/ratatui_ruby && cargo clippy -- -D warnings"
   end
+
+  desc "Run cargo tests"
+  task :test do
+    sh "cd ext/ratatui_ruby && cargo test"
+  end
 end
 
 namespace :reuse do
@@ -75,10 +81,26 @@ task(:reuse) { Rake::Task["reuse:lint"].invoke }
 
 namespace :lint do
   multitask docs: %i[rubycritic rdoc:coverage reuse:lint]
-  multitask code: %i[rubocop rubycritic cargo:fmt cargo:clippy]
+  multitask code: %i[rubocop rubycritic cargo:fmt cargo:clippy cargo:test]
   multitask licenses: %i[reuse:lint]
   multitask all: %i[docs code licenses]
 end
 task(:lint) { Rake::Task["lint:all"].invoke }
+
+# Clear the default test task created by Minitest::TestTask
+Rake::Task["test"].clear
+
+desc "Run all tests (Ruby and Rust)"
+task test: %w[test:ruby test:rust]
+
+namespace :test do
+  desc "Run Rust tests"
+  task :rust do
+    Rake::Task["cargo:test"].invoke
+  end
+
+  # Create a specific Minitest task for Ruby tests
+  Minitest::TestTask.create(:ruby)
+end
 
 multitask default: %i[test lint]
