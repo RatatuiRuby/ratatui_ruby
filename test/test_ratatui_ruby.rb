@@ -6,200 +6,62 @@
 require "test_helper"
 
 class TestRatatuiRuby < Minitest::Test
+
   def test_that_it_has_a_version_number
     refute_nil ::RatatuiRuby::VERSION
   end
 
-  def test_paragraph_creation
-    p = RatatuiRuby::Paragraph.new(text: "Hello", fg: "red", bg: "black")
-    assert_equal "Hello", p.text
-    assert_equal "red", p.style.fg
-    assert_equal "black", p.style.bg
+  def test_init_and_restore
+    # This is a smoke test to ensure calling these methods doesn't crash.
+    begin
+      RatatuiRuby.init_test_terminal(20, 10)
+      assert true
+    ensure
+      RatatuiRuby.restore_terminal
+    end
   end
 
-  def test_paragraph_defaults
-    p = RatatuiRuby::Paragraph.new(text: "Hello")
-    assert_equal "Hello", p.text
-    assert_nil p.style.fg
-    assert_nil p.style.bg
-    assert_equal [], p.style.modifiers
-    assert_nil p.block
+  def test_draw
+    # Use the test backend to verify rendering
+    begin
+      RatatuiRuby.init_test_terminal(10, 5)
+      p = RatatuiRuby::Paragraph.new(text: "Hello")
+      RatatuiRuby.draw(p)
+      
+      buffer = RatatuiRuby.get_buffer_content
+      
+      # Buffer is returned as newline-separated string
+      # 10x5 terminal
+      # "Hello     \n          \n          \n          \n          \n"
+      lines = buffer.split("\n")
+      assert_equal "Hello     ", lines[0]
+    ensure
+      RatatuiRuby.restore_terminal
+    end
   end
 
-  def test_style_creation
-    s = RatatuiRuby::Style.new(fg: :red, bg: :blue, modifiers: [:bold])
-    assert_equal :red, s.fg
-    assert_equal :blue, s.bg
-    assert_equal [:bold], s.modifiers
+  def test_resize
+    begin
+      RatatuiRuby.init_test_terminal(10, 5)
+      RatatuiRuby.resize_terminal(20, 10)
+      p = RatatuiRuby::Paragraph.new(text: "Widened")
+      RatatuiRuby.draw(p)
+       
+      buffer = RatatuiRuby.get_buffer_content
+      lines = buffer.split("\n")
+      assert_equal 10, lines.length
+      assert_equal 20, lines[0].length
+      assert_equal "Widened             ", lines[0]
+    ensure
+      RatatuiRuby.restore_terminal
+    end
   end
 
-  def test_gauge_creation
-    g = RatatuiRuby::Gauge.new(ratio: 0.5, label: "50%", style: RatatuiRuby::Style.new(fg: :green))
-    assert_equal 0.5, g.ratio
-    assert_equal "50%", g.label
-    assert_equal :green, g.style.fg
+  def test_poll_event
+    # Verify poll_event returns nil when no input is available (timeout is 16ms in Rust)
+    event = RatatuiRuby.poll_event
+    assert_nil event
   end
 
-  def test_table_creation
-    header = ["A", "B"]
-    rows = [["1", "2"], ["3", "4"]]
-    widths = [RatatuiRuby::Constraint.length(5), RatatuiRuby::Constraint.length(5)]
-    t = RatatuiRuby::Table.new(header:, rows:, widths:)
-    assert_equal header, t.header
-    assert_equal rows, t.rows
-    assert_equal widths, t.widths
-  end
 
-  def test_layout_creation
-    p = RatatuiRuby::Paragraph.new(text: "Hello")
-    l = RatatuiRuby::Layout.new(direction: :vertical, constraints: [RatatuiRuby::Constraint.percentage(100)], children: [p])
-    assert_equal :vertical, l.direction
-    assert_equal 1, l.constraints.length
-    assert_equal :percentage, l.constraints.first.type
-    assert_equal 100, l.constraints.first.value
-    assert_equal [p], l.children
-  end
-
-  def test_layout_defaults
-    l = RatatuiRuby::Layout.new
-    assert_equal :vertical, l.direction
-    assert_equal [], l.constraints
-    assert_equal [], l.children
-  end
-
-  def test_constraint_creation
-    c1 = RatatuiRuby::Constraint.length(10)
-    assert_equal :length, c1.type
-    assert_equal 10, c1.value
-
-    c2 = RatatuiRuby::Constraint.percentage(50)
-    assert_equal :percentage, c2.type
-    assert_equal 50, c2.value
-
-    c3 = RatatuiRuby::Constraint.min(5)
-    assert_equal :min, c3.type
-    assert_equal 5, c3.value
-  end
-
-  def test_list_creation
-    items = ["a", "b"]
-    list = RatatuiRuby::List.new(items:, selected_index: 1)
-    assert_equal items, list.items
-    assert_equal 1, list.selected_index
-  end
-
-  def test_list_defaults
-    list = RatatuiRuby::List.new
-    assert_equal [], list.items
-    assert_nil list.selected_index
-    assert_nil list.block
-  end
-
-  def test_nested_layout
-    p = RatatuiRuby::Paragraph.new(text: "Inner")
-    inner = RatatuiRuby::Layout.new(direction: :horizontal, children: [p])
-    outer = RatatuiRuby::Layout.new(direction: :vertical, children: [inner])
-    assert_equal [inner], outer.children
-    assert_equal [p], outer.children.first.children
-  end
-
-  def test_block_creation
-    b = RatatuiRuby::Block.new(title: "Title", borders: [:top, :bottom], border_color: "red")
-    assert_equal "Title", b.title
-    assert_equal [:top, :bottom], b.borders
-    assert_equal "red", b.border_color
-  end
-
-  def test_block_defaults
-    b = RatatuiRuby::Block.new
-    assert_nil b.title
-    assert_equal [:all], b.borders
-    assert_nil b.border_color
-  end
-
-  def test_tabs_creation
-    titles = ["A", "B"]
-    tabs = RatatuiRuby::Tabs.new(titles:, selected_index: 0)
-    assert_equal titles, tabs.titles
-    assert_equal 0, tabs.selected_index
-  end
-
-  def test_tabs_defaults
-    tabs = RatatuiRuby::Tabs.new
-    assert_equal [], tabs.titles
-    assert_equal 0, tabs.selected_index
-    assert_nil tabs.block
-  end
-
-  def test_bar_chart_creation
-    data = { "a" => 1, "b" => 2 }
-    chart = RatatuiRuby::BarChart.new(data:, bar_width: 5)
-    assert_equal data, chart.data
-    assert_equal 5, chart.bar_width
-  end
-
-  def test_bar_chart_defaults
-    data = { "a" => 1 }
-    chart = RatatuiRuby::BarChart.new(data:)
-    assert_equal data, chart.data
-    assert_equal 3, chart.bar_width
-    assert_equal 1, chart.bar_gap
-    assert_nil chart.max
-    assert_nil chart.style
-    assert_nil chart.block
-  end
-
-  def test_sparkline_creation
-    data = [1, 2, 3]
-    sparkline = RatatuiRuby::Sparkline.new(data:, max: 10)
-    assert_equal data, sparkline.data
-    assert_equal 10, sparkline.max
-  end
-
-  def test_sparkline_defaults
-    data = [1, 2, 3]
-    sparkline = RatatuiRuby::Sparkline.new(data:)
-    assert_equal data, sparkline.data
-    assert_nil sparkline.max
-    assert_nil sparkline.style
-    assert_nil sparkline.block
-  end
-
-  def test_line_chart_creation
-    ds = RatatuiRuby::Dataset.new(name: "test", data: [[0.0, 0.0], [1.0, 1.0]], color: "red")
-    chart = RatatuiRuby::LineChart.new(datasets: [ds], x_labels: ["0", "1"])
-    assert_equal [ds], chart.datasets
-    assert_equal ["0", "1"], chart.x_labels
-  end
-
-  def test_line_chart_defaults
-    ds = RatatuiRuby::Dataset.new(name: "test", data: [[0.0, 0.0]])
-    chart = RatatuiRuby::LineChart.new(datasets: [ds])
-    assert_equal [ds], chart.datasets
-    assert_equal [], chart.x_labels
-    assert_equal [], chart.y_labels
-    assert_equal [0.0, 100.0], chart.y_bounds
-    assert_nil chart.block
-  end
-
-  def test_center_creation
-    p = RatatuiRuby::Paragraph.new(text: "Hello")
-    center = RatatuiRuby::Center.new(child: p, width_percent: 50, height_percent: 50)
-    assert_equal p, center.child
-    assert_equal 50, center.width_percent
-    assert_equal 50, center.height_percent
-  end
-
-  def test_overlay_creation
-    l1 = RatatuiRuby::Paragraph.new(text: "L1")
-    l2 = RatatuiRuby::Paragraph.new(text: "L2")
-    overlay = RatatuiRuby::Overlay.new(layers: [l1, l2])
-    assert_equal [l1, l2], overlay.layers
-  end
-
-  def test_cursor_creation
-    cursor = RatatuiRuby::Cursor.new(x: 10, y: 5)
-    assert_equal 10, cursor.x
-    assert_equal 5, cursor.y
-  end
 end

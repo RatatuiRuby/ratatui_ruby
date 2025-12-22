@@ -12,14 +12,25 @@ use terminal::{init_terminal, restore_terminal, TERMINAL};
 
 fn draw(tree: Value) -> Result<(), Error> {
     let mut term_lock = TERMINAL.lock().unwrap();
-    if let Some(terminal) = term_lock.as_mut() {
-        terminal
-            .draw(|f| {
-                if let Err(e) = rendering::render_node(f, f.size(), tree) {
-                    eprintln!("Render error: {:?}", e);
-                }
-            })
-            .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
+    if let Some(wrapper) = term_lock.as_mut() {
+        match wrapper {
+            terminal::TerminalWrapper::Crossterm(term) => {
+                term.draw(|f| {
+                    if let Err(e) = rendering::render_node(f, f.size(), tree) {
+                        eprintln!("Render error: {:?}", e);
+                    }
+                })
+                .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
+            }
+            terminal::TerminalWrapper::Test(term) => {
+                term.draw(|f| {
+                    if let Err(e) = rendering::render_node(f, f.size(), tree) {
+                        eprintln!("Render error: {:?}", e);
+                    }
+                })
+                .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
+            }
+        }
     } else {
         eprintln!("Terminal is None!");
     }
@@ -33,6 +44,13 @@ fn init() -> Result<(), Error> {
     m.define_module_function("restore_terminal", function!(restore_terminal, 0))?;
     m.define_module_function("draw", function!(draw, 1))?;
     m.define_module_function("poll_event", function!(events::poll_event, 0))?;
+    
+    // Test backend helpers
+    m.define_module_function("init_test_terminal", function!(terminal::init_test_terminal, 2))?;
+    m.define_module_function("get_buffer_content", function!(terminal::get_buffer_content, 0))?;
+    m.define_module_function("get_cursor_position", function!(terminal::get_cursor_position, 0))?;
+    m.define_module_function("resize_terminal", function!(terminal::resize_terminal, 2))?;
+
     Ok(())
 }
 

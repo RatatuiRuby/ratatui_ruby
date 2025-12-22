@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 pub mod barchart;
+pub mod block;
 pub mod center;
 pub mod cursor;
 pub mod gauge;
