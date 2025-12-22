@@ -1,25 +1,11 @@
 <!--
-  SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
-  SPDX-License-Identifier: CC-BY-SA-4.0
+SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+SPDX-License-Identifier: AGPL-3.0-or-later
 -->
-# Design
 
-## Architecture
+# Design Documentation
 
-RatatuiRuby follows an immediate-mode TUI architecture.
+This directory contains detailed design documents for the `ratatui_ruby` project.
 
-### Frontend (Ruby)
-
-The UI is defined using immutable `Data` objects. Every frame, the entire View Tree is recreated and passed to the Rust backend.
-
-### Backend (Rust)
-
-The backend is a single generic renderer implemented in Rust using `ratatui` and `magnus`. It recursively traverses the Ruby Data tree, extracts information using `funcall`, and renders to the terminal buffer.
-
-### Bridge
-
-The bridge uses `magnus` to provide high-performance bindings between Ruby and Rust.
-
-## Rendering Logic
-
-The Rust renderer matches on the class name of the Ruby objects (e.g., `RatatuiRuby::Paragraph`) to determine how to render each node.
+*   [Rust Backend Design](design/rust_backend.md): Details on the internal architecture of the Rust extension (`ext/ratatui_ruby`), including module structure, rendering pipeline, and widget implementation guide.
+*   [Ruby Frontend Design](design/ruby_frontend.md): Explains the Data-Driven UI, Immediate Mode paradigm, and the View Tree structure.

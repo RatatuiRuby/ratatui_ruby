@@ -42,7 +42,7 @@ Every file must begin with an SPDX-compliant header. Use the following format:
     -   Prefer `frozen_string_literal: true`.
     -   Use `Minitest` for testing.
     -   Define types in `.rbs` files. Don't use `untyped` just because it's easy; be comprehensive and accurate.
-    -   Every line of Ruby must be covered by tests that would survive mutation testing.
+    -   Every line of Ruby must be covered by tests that would stand up to mutation testing.
     -   Every public Ruby class/method must be documented for humans in RDoc (preferred) or markdown files (fallback), and must have `*.rbs` types defined.
     -   Every significant architectural and design decision must be documented for contributors in markdown files. Mermaid is allowed.
 
@@ -53,7 +53,7 @@ Every file must begin with an SPDX-compliant header. Use the following format:
 -   **Bindings:** Use [magnus](https://github.com/matsadler/magnus).
 -   **Platform:** Support macOS (Apple Silicon), Linux, and Windows.
 -   **Linker Flags:** Must handle macOS `-undefined dynamic_lookup`.
--   Every line of Rust must be covered by tests that would survive mutation testing.
+-   Every line of Rust must be covered by tests that would stand up to mutation testing.
 
 ## 2. Directory Structure Convention
 
@@ -106,21 +106,11 @@ The project follows a standard Gem layout with an `ext/` directory for Rust code
 
 ### The Ruby Side (`lib/`)
 
--   Define UI components as immutable `Data` objects.
--   **Example:**
-
-    ```ruby
-    module RatatuiRuby
-      Paragraph = Data.define(:text, :style)
-    end
-    ```
+-   Refer to [docs/contributors/design/ruby_frontend.md](docs/contributors/design/ruby_frontend.md) for detailed design philosophy regarding the Data-Driven UI and Immediate Mode paradigm.
 
 ### The Rust Side (`ext/`)
 
--   Do not implement custom Rust structs for every UI component.
--   Implement a **Single Generic Renderer** that accepts a Ruby `Value`.
--   Use `value.class().name()` to switch logic (e.g., match `"RatatuiRuby::Paragraph"`).
--   Use `funcall` to extract data from the Ruby objects.
+-   Refer to [docs/contributors/design/rust_backend.md](docs/contributors/design/rust_backend.md) for detailed implementation guidelines, module structure, and rendering logic.
 
 ## 5. Deployment / Release
 
