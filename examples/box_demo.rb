@@ -6,54 +6,66 @@
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 require "ratatui_ruby"
 
-def run
-  RatatuiRuby.init_terminal
+class BoxDemoApp
+  def initialize
+    @color = "green"
+    @text = "Press Arrow Keys (q to quit)"
+  end
 
-  color = "green"
-  text = "Press Arrow Keys (q to quit)"
+  def run
+    RatatuiRuby.init_terminal
+    begin
+      loop do
+        render
+        break if handle_input == :quit
+      end
+    ensure
+      RatatuiRuby.restore_terminal
+    end
+  end
 
-  loop do
+  def render
     # 1. State/View
     block = RatatuiRuby::Block.new(
       title: "Box Demo",
       borders: [:all],
-      border_color: "green"
+      border_color: @color
     )
 
     view_tree = RatatuiRuby::Paragraph.new(
-      text:,
-      fg: color,
+      text: @text,
+      fg: @color,
       block:
     )
 
     # 2. Render
     RatatuiRuby.draw(view_tree)
+  end
 
+  def handle_input
     # 3. Events
     event = RatatuiRuby.poll_event
-    next if event.nil?
+    return unless event
 
     if event[:type] == :key
       case event[:code]
       when "q"
-        break
+        :quit
       when "up"
-        color = "red"
-        text = "Up Pressed!"
+        @color = "red"
+        @text = "Up Pressed!"
       when "down"
-        color = "blue"
-        text = "Down Pressed!"
+        @color = "blue"
+        @text = "Down Pressed!"
       when "left"
-        color = "yellow"
-        text = "Left Pressed!"
+        @color = "yellow"
+        @text = "Left Pressed!"
       when "right"
-        color = "magenta"
-        text = "Right Pressed!"
+        @color = "magenta"
+        @text = "Right Pressed!"
       end
     end
   end
-ensure
-  RatatuiRuby.restore_terminal
 end
 
-run if __FILE__ == $0
+BoxDemoApp.new.run if __FILE__ == $0

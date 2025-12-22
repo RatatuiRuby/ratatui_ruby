@@ -5,17 +5,28 @@
 
 require_relative "../lib/ratatui_ruby"
 
-username = ""
-show_popup = false
+class LoginFormApp
+  PREFIX = "Enter Username: [ "
+  SUFFIX = " ]"
 
-# For cursor calculation
-PREFIX = "Enter Username: [ "
-SUFFIX = " ]"
+  def initialize
+    @username = ""
+    @show_popup = false
+  end
 
-RatatuiRuby.init_terminal
+  def run
+    RatatuiRuby.init_terminal
+    begin
+      loop do
+        render
+        break if handle_input == :quit
+      end
+    ensure
+      RatatuiRuby.restore_terminal
+    end
+  end
 
-begin
-  loop do
+  def render
     # 1. Base Layer Construction
     # We want a cursor relative to the paragraph.
     # So we wrap Paragraph and Cursor in an Overlay, and put that Overlay in a Center.
@@ -24,13 +35,13 @@ begin
     # Border takes 1 cell.
     # Cursor X = 1 (border) + PREFIX.length + username.length
     # Cursor Y = 1 (border + line 0)
-    cursor_x = 1 + PREFIX.length + username.length
+    cursor_x = 1 + PREFIX.length + @username.length
     cursor_y = 1
 
     # The content of the base form
     form_content = RatatuiRuby::Overlay.new(layers: [
       RatatuiRuby::Paragraph.new(
-        text: "#{PREFIX}#{username}#{SUFFIX}",
+        text: "#{PREFIX}#{@username}#{SUFFIX}",
         block: RatatuiRuby::Block.new(borders: :all, title: "Login Form"),
         align: :left
       ),
@@ -45,7 +56,7 @@ begin
     )
 
     # 2. Popup Layer Construction
-    final_view = if show_popup
+    final_view = if @show_popup
       popup_message = RatatuiRuby::Center.new(
         child: RatatuiRuby::Paragraph.new(
           text: "Login Successful!\nPress 'q' to quit.",
@@ -66,36 +77,38 @@ begin
 
     # 3. Draw
     RatatuiRuby.draw(final_view)
+  end
 
+  def handle_input
     # 4. Event Handling
     event = RatatuiRuby.poll_event
-    next if event.nil?
+    return unless event
 
     if event[:type] == :key
-      if show_popup
+      if @show_popup
         # If popup is shown, any key (or specifically q) quits?
         # "The Center widget contains a Green Box saying 'Login Successful! Press q.'"
         if event[:code] == "q"
-          break
+          :quit
         end
       else
         # Login Form Input
         case event[:code]
         when "enter"
-          show_popup = true
+          @show_popup = true
         when "backspace"
-          username.chop!
+          @username.chop!
         when "esc"
-          break
+          :quit
         else
           # Simple text input
           if event[:code].length == 1
-            username += event[:code]
+            @username += event[:code]
           end
         end
       end
     end
   end
-ensure
-  RatatuiRuby.restore_terminal
 end
+
+LoginFormApp.new.run if __FILE__ == $0

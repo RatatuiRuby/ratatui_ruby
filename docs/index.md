@@ -9,6 +9,7 @@
 
 - [README](../README.md)
 - [Quickstart](./quickstart.md)
+- [Testing Your Application](./application_testing.md)
 
 
 ## Documentation for Contributors

@@ -8,15 +8,28 @@ require_relative "../lib/ratatui_ruby"
 # Analytics Dashboard Example
 # Demonstrates Tabs and BarChart widgets.
 
-RatatuiRuby.init_terminal
+class AnalyticsApp
+  def initialize
+    @selected_tab = 0
+    @tabs = ["Revenue", "Traffic", "Errors"]
+  end
 
-begin
-  selected_tab = 0
-  tabs = ["Revenue", "Traffic", "Errors"]
+  def run
+    RatatuiRuby.init_terminal
+    begin
+      loop do
+        render
+        break if handle_input == :quit
+        sleep 0.05
+      end
+    ensure
+      RatatuiRuby.restore_terminal
+    end
+  end
 
-  loop do
+  def render
     # Data for different tabs
-    data = case selected_tab
+    data = case @selected_tab
            when 0 # Revenue
              { "Q1" => 50, "Q2" => 80 }
            when 1 # Traffic
@@ -25,7 +38,7 @@ begin
              { "DB" => 5, "UI" => 2 }
     end
 
-    style = case selected_tab
+    style = case @selected_tab
             when 0 then RatatuiRuby::Style.new(fg: "green")
             when 1 then RatatuiRuby::Style.new(fg: "blue")
             when 2 then RatatuiRuby::Style.new(fg: "red")
@@ -40,35 +53,35 @@ begin
       ],
       children: [
         RatatuiRuby::Tabs.new(
-          titles: tabs,
-          selected_index: selected_tab,
+          titles: @tabs,
+          selected_index: @selected_tab,
           block: RatatuiRuby::Block.new(title: "Views", borders: [:all])
         ),
         RatatuiRuby::BarChart.new(
           data:,
           bar_width: 10,
           style:,
-          block: RatatuiRuby::Block.new(title: "Analytics: #{tabs[selected_tab]}", borders: [:all])
+          block: RatatuiRuby::Block.new(title: "Analytics: #{@tabs[@selected_tab]}", borders: [:all])
         ),
       ]
     )
 
     RatatuiRuby.draw(ui)
+  end
 
+  def handle_input
     event = RatatuiRuby.poll_event
     if event
       case event[:code]
       when "q"
-        break
+        :quit
       when "right"
-        selected_tab = (selected_tab + 1) % tabs.size
+        @selected_tab = (@selected_tab + 1) % @tabs.size
       when "left"
-        selected_tab = (selected_tab - 1) % tabs.size
+        @selected_tab = (@selected_tab - 1) % @tabs.size
       end
     end
-
-    sleep 0.05
   end
-ensure
-  RatatuiRuby.restore_terminal
 end
+
+AnalyticsApp.new.run if __FILE__ == $0

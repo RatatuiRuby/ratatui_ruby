@@ -8,18 +8,32 @@ require "ratatui_ruby"
 
 include RatatuiRuby
 
-items = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"]
-selected_index = 0
+class DashboardApp
+  include RatatuiRuby
 
-RatatuiRuby.init_terminal
+  def initialize
+    @items = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"]
+    @selected_index = 0
+  end
 
-begin
-  loop do
-    selected_item = items[selected_index]
+  def run
+    RatatuiRuby.init_terminal
+    begin
+      loop do
+        render
+        break if handle_input == :quit
+      end
+    ensure
+      RatatuiRuby.restore_terminal
+    end
+  end
+
+  def render
+    selected_item = @items[@selected_index]
 
     sidebar = List.new(
-      items:,
-      selected_index:,
+      items: @items,
+      selected_index: @selected_index,
       block: Block.new(title: "Files", borders: [:all])
     )
 
@@ -38,19 +52,21 @@ begin
     )
 
     RatatuiRuby.draw(layout)
+  end
 
+  def handle_input
     event = RatatuiRuby.poll_event
     if event
       case event[:code]
       when "q", "esc"
-        break
+        :quit
       when "up"
-        selected_index = (selected_index - 1) % items.length
+        @selected_index = (@selected_index - 1) % @items.length
       when "down"
-        selected_index = (selected_index + 1) % items.length
+        @selected_index = (@selected_index + 1) % @items.length
       end
     end
   end
-ensure
-  RatatuiRuby.restore_terminal
 end
+
+DashboardApp.new.run if __FILE__ == $0

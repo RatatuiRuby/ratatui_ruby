@@ -16,7 +16,7 @@ class TestCursor < Minitest::Test
       cursor = RatatuiRuby::Cursor.new(x: 5, y: 2)
       RatatuiRuby.draw(cursor)
       
-      assert_equal [5, 2], cursor_position
+      assert_equal({x: 5, y: 2}, cursor_position)
 
       assert_equal "          ", buffer_content[0]
       assert_equal "          ", buffer_content[1]

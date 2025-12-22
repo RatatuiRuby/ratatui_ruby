@@ -5,12 +5,24 @@
 
 require_relative "../lib/ratatui_ruby"
 
-def main
-  RatatuiRuby.init_terminal
+class SystemMonitorApp
+  def initialize
+    @percentage = 50
+  end
 
-  percentage = 50
+  def run
+    RatatuiRuby.init_terminal
+    begin
+      loop do
+        render
+        break if handle_input == :quit
+      end
+    ensure
+      RatatuiRuby.restore_terminal
+    end
+  end
 
-  loop do
+  def render
     # System Monitor Layout
     # Top: Table (50%)
     # Bottom: Gauge (50%)
@@ -45,8 +57,8 @@ def main
     )
 
     gauge = RatatuiRuby::Gauge.new(
-      ratio: percentage / 100.0,
-      label: "#{percentage}%",
+      ratio: @percentage / 100.0,
+      label: "#{@percentage}%",
       style: RatatuiRuby::Style.new(fg: :green),
       block: RatatuiRuby::Block.new(title: "Memory Usage", borders: [:all])
     )
@@ -61,21 +73,21 @@ def main
     )
 
     RatatuiRuby.draw(layout)
+  end
 
+  def handle_input
     event = RatatuiRuby.poll_event
     if event
       case event[:code]
       when "q"
-        break
+        :quit
       when "up"
-        percentage = [percentage + 5, 100].min
+        @percentage = [@percentage + 5, 100].min
       when "down"
-        percentage = [percentage - 5, 0].max
+        @percentage = [@percentage - 5, 0].max
       end
     end
   end
-ensure
-  RatatuiRuby.restore_terminal
 end
 
-main
+SystemMonitorApp.new.run if __FILE__ == $0

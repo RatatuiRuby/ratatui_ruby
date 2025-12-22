@@ -43,7 +43,7 @@ Every file must begin with an SPDX-compliant header. Use the following format:
     -   Use `Minitest` for testing.
     -   Define types in `.rbs` files. Don't use `untyped` just because it's easy; be comprehensive and accurate.
     -   Every line of Ruby must be covered by tests that would stand up to mutation testing.
-    -   Every public Ruby class/method must be documented for humans in RDoc (preferred) or markdown files (fallback), and must have `*.rbs` types defined.
+    -   Every public Ruby class/method must be documented for humans in RDoc (preferred)--**not** YARD--or markdown files (fallback), and must have `*.rbs` types defined.
     -   Every significant architectural and design decision must be documented for contributors in markdown files. Mermaid is allowed.
 
 ### Rust Standards

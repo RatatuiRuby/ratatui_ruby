@@ -6,30 +6,43 @@
 require_relative "../lib/ratatui_ruby"
 
 # Simulate a stock ticker
-def main
-  RatatuiRuby.init_terminal
+class StockTickerApp
+  def initialize
+    @network_data = Array.new(50) { rand(0..10) }
+    @ruby_stock = []
+    @rust_stock = []
+    @counter = 0
+  end
 
-  network_data = Array.new(50) { rand(0..10) }
-  ruby_stock = []
-  rust_stock = []
-  counter = 0
+  def run
+    RatatuiRuby.init_terminal
+    begin
+      loop do
+        render
+        break if handle_input == :quit
+        sleep 0.1
+      end
+    ensure
+      RatatuiRuby.restore_terminal
+    end
+  end
 
-  loop do
+  def render
     # Update data
-    counter += 1
-    network_data.shift
-    network_data << rand(0..10)
+    @counter += 1
+    @network_data.shift
+    @network_data << rand(0..10)
 
-    ruby_val = 50.0 + (Math.sin(counter * 0.1) * 20.0) + (rand * 5.0)
-    rust_val = 40.0 + (Math.cos(counter * 0.2) * 15.0) + (rand * 10.0)
+    ruby_val = 50.0 + (Math.sin(@counter * 0.1) * 20.0) + (rand * 5.0)
+    rust_val = 40.0 + (Math.cos(@counter * 0.2) * 15.0) + (rand * 10.0)
 
-    ruby_stock << [counter.to_f, ruby_val]
-    rust_stock << [counter.to_f, rust_val]
+    @ruby_stock << [@counter.to_f, ruby_val]
+    @rust_stock << [@counter.to_f, rust_val]
 
     # Keep only last 100 points
-    if ruby_stock.length > 100
-      ruby_stock.shift
-      rust_stock.shift
+    if @ruby_stock.length > 100
+      @ruby_stock.shift
+      @rust_stock.shift
     end
 
     # Define UI
@@ -41,16 +54,16 @@ def main
       ],
       children: [
         RatatuiRuby::Sparkline.new(
-          data: network_data,
+          data: @network_data,
           style: RatatuiRuby::Style.new(fg: :cyan),
           block: RatatuiRuby::Block.new(title: "Network Activity", borders: :all)
         ),
         RatatuiRuby::LineChart.new(
           datasets: [
-            RatatuiRuby::Dataset.new(name: "RBY", data: ruby_stock, color: :green),
-            RatatuiRuby::Dataset.new(name: "RST", data: rust_stock, color: :red),
+            RatatuiRuby::Dataset.new(name: "RBY", data: @ruby_stock, color: :green),
+            RatatuiRuby::Dataset.new(name: "RST", data: @rust_stock, color: :red),
           ],
-          x_labels: [counter.to_s],
+          x_labels: [@counter.to_s],
           y_labels: %w[0 50 100],
           y_bounds: [0.0, 100.0],
           block: RatatuiRuby::Block.new(title: "Stock Ticker", borders: :all),
@@ -59,16 +72,14 @@ def main
     )
 
     RatatuiRuby.draw(ui)
+  end
 
+  def handle_input
     event = RatatuiRuby.poll_event
     if event && event[:code] == "q"
-      break
+      :quit
     end
-
-    sleep 0.1
   end
-ensure
-  RatatuiRuby.restore_terminal
 end
 
-main
+StockTickerApp.new.run if __FILE__ == $0

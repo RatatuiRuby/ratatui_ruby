@@ -100,7 +100,9 @@ namespace :test do
   end
 
   # Create a specific Minitest task for Ruby tests
-  Minitest::TestTask.create(:ruby)
+  Minitest::TestTask.create(:ruby) do |t|
+    t.test_globs = ["test/**/test_*.rb", "examples/**/test_*.rb"]
+  end
 end
 
 multitask default: %i[test lint]
