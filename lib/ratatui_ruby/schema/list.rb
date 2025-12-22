@@ -4,16 +4,17 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  # A scrollable list of items.
+  # A widget that displays a list of selectable items.
   #
-  # [items] an array of strings to display.
-  # [selected_index] the index of the currently selected item (Integer or nil).
-  # [block] an optional Block widget to wrap the list.
+  # [items] An array of strings to display in the list.
+  # [selected_index] The index of the currently selected item, or nil if none.
+  # [block] An optional Block widget to wrap the list.
   class List < Data.define(:items, :selected_index, :block)
     # Creates a new List.
-    # [items] the items to display.
-    # [selected_index] the selected index.
-    # [block] the block to wrap the list.
+    #
+    # [items] An array of strings to display in the list.
+    # [selected_index] The index of the currently selected item, or nil if none.
+    # [block] An optional Block widget to wrap the list.
     def initialize(items: [], selected_index: nil, block: nil)
       super
     end

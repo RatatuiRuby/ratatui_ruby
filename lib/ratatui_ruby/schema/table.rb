@@ -4,17 +4,19 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  # Data Grid
-  # [header] Array of Strings (or Cells)
-  # [rows] Array of Arrays of Strings (or Cells)
-  # [widths] Array of Constraints (e.g. [Constraint.length(10), Constraint.min(0)])
-  # [block] optional block widget
-  Table = Data.define(:header, :rows, :widths, :block) do
+  # A widget that displays data in a grid with rows and columns.
+  #
+  # [header] An array of strings or Paragraphs representing the header row.
+  # [rows] An array of arrays of strings or Paragraphs representing the data rows.
+  # [widths] An array of Constraint objects defining column widths.
+  # [block] An optional Block widget to wrap the table.
+  class Table < Data.define(:header, :rows, :widths, :block)
     # Creates a new Table.
-    # [header] the header row.
-    # [rows] the data rows.
-    # [widths] the column widths.
-    # [block] the block to wrap the table.
+    #
+    # [header] An array of strings or Paragraphs representing the header row.
+    # [rows] An array of arrays of strings or Paragraphs representing the data rows.
+    # [widths] An array of Constraint objects defining column widths.
+    # [block] An optional Block widget to wrap the table.
     def initialize(header: nil, rows: [], widths: [], block: nil)
       super
     end

@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class BarChart < Data
+    attr_reader data: Hash[String | Symbol | _ToS, Integer]
+    attr_reader bar_width: Integer
+    attr_reader bar_gap: Integer
+    attr_reader max: Integer?
+    attr_reader style: Style?
+    attr_reader block: Block?
+    def self.new: (data: Hash[String | Symbol | _ToS, Integer], ?bar_width: Integer, ?bar_gap: Integer, ?max: Integer?, ?style: Style?, ?block: Block?) -> BarChart
+  end
+end

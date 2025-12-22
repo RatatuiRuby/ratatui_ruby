@@ -116,4 +116,36 @@ class TestRatatuiRuby < Minitest::Test
     assert_equal [:all], b.borders
     assert_nil b.border_color
   end
+
+  def test_tabs_creation
+    titles = ["A", "B"]
+    tabs = RatatuiRuby::Tabs.new(titles:, selected_index: 0)
+    assert_equal titles, tabs.titles
+    assert_equal 0, tabs.selected_index
+  end
+
+  def test_tabs_defaults
+    tabs = RatatuiRuby::Tabs.new
+    assert_equal [], tabs.titles
+    assert_equal 0, tabs.selected_index
+    assert_nil tabs.block
+  end
+
+  def test_bar_chart_creation
+    data = { "a" => 1, "b" => 2 }
+    chart = RatatuiRuby::BarChart.new(data:, bar_width: 5)
+    assert_equal data, chart.data
+    assert_equal 5, chart.bar_width
+  end
+
+  def test_bar_chart_defaults
+    data = { "a" => 1 }
+    chart = RatatuiRuby::BarChart.new(data:)
+    assert_equal data, chart.data
+    assert_equal 3, chart.bar_width
+    assert_equal 1, chart.bar_gap
+    assert_nil chart.max
+    assert_nil chart.style
+    assert_nil chart.block
+  end
 end

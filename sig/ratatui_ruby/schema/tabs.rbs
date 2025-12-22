@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class Tabs < Data
+    attr_reader titles: Array[String | _ToS]
+    attr_reader selected_index: Integer
+    attr_reader block: Block?
+    def self.new: (?titles: Array[String | _ToS], ?selected_index: Integer, ?block: Block?) -> Tabs
+  end
+end

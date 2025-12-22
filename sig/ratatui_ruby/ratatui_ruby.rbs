@@ -2,8 +2,14 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
+  type widget = Paragraph | Layout | List | Gauge | Table | Tabs | BarChart | Block
+
+  interface _ToS
+    def to_s: () -> String
+  end
+
   def self.init_terminal: () -> void
   def self.restore_terminal: () -> void
-  def self.draw: (Paragraph | Layout) -> void
-  def self.poll_event: () -> String?
+  def self.draw: (widget) -> void
+  def self.poll_event: () -> Hash[Symbol, untyped]?
 end

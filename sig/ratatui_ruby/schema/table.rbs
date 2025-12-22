@@ -3,11 +3,11 @@
 
 module RatatuiRuby
   class Table < Data
-    attr_reader header: Array[String]?
-    attr_reader rows: Array[Array[String]]
+    attr_reader header: Array[String | Paragraph]?
+    attr_reader rows: Array[Array[String | Paragraph | Style | _ToS]]
     attr_reader widths: Array[Constraint]
     attr_reader block: Block?
 
-    def self.new: (?header: Array[String]?, ?rows: Array[Array[String]], ?widths: Array[Constraint], ?block: Block?) -> Table
+    def self.new: (?header: Array[String | Paragraph]?, ?rows: Array[Array[String | Paragraph | Style | _ToS]], ?widths: Array[Constraint], ?block: Block?) -> Table
   end
 end

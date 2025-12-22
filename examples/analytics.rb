@@ -1,0 +1,74 @@
+# frozen_string_literal: true
+
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+require_relative "../lib/ratatui_ruby"
+
+# Analytics Dashboard Example
+# Demonstrates Tabs and BarChart widgets.
+
+RatatuiRuby.init_terminal
+
+begin
+  selected_tab = 0
+  tabs = ["Revenue", "Traffic", "Errors"]
+
+  loop do
+    # Data for different tabs
+    data = case selected_tab
+           when 0 # Revenue
+             { "Q1" => 50, "Q2" => 80 }
+           when 1 # Traffic
+             { "Mon" => 120, "Tue" => 150 }
+           when 2 # Errors
+             { "DB" => 5, "UI" => 2 }
+    end
+
+    style = case selected_tab
+            when 0 then RatatuiRuby::Style.new(fg: "green")
+            when 1 then RatatuiRuby::Style.new(fg: "blue")
+            when 2 then RatatuiRuby::Style.new(fg: "red")
+    end
+
+    # Build the UI
+    ui = RatatuiRuby::Layout.new(
+      direction: :vertical,
+      constraints: [
+        RatatuiRuby::Constraint.new(type: :length, value: 3),
+        RatatuiRuby::Constraint.new(type: :min, value: 0),
+      ],
+      children: [
+        RatatuiRuby::Tabs.new(
+          titles: tabs,
+          selected_index: selected_tab,
+          block: RatatuiRuby::Block.new(title: "Views", borders: [:all])
+        ),
+        RatatuiRuby::BarChart.new(
+          data:,
+          bar_width: 10,
+          style:,
+          block: RatatuiRuby::Block.new(title: "Analytics: #{tabs[selected_tab]}", borders: [:all])
+        ),
+      ]
+    )
+
+    RatatuiRuby.draw(ui)
+
+    event = RatatuiRuby.poll_event
+    if event
+      case event[:code]
+      when "q"
+        break
+      when "right"
+        selected_tab = (selected_tab + 1) % tabs.size
+      when "left"
+        selected_tab = (selected_tab - 1) % tabs.size
+      end
+    end
+
+    sleep 0.05
+  end
+ensure
+  RatatuiRuby.restore_terminal
+end

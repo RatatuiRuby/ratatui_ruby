@@ -6,7 +6,10 @@ use ratatui::{
     backend::CrosstermBackend,
     layout::{Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style},
-    widgets::{Block, Borders, Cell, Gauge, List, ListState, Paragraph, Row, Table, Widget},
+    text::Line,
+    widgets::{
+        BarChart, Block, Borders, Cell, Gauge, List, ListState, Paragraph, Row, Table, Tabs, Widget,
+    },
     Terminal,
 };
 use std::io;
@@ -309,6 +312,75 @@ fn render_node(area: Rect, node: Value, buf: &mut ratatui::buffer::Buffer) -> Re
             }
 
             table.render(area, buf);
+        }
+        "RatatuiRuby::Tabs" => {
+            let titles_val: Value = node.funcall("titles", ())?;
+            let selected_index: usize = node.funcall("selected_index", ())?;
+            let block_val: Value = node.funcall("block", ())?;
+
+            let titles_array = magnus::RArray::from_value(titles_val).ok_or_else(|| {
+                Error::new(magnus::exception::type_error(), "expected array for titles")
+            })?;
+
+            let mut titles = Vec::new();
+            for i in 0..titles_array.len() {
+                let title: String = titles_array.entry(i as isize)?;
+                titles.push(Line::from(title));
+            }
+
+            let mut tabs = Tabs::new(titles).select(selected_index);
+
+            if !block_val.is_nil() {
+                tabs = tabs.block(parse_block(block_val)?);
+            }
+
+            tabs.render(area, buf);
+        }
+        "RatatuiRuby::BarChart" => {
+            let data_val: magnus::RHash = node.funcall("data", ())?;
+            let bar_width: u16 = node.funcall("bar_width", ())?;
+            let bar_gap: u16 = node.funcall("bar_gap", ())?;
+            let max_val: Value = node.funcall("max", ())?;
+            let style_val: Value = node.funcall("style", ())?;
+            let block_val: Value = node.funcall("block", ())?;
+
+            let keys: magnus::RArray = data_val.funcall("keys", ())?;
+            let mut labels = Vec::new();
+            let mut data_vec = Vec::new();
+
+            for i in 0..keys.len() {
+                let key: Value = keys.entry(i as isize)?;
+                let val: u64 = data_val.funcall("[]", (key,))?;
+                let label: String = key.funcall("to_s", ())?;
+                labels.push(label);
+                data_vec.push(val);
+            }
+
+            let chart_data: Vec<(&str, u64)> = labels
+                .iter()
+                .zip(data_vec.iter())
+                .map(|(l, v)| (l.as_str(), *v))
+                .collect();
+
+            let mut bar_chart = BarChart::default()
+                .data(&chart_data)
+                .bar_width(bar_width)
+                .bar_gap(bar_gap);
+
+            if !max_val.is_nil() {
+                let max: u64 = u64::try_convert(max_val)?;
+                bar_chart = bar_chart.max(max);
+            }
+
+            if !style_val.is_nil() {
+                bar_chart = bar_chart.style(parse_style(style_val)?);
+            }
+
+            if !block_val.is_nil() {
+                bar_chart = bar_chart.block(parse_block(block_val)?);
+            }
+
+            bar_chart.render(area, buf);
         }
         _ => {}
     }

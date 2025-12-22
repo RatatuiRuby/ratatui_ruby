@@ -4,17 +4,17 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  # A widget that splits an area into multiple sections.
+  # A widget that splits an area into multiple sections based on constraints.
   #
-  # [direction] either :vertical or :horizontal.
-  # [constraints] an array of Constraint objects.
-  # [children] the widgets to render within the layout sections.
+  # [direction] The direction of the layout (:vertical or :horizontal).
+  # [constraints] An array of Constraint objects defining the size of each section.
+  # [children] An array of widgets to render within each section.
   class Layout < Data.define(:direction, :constraints, :children)
     # Creates a new Layout.
     #
-    # [direction] :vertical or :horizontal.
-    # [constraints] an array of Constraint objects.
-    # [children] widgets to include in this layout.
+    # [direction] The direction of the layout (:vertical or :horizontal).
+    # [constraints] An array of Constraint objects defining the size of each section.
+    # [children] An array of widgets to render within each section.
     def initialize(direction: :vertical, constraints: [], children: [])
       super
     end

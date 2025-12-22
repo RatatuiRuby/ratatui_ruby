@@ -12,6 +12,8 @@ require_relative "ratatui_ruby/schema/list"
 require_relative "ratatui_ruby/schema/style"
 require_relative "ratatui_ruby/schema/gauge"
 require_relative "ratatui_ruby/schema/table"
+require_relative "ratatui_ruby/schema/tabs"
+require_relative "ratatui_ruby/schema/bar_chart"
 
 begin
   require_relative "ratatui_ruby/ratatui_ruby"
@@ -55,10 +57,10 @@ module RatatuiRuby
 
   ##
   # :method: poll_event
-  # :call-seq: poll_event() -> String, nil
+  # :call-seq: poll_event() -> Hash, nil
   #
   # Polls for a keyboard event.
-  # Returns the character pressed (String), or nil if no event.
+  # Returns a Hash containing event details (type, code, modifiers), or nil if no event.
   #
   # (Native method implemented in Rust)
 end
