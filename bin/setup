@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+set -euo pipefail
+IFS=$'\n\t'
+set -vx
+
+bundle install
+
+if command -v pipx >/dev/null 2>&1; then
+  pipx install pre-commit
+  pipx install reuse
+  pre-commit install
+  bundle exec rake rdoc
+else
+  echo "pipx isn't installed. Set it up, then run bin/setup again. https://pipx.pypa.io/stable/" >&2
+  exit 1
+fi

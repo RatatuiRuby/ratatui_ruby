@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  VERSION: String
+
+  def self.output: (String, "short" | "long" | "both") -> void
+
+end

@@ -1,0 +1,8 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+inherit_from:
+  - ./vendor/goodcop/base.yml
+
+AllCops:
+  TargetRubyVersion: "3.3"
