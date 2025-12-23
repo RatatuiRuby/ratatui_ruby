@@ -29,9 +29,10 @@ module RatatuiRuby
     # Initializes a test terminal context with specified dimensions.
     # Restores the original terminal state after the block executes.
     #
-    # @param width [Integer] width of the test terminal (default: 20)
-    # @param height [Integer] height of the test terminal (default: 10)
-    # @yield The block to execute within the test terminal context.
+    # +width+:: width of the test terminal (default: 20)
+    # +height+:: height of the test terminal (default: 10)
+    #
+    # If a block is given, it is executed within the test terminal context.
     def with_test_terminal(width = 20, height = 10)
       RatatuiRuby.init_test_terminal(width, height)
       yield
@@ -43,15 +44,17 @@ module RatatuiRuby
     # Returns the current content of the terminal buffer as an array of strings.
     # Each string represents a row in the terminal.
     #
-    # @return [Array<String>] lines of the terminal buffer
+    #   buffer_content
+    #   # => ["Row 1 text", "Row 2 text", ...]
     def buffer_content
       RatatuiRuby.get_buffer_content.split("\n")
     end
 
     ##
-    # Returns the current cursor position as a hash with :x and :y keys.
+    # Returns the current cursor position as a hash with +:x+ and +:y+ keys.
     #
-    # @return [Hash{Symbol => Integer}] {:x => Integer, :y => Integer}
+    #   cursor_position
+    #   # => { x: 0, y: 0 }
     def cursor_position
       x, y = RatatuiRuby.get_cursor_position
       { x:, y: }
@@ -60,8 +63,11 @@ module RatatuiRuby
     ##
     # Injects a mock event into the event queue for testing purposes.
     #
-    # @param event_type [String] "key" or "mouse"
-    # @param data [Hash] a Hash containing event data (e.g. { code: "a" } for key, or { kind: "down", x: 0, y: 0 } for mouse)
+    # +event_type+:: "key" or "mouse"
+    # +data+:: a Hash containing event data
+    #
+    #   inject_event("key", { code: "a" })
+    #   inject_event("mouse", { kind: "down", x: 0, y: 0 })
     def inject_event(event_type, data)
       RatatuiRuby.inject_test_event(event_type, data)
     end

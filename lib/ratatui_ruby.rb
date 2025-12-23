@@ -65,7 +65,9 @@ module RatatuiRuby
   # :call-seq: poll_event() -> Hash, nil
   #
   # Polls for a keyboard event.
-  # Returns a Hash containing event details (type, code, modifiers), or nil if no event.
+  #
+  #   poll_event
+  #   # => { type: "key", code: "char", value: "a", modifiers: [] }
   #
   # (Native method implemented in Rust)
 
@@ -75,7 +77,9 @@ module RatatuiRuby
   #
   # Injects a mock event into the event queue for testing purposes.
   # [event_type] "key" or "mouse"
-  # [data] a Hash containing event data (e.g. { code: "a" } for key, or { kind: "down", x: 0, y: 0 } for mouse)
+  # [data] a Hash containing event data
+  #
+  #   inject_test_event("key", { code: "a" })
   #
   # (Native method implemented in Rust)
 end

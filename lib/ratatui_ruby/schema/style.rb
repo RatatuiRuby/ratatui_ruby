@@ -21,6 +21,9 @@ module RatatuiRuby
     end
 
     # Returns a default style with no colors or modifiers.
+    #
+    #   Style.default
+    #   # => #<RatatuiRuby::Style fg=nil, bg=nil, modifiers=[]>
     def self.default
       new
     end
