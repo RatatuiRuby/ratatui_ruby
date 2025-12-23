@@ -40,12 +40,10 @@ pub fn init_terminal() -> Result<(), Error> {
 
 pub fn init_test_terminal(width: u16, height: u16) -> Result<(), Error> {
     let mut term_lock = TERMINAL.lock().unwrap();
-    if term_lock.is_none() {
-        let backend = TestBackend::new(width, height);
-        let terminal = Terminal::new(backend)
-            .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
-        *term_lock = Some(TerminalWrapper::Test(terminal));
-    }
+    let backend = TestBackend::new(width, height);
+    let terminal = Terminal::new(backend)
+        .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
+    *term_lock = Some(TerminalWrapper::Test(terminal));
     Ok(())
 }
 

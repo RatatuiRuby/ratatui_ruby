@@ -21,12 +21,12 @@ class TestBlock < Minitest::Test
   end
 
   def test_render
-    with_test_terminal(10, 3) do
+    with_test_terminal(20, 3) do
       b = RatatuiRuby::Block.new(borders: [:all], title: "Title")
       RatatuiRuby.draw(b)
-      assert_equal "┌Title───┐", buffer_content[0]
-      assert_equal "│        │", buffer_content[1]
-      assert_equal "└────────┘", buffer_content[2]
+      assert_equal "┌Title─────────────┐", buffer_content[0]
+      assert_equal "│                  │", buffer_content[1]
+      assert_equal "└──────────────────┘", buffer_content[2]
     end
   end
 end

@@ -23,6 +23,7 @@ pub fn render_node(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Err
         "RatatuiRuby::Scrollbar" => widgets::scrollbar::render(frame, area, node)?,
         "RatatuiRuby::BarChart" => widgets::barchart::render(frame, area, node)?,
         "RatatuiRuby::Canvas" => widgets::canvas::render(frame, area, node)?,
+        "RatatuiRuby::Calendar" => widgets::calendar::render(frame, area, node)?,
         "RatatuiRuby::Sparkline" => widgets::sparkline::render(frame, area, node)?,
         "RatatuiRuby::Chart" | "RatatuiRuby::LineChart" => {
             widgets::chart::render(frame, area, node)?

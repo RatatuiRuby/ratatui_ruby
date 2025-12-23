@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class Calendar < Data
+    attr_reader year: Integer
+    attr_reader month: Integer
+    attr_reader day_style: Style?
+    attr_reader header_style: Style?
+    attr_reader block: Block?
+    def self.new: (year: Integer, month: Integer, ?day_style: Style?, ?header_style: Style?, ?block: Block?) -> Calendar
+  end
+end

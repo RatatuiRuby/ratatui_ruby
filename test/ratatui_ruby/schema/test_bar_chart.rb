@@ -29,6 +29,7 @@ class TestBarChart < Minitest::Test
       # 10x5 area
       chart = RatatuiRuby::BarChart.new(data: { "A" => 1, "B" => 2 }, bar_width: 3)
       RatatuiRuby.draw(chart)
+
       assert_equal "    ███             ", buffer_content[0]
       assert_equal "    ███             ", buffer_content[1]
       assert_equal "███ ███             ", buffer_content[2]

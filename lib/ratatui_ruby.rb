@@ -21,6 +21,7 @@ require_relative "ratatui_ruby/schema/overlay"
 require_relative "ratatui_ruby/schema/center"
 require_relative "ratatui_ruby/schema/scrollbar"
 require_relative "ratatui_ruby/schema/canvas"
+require_relative "ratatui_ruby/schema/calendar"
 
 begin
   require "ratatui_ruby/ratatui_ruby"

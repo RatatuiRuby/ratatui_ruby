@@ -24,24 +24,25 @@ class TestList < Minitest::Test
   end
 
   def test_render
-    with_test_terminal(10, 5) do
+    with_test_terminal(20, 3) do
       list = RatatuiRuby::List.new(items: ["Item 1", "Item 2"], selected_index: 0)
       RatatuiRuby.draw(list)
-      assert_equal "> Item 1  ", buffer_content[0]
-      assert_equal "  Item 2  ", buffer_content[1]
+
+      assert_equal "> Item 1            ", buffer_content[0]
+      assert_equal "  Item 2            ", buffer_content[1]
     end
   end
 
   def test_render_with_custom_symbol
-    with_test_terminal(10, 5) do
+    with_test_terminal(20, 5) do
       list = RatatuiRuby::List.new(
         items: ["Item 1", "Item 2"],
         selected_index: 1,
         highlight_symbol: ">> "
       )
       RatatuiRuby.draw(list)
-      assert_equal "   Item 1 ", buffer_content[0]
-      assert_equal ">> Item 2 ", buffer_content[1]
+      assert_equal "   Item 1           ", buffer_content[0]
+      assert_equal ">> Item 2           ", buffer_content[1]
     end
   end
 end

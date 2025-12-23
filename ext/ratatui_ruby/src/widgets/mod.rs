@@ -3,6 +3,7 @@
 
 pub mod barchart;
 pub mod block;
+pub mod calendar;
 pub mod canvas;
 pub mod center;
 pub mod chart;

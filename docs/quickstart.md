@@ -91,6 +91,9 @@ A simple demonstration of `Block` and `Paragraph` widgets, reacting to arrow key
 
 ![Box Demo Screenshot](./images/examples-box_demo.rb.png)
 
+### [Calendar Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/calendar_demo.rb)
+A simple demo application for the `Calendar` widget.
+
 ### [Chart Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/chart_demo.rb)
 Demonstrates the `Chart` widget with both scatter and line datasets, including custom axes.
 
