@@ -54,7 +54,16 @@ module RatatuiRuby
     # @return [Hash{Symbol => Integer}] {:x => Integer, :y => Integer}
     def cursor_position
       x, y = RatatuiRuby.get_cursor_position
-      { x: x, y: y }
+      { x:, y: }
+    end
+
+    ##
+    # Injects a mock event into the event queue for testing purposes.
+    #
+    # @param event_type [String] "key" or "mouse"
+    # @param data [Hash] a Hash containing event data (e.g. { code: "a" } for key, or { kind: "down", x: 0, y: 0 } for mouse)
+    def inject_event(event_type, data)
+      RatatuiRuby.inject_test_event(event_type, data)
     end
   end
 end

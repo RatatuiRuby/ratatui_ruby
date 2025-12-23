@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::rendering::render_node;
-use magnus::{Error, Symbol, Value, prelude::*};
+use magnus::{prelude::*, Error, Symbol, Value};
 use ratatui::{
     layout::{Constraint, Direction, Layout, Rect},
     Frame,

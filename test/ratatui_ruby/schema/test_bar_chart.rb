@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 require "test_helper"
 
 class TestBarChart < Minitest::Test
@@ -24,7 +27,7 @@ class TestBarChart < Minitest::Test
   def test_render
     with_test_terminal(20, 5) do
       # 10x5 area
-      chart = RatatuiRuby::BarChart.new(data: {"A" => 1, "B" => 2}, bar_width: 3)
+      chart = RatatuiRuby::BarChart.new(data: { "A" => 1, "B" => 2 }, bar_width: 3)
       RatatuiRuby.draw(chart)
       assert_equal "    ███             ", buffer_content[0]
       assert_equal "    ███             ", buffer_content[1]

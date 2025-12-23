@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 require "ratatui_ruby"
 require "ratatui_ruby/test_helper"
@@ -19,7 +22,7 @@ class TestLoginForm < Minitest::Test
     with_test_terminal(60, 20) do
       @app.render
       assert buffer_content.any? { |line| line.include?("Enter Username:") }
-      # Initial cursor position check could be tricky without inspecting cursor state, 
+      # Initial cursor position check could be tricky without inspecting cursor state,
       # but we can rely on visual cursor rendering if we had a way to check attributes,
       # or just assume the widget logic puts it there.
     end
@@ -27,9 +30,8 @@ class TestLoginForm < Minitest::Test
 
   def test_input_handling
     # Type 'a'
-    RatatuiRuby.stub :poll_event, { code: "a", type: :key } do
-      @app.handle_input
-    end
+    inject_event("key", { code: "a" })
+    @app.handle_input
 
     with_test_terminal(60, 20) do
       @app.render
@@ -39,26 +41,23 @@ class TestLoginForm < Minitest::Test
 
   def test_popup_flow
     # Enter username 'user'
-    ["u", "s", "e", "r"].each do |char|
-      RatatuiRuby.stub :poll_event, { code: char, type: :key } do
-        @app.handle_input
-      end
+    %w[u s e r].each do |char|
+      inject_event("key", { code: char })
+      @app.handle_input
     end
 
     # Press Enter
-    RatatuiRuby.stub :poll_event, { code: "enter", type: :key } do
-      @app.handle_input
-    end
+    inject_event("key", { code: "enter" })
+    @app.handle_input
 
     with_test_terminal(60, 20) do
       @app.render
       assert buffer_content.any? { |line| line.include?("Successful!") }
     end
-    
+
     # Press 'q' to quit popup/app
-    status = RatatuiRuby.stub :poll_event, { code: "q", type: :key } do
-      @app.handle_input
-    end
+    inject_event("key", { code: "q" })
+    status = @app.handle_input
     assert_equal :quit, status
   end
 end

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::{parse_block, parse_style};
-use magnus::{Error, Symbol, Value, prelude::*};
+use magnus::{prelude::*, Error, Symbol, Value};
 use ratatui::{
     layout::{Constraint, Rect},
     widgets::{Cell, Row, Table},
@@ -63,8 +63,9 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let mut table = Table::new(rows, constraints);
 
     if !header_val.is_nil() {
-        let header_array = magnus::RArray::from_value(header_val)
-            .ok_or_else(|| Error::new(magnus::exception::type_error(), "expected array for header"))?;
+        let header_array = magnus::RArray::from_value(header_val).ok_or_else(|| {
+            Error::new(magnus::exception::type_error(), "expected array for header")
+        })?;
         let mut header_cells = Vec::new();
         for i in 0..header_array.len() {
             let cell_val: Value = header_array.entry(i as isize)?;

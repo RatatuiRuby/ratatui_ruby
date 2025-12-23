@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 require "ratatui_ruby"
 require "ratatui_ruby/test_helper"
 require "minitest/autorun"
@@ -20,7 +23,7 @@ class TestTestHelperModule < Minitest::Test
 
   def test_buffer_content
     with_test_terminal(20, 5) do
-      # Render something simple directly to test backend if possible, 
+      # Render something simple directly to test backend if possible,
       # or just verify empty buffer structure
       lines = buffer_content
       assert_equal 5, lines.size
@@ -35,6 +38,16 @@ class TestTestHelperModule < Minitest::Test
       assert_kind_of Integer, pos[:y]
       assert_equal 0, pos[:x]
       assert_equal 0, pos[:y]
+    end
+  end
+
+  def test_inject_event
+    with_test_terminal do
+      inject_event("key", { code: "a", modifiers: ["ctrl"] })
+      event = RatatuiRuby.poll_event
+      assert_equal :key, event[:type]
+      assert_equal "a", event[:code]
+      assert_equal ["ctrl"], event[:modifiers]
     end
   end
 end

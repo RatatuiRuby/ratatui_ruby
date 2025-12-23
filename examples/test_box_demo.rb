@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 require "ratatui_ruby"
 require "ratatui_ruby/test_helper"
@@ -24,9 +27,8 @@ class TestBoxDemo < Minitest::Test
   end
 
   def test_interaction
-    RatatuiRuby.stub :poll_event, { code: "up", type: :key } do
-      @app.handle_input
-    end
+    inject_event("key", { code: "up" })
+    @app.handle_input
 
     with_test_terminal(40, 10) do
       @app.render

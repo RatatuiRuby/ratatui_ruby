@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 require "ratatui_ruby"
 require "ratatui_ruby/test_helper"
@@ -20,7 +23,7 @@ class TestStockTicker < Minitest::Test
       @app.render
       assert buffer_content.any? { |line| line.include?("Network Activity") }
       assert buffer_content.any? { |line| line.include?("Stock Ticker") }
-      # It's a dynamic simulation, so exact content varies, 
+      # It's a dynamic simulation, so exact content varies,
       # but titles should be stable.
     end
   end

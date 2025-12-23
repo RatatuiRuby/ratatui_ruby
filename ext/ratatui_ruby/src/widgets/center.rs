@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::rendering::render_node;
-use magnus::{Error, Value, prelude::*};
+use magnus::{prelude::*, Error, Value};
 use ratatui::{
     layout::{Constraint, Direction, Layout, Rect},
     widgets::Clear,
@@ -61,7 +61,7 @@ mod tests {
             ])
             .split(area);
         let vertical_center = popup_layout[1];
-        
+
         // Vertical check
         assert_eq!(vertical_center.height, 50);
 

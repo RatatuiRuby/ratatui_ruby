@@ -44,11 +44,21 @@ fn init() -> Result<(), Error> {
     m.define_module_function("restore_terminal", function!(restore_terminal, 0))?;
     m.define_module_function("draw", function!(draw, 1))?;
     m.define_module_function("poll_event", function!(events::poll_event, 0))?;
-    
+    m.define_module_function("inject_test_event", function!(events::inject_test_event, 2))?;
+
     // Test backend helpers
-    m.define_module_function("init_test_terminal", function!(terminal::init_test_terminal, 2))?;
-    m.define_module_function("get_buffer_content", function!(terminal::get_buffer_content, 0))?;
-    m.define_module_function("get_cursor_position", function!(terminal::get_cursor_position, 0))?;
+    m.define_module_function(
+        "init_test_terminal",
+        function!(terminal::init_test_terminal, 2),
+    )?;
+    m.define_module_function(
+        "get_buffer_content",
+        function!(terminal::get_buffer_content, 0),
+    )?;
+    m.define_module_function(
+        "get_cursor_position",
+        function!(terminal::get_cursor_position, 0),
+    )?;
     m.define_module_function("resize_terminal", function!(terminal::resize_terminal, 2))?;
 
     Ok(())
@@ -56,9 +66,9 @@ fn init() -> Result<(), Error> {
 
 #[cfg(test)]
 mod tests {
+    use ratatui::layout::Rect;
     use ratatui::style::Color;
     use ratatui::widgets::Widget;
-    use ratatui::layout::Rect;
     use ratatui::widgets::{Chart, Dataset, Sparkline};
 
     #[test]

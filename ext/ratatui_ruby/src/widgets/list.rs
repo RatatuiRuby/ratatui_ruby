@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::parse_block;
-use magnus::{Error, Value, prelude::*};
+use magnus::{prelude::*, Error, Value};
 use ratatui::{
     layout::Rect,
     widgets::{List, ListState},

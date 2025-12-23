@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use magnus::{Error, Symbol, Value, prelude::*};
+use magnus::{prelude::*, Error, Symbol, Value};
 use ratatui::{
     style::{Color, Modifier, Style},
     widgets::{Block, Borders},

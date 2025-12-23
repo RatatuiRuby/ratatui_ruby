@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 require "ratatui_ruby"
 require "ratatui_ruby/test_helper"
@@ -26,9 +29,8 @@ class TestSystemMonitor < Minitest::Test
 
   def test_interaction
     # Increase percentage
-    RatatuiRuby.stub :poll_event, { code: "up", type: :key } do
-      @app.handle_input
-    end
+    inject_event("key", { code: "up" })
+    @app.handle_input
 
     with_test_terminal(60, 20) do
       @app.render

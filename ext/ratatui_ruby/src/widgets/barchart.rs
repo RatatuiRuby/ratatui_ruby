@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::{parse_block, parse_style};
-use magnus::{Error, Value, prelude::*};
+use magnus::{prelude::*, Error, Value};
 use ratatui::{layout::Rect, widgets::BarChart, Frame};
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {

@@ -2,13 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::parse_block;
-use magnus::{Error, Value, prelude::*};
-use ratatui::{
-    layout::Rect,
-    text::Line,
-    widgets::Tabs,
-    Frame,
-};
+use magnus::{prelude::*, Error, Value};
+use ratatui::{layout::Rect, text::Line, widgets::Tabs, Frame};
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let titles_val: Value = node.funcall("titles", ())?;
@@ -38,8 +33,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 mod tests {
     use super::*;
     use ratatui::buffer::Buffer;
-    use ratatui::widgets::{Tabs, Widget};
     use ratatui::text::Line;
+    use ratatui::widgets::{Tabs, Widget};
 
     #[test]
     fn test_tabs_compile() {

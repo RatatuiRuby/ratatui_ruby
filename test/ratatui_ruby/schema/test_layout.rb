@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 require "test_helper"
 
 class TestLayout < Minitest::Test
@@ -35,7 +38,7 @@ class TestLayout < Minitest::Test
         constraints: [RatatuiRuby::Constraint.percentage(50), RatatuiRuby::Constraint.percentage(50)],
         children: [
           RatatuiRuby::Paragraph.new(text: "Top"),
-          RatatuiRuby::Paragraph.new(text: "Bottom")
+          RatatuiRuby::Paragraph.new(text: "Bottom"),
         ]
       )
       RatatuiRuby.draw(l)

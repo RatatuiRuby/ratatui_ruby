@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::widgets;
-use magnus::{Error, Value, prelude::*};
+use magnus::{prelude::*, Error, Value};
 use ratatui::{layout::Rect, Frame};
 
 pub fn render_node(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {

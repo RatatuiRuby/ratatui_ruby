@@ -68,4 +68,14 @@ module RatatuiRuby
   # Returns a Hash containing event details (type, code, modifiers), or nil if no event.
   #
   # (Native method implemented in Rust)
+
+  ##
+  # :method: inject_test_event
+  # :call-seq: inject_test_event(event_type, data) -> nil
+  #
+  # Injects a mock event into the event queue for testing purposes.
+  # [event_type] "key" or "mouse"
+  # [data] a Hash containing event data (e.g. { code: "a" } for key, or { kind: "down", x: 0, y: 0 } for mouse)
+  #
+  # (Native method implemented in Rust)
 end

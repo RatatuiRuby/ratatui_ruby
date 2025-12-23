@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use magnus::{Error, Value, prelude::*};
+use magnus::{prelude::*, Error, Value};
 use ratatui::{layout::Rect, Frame};
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
@@ -15,7 +15,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 mod tests {
 
     use ratatui::layout::Rect;
-    
+
     #[test]
     fn test_cursor_math() {
         let area = Rect::new(10, 10, 50, 50);

@@ -24,8 +24,12 @@ pub fn init_terminal() -> Result<(), Error> {
         crossterm::terminal::enable_raw_mode()
             .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
         let mut stdout = io::stdout();
-        crossterm::execute!(stdout, crossterm::terminal::EnterAlternateScreen)
-            .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
+        crossterm::execute!(
+            stdout,
+            crossterm::terminal::EnterAlternateScreen,
+            crossterm::event::EnableMouseCapture
+        )
+        .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
         let backend = CrosstermBackend::new(stdout);
         let terminal = Terminal::new(backend)
             .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
@@ -47,15 +51,13 @@ pub fn init_test_terminal(width: u16, height: u16) -> Result<(), Error> {
 
 pub fn restore_terminal() -> Result<(), Error> {
     let mut term_lock = TERMINAL.lock().unwrap();
-    if let Some(wrapper) = term_lock.take() {
-        if let TerminalWrapper::Crossterm(mut terminal) = wrapper {
-            let _ = crossterm::terminal::disable_raw_mode();
-            let _ = crossterm::execute!(
-                terminal.backend_mut(),
-                crossterm::terminal::LeaveAlternateScreen
-            );
-        }
-        // No cleanup needed for TestBackend
+    if let Some(TerminalWrapper::Crossterm(mut terminal)) = term_lock.take() {
+        let _ = crossterm::terminal::disable_raw_mode();
+        let _ = crossterm::execute!(
+            terminal.backend_mut(),
+            crossterm::terminal::LeaveAlternateScreen,
+            crossterm::event::DisableMouseCapture
+        );
     }
     Ok(())
 }
@@ -91,9 +93,9 @@ pub fn get_buffer_content() -> Result<String, Error> {
 pub fn get_cursor_position() -> Result<Option<(u16, u16)>, Error> {
     let mut term_lock = TERMINAL.lock().unwrap();
     if let Some(TerminalWrapper::Test(terminal)) = term_lock.as_mut() {
-        let pos = terminal.get_cursor().map_err(|e| {
-            Error::new(magnus::exception::runtime_error(), e.to_string())
-        })?;
+        let pos = terminal
+            .get_cursor()
+            .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
         Ok(Some(pos))
     } else {
         Err(Error::new(
@@ -117,7 +119,10 @@ pub fn resize_terminal(width: u16, height: u16) -> Result<(), Error> {
                 // Also resize the terminal wrapper itself if needed, but TestBackend resize handles the buffer.
                 // We might need to call terminal.resize() too if Ratatui caches the size.
                 if let Err(e) = terminal.resize(ratatui::layout::Rect::new(0, 0, width, height)) {
-                     return Err(Error::new(magnus::exception::runtime_error(), e.to_string()));
+                    return Err(Error::new(
+                        magnus::exception::runtime_error(),
+                        e.to_string(),
+                    ));
                 }
             }
         }

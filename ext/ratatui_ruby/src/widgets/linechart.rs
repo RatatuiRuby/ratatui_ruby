@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::{parse_block, parse_color};
-use magnus::{Error, Value, prelude::*};
+use magnus::{prelude::*, Error, Value};
 use ratatui::{
     layout::Rect,
     style::{Color, Style},
@@ -122,7 +122,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 mod tests {
     use super::*;
     use ratatui::buffer::Buffer;
-    use ratatui::widgets::{Chart, Dataset, Widget, Axis};
+    use ratatui::widgets::{Axis, Chart, Dataset, Widget};
 
     #[test]
     fn test_linechart_compile() {

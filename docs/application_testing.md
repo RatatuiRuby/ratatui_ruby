@@ -1,3 +1,7 @@
+<!--
+  SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+  SPDX-License-Identifier: CC-BY-SA-4.0
+-->
 # Application Testing Guide
 
 This guide explains how to test your RatatuiRuby applications using the provided `RatatuiRuby::TestHelper`.
@@ -12,7 +16,7 @@ RatatuiRuby includes a `TestHelper` module designed to simplify unit testing of 
 
 - Inspect the cursor position.
 
-- Simulate user input (using `RatatuiRuby.stub` or similar mocking techniques for `poll_event`).
+- Simulate user input (using `inject_event`).
 
 ## Setup
 
@@ -74,20 +78,17 @@ assert_equal 5, pos[:x]
 assert_equal 2, pos[:y]
 ```
 
-## Testing Interactions
+### `inject_event`
 
-Since `RatatuiRuby.poll_event` blocks waiting for input, you typically want to mock or stub it in tests to simulate key presses immediately.
-
-Using Minitest's built-in `stub`:
+Injects a mock event into the event queue. This is the preferred way to simulate user input instead of stubbing `poll_event`.
 
 ```ruby
-def test_quit_on_q
-  # Simulate 'q' key press
-  RatatuiRuby.stub :poll_event, { code: "q", type: :key } do
-    # Run your app's input handling logic
-    # app.handle_input ...
-  end
-end
+# Simulate 'q' key press
+inject_event("key", { code: "q" })
+
+# Now poll_event will return the 'q' key event
+event = RatatuiRuby.poll_event
+assert_equal "q", event[:code]
 ```
 
 ## Example
