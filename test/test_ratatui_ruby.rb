@@ -52,7 +52,10 @@ class TestRatatuiRuby < Minitest::Test
 
   def test_poll_event
     # Verify poll_event returns nil when no input is available (timeout is 16ms in Rust)
+    RatatuiRuby.init_test_terminal(10, 5)
     event = RatatuiRuby.poll_event
     assert_nil event
+  ensure
+    RatatuiRuby.restore_terminal
   end
 end

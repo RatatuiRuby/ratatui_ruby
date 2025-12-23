@@ -23,10 +23,10 @@ require_relative "ratatui_ruby/schema/scrollbar"
 require_relative "ratatui_ruby/schema/canvas"
 
 begin
-  require_relative "ratatui_ruby/ratatui_ruby"
+  require "ratatui_ruby/ratatui_ruby"
 rescue LoadError
-  # Fallback for development if the bundle is in the root
-  require_relative "../ratatui_ruby.bundle"
+  # Fallback for development/CI if the bundle is not in the load path
+  require_relative "ratatui_ruby/ratatui_ruby"
 end
 
 # The RatatuiRuby module acts as a namespace for the entire gem.

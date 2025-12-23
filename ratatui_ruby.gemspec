@@ -42,9 +42,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   spec.extensions = ["ext/ratatui_ruby/extconf.rb"]
 
-  # Uncomment to register a new dependency of your gem
-  # spec.add_dependency "example-gem", "~> 1.0"
-
-  # For more information and examples about making a new gem, check out our
-  # guide at: https://bundler.io/guides/creating_gem.html
+  spec.add_dependency "rb_sys", "~> 0.9"
+  spec.add_development_dependency "rake-compiler", "~> 1.2"
 end

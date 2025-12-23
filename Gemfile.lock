@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     ratatui_ruby (0.1.0)
+      rb_sys (~> 0.9)
 
 GEM
   remote: https://rubygems.org/
@@ -105,6 +106,11 @@ GEM
     racc (1.8.1)
     rainbow (3.1.1)
     rake (13.3.1)
+    rake-compiler (1.3.1)
+      rake
+    rake-compiler-dock (1.10.0)
+    rb_sys (0.9.123)
+      rake-compiler-dock (= 1.10.0)
     rdoc (6.15.1)
       erb
       psych (>= 4.0.0)
@@ -187,6 +193,7 @@ DEPENDENCIES
   irb
   minitest (~> 5.16)
   rake (~> 13.0)
+  rake-compiler (~> 1.2)
   ratatui_ruby!
   rubocop (~> 1.21)
   rubycritic (~> 4.11)

@@ -135,17 +135,32 @@ pub fn poll_event() -> Result<Value, Error> {
         }
     };
 
-    let event = if let Some(e) = event {
-        e
-    } else if crossterm::event::poll(std::time::Duration::from_millis(16))
-        .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?
-    {
-        crossterm::event::read()
-            .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?
-    } else {
-        return Ok(magnus::value::qnil().into_value());
+    if let Some(e) = event {
+        return handle_event(e);
+    }
+
+    // Check if we are in test mode. If so, don't poll crossterm.
+    let is_test_mode = {
+        let term_lock = crate::terminal::TERMINAL.lock().unwrap();
+        matches!(term_lock.as_ref(), Some(crate::terminal::TerminalWrapper::Test(_)))
     };
 
+    if is_test_mode {
+        return Ok(magnus::value::qnil().into_value());
+    }
+
+    if crossterm::event::poll(std::time::Duration::from_millis(16))
+        .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?
+    {
+        let event = crossterm::event::read()
+            .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
+        handle_event(event)
+    } else {
+        Ok(magnus::value::qnil().into_value())
+    }
+}
+
+fn handle_event(event: crossterm::event::Event) -> Result<Value, Error> {
     match event {
         crossterm::event::Event::Key(key) => {
             if key.kind == crossterm::event::KeyEventKind::Press {

@@ -4,7 +4,9 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 require "mkmf"
+require "rb_sys/mkmf"
 
-# We use Cargo to build the Rust extension, so we just create a dummy Makefile
-# that Ruby's extension builder expects.
-create_makefile("ratatui_ruby/ratatui_ruby")
+create_rust_makefile("ratatui_ruby/ratatui_ruby") do |r|
+  # Optional: Force release profile if needed, but defaults are usually good
+  # r.profile = ENV.fetch("RB_SYS_CARGO_PROFILE", :release).to_sym
+end

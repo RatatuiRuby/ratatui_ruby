@@ -9,25 +9,15 @@ require "minitest/test_task"
 # Ruby tests are handled by test:ruby
 # Cargo tests are handled by test:rust
 
-desc "Compile the Rust extension"
-task :compile do
-  Dir.chdir("ext/ratatui_ruby") do
-    sh "cargo build --release"
-    ext = OS.mac? ? "bundle" : "so"
-    src_ext = OS.mac? ? "dylib" : "so"
-    lib_path = "target/release/libratatui_ruby.#{src_ext}"
-    if File.exist?(lib_path)
-      mkdir_p "../../lib/ratatui_ruby"
-      cp lib_path, "../../lib/ratatui_ruby/ratatui_ruby.#{ext}"
-    end
-  end
+require "rake/extensiontask"
+
+spec = Gem::Specification.load("ratatui_ruby.gemspec")
+Rake::ExtensionTask.new("ratatui_ruby", spec) do |ext|
+  ext.lib_dir = "lib/ratatui_ruby"
+  ext.ext_dir = "ext/ratatui_ruby"
 end
 
-module OS
-  def self.mac?
-    (/darwin/ =~ RUBY_PLATFORM) != nil
-  end
-end
+# The :compile task is now provided by rake-compiler
 
 require "rubocop/rake_task"
 

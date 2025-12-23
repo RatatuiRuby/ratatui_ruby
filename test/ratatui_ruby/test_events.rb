@@ -6,6 +6,14 @@
 require "test_helper"
 
 class TestEvents < Minitest::Test
+  def setup
+    RatatuiRuby.init_test_terminal(80, 24)
+  end
+
+  def teardown
+    RatatuiRuby.restore_terminal
+  end
+
   def test_poll_event_returns_nil_when_no_events
     result = RatatuiRuby.poll_event
     assert_nil result
