@@ -37,11 +37,15 @@ mod tests {
     use ratatui::widgets::{Tabs, Widget};
 
     #[test]
-    fn test_tabs_compile() {
+    fn test_tabs_rendering() {
         let titles = vec![Line::from("Tab1"), Line::from("Tab2")];
-        let tabs = Tabs::new(titles);
-        let mut buf = Buffer::empty(Rect::new(0, 0, 10, 1));
-        tabs.render(Rect::new(0, 0, 10, 1), &mut buf);
-        assert!(buf.content().iter().any(|c| c.symbol() == "T"));
+        let tabs = Tabs::new(titles).select(1).divider("|");
+        let mut buf = Buffer::empty(Rect::new(0, 0, 15, 1));
+        tabs.render(Rect::new(0, 0, 15, 1), &mut buf);
+        // Should contain tab titles
+        let content = buf.content().iter().map(|c| c.symbol()).collect::<String>();
+        assert!(content.contains("Tab1"));
+        assert!(content.contains("Tab2"));
+        assert!(content.contains('|'));
     }
 }

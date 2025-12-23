@@ -42,14 +42,21 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 mod tests {
     use super::*;
     use ratatui::buffer::Buffer;
-    use ratatui::widgets::{List, Widget};
+    use ratatui::widgets::List;
 
     #[test]
-    fn test_list_compile() {
+    fn test_list_rendering() {
         let items = vec!["Item 1", "Item 2"];
-        let list = List::new(items);
+        let list = List::new(items).highlight_symbol(">> ");
+        let mut state = ListState::default();
+        state.select(Some(1));
+
         let mut buf = Buffer::empty(Rect::new(0, 0, 10, 2));
-        list.render(Rect::new(0, 0, 10, 2), &mut buf);
-        assert_eq!(buf.content()[0].symbol(), "I");
+        use ratatui::widgets::StatefulWidget;
+        StatefulWidget::render(list, Rect::new(0, 0, 10, 2), &mut buf, &mut state);
+
+        let content = buf.content().iter().map(|c| c.symbol()).collect::<String>();
+        assert!(content.contains("Item 1"));
+        assert!(content.contains(">> Item 2"));
     }
 }

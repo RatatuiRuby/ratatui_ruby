@@ -60,11 +60,14 @@ mod tests {
     use ratatui::widgets::{BarChart, Widget};
 
     #[test]
-    fn test_barchart_compile() {
+    fn test_barchart_rendering() {
         let data = [("B1", 10), ("B2", 20)];
         let chart = BarChart::default().data(&data).bar_width(3);
         let mut buf = Buffer::empty(Rect::new(0, 0, 10, 5));
         chart.render(Rect::new(0, 0, 10, 5), &mut buf);
+        // Should have bars rendered (non-space characters)
         assert!(buf.content().iter().any(|c| c.symbol() != " "));
+        // Should have labels
+        assert!(buf.content().iter().any(|c| c.symbol().contains('B')));
     }
 }

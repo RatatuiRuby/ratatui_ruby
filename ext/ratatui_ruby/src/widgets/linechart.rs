@@ -125,14 +125,30 @@ mod tests {
     use ratatui::widgets::{Axis, Chart, Dataset, Widget};
 
     #[test]
-    fn test_linechart_compile() {
+    fn test_linechart_rendering() {
         let data = vec![(0.0, 0.0), (1.0, 1.0)];
-        let datasets = vec![Dataset::default().data(&data)];
+        let datasets = vec![Dataset::default().name("TestDS").data(&data)];
         let chart = Chart::new(datasets)
-            .x_axis(Axis::default().bounds([0.0, 1.0]))
-            .y_axis(Axis::default().bounds([0.0, 1.0]));
-        let mut buf = Buffer::empty(Rect::new(0, 0, 10, 5));
-        chart.render(Rect::new(0, 0, 10, 5), &mut buf);
+            .x_axis(
+                Axis::default()
+                    .bounds([0.0, 1.0])
+                    .labels(vec!["XMIN".into(), "XMAX".into()]),
+            )
+            .y_axis(
+                Axis::default()
+                    .bounds([0.0, 1.0])
+                    .labels(vec!["YMIN".into(), "YMAX".into()]),
+            );
+        let mut buf = Buffer::empty(Rect::new(0, 0, 40, 20)); // Larger buffer
+        chart.render(Rect::new(0, 0, 40, 20), &mut buf);
+        // Should have chart rendered (braille characters)
         assert!(buf.content().iter().any(|c| c.symbol() != " "));
+        // Should have labels
+        let content = buf.content().iter().map(|c| c.symbol()).collect::<String>();
+        assert!(content.contains("XMIN"));
+        assert!(content.contains("XMAX"));
+        assert!(content.contains("YMIN"));
+        assert!(content.contains("YMAX"));
+        assert!(content.contains("TestDS"));
     }
 }

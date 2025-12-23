@@ -100,11 +100,18 @@ mod tests {
     use ratatui::widgets::{Row, Table, Widget};
 
     #[test]
-    fn test_table_compile() {
-        let rows = vec![Row::new(vec!["Cell1", "Cell2"])];
-        let table = Table::new(rows, [Constraint::Length(5), Constraint::Length(5)]);
-        let mut buf = Buffer::empty(Rect::new(0, 0, 10, 1));
-        table.render(Rect::new(0, 0, 10, 1), &mut buf);
-        assert_eq!(buf.content()[0].symbol(), "C");
+    fn test_table_rendering() {
+        let rows = vec![Row::new(vec!["C1", "C2"])];
+        let table = Table::new(rows, [Constraint::Length(3), Constraint::Length(3)])
+            .header(Row::new(vec!["H1", "H2"]));
+        let mut buf = Buffer::empty(Rect::new(0, 0, 10, 2));
+        Widget::render(table, Rect::new(0, 0, 10, 2), &mut buf);
+
+        let content = buf.content().iter().map(|c| c.symbol()).collect::<String>();
+        // Check for presence of header and row content
+        assert!(content.contains("H1"));
+        assert!(content.contains("H2"));
+        assert!(content.contains("C1"));
+        assert!(content.contains("C2"));
     }
 }

@@ -3,6 +3,7 @@
 
 pub mod barchart;
 pub mod block;
+pub mod canvas;
 pub mod center;
 pub mod cursor;
 pub mod gauge;

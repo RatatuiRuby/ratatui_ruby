@@ -20,6 +20,7 @@ require_relative "ratatui_ruby/schema/cursor"
 require_relative "ratatui_ruby/schema/overlay"
 require_relative "ratatui_ruby/schema/center"
 require_relative "ratatui_ruby/schema/scrollbar"
+require_relative "ratatui_ruby/schema/canvas"
 
 begin
   require_relative "ratatui_ruby/ratatui_ruby"

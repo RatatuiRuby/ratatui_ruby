@@ -43,11 +43,17 @@ mod tests {
     use ratatui::widgets::{Sparkline, Widget};
 
     #[test]
-    fn test_sparkline_compile() {
+    fn test_sparkline_rendering() {
         let data = vec![1, 2, 3, 4];
         let sparkline = Sparkline::default().data(&data);
         let mut buf = Buffer::empty(Rect::new(0, 0, 4, 1));
         sparkline.render(Rect::new(0, 0, 4, 1), &mut buf);
+        // Should have sparkline rendered (non-space characters)
         assert!(buf.content().iter().any(|c| c.symbol() != " "));
+        // In sparkline, higher values generally result in different bar symbols
+        // but verifying exact symbols might be fragile across ratatui versions.
+        // At least we know it should have rendered 4 bars for 4 data points.
+        let bars = buf.content().iter().filter(|c| c.symbol() != " ").count();
+        assert_eq!(bars, 4);
     }
 }

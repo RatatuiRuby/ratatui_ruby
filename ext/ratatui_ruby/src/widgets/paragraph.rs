@@ -43,12 +43,14 @@ mod tests {
     use ratatui::buffer::Buffer;
 
     #[test]
-    fn test_paragraph_compile() {
-        // Simple compilation check that Paragraph is used correctly
-        let p = Paragraph::new("test");
-        let mut buf = Buffer::empty(Rect::new(0, 0, 10, 1));
+    fn test_paragraph_rendering() {
+        let p = Paragraph::new("test content").alignment(Alignment::Center);
+        let mut buf = Buffer::empty(Rect::new(0, 0, 20, 1));
         use ratatui::widgets::Widget;
-        p.render(Rect::new(0, 0, 10, 1), &mut buf);
-        assert_eq!(buf.content()[0].symbol(), "t");
+        p.render(Rect::new(0, 0, 20, 1), &mut buf);
+        let content = buf.content().iter().map(|c| c.symbol()).collect::<String>();
+        assert!(content.contains("test content"));
+        // Check for centered alignment (should have leading spaces)
+        assert!(content.starts_with(' '));
     }
 }

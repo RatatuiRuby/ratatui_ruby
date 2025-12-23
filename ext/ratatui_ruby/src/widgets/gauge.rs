@@ -37,11 +37,14 @@ mod tests {
     use ratatui::widgets::{Gauge, Widget};
 
     #[test]
-    fn test_gauge_compile() {
-        let gauge = Gauge::default().ratio(0.5);
+    fn test_gauge_rendering() {
+        let gauge = Gauge::default().ratio(0.5).label("50%");
         let mut buf = Buffer::empty(Rect::new(0, 0, 10, 1));
         gauge.render(Rect::new(0, 0, 10, 1), &mut buf);
         // Gauge renders block characters
         assert!(buf.content().iter().any(|c| c.symbol() != " "));
+        // Should contain label
+        assert!(buf.content().iter().any(|c| c.symbol() == "5"));
+        assert!(buf.content().iter().any(|c| c.symbol() == "%"));
     }
 }
