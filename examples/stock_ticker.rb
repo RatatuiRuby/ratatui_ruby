@@ -59,14 +59,21 @@ class StockTickerApp
           style: RatatuiRuby::Style.new(fg: :cyan),
           block: RatatuiRuby::Block.new(title: "Network Activity", borders: :all)
         ),
-        RatatuiRuby::LineChart.new(
+        RatatuiRuby::Chart.new(
           datasets: [
             RatatuiRuby::Dataset.new(name: "RBY", data: @ruby_stock, color: :green),
             RatatuiRuby::Dataset.new(name: "RST", data: @rust_stock, color: :red),
           ],
-          x_labels: [@counter.to_s],
-          y_labels: %w[0 50 100],
-          y_bounds: [0.0, 100.0],
+          x_axis: RatatuiRuby::Axis.new(
+            title: "Time",
+            bounds: [((@counter > 100) ? @counter - 100.0 : 0.0), @counter.to_f],
+            labels: [@counter.to_s]
+          ),
+          y_axis: RatatuiRuby::Axis.new(
+            title: "Price",
+            bounds: [0.0, 100.0],
+            labels: %w[0 50 100]
+          ),
           block: RatatuiRuby::Block.new(title: "Stock Ticker", borders: :all),
         ),
       ]

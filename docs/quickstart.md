@@ -91,10 +91,16 @@ A simple demonstration of `Block` and `Paragraph` widgets, reacting to arrow key
 
 ![Box Demo Screenshot](./images/examples-box_demo.rb.png)
 
+### [Chart Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/chart_demo.rb)
+Demonstrates the `Chart` widget with both scatter and line datasets, including custom axes.
+
 ### [Dashboard](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/dashboard.rb)
 Uses `Layout`, `List`, and `Paragraph` to create a classic sidebar-and-content interface.
 
 ![Dashboard Screenshot](./images/examples-dashboard.rb.png)
+
+### [List Styles](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/list_styles.rb)
+Showcases advanced styling options for the `List` widget, including selection highlighting.
 
 ### [Login Form](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/login_form.rb)
 Shows how to use `Overlay`, `Center`, and `Cursor` to build a modal login form with text input.
@@ -117,7 +123,7 @@ A simple example of integrating the `Scrollbar` widget and handling mouse wheel 
 ![Scrollbar Demo Screenshot](./images/examples-scrollbar_demo.rb.png)
 
 ### [Stock Ticker](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/stock_ticker.rb)
-Utilizes `Sparkline` and `LineChart` widgets to visualize real-time (simulated) data.
+Utilizes `Sparkline` and `Chart` widgets to visualize real-time (simulated) data.
 
 ![Stock Ticker Screenshot](./images/examples-stock_ticker.rb.png)
 
