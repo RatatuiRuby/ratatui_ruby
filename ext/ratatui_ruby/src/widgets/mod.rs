@@ -11,6 +11,7 @@ pub mod linechart;
 pub mod list;
 pub mod overlay;
 pub mod paragraph;
+pub mod scrollbar;
 pub mod sparkline;
 pub mod table;
 pub mod tabs;

@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class Scrollbar < Data
+    attr_reader content_length: Integer
+    attr_reader position: Integer
+    attr_reader orientation: Symbol
+    attr_reader thumb_symbol: String
+    attr_reader block: Block?
+
+    def self.new: (
+      content_length: Integer,
+      position: Integer,
+      ?orientation: Symbol,
+      ?thumb_symbol: String,
+      ?block: Block?
+    ) -> Scrollbar
+  end
+end

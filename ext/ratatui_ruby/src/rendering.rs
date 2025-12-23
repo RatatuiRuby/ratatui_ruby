@@ -20,6 +20,7 @@ pub fn render_node(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Err
         "RatatuiRuby::Table" => widgets::table::render(frame, area, node)?,
         "RatatuiRuby::Block" => widgets::block::render(frame, area, node)?,
         "RatatuiRuby::Tabs" => widgets::tabs::render(frame, area, node)?,
+        "RatatuiRuby::Scrollbar" => widgets::scrollbar::render(frame, area, node)?,
         "RatatuiRuby::BarChart" => widgets::barchart::render(frame, area, node)?,
         "RatatuiRuby::Sparkline" => widgets::sparkline::render(frame, area, node)?,
         "RatatuiRuby::LineChart" => widgets::linechart::render(frame, area, node)?,
