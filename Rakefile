@@ -31,6 +31,16 @@ RDoc::Task.new do |rdoc|
   rdoc.rdoc_files.include("**/*.md", "**/*.rdoc", "lib/**/*.rb", "exe/**/*")
 end
 
+Rake::Task[:rdoc].enhance do
+  FileUtils.mkdir_p "doc/docs/images"
+  FileUtils.cp_r FileList["docs/images/*.png"], "doc/docs/images"
+end
+
+Rake::Task[:rerdoc].enhance do
+  FileUtils.mkdir_p "doc/docs/images"
+  FileUtils.cp_r FileList["docs/images/*.png"], "doc/docs/images"
+end
+
 require "rubycritic/rake_task"
 
 RubyCritic::RakeTask.new do |task|

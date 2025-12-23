@@ -8,7 +8,6 @@
 ## Documentation for Contributors
 
 - [Contributing Guidelines](../../CONTRIBUTING.md)
-- [How **ratatui_ruby** fits into the larger Ratatui ecosystem](./ecosystem.md)
 - [The Design of **ratatui_ruby**](./design.md)
 
 ## Documentation for Users

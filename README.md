@@ -26,9 +26,50 @@ Please join our **announce** mailing list at https://lists.sr.ht/~kerrick/ratatu
 - x86_64 (AMD, Intel) and ARM (Apple Silicon, Raspberry Pi).
 
 
-## Getting Started
+## Installation
 
-For the quickstart, see [the quickstart](./docs/quickstart.md).
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'ratatui_ruby'
+```
+
+And then execute:
+
+```bash
+bundle install
+```
+
+Or install it yourself as:
+
+```bash
+gem install ratatui_ruby
+```
+
+
+## Usage
+
+**ratatui_ruby** uses an immediate-mode API. You describe your UI using Ruby `Data` objects and call `draw` in a loop.
+
+```ruby
+require "ratatui_ruby"
+RatatuiRuby.init_terminal
+begin
+  RatatuiRuby.draw(
+    RatatuiRuby::Paragraph.new(
+      text: "Hello World",
+      block: RatatuiRuby::Block.new(
+        borders: [:all]
+      )
+    )
+  )
+  sleep 2
+ensure
+  RatatuiRuby.restore_terminal
+end
+```
+
+For a full tutorial, see [the Quickstart](./docs/quickstart.md).
 
 
 ## Documentation
