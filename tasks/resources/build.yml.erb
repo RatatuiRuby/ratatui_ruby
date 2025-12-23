@@ -1,0 +1,65 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+image: alpine/edge
+packages:
+  - bash
+  - build-base
+  - curl
+  - openssl-dev
+  - yaml-dev
+  - zlib-dev
+  - readline-dev
+  - gdbm-dev
+  - ncurses-dev
+  - libffi-dev
+  - clang-dev
+  - git
+artifacts:
+  - ratatui_ruby/pkg/<%= gem_filename %>
+sources:
+  - https://git.sr.ht/~kerrick/ratatui_ruby
+tasks:
+  - setup: |
+      curl https://mise.jdx.dev/install.sh | sh
+      echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.buildenv
+      echo 'eval "$($HOME/.local/bin/mise activate bash)"' >> ~/.buildenv
+      . ~/.buildenv
+      export RUSTFLAGS="-C target-feature=-crt-static"
+      export CI="true"
+      cd ratatui_ruby
+      sed -i 's/ruby = .*/ruby = "<%= ruby_version %>"/' mise.toml
+      mise install
+      mise x -- pip install reuse
+      mise x -- gem install bundler
+      mise reshim
+      mise x -- bundle config set --local frozen 'true'
+      mise x -- bundle install
+<% if ruby_version.start_with?("4.0") -%>
+      # We allow this to fail so we can see logs without stopping the CI pipeline
+      mise x -- bundle exec rake compile || echo "⚠️ Compilation failed (Allowed Failure)"
+<% else -%>
+      mise x -- bundle exec rake compile
+<% end -%>
+  - test: |
+      . ~/.buildenv
+      cd ratatui_ruby
+      echo "Testing Ruby <%= ruby_version %>"
+<% if ruby_version.start_with?("4.0") -%>
+      mise x -- bundle exec rake test || true
+<% else -%>
+      mise x -- bundle exec rake test
+<% end -%>
+  - lint: |
+      . ~/.buildenv
+      cd ratatui_ruby
+      echo "Linting Ruby <%= ruby_version %>"
+<% if ruby_version.start_with?("4.0") -%>
+      mise x -- bundle exec rake lint || true
+<% else -%>
+      mise x -- bundle exec rake lint
+<% end -%>
+  - package: |
+      . ~/.buildenv
+      cd ratatui_ruby
+      mise x -- bundle exec rake build

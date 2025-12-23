@@ -6,14 +6,13 @@ set -euo pipefail
 IFS=$'\n\t'
 set -vx
 
-bundle install
-
-if command -v pipx >/dev/null 2>&1; then
-  pipx install pre-commit
-  pipx install reuse
+if command -v mise >/dev/null 2>&1; then
+  mise install
+  mise x -- pip install reuse
+  mise x -- bundle install
   pre-commit install
   bundle exec rake rdoc
 else
-  echo "pipx isn't installed. Set it up, then run bin/setup again. https://pipx.pypa.io/stable/" >&2
+  echo "mise isn't installed. Please install it to continue." >&2
   exit 1
 fi

@@ -7,6 +7,6 @@ require "mkmf"
 require "rb_sys/mkmf"
 
 create_rust_makefile("ratatui_ruby/ratatui_ruby") do |r|
-  # Optional: Force release profile if needed, but defaults are usually good
+  # Optional: Force release profile if needed
   # r.profile = ENV.fetch("RB_SYS_CARGO_PROFILE", :release).to_sym
 end

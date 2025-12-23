@@ -35,7 +35,7 @@ Every file must begin with an SPDX-compliant header. Use the following format:
 
 ### Ruby Standards
 
--   **Version:** Strict Ruby 3.4 compatibility (Target `3.4.7` as per cosmoruby).
+-   **Version:** Tested against the latest releases of Ruby 3.2, 3.3, and 3.4, and must work. Also tested in CI (with allowed failures) against the latest preview Ruby 4.0 to prepare for its release. Local development happens on the latest stable release.
 -   **Linter:** Run via `rake lint`. You are not done until all linting passes.
 -   **Style:**
     -   Use `Data.define` for all value objects (UI Nodes). (Prefer `class Foo < Data.define()` over `Foo = Data.define() do`).

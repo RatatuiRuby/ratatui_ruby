@@ -11,6 +11,11 @@ module RatatuiRuby
   # [style] Style
   class Axis < Data.define(:title, :bounds, :labels, :style)
     # Creates a new Axis.
+    #
+    # [title] String
+    # [bounds] Array<Float> [min, max]
+    # [labels] Array<String>
+    # [style] Style
     def initialize(title: "", bounds: [0.0, 10.0], labels: [], style: nil)
       super
     end
@@ -24,6 +29,12 @@ module RatatuiRuby
   # [graph_type] Symbol (:line, :scatter)
   class Dataset < Data.define(:name, :data, :color, :marker, :graph_type)
     # Creates a new Dataset.
+    #
+    # [name] The name of the dataset.
+    # [data] Array of arrays [[x, y], [x, y]] (Floats).
+    # [color] The color of the line.
+    # [marker] Symbol (:dot, :braille, :block, :bar)
+    # [graph_type] Symbol (:line, :scatter)
     def initialize(name:, data:, color: "reset", marker: :dot, graph_type: :line)
       super
     end
@@ -37,6 +48,12 @@ module RatatuiRuby
   # [style] Style (base style)
   class Chart < Data.define(:datasets, :x_axis, :y_axis, :block, :style)
     # Creates a new Chart widget.
+    #
+    # [datasets] Array<Dataset>
+    # [x_axis] Axis
+    # [y_axis] Axis
+    # [block] Block
+    # [style] Style (base style)
     def initialize(datasets:, x_axis:, y_axis:, block: nil, style: nil)
       super
     end
@@ -51,6 +68,12 @@ module RatatuiRuby
   # [block] Optional block widget to wrap the chart.
   class LineChart < Data.define(:datasets, :x_labels, :y_labels, :y_bounds, :block)
     # Creates a new LineChart widget.
+    #
+    # [datasets] Array of Dataset objects.
+    # [x_labels] Array of Strings for the X-axis labels.
+    # [y_labels] Array of Strings for the Y-axis labels.
+    # [y_bounds] Array of two Floats [min, max] for the Y-axis.
+    # [block] Optional block widget to wrap the chart.
     def initialize(datasets:, x_labels: [], y_labels: [], y_bounds: [0.0, 100.0], block: nil)
       super
     end

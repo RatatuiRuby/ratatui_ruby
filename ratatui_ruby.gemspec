@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.description = "ratatui_ruby is a wrapper for the Ratatui Rust crate <https://ratatui.rs>. It allows you to cook up Terminal User Interfaces in Ruby."
   spec.homepage = "https://sr.ht/~kerrick/ratatui_ruby/"
   spec.license = "AGPL-3.0-or-later"
-  spec.required_ruby_version = "= 3.4.7"
+  spec.required_ruby_version = [">= 3.2.9", "< 5"]
 
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
 

@@ -45,7 +45,7 @@ module CalendarDemo
       RatatuiRuby.draw(view)
       content = RatatuiRuby.get_buffer_content
 
-      assert_match(/Calendar Demo/, content)
+      assert_match(/Calendar \(q = quit\)/, content)
       assert_match(/#{now.year}/, content)
 
       # Verify the size constraint: the terminal is 40x20
