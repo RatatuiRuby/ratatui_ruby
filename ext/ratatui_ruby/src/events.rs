@@ -142,7 +142,10 @@ pub fn poll_event() -> Result<Value, Error> {
     // Check if we are in test mode. If so, don't poll crossterm.
     let is_test_mode = {
         let term_lock = crate::terminal::TERMINAL.lock().unwrap();
-        matches!(term_lock.as_ref(), Some(crate::terminal::TerminalWrapper::Test(_)))
+        matches!(
+            term_lock.as_ref(),
+            Some(crate::terminal::TerminalWrapper::Test(_))
+        )
     };
 
     if is_test_mode {

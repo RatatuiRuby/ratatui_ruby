@@ -3,7 +3,8 @@
 # SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-require_relative "../lib/ratatui_ruby"
+$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
+require "ratatui_ruby"
 
 # Analytics Dashboard Example
 # Demonstrates Tabs and BarChart widgets.

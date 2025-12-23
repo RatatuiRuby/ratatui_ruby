@@ -5,7 +5,10 @@ module RatatuiRuby
   class List < Data
     attr_reader items: Array[String]
     attr_reader selected_index: Integer?
+    attr_reader style: Style?
+    attr_reader highlight_style: Style?
+    attr_reader highlight_symbol: String?
     attr_reader block: Block?
-    def self.new: (?items: Array[String], ?selected_index: Integer?, ?block: Block?) -> List
+    def self.new: (?items: Array[String], ?selected_index: Integer?, ?style: Style?, ?highlight_style: Style?, ?highlight_symbol: String?, ?block: Block?) -> List
   end
 end

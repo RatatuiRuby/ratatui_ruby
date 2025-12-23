@@ -17,6 +17,9 @@ class TestList < Minitest::Test
     list = RatatuiRuby::List.new
     assert_equal [], list.items
     assert_nil list.selected_index
+    assert_nil list.style
+    assert_nil list.highlight_style
+    assert_equal "> ", list.highlight_symbol
     assert_nil list.block
   end
 
@@ -24,11 +27,21 @@ class TestList < Minitest::Test
     with_test_terminal(10, 5) do
       list = RatatuiRuby::List.new(items: ["Item 1", "Item 2"], selected_index: 0)
       RatatuiRuby.draw(list)
-      assert_equal ">> Item 1 ", buffer_content[0]
-      assert_equal "   Item 2 ", buffer_content[1]
-      assert_equal "          ", buffer_content[2]
-      assert_equal "          ", buffer_content[3]
-      assert_equal "          ", buffer_content[4]
+      assert_equal "> Item 1  ", buffer_content[0]
+      assert_equal "  Item 2  ", buffer_content[1]
+    end
+  end
+
+  def test_render_with_custom_symbol
+    with_test_terminal(10, 5) do
+      list = RatatuiRuby::List.new(
+        items: ["Item 1", "Item 2"],
+        selected_index: 1,
+        highlight_symbol: ">> "
+      )
+      RatatuiRuby.draw(list)
+      assert_equal "   Item 1 ", buffer_content[0]
+      assert_equal ">> Item 2 ", buffer_content[1]
     end
   end
 end
