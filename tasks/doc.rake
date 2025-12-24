@@ -5,18 +5,20 @@
 
 require "rdoc/task"
 
+require_relative "rdoc_config"
+
 RDoc::Task.new do |rdoc|
   rdoc.rdoc_dir = "doc"
-  rdoc.main = "README.md"
-  rdoc.rdoc_files.include("**/*.md", "**/*.rdoc", "lib/**/*.rb", "exe/**/*")
+  rdoc.main = RDocConfig::MAIN
+  rdoc.rdoc_files.include(RDocConfig::RDOC_FILES)
 end
 
-Rake::Task[:rdoc].enhance do
-  FileUtils.mkdir_p "doc/docs/images"
-  FileUtils.cp_r FileList["docs/images/*.png"], "doc/docs/images"
+task :copy_doc_images do
+  if Dir.exist?("docs/images")
+    FileUtils.mkdir_p "doc/docs/images"
+    FileUtils.cp_r Dir["docs/images/*.png"], "doc/docs/images"
+  end
 end
 
-Rake::Task[:rerdoc].enhance do
-  FileUtils.mkdir_p "doc/docs/images"
-  FileUtils.cp_r FileList["docs/images/*.png"], "doc/docs/images"
-end
+Rake::Task[:rdoc].enhance [:copy_doc_images]
+Rake::Task[:rerdoc].enhance [:copy_doc_images]

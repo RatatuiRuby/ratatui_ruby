@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= project_name %> documentation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root { color-scheme: light dark; }
+    body { font-family: system-ui, sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem; line-height: 1.5; color: light-dark(#111, #eee); background: light-dark(#fff, #111); }
+    h1 { border-bottom: 2px solid light-dark(#eee, #333); padding-bottom: 0.5rem; }
+    ul { list-style: none; padding: 0; }
+    li { margin: 0.5rem 0; border: 1px solid light-dark(#ddd, #444); border-radius: 4px; }
+    a { display: block; padding: 1rem; text-decoration: none; color: light-dark(#0055aa, #44aaff); font-weight: bold; }
+    a:hover { background: light-dark(#f5f5f5, #222); }
+    .meta { font-weight: normal; color: light-dark(#666, #aaa); font-size: 0.9em; float: right; }
+  </style>
+</head>
+<body>
+  <h1><%= project_name %> documentation</h1>
+  <ul>
+    <% versions.each do |version| %>
+      <li>
+        <a href='<%= version.slug %>/index.html'>
+          <%= version.name %>
+          <span class='meta'>
+            <% if version.latest? %>
+              Latest
+            <% elsif version.edge? %>
+              Edge
+            <% else %>
+              Historical
+            <% end %>
+          </span>
+        </a>
+      </li>
+    <% end %>
+  </ul>
+</body>
+</html>

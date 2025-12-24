@@ -10,6 +10,8 @@
 /pkg/
 /spec/reports/
 /tmp/
+/public/
+site.tar.gz
 .output.txt
 /ext/ratatui_ruby/target/
 *.bundle
