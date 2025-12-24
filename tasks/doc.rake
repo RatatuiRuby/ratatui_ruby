@@ -11,6 +11,7 @@ RDoc::Task.new do |rdoc|
   rdoc.rdoc_dir = "doc"
   rdoc.main = RDocConfig::MAIN
   rdoc.rdoc_files.include(RDocConfig::RDOC_FILES)
+  rdoc.options << "--template-stylesheets=docs/custom.css"
 end
 
 task :copy_doc_images do

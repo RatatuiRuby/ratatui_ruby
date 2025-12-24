@@ -6,6 +6,7 @@
 require_relative "version"
 require_relative "versioned_documentation"
 require_relative "index_page"
+require_relative "version_menu"
 require "fileutils"
 
 class Website
@@ -29,6 +30,8 @@ class Website
     end
 
     IndexPage.new(versions).publish_to(join("index.html"), project_name: @project_name)
+
+    VersionMenu.new(root: @destination, versions: versions).run
 
     puts "Website built in #{@destination}/"
   end

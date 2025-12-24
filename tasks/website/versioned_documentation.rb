@@ -15,6 +15,7 @@ class VersionedDocumentation
     
     absolute_path = File.absolute_path(path)
     gemfile_path = File.absolute_path("Gemfile")
+    custom_css_path = File.absolute_path("docs/custom.css")
 
     @version.checkout(globs: globs) do |source_path|
       Dir.chdir(source_path) do
@@ -26,7 +27,7 @@ class VersionedDocumentation
         
         system(
           { "BUNDLE_GEMFILE" => gemfile_path },
-          "bundle exec rdoc -o #{absolute_path} --main #{RDocConfig::MAIN} --title '#{title}' #{files.join(' ')}"
+          "bundle exec rdoc -o #{absolute_path} --main #{RDocConfig::MAIN} --title '#{title}' --template-stylesheets \"#{custom_css_path}\" #{files.join(' ')}"
         )
 
         copy_assets_to(absolute_path, assets)

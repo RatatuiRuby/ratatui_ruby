@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ratatui_ruby (0.2.0)
+    ratatui_ruby (0.2.1)
       rb_sys (~> 0.9)
 
 GEM
@@ -111,7 +111,7 @@ GEM
     rake-compiler-dock (1.10.0)
     rb_sys (0.9.123)
       rake-compiler-dock (= 1.10.0)
-    rdoc (6.15.1)
+    rdoc (7.0.2)
       erb
       psych (>= 4.0.0)
       tsort
@@ -195,6 +195,7 @@ DEPENDENCIES
   rake (~> 13.0)
   rake-compiler (~> 1.2)
   ratatui_ruby!
+  rdoc (~> 7.0)
   rubocop (~> 1.21)
   rubycritic (~> 4.11)
 
