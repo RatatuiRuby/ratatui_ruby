@@ -43,7 +43,7 @@ plus the latest preview of the next version.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'ratatui_ruby'
+gem "ratatui_ruby"
 ```
 
 And then execute:
@@ -52,7 +52,7 @@ And then execute:
 bundle install
 ```
 
-Or install it yourself as:
+Or install it yourself with:
 
 ```bash
 gem install ratatui_ruby
@@ -61,23 +61,22 @@ gem install ratatui_ruby
 
 ## Usage
 
-**ratatui_ruby** uses an immediate-mode API. You describe your UI using Ruby `Data` objects and call `draw` in a loop.
+**ratatui_ruby** uses an immediate-mode API. You describe your UI using Ruby objects and call `draw` in a loop.
 
 ```ruby
 require "ratatui_ruby"
-RatatuiRuby.init_terminal
-begin
-  RatatuiRuby.draw(
-    RatatuiRuby::Paragraph.new(
-      text: "Hello World",
-      block: RatatuiRuby::Block.new(
-        borders: [:all]
-      )
-    )
-  )
-  sleep 2
-ensure
-  RatatuiRuby.restore_terminal
+RatatuiRuby.main_loop do |tui|
+  tui.draw \
+    tui.paragraph \
+        text: "Hello, Ratatui! Press 'q' to quit.",
+        align: :center,
+        block: tui.block(
+          title: "My Ruby TUI App",
+          borders: [:all],
+          border_color: "cyan"
+        )
+  event = tui.poll_event
+  break if event && event[:type] == :key && event[:code] == "q"
 end
 ```
 

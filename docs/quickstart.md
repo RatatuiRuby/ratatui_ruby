@@ -11,7 +11,7 @@ Welcome to **ratatui_ruby**! This guide will help you get up and running with yo
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'ratatui_ruby'
+gem "ratatui_ruby"
 ```
 
 And then execute:
@@ -43,12 +43,12 @@ begin
     # We define a Paragraph widget inside a Block with a title and borders.
     view = RatatuiRuby::Paragraph.new(
       text: "Hello, Ratatui! Press 'q' to quit.",
+      align: :center,
       block: RatatuiRuby::Block.new(
-        title: "My First App",
+        title: "My Ruby TUI App",
         borders: [:all],
         border_color: "cyan"
-      ),
-      align: :center
+      )
     )
  
     # 3. Draw the UI
@@ -64,9 +64,9 @@ ensure
   # 5. Restore the terminal to its original state
   RatatuiRuby.restore_terminal
 end
- 
-# This sample application was created by AI. https://declare-ai.org/1.0.0/total.html
 ```
+
+![Basic Application Screenshot](./images/examples-quickstart_lifecycle.rb.png)
 
 ### How it works
 
@@ -75,7 +75,42 @@ end
 3.  **`RatatuiRuby.draw(view)`**: The Ruby UI tree is passed to the Rust backend, which renders it to the terminal.
 4.  **`RatatuiRuby.poll_event`**: Checks for keyboard, mouse, or resize events.
 5.  **`RatatuiRuby.restore_terminal`**: Crucial for leaving raw mode and returning the user to their shell properly. Always wrap your loop in a `begin...ensure` block to guarantee this runs.
-6.  **`sleep 0.05`**: In a real app, you'd want to control your frame rate to avoid consuming 100% CPU.
+
+### DSL
+
+A small DSL is provided for convenience when writing scripts.
+
+```rb
+require "ratatui_ruby"
+
+# 1. Initialize the terminal, start the main loop, and ensure the terminal is restored.
+RatatuiRuby.main_loop do |tui|
+  # 2. Create your UI with methods instead of classes.
+  view = tui.paragraph(
+    text: "Hello, Ratatui! Press 'q' to quit.",
+    align: :center,
+    block: tui.block(
+      title: "My Ruby TUI App",
+      borders: [:all],
+      border_color: "cyan"
+    )
+  )
+
+  # 3. Use RatatuiRuby methods, too.
+  tui.draw(view)
+  event = tui.poll_event
+  
+  if event && event[:type] == :key && event[:code] == "q"
+    break
+  end
+end
+```
+
+#### How it works
+
+1.  **`RatatuiRuby.main_loop`**: This helper method manages the entire terminal lifecycle for you. It initializes the terminal before the block starts and ensures `restore_terminal` is called when the block exits (even if an error occurs).
+2.  **Widget Shorthand**: The block yields a special DSL object (here named `tui`). This object provides factory methods for every widget, allowing you to write `tui.paragraph(...)` instead of the more verbose `RatatuiRuby::Paragraph.new(...)`.
+3.  **Method SHorthand**: The DSL object also provides aliases for module functions of `RatatuiRuby`, allowing you to write `tui.draw(...)` instead of the more verbose `RatatuiRuby::draw(...)`.
 
 ## Examples
 

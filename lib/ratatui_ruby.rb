@@ -85,4 +85,23 @@ module RatatuiRuby
   #   inject_test_event("key", { code: "a" })
   #
   # (Native method implemented in Rust)
+
+  ##
+  # Provides a convenience wrapper for the main TUI loop.
+  # Initializes the terminal, runs the loop, and ensures the terminal is restored.
+  #
+  #   RatatuiRuby.main_loop do
+  #     draw RatatuiRuby::Paragraph.new(text: "Hello")
+  #     event = RatatuiRuby::poll_event
+  #     break if event && event[:type] == :key && event[:code] == "q"
+  #   end
+  def self.main_loop
+    require_relative "ratatui_ruby/dsl"
+    init_terminal
+    loop do
+      yield DSL.new
+    end
+  ensure
+    restore_terminal
+  end
 end
