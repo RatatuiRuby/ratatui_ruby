@@ -24,8 +24,8 @@ Gem::Specification.new do |spec|
   spec.metadata["changelog_uri"] = "https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/CHANGELOG.md"
   spec.metadata["mailing_list_uri"] = "https://lists.sr.ht/~kerrick/ratatui_ruby-discuss"
   spec.metadata["source_code_uri"] = "https://git.sr.ht/~kerrick/ratatui_ruby"
-  spec.metadata["documentation_uri"] = "https://man.sr.ht/~kerrick/ratatui_ruby/docs/"
-  spec.metadata["wiki_uri"] = "https://man.sr.ht/~kerrick/ratatui_ruby/docs/contributors/"
+  spec.metadata["documentation_uri"] = "https://git.sr.ht/~kerrick/ratatui_ruby/tree/HEAD/docs/index.md"
+  spec.metadata["wiki_uri"] = "https://man.sr.ht/~kerrick/ratatui_ruby/"
   spec.metadata["funding_uri"] = "https://opencollective.com/ratatui" # Don't fund me, fund the upstream project.
 
   # Specify which files should be added to the gem when it is released.

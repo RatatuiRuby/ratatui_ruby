@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ratatui_ruby (0.1.0)
+    ratatui_ruby (0.2.0)
       rb_sys (~> 0.9)
 
 GEM
