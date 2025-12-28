@@ -64,7 +64,7 @@ The project follows a standard Gem layout with an `ext/` directory for Rust code
 ├── .cargo/                 # Cargo configuration (linker flags)
 ├── .github/                # CI/CD workflows
 ├── bin/                    # Executables (console, setup)
-├── docs/                   # Documentation tree
+├── doc/                    # Documentation source (markdown for RDoc)
 │   ├── contributors/       # Design docs, ecosystem notes
 │   └── index.md
 ├── ext/
@@ -98,11 +98,10 @@ The project follows a standard Gem layout with an `ext/` directory for Rust code
 
 ### Documentation
 
--   Follow the `docs/` structure: `index.md` -> `contributors/` | `quickstart.md`.
+-   **The `doc/` folder contains source markdown files** that are included in RDoc output. Follow the structure: `index.md` -> `contributors/` | `quickstart.md`.
+-   **The `tmp/rdoc/` folder is auto-generated** by `bundle exec rake rerdoc`. Never edit files in `tmp/rdoc/` directly.
 -   Documentation should separate "User Guide" (Ruby API for TUI developers) from "Contributor Guide" (Ruby/Rust/Magnus internals).
 -   Don't write .md files for something RDoc (Ruby) or rustdoc (Rust) can generate.
--   **The `doc/` folder contains source markdown files** that are included in RDoc output. You can edit these files.
--   **The `tmp/rdoc/` folder is auto-generated** by `bundle exec rake rerdoc`. Never edit files in `tmp/rdoc/` directly.
 
 ## 4. The Ruby <-> Rust Bridge Contract
 

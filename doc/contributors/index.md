@@ -10,6 +10,7 @@
 - [Contributing Guidelines](https://man.sr.ht/~kerrick/ratatui_ruby/contributing.md)
 - [Documentation Guide](https://man.sr.ht/~kerrick/ratatui_ruby/documentation_guide.md)
 - [The Design of **ratatui_ruby**](./design.md)
+- [Ratatui 0.30 Gap Analysis](./gap_analysis_0.30.md) — Missing features vs upstream
 
 ## Documentation for Users
 
