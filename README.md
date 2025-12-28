@@ -34,8 +34,8 @@ Please join the **announce** mailing list at https://lists.sr.ht/~kerrick/ratatu
 - x86_64 (AMD, Intel) and ARM (Apple Silicon, Raspberry Pi).
 
 We support the latest minor version of every
-[non-eol Ruby version](https://www.ruby-lang.org/en/downloads/branches/),
-plus the latest preview of the next version.
+[non-eol Ruby version](https://www.ruby-lang.org/en/downloads/branches/).
+Support for Ruby 4 is coming soon.
 
 
 ## Installation

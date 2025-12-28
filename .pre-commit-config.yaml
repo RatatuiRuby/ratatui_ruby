@@ -11,6 +11,6 @@ repos:
           pass_filenames: false
       -   id: rake
           name: rake
-          entry: rake
+          entry: bundle exec rake
           language: system
           pass_filenames: false

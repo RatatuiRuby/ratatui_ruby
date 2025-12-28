@@ -18,6 +18,9 @@ task :sourcehut do
   gem_filename = "#{spec.name}-#{version}.gem"
 
   rubies = YAML.load_file("tasks/resources/rubies.yml")
+  
+  bundler_version = File.read("Gemfile.lock").match(/BUNDLED WITH\n\s+([\d.]+)/)[1]
+  
   template = File.read("tasks/resources/build.yml.erb")
   erb = ERB.new(template, trim_mode: "-")
 
@@ -29,7 +32,7 @@ task :sourcehut do
   rubies.each do |ruby_version|
     filename = ".builds/ruby-#{ruby_version}.yml"
     puts "Generating #{filename}..."
-    content = erb.result_with_hash(ruby_version:, gem_filename:)
+    content = erb.result_with_hash(ruby_version:, gem_filename:, bundler_version:)
     File.write(filename, content)
   end
 end

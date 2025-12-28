@@ -28,10 +28,10 @@ tasks:
       export RUSTFLAGS="-C target-feature=-crt-static"
       export CI="true"
       cd ratatui_ruby
-      sed -i 's/ruby = .*/ruby = "4.0.0-preview3"/' mise.toml
+      sed -i 's/ruby = .*/ruby = "4.0.0"/' mise.toml
       mise install
       mise x -- pip install reuse
-      mise x -- gem install bundler
+      mise x -- gem install bundler:2.6.9
       mise reshim
       mise x -- bundle config set --local frozen 'true'
       mise x -- bundle install
@@ -40,12 +40,12 @@ tasks:
   - test: |
       . ~/.buildenv
       cd ratatui_ruby
-      echo "Testing Ruby 4.0.0-preview3"
+      echo "Testing Ruby 4.0.0"
       mise x -- bundle exec rake test || true
   - lint: |
       . ~/.buildenv
       cd ratatui_ruby
-      echo "Linting Ruby 4.0.0-preview3"
+      echo "Linting Ruby 4.0.0"
       mise x -- bundle exec rake lint || true
   - package: |
       . ~/.buildenv
