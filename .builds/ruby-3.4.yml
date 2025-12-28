@@ -1,19 +1,19 @@
 # SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-image: alpine/edge
+image: archlinux
 packages:
   - bash
-  - build-base
+  - base-devel
   - curl
-  - openssl-dev
-  - yaml-dev
-  - zlib-dev
-  - readline-dev
-  - gdbm-dev
-  - ncurses-dev
-  - libffi-dev
-  - clang-dev
+  - openssl
+  - libyaml
+  - zlib
+  - readline
+  - gdbm
+  - ncurses
+  - libffi
+  - clang
   - git
 artifacts:
   - ratatui_ruby/pkg/ratatui_ruby-0.3.1.gem
@@ -25,7 +25,6 @@ tasks:
       echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.buildenv
       echo 'eval "$($HOME/.local/bin/mise activate bash)"' >> ~/.buildenv
       . ~/.buildenv
-      export RUSTFLAGS="-C target-feature=-crt-static"
       export CI="true"
       cd ratatui_ruby
       sed -i 's/ruby = .*/ruby = "3.4"/' mise.toml
