@@ -146,8 +146,15 @@ Uses `Layout`, `List`, and `Paragraph` to create a classic sidebar-and-content i
 
 ![Dashboard Screenshot](./images/examples-dashboard.rb.png)
 
+### [LineGauge Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/line_gauge_demo.rb)
+Demonstrates the `LineGauge` widget with customizable filled and unfilled symbols, independent styling, and interactive ratio cycling with arrow keys.
+
+![LineGauge Screenshot](./images/examples-line_gauge_demo.rb.png)
+
 ### [List Styles](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/list_styles.rb)
 Showcases advanced styling options for the `List` widget, including selection highlighting.
+
+![List Styles Screenshot](./images/examples-list_styles.rb.png)
 
 ### [Login Form](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/login_form.rb)
 Shows how to use `Overlay`, `Center`, and `Cursor` to build a modal login form with text input.

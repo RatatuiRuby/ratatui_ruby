@@ -32,6 +32,7 @@ pub fn render_node(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Err
         "RatatuiRuby::Layout" => widgets::layout::render(frame, area, node)?,
         "RatatuiRuby::List" => widgets::list::render(frame, area, node)?,
         "RatatuiRuby::Gauge" => widgets::gauge::render(frame, area, node)?,
+        "RatatuiRuby::LineGauge" => widgets::line_gauge::render(frame, area, node)?,
         "RatatuiRuby::Table" => widgets::table::render(frame, area, node)?,
         "RatatuiRuby::Block" => widgets::block::render(frame, area, node)?,
         "RatatuiRuby::Tabs" => widgets::tabs::render(frame, area, node)?,

@@ -11,6 +11,7 @@ pub mod clear;
 pub mod cursor;
 pub mod gauge;
 pub mod layout;
+pub mod line_gauge;
 pub mod list;
 pub mod overlay;
 pub mod paragraph;
