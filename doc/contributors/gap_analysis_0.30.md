@@ -99,8 +99,8 @@ Note: Table widths only support `:length`, `:percentage`, `:min` in Rust rendere
 | `select()` | `selected_index:` | ✅ |
 | `block()` | `block:` | ✅ |
 | `style()` | — | ❌ **MISSING** |
-| `highlight_style()` | — | ❌ **MISSING** |
-| `divider()` | — | ❌ **MISSING** |
+| `highlight_style()` | `highlight_style:` | ✅ |
+| `divider()` | `divider:` | ✅ |
 | `padding()` / `padding_left()` / `padding_right()` | — | ❌ **MISSING** |
 
 ---

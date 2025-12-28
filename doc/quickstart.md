@@ -121,7 +121,7 @@ For a deeper dive into the available application architectures (Manual vs Manage
 To see more complex layouts and widget usage, check out the `examples/` directory in the repository.
 
 ### [Analytics](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/analytics.rb)
-Demonstrates the use of `Tabs` and `BarChart` widgets with a simple data-switching mechanism.
+Demonstrates the use of `Tabs` and `BarChart` widgets with a simple data-switching mechanism. Features custom highlight styles and dividers for the tabs.
 
 ![Analytics Screenshot](./images/examples-analytics.rb.png)
 

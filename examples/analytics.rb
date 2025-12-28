@@ -13,6 +13,15 @@ class AnalyticsApp
   def initialize
     @selected_tab = 0
     @tabs = ["Revenue", "Traffic", "Errors"]
+    @style_index = 0
+    @styles = [
+      RatatuiRuby::Style.new(fg: :yellow, modifiers: [:bold]),
+      RatatuiRuby::Style.new(fg: :blue, bg: :white, modifiers: [:italic]),
+      RatatuiRuby::Style.new(fg: :red, modifiers: [:underlined]),
+      RatatuiRuby::Style.new(modifiers: [:reversed])
+    ]
+    @divider_index = 0
+    @dividers = [" | ", " • ", " > ", " / "]
   end
 
   def run
@@ -39,10 +48,10 @@ class AnalyticsApp
              { "DB" => 5, "UI" => 2 }
     end
 
-    style = case @selected_tab
-            when 0 then RatatuiRuby::Style.new(fg: "green")
-            when 1 then RatatuiRuby::Style.new(fg: "blue")
-            when 2 then RatatuiRuby::Style.new(fg: "red")
+    bar_style = case @selected_tab
+                when 0 then RatatuiRuby::Style.new(fg: "green")
+                when 1 then RatatuiRuby::Style.new(fg: "blue")
+                when 2 then RatatuiRuby::Style.new(fg: "red")
     end
 
     # Build the UI
@@ -56,12 +65,17 @@ class AnalyticsApp
         RatatuiRuby::Tabs.new(
           titles: @tabs,
           selected_index: @selected_tab,
-          block: RatatuiRuby::Block.new(title: "Views", borders: [:all])
+          block: RatatuiRuby::Block.new(
+            title: "Views (Space: style, 'd': divider, 'q': quit)",
+            borders: [:all]
+          ),
+          divider: @dividers[@divider_index],
+          highlight_style: @styles[@style_index]
         ),
         RatatuiRuby::BarChart.new(
           data:,
           bar_width: 10,
-          style:,
+          style: bar_style,
           block: RatatuiRuby::Block.new(title: "Analytics: #{@tabs[@selected_tab]}", borders: [:all])
         ),
       ]
@@ -80,6 +94,10 @@ class AnalyticsApp
         @selected_tab = (@selected_tab + 1) % @tabs.size
       when "left"
         @selected_tab = (@selected_tab - 1) % @tabs.size
+      when " "
+        @style_index = (@style_index + 1) % @styles.size
+      when "d"
+        @divider_index = (@divider_index + 1) % @dividers.size
       end
     end
   end

@@ -8,14 +8,17 @@ module RatatuiRuby
   #
   # [titles] Array of strings or lines to display as tab titles.
   # [selected_index] The index of the currently selected tab.
-  # [block] Optional block widget to wrap the tabs.
-  class Tabs < Data.define(:titles, :selected_index, :block)
+  # [divider] String to use as a separator between tabs.
+  # [highlight_style] Style to apply to the selected tab title.
+  class Tabs < Data.define(:titles, :selected_index, :block, :divider, :highlight_style)
     # Creates a new Tabs widget.
     #
     # [titles] Array of strings or lines to display as tab titles.
     # [selected_index] The index of the currently selected tab.
     # [block] Optional block widget to wrap the tabs.
-    def initialize(titles: [], selected_index: 0, block: nil)
+    # [divider] String to use as a separator between tabs.
+    # [highlight_style] Style to apply to the selected tab title.
+    def initialize(titles: [], selected_index: 0, block: nil, divider: nil, highlight_style: nil)
       super
     end
   end
