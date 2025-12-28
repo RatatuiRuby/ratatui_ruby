@@ -35,11 +35,13 @@ namespace :bump do
     desc "Bump #{segment} version"
     task segment do
       ratatuiRuby.bump(segment)
+      Rake::Task["sourcehut"].invoke
     end
   end
 
   desc "Set exact version (e.g. rake bump:exact[0.1.0])"
   task :exact, [:version] do |_, args|
     ratatuiRuby.set(args[:version])
+    Rake::Task["sourcehut"].invoke
   end
 end

@@ -9,7 +9,13 @@ task :sourcehut do
   require "yaml"
 
   spec = Gem::Specification.load("ratatui_ruby.gemspec")
-  gem_filename = "#{spec.name}-#{spec.version}.gem"
+  
+  # Read version directly from file to ensure we get the latest version
+  # even if it was just bumped in the same Rake execution
+  version_content = File.read("lib/ratatui_ruby/version.rb")
+  version = version_content.match(/VERSION = "(.+?)"/)[1]
+  
+  gem_filename = "#{spec.name}-#{version}.gem"
 
   rubies = YAML.load_file("tasks/resources/rubies.yml")
   template = File.read("tasks/resources/build.yml.erb")
