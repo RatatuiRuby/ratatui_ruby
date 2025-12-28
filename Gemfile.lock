@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     ratatui_ruby (0.2.1)
+      ostruct (~> 0.6)
       rb_sys (~> 0.9)
 
 GEM
@@ -87,6 +88,7 @@ GEM
     method_source (1.1.0)
     minitest (5.26.1)
     mize (0.6.1)
+    ostruct (0.6.3)
     parallel (1.27.0)
     parser (3.3.10.0)
       ast (~> 2.4.1)

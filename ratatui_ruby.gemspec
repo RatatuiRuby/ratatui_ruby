@@ -43,6 +43,7 @@ Gem::Specification.new do |spec|
   spec.extensions = ["ext/ratatui_ruby/extconf.rb"]
 
   spec.add_dependency "rb_sys", "~> 0.9"
+  spec.add_dependency "ostruct", "~> 0.6"
   spec.add_development_dependency "rake-compiler", "~> 1.2"
   spec.add_development_dependency "rdoc", "~> 7.0"
 end

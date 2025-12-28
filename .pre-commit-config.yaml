@@ -3,7 +3,14 @@
 repos:
   - repo: local
     hooks:
+      -   id: bundle-check
+          name: Check Gemfile.lock
+          entry: bundle check
+          language: system
+          files: (Gemfile|Gemfile\.lock|ratatui_ruby\.gemspec)
+          pass_filenames: false
       -   id: rake
           name: rake
           entry: rake
-          language: ruby
+          language: system
+          pass_filenames: false
