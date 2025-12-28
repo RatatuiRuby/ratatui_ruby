@@ -222,3 +222,8 @@ Demonstrates interactive row selection in the `Table` widget with keyboard navig
 
 ![Table Select Screenshot](./images/examples-table_select.rb.png)
 
+### [Table Flex](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/table_flex.rb)
+Demonstrates different flex modes in the `Table` widget, such as `:space_between` and `:space_around`, allowing for modern, responsive table layouts.
+
+![Table Flex Screenshot](./images/examples-table_flex.rb.png)
+

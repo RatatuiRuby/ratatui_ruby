@@ -14,7 +14,8 @@ module RatatuiRuby
   # [selected_row] The index of the currently selected row, or nil if none.
   # [block] An optional Block widget to wrap the table.
   # [footer] An optional array of strings or Paragraphs representing the footer row.
-  class Table < Data.define(:header, :rows, :widths, :highlight_style, :highlight_symbol, :selected_row, :block, :footer)
+  # [flex] The flex mode for column widths: [:legacy, :start, :center, :end, :space_between, :space_around, :space_evenly]
+  class Table < Data.define(:header, :rows, :widths, :highlight_style, :highlight_symbol, :selected_row, :block, :footer, :flex)
     # Creates a new Table.
     #
     # [header] An array of strings or Paragraphs representing the header row.
@@ -25,7 +26,8 @@ module RatatuiRuby
     # [selected_row] The index of the currently selected row, or nil if none.
     # [block] An optional Block widget to wrap the table.
     # [footer] An optional array of strings or Paragraphs representing the footer row.
-    def initialize(header: nil, rows: [], widths: [], highlight_style: nil, highlight_symbol: "> ", selected_row: nil, block: nil, footer: nil)
+    # [flex] The flex mode for column widths.
+    def initialize(header: nil, rows: [], widths: [], highlight_style: nil, highlight_symbol: "> ", selected_row: nil, block: nil, footer: nil, flex: :legacy)
       super
     end
   end

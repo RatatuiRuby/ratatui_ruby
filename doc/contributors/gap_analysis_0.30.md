@@ -87,7 +87,7 @@ Comparison of ratatui 0.30 features vs ratatui_ruby current implementation.
 | `highlight_symbol()` | `highlight_symbol:` | ✅ |
 | `highlight_spacing()` | — | ❌ **MISSING** |
 | `column_spacing()` | — | ❌ **MISSING** |
-| `flex()` | — | ❌ **MISSING** |
+| `flex()` | `flex:` | ✅ |
 
 Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:max`, `:fill`, `:ratio`).
 

@@ -17,6 +17,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Block Title Alignment**: `Block` widget now supports `title_alignment` (`:left`, `:center`, `:right`) for positioning the title on the border.
 - **Constraint Ratio**: Added `Constraint.ratio(numerator, denominator)` to support proportional constraints where the ratio is explicit (e.g., 1/4 and 3/4).
 - **Table Constraints**: `Table` widget `widths` now support all constraint types including `:max`, `:fill` and `:ratio`, matching the flexibility of the `Layout` widget.
+- **Table Flex**: Added `flex` parameter to `Table` widget to support modern table layouts (`:legacy`, `:start`, `:center`, `:end`, `:space_between`, `:space_around`, `:space_evenly`).
 
 - Added `Flex::SpaceEvenly` layout mode to `Layout` widget.
 - **Block Border Types**: Added `border_type` to `Block` widget, allowing `:plain`, `:rounded`, `:double`, `:thick`, `:quadrant_inside`, and `:quadrant_outside` border styles.

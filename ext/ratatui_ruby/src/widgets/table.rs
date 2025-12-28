@@ -4,7 +4,7 @@
 use crate::style::{parse_block, parse_style};
 use magnus::{prelude::*, Error, Symbol, Value};
 use ratatui::{
-    layout::{Constraint, Rect},
+    layout::{Constraint, Flex, Rect},
     widgets::{Cell, Row, Table, TableState},
     Frame,
 };
@@ -23,6 +23,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let highlight_symbol_val: Value = node.funcall("highlight_symbol", ())?;
     let selected_row_val: Value = node.funcall("selected_row", ())?;
     let block_val: Value = node.funcall("block", ())?;
+    let flex_sym: Symbol = node.funcall("flex", ())?;
 
     let mut rows = Vec::new();
     for i in 0..rows_array.len() {
@@ -91,7 +92,17 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         }
     }
 
-    let mut table = Table::new(rows, constraints);
+    let flex = match flex_sym.to_string().as_str() {
+        "start" => Flex::Start,
+        "center" => Flex::Center,
+        "end" => Flex::End,
+        "space_between" => Flex::SpaceBetween,
+        "space_around" => Flex::SpaceAround,
+        "space_evenly" => Flex::SpaceEvenly,
+        _ => Flex::Legacy,
+    };
+
+    let mut table = Table::new(rows, constraints).flex(flex);
 
     if !header_val.is_nil() {
         let header_array = magnus::RArray::from_value(header_val).ok_or_else(|| {
