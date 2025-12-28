@@ -233,12 +233,12 @@ mod tests {
             .x_axis(
                 Axis::default()
                     .bounds([0.0, 1.0])
-                    .labels(vec!["XMIN".into(), "XMAX".into()]),
+                    .labels(vec!["XMIN".into(), "XMAX".into()] as Vec<ratatui::text::Line>),
             )
             .y_axis(
                 Axis::default()
                     .bounds([0.0, 1.0])
-                    .labels(vec!["YMIN".into(), "YMAX".into()]),
+                    .labels(vec!["YMIN".into(), "YMAX".into()] as Vec<ratatui::text::Line>),
             );
         let mut buf = Buffer::empty(Rect::new(0, 0, 40, 20));
         chart.render(Rect::new(0, 0, 40, 20), &mut buf);

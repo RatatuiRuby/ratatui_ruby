@@ -5,7 +5,7 @@ use magnus::{Error, IntoValue, Symbol, TryConvert, Value};
 use std::sync::Mutex;
 
 lazy_static::lazy_static! {
-    static ref EVENT_QUEUE: Mutex<Vec<crossterm::event::Event>> = Mutex::new(Vec::new());
+    static ref EVENT_QUEUE: Mutex<Vec<ratatui::crossterm::event::Event>> = Mutex::new(Vec::new());
 }
 
 pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), Error> {
@@ -19,32 +19,32 @@ pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), 
             })?;
             let code_str: String = String::try_convert(code_val)?;
             let code = match code_str.as_str() {
-                "up" => crossterm::event::KeyCode::Up,
-                "down" => crossterm::event::KeyCode::Down,
-                "left" => crossterm::event::KeyCode::Left,
-                "right" => crossterm::event::KeyCode::Right,
-                "enter" => crossterm::event::KeyCode::Enter,
-                "esc" => crossterm::event::KeyCode::Esc,
-                "backspace" => crossterm::event::KeyCode::Backspace,
-                "tab" => crossterm::event::KeyCode::Tab,
-                c if c.len() == 1 => crossterm::event::KeyCode::Char(c.chars().next().unwrap()),
-                _ => crossterm::event::KeyCode::Null,
+                "up" => ratatui::crossterm::event::KeyCode::Up,
+                "down" => ratatui::crossterm::event::KeyCode::Down,
+                "left" => ratatui::crossterm::event::KeyCode::Left,
+                "right" => ratatui::crossterm::event::KeyCode::Right,
+                "enter" => ratatui::crossterm::event::KeyCode::Enter,
+                "esc" => ratatui::crossterm::event::KeyCode::Esc,
+                "backspace" => ratatui::crossterm::event::KeyCode::Backspace,
+                "tab" => ratatui::crossterm::event::KeyCode::Tab,
+                c if c.len() == 1 => ratatui::crossterm::event::KeyCode::Char(c.chars().next().unwrap()),
+                _ => ratatui::crossterm::event::KeyCode::Null,
             };
 
-            let mut modifiers = crossterm::event::KeyModifiers::empty();
+            let mut modifiers = ratatui::crossterm::event::KeyModifiers::empty();
             if let Some(mods_val) = data.get(Symbol::new("modifiers")) {
                 let mods: Vec<String> = Vec::try_convert(mods_val)?;
                 for m in mods {
                     match m.as_str() {
-                        "ctrl" => modifiers |= crossterm::event::KeyModifiers::CONTROL,
-                        "alt" => modifiers |= crossterm::event::KeyModifiers::ALT,
-                        "shift" => modifiers |= crossterm::event::KeyModifiers::SHIFT,
+                        "ctrl" => modifiers |= ratatui::crossterm::event::KeyModifiers::CONTROL,
+                        "alt" => modifiers |= ratatui::crossterm::event::KeyModifiers::ALT,
+                        "shift" => modifiers |= ratatui::crossterm::event::KeyModifiers::SHIFT,
                         _ => {}
                     }
                 }
             }
 
-            crossterm::event::Event::Key(crossterm::event::KeyEvent::new(code, modifiers))
+            ratatui::crossterm::event::Event::Key(ratatui::crossterm::event::KeyEvent::new(code, modifiers))
         }
         "mouse" => {
             let kind_val: Value = data.get(Symbol::new("kind")).ok_or_else(|| {
@@ -58,12 +58,12 @@ pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), 
             let button = if let Some(btn_val) = data.get(Symbol::new("button")) {
                 let button_str: String = String::try_convert(btn_val)?;
                 match button_str.as_str() {
-                    "right" => crossterm::event::MouseButton::Right,
-                    "middle" => crossterm::event::MouseButton::Middle,
-                    _ => crossterm::event::MouseButton::Left,
+                    "right" => ratatui::crossterm::event::MouseButton::Right,
+                    "middle" => ratatui::crossterm::event::MouseButton::Middle,
+                    _ => ratatui::crossterm::event::MouseButton::Left,
                 }
             } else {
-                crossterm::event::MouseButton::Left
+                ratatui::crossterm::event::MouseButton::Left
             };
 
             let x_val: Value = data.get(Symbol::new("x")).ok_or_else(|| {
@@ -77,14 +77,14 @@ pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), 
             let y: u16 = u16::try_convert(y_val)?;
 
             let kind = match kind_str.as_str() {
-                "down" => crossterm::event::MouseEventKind::Down(button),
-                "up" => crossterm::event::MouseEventKind::Up(button),
-                "drag" => crossterm::event::MouseEventKind::Drag(button),
-                "moved" => crossterm::event::MouseEventKind::Moved,
-                "scroll_down" => crossterm::event::MouseEventKind::ScrollDown,
-                "scroll_up" => crossterm::event::MouseEventKind::ScrollUp,
-                "scroll_left" => crossterm::event::MouseEventKind::ScrollLeft,
-                "scroll_right" => crossterm::event::MouseEventKind::ScrollRight,
+                "down" => ratatui::crossterm::event::MouseEventKind::Down(button),
+                "up" => ratatui::crossterm::event::MouseEventKind::Up(button),
+                "drag" => ratatui::crossterm::event::MouseEventKind::Drag(button),
+                "moved" => ratatui::crossterm::event::MouseEventKind::Moved,
+                "scroll_down" => ratatui::crossterm::event::MouseEventKind::ScrollDown,
+                "scroll_up" => ratatui::crossterm::event::MouseEventKind::ScrollUp,
+                "scroll_left" => ratatui::crossterm::event::MouseEventKind::ScrollLeft,
+                "scroll_right" => ratatui::crossterm::event::MouseEventKind::ScrollRight,
                 _ => {
                     return Err(Error::new(
                         magnus::exception::arg_error(),
@@ -93,20 +93,20 @@ pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), 
                 }
             };
 
-            let mut modifiers = crossterm::event::KeyModifiers::empty();
+            let mut modifiers = ratatui::crossterm::event::KeyModifiers::empty();
             if let Some(mods_val) = data.get(Symbol::new("modifiers")) {
                 let mods: Vec<String> = Vec::try_convert(mods_val)?;
                 for m in mods {
                     match m.as_str() {
-                        "ctrl" => modifiers |= crossterm::event::KeyModifiers::CONTROL,
-                        "alt" => modifiers |= crossterm::event::KeyModifiers::ALT,
-                        "shift" => modifiers |= crossterm::event::KeyModifiers::SHIFT,
+                        "ctrl" => modifiers |= ratatui::crossterm::event::KeyModifiers::CONTROL,
+                        "alt" => modifiers |= ratatui::crossterm::event::KeyModifiers::ALT,
+                        "shift" => modifiers |= ratatui::crossterm::event::KeyModifiers::SHIFT,
                         _ => {}
                     }
                 }
             }
 
-            crossterm::event::Event::Mouse(crossterm::event::MouseEvent {
+            ratatui::crossterm::event::Event::Mouse(ratatui::crossterm::event::MouseEvent {
                 kind,
                 column: x,
                 row: y,
@@ -152,10 +152,10 @@ pub fn poll_event() -> Result<Value, Error> {
         return Ok(magnus::value::qnil().into_value());
     }
 
-    if crossterm::event::poll(std::time::Duration::from_millis(16))
+    if ratatui::crossterm::event::poll(std::time::Duration::from_millis(16))
         .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?
     {
-        let event = crossterm::event::read()
+        let event = ratatui::crossterm::event::read()
             .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
         handle_event(event)
     } else {
@@ -163,23 +163,23 @@ pub fn poll_event() -> Result<Value, Error> {
     }
 }
 
-fn handle_event(event: crossterm::event::Event) -> Result<Value, Error> {
+fn handle_event(event: ratatui::crossterm::event::Event) -> Result<Value, Error> {
     match event {
-        crossterm::event::Event::Key(key) => {
-            if key.kind == crossterm::event::KeyEventKind::Press {
+        ratatui::crossterm::event::Event::Key(key) => {
+            if key.kind == ratatui::crossterm::event::KeyEventKind::Press {
                 let hash = magnus::RHash::new();
                 hash.aset(Symbol::new("type"), Symbol::new("key"))?;
 
                 let code = match key.code {
-                    crossterm::event::KeyCode::Char(c) => c.to_string(),
-                    crossterm::event::KeyCode::Up => "up".to_string(),
-                    crossterm::event::KeyCode::Down => "down".to_string(),
-                    crossterm::event::KeyCode::Left => "left".to_string(),
-                    crossterm::event::KeyCode::Right => "right".to_string(),
-                    crossterm::event::KeyCode::Enter => "enter".to_string(),
-                    crossterm::event::KeyCode::Esc => "esc".to_string(),
-                    crossterm::event::KeyCode::Backspace => "backspace".to_string(),
-                    crossterm::event::KeyCode::Tab => "tab".to_string(),
+                    ratatui::crossterm::event::KeyCode::Char(c) => c.to_string(),
+                    ratatui::crossterm::event::KeyCode::Up => "up".to_string(),
+                    ratatui::crossterm::event::KeyCode::Down => "down".to_string(),
+                    ratatui::crossterm::event::KeyCode::Left => "left".to_string(),
+                    ratatui::crossterm::event::KeyCode::Right => "right".to_string(),
+                    ratatui::crossterm::event::KeyCode::Enter => "enter".to_string(),
+                    ratatui::crossterm::event::KeyCode::Esc => "esc".to_string(),
+                    ratatui::crossterm::event::KeyCode::Backspace => "backspace".to_string(),
+                    ratatui::crossterm::event::KeyCode::Tab => "tab".to_string(),
                     _ => "unknown".to_string(),
                 };
                 hash.aset(Symbol::new("code"), code)?;
@@ -187,16 +187,16 @@ fn handle_event(event: crossterm::event::Event) -> Result<Value, Error> {
                 let mut modifiers = Vec::new();
                 if key
                     .modifiers
-                    .contains(crossterm::event::KeyModifiers::CONTROL)
+                    .contains(ratatui::crossterm::event::KeyModifiers::CONTROL)
                 {
                     modifiers.push("ctrl");
                 }
-                if key.modifiers.contains(crossterm::event::KeyModifiers::ALT) {
+                if key.modifiers.contains(ratatui::crossterm::event::KeyModifiers::ALT) {
                     modifiers.push("alt");
                 }
                 if key
                     .modifiers
-                    .contains(crossterm::event::KeyModifiers::SHIFT)
+                    .contains(ratatui::crossterm::event::KeyModifiers::SHIFT)
                 {
                     modifiers.push("shift");
                 }
@@ -207,28 +207,28 @@ fn handle_event(event: crossterm::event::Event) -> Result<Value, Error> {
                 return Ok(hash.into_value());
             }
         }
-        crossterm::event::Event::Mouse(event) => {
+        ratatui::crossterm::event::Event::Mouse(event) => {
             let hash = magnus::RHash::new();
             hash.aset(Symbol::new("type"), Symbol::new("mouse"))?;
 
             let (kind, button) = match event.kind {
-                crossterm::event::MouseEventKind::Down(btn) => ("down", btn),
-                crossterm::event::MouseEventKind::Up(btn) => ("up", btn),
-                crossterm::event::MouseEventKind::Drag(btn) => ("drag", btn),
-                crossterm::event::MouseEventKind::Moved => {
-                    ("moved", crossterm::event::MouseButton::Left)
+                ratatui::crossterm::event::MouseEventKind::Down(btn) => ("down", btn),
+                ratatui::crossterm::event::MouseEventKind::Up(btn) => ("up", btn),
+                ratatui::crossterm::event::MouseEventKind::Drag(btn) => ("drag", btn),
+                ratatui::crossterm::event::MouseEventKind::Moved => {
+                    ("moved", ratatui::crossterm::event::MouseButton::Left)
                 } // button is ignored for moved
-                crossterm::event::MouseEventKind::ScrollDown => {
-                    ("scroll_down", crossterm::event::MouseButton::Left)
+                ratatui::crossterm::event::MouseEventKind::ScrollDown => {
+                    ("scroll_down", ratatui::crossterm::event::MouseButton::Left)
                 } // button is ignored for scroll
-                crossterm::event::MouseEventKind::ScrollUp => {
-                    ("scroll_up", crossterm::event::MouseButton::Left)
+                ratatui::crossterm::event::MouseEventKind::ScrollUp => {
+                    ("scroll_up", ratatui::crossterm::event::MouseButton::Left)
                 } // button is ignored for scroll
-                crossterm::event::MouseEventKind::ScrollLeft => {
-                    ("scroll_left", crossterm::event::MouseButton::Left)
+                ratatui::crossterm::event::MouseEventKind::ScrollLeft => {
+                    ("scroll_left", ratatui::crossterm::event::MouseButton::Left)
                 } // button is ignored for scroll
-                crossterm::event::MouseEventKind::ScrollRight => {
-                    ("scroll_right", crossterm::event::MouseButton::Left)
+                ratatui::crossterm::event::MouseEventKind::ScrollRight => {
+                    ("scroll_right", ratatui::crossterm::event::MouseButton::Left)
                 } // button is ignored for scroll
             };
 
@@ -236,14 +236,14 @@ fn handle_event(event: crossterm::event::Event) -> Result<Value, Error> {
 
             if matches!(
                 event.kind,
-                crossterm::event::MouseEventKind::Down(_)
-                    | crossterm::event::MouseEventKind::Up(_)
-                    | crossterm::event::MouseEventKind::Drag(_)
+                ratatui::crossterm::event::MouseEventKind::Down(_)
+                    | ratatui::crossterm::event::MouseEventKind::Up(_)
+                    | ratatui::crossterm::event::MouseEventKind::Drag(_)
             ) {
                 let btn_sym = match button {
-                    crossterm::event::MouseButton::Left => "left",
-                    crossterm::event::MouseButton::Right => "right",
-                    crossterm::event::MouseButton::Middle => "middle",
+                    ratatui::crossterm::event::MouseButton::Left => "left",
+                    ratatui::crossterm::event::MouseButton::Right => "right",
+                    ratatui::crossterm::event::MouseButton::Middle => "middle",
                 };
                 hash.aset(Symbol::new("button"), Symbol::new(btn_sym))?;
             } else {
@@ -256,19 +256,19 @@ fn handle_event(event: crossterm::event::Event) -> Result<Value, Error> {
             let mut modifiers = Vec::new();
             if event
                 .modifiers
-                .contains(crossterm::event::KeyModifiers::CONTROL)
+                .contains(ratatui::crossterm::event::KeyModifiers::CONTROL)
             {
                 modifiers.push("ctrl");
             }
             if event
                 .modifiers
-                .contains(crossterm::event::KeyModifiers::ALT)
+                .contains(ratatui::crossterm::event::KeyModifiers::ALT)
             {
                 modifiers.push("alt");
             }
             if event
                 .modifiers
-                .contains(crossterm::event::KeyModifiers::SHIFT)
+                .contains(ratatui::crossterm::event::KeyModifiers::SHIFT)
             {
                 modifiers.push("shift");
             }

@@ -89,10 +89,11 @@ mod tests {
         assert!(content.contains(">> Item 2"));
 
         // Check colors
-        assert_eq!(buf.get(0, 0).fg, ratatui::style::Color::White);
-        assert_eq!(buf.get(0, 1).fg, ratatui::style::Color::Yellow);
+        assert_eq!(buf.cell((0, 0)).unwrap().fg, ratatui::style::Color::White);
+        assert_eq!(buf.cell((0, 1)).unwrap().fg, ratatui::style::Color::Yellow);
         assert!(buf
-            .get(0, 1)
+            .cell((0, 1))
+            .unwrap()
             .modifier
             .contains(ratatui::style::Modifier::BOLD));
     }

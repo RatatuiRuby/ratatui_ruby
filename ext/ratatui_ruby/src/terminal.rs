@@ -21,13 +21,13 @@ lazy_static::lazy_static! {
 pub fn init_terminal() -> Result<(), Error> {
     let mut term_lock = TERMINAL.lock().unwrap();
     if term_lock.is_none() {
-        crossterm::terminal::enable_raw_mode()
+        ratatui::crossterm::terminal::enable_raw_mode()
             .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
         let mut stdout = io::stdout();
-        crossterm::execute!(
+        ratatui::crossterm::execute!(
             stdout,
-            crossterm::terminal::EnterAlternateScreen,
-            crossterm::event::EnableMouseCapture
+            ratatui::crossterm::terminal::EnterAlternateScreen,
+            ratatui::crossterm::event::EnableMouseCapture
         )
         .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
         let backend = CrosstermBackend::new(stdout);
@@ -50,11 +50,11 @@ pub fn init_test_terminal(width: u16, height: u16) -> Result<(), Error> {
 pub fn restore_terminal() -> Result<(), Error> {
     let mut term_lock = TERMINAL.lock().unwrap();
     if let Some(TerminalWrapper::Crossterm(mut terminal)) = term_lock.take() {
-        let _ = crossterm::terminal::disable_raw_mode();
-        let _ = crossterm::execute!(
+        let _ = ratatui::crossterm::terminal::disable_raw_mode();
+        let _ = ratatui::crossterm::execute!(
             terminal.backend_mut(),
-            crossterm::terminal::LeaveAlternateScreen,
-            crossterm::event::DisableMouseCapture
+            ratatui::crossterm::terminal::LeaveAlternateScreen,
+            ratatui::crossterm::event::DisableMouseCapture
         );
     }
     Ok(())
@@ -74,7 +74,7 @@ pub fn get_buffer_content() -> Result<String, Error> {
         let mut result = String::new();
         for y in 0..area.height {
             for x in 0..area.width {
-                let cell = buffer.get(x, y);
+                let cell = buffer.cell((x, y)).unwrap();
                 result.push_str(cell.symbol());
             }
             result.push('\n');
@@ -92,9 +92,9 @@ pub fn get_cursor_position() -> Result<Option<(u16, u16)>, Error> {
     let mut term_lock = TERMINAL.lock().unwrap();
     if let Some(TerminalWrapper::Test(terminal)) = term_lock.as_mut() {
         let pos = terminal
-            .get_cursor()
+            .get_cursor_position()
             .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
-        Ok(Some(pos))
+        Ok(Some(pos.into()))
     } else {
         Err(Error::new(
             magnus::exception::runtime_error(),

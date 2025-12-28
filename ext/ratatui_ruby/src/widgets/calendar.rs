@@ -63,7 +63,7 @@ mod tests {
         let mut content = String::new();
         for y in 0..20 {
             for x in 0..40 {
-                content.push_str(buf.get(x, y).symbol());
+                content.push_str(buf.cell((x, y)).unwrap().symbol());
             }
             content.push('\n');
         }

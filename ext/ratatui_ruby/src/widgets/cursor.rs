@@ -7,7 +7,7 @@ use ratatui::{layout::Rect, Frame};
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let x: u16 = node.funcall("x", ())?;
     let y: u16 = node.funcall("y", ())?;
-    frame.set_cursor(area.x + x, area.y + y);
+    frame.set_cursor_position((area.x + x, area.y + y));
     Ok(())
 }
 

@@ -16,7 +16,7 @@ fn draw(tree: Value) -> Result<(), Error> {
         match wrapper {
             terminal::TerminalWrapper::Crossterm(term) => {
                 term.draw(|f| {
-                    if let Err(e) = rendering::render_node(f, f.size(), tree) {
+                    if let Err(e) = rendering::render_node(f, f.area(), tree) {
                         eprintln!("Render error: {:?}", e);
                     }
                 })
@@ -24,7 +24,7 @@ fn draw(tree: Value) -> Result<(), Error> {
             }
             terminal::TerminalWrapper::Test(term) => {
                 term.draw(|f| {
-                    if let Err(e) = rendering::render_node(f, f.size(), tree) {
+                    if let Err(e) = rendering::render_node(f, f.area(), tree) {
                         eprintln!("Render error: {:?}", e);
                     }
                 })
