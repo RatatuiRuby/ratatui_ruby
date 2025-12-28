@@ -160,6 +160,11 @@ A simple example of integrating the `Scrollbar` widget and handling mouse wheel 
 
 ![Scrollbar Demo Screenshot](./images/examples-scrollbar_demo.rb.png)
 
+### [Scroll Text](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/scroll_text.rb)
+Demonstrates the `Paragraph` widget's scroll functionality, allowing navigation through long text content using arrow keys for both horizontal and vertical scrolling.
+
+![Scroll Text Screenshot](./images/examples-scroll_text.rb.png)
+
 ### [Stock Ticker](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/stock_ticker.rb)
 Utilizes `Sparkline` and `Chart` widgets to visualize real-time (simulated) data.
 

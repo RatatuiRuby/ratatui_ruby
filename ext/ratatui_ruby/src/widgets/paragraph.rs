@@ -15,6 +15,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let block_val: Value = node.funcall("block", ())?;
     let wrap: bool = node.funcall("wrap", ())?;
     let align_sym: Symbol = node.funcall("align", ())?;
+    let scroll_val: Value = node.funcall("scroll", ())?;
 
     let style = parse_style(style_val)?;
     let mut paragraph = Paragraph::new(text).style(style);
@@ -31,6 +32,15 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         "center" => paragraph = paragraph.alignment(Alignment::Center),
         "right" => paragraph = paragraph.alignment(Alignment::Right),
         _ => {}
+    }
+
+    // Apply scroll offset if provided
+    // Ruby passes (y, x) array matching ratatui's convention
+    if !scroll_val.is_nil() {
+        let scroll_array: Vec<u16> = Vec::<u16>::try_convert(scroll_val)?;
+        if scroll_array.len() >= 2 {
+            paragraph = paragraph.scroll((scroll_array[0], scroll_array[1]));
+        }
     }
 
     frame.render_widget(paragraph, area);

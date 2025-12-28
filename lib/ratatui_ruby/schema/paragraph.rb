@@ -9,7 +9,8 @@ module RatatuiRuby
   # [text] the text to display.
   # [style] the style to apply (Style object).
   # [block] an optional Block widget to wrap the paragraph.
-  class Paragraph < Data.define(:text, :style, :block, :wrap, :align)
+  # [scroll] scroll offset as (y, x) array matching ratatui convention.
+  class Paragraph < Data.define(:text, :style, :block, :wrap, :align, :scroll)
     # Creates a new Paragraph.
     #
     # [text] the text to display.
@@ -17,7 +18,8 @@ module RatatuiRuby
     # [block] the block to wrap the paragraph.
     # [wrap] whether to wrap text at width.
     # [align] alignment (:left, :center, :right).
-    def initialize(text:, style: Style.default, block: nil, wrap: false, align: :left)
+    # [scroll] scroll offset as (y, x) array (default: [0, 0]).
+    def initialize(text:, style: Style.default, block: nil, wrap: false, align: :left, scroll: [0, 0])
       super
     end
 
@@ -29,9 +31,10 @@ module RatatuiRuby
     # [block] the block to wrap the paragraph.
     # [wrap] whether to wrap text at width.
     # [align] alignment (:left, :center, :right).
-    def self.new(text:, style: nil, fg: nil, bg: nil, block: nil, wrap: false, align: :left)
+    # [scroll] scroll offset as (y, x) array (default: [0, 0]).
+    def self.new(text:, style: nil, fg: nil, bg: nil, block: nil, wrap: false, align: :left, scroll: [0, 0])
       style ||= Style.new(fg:, bg:)
-      super(text:, style:, block:, wrap:, align:)
+      super(text:, style:, block:, wrap:, align:, scroll:)
     end
   end
 end
