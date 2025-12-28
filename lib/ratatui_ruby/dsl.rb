@@ -60,5 +60,26 @@ module RatatuiRuby
         klass.new(*args, **kwargs, &block)
       end
     end
+
+    # Wrap nested module classes with prefixed names (e.g., shape_line, text_span)
+    { Shape: :shape, Text: :text }.each do |mod_name, prefix|
+      next unless RatatuiRuby.const_defined?(mod_name)
+
+      mod = RatatuiRuby.const_get(mod_name)
+      mod.constants.each do |const_name|
+        klass = mod.const_get(const_name)
+        next unless klass.is_a?(Class)
+
+        class_snake = const_name.to_s
+                                .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+                                .gsub(/([a-z\d])([A-Z])/, '\1_\2')
+                                .downcase
+        method_name = "#{prefix}_#{class_snake}"
+
+        define_method(method_name) do |*args, **kwargs, &block|
+          klass.new(*args, **kwargs, &block)
+        end
+      end
+    end
   end
 end

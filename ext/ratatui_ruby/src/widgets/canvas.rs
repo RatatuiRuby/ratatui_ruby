@@ -45,7 +45,7 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
             let class_name = unsafe { class.name() };
 
             match class_name.as_ref() {
-                "RatatuiRuby::Line" => {
+                "RatatuiRuby::Shape::Line" => {
                     let x1: f64 = shape_val.funcall("x1", ()).unwrap_or(0.0);
                     let y1: f64 = shape_val.funcall("y1", ()).unwrap_or(0.0);
                     let x2: f64 = shape_val.funcall("x2", ()).unwrap_or(0.0);
@@ -61,7 +61,7 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
                         color,
                     });
                 }
-                "RatatuiRuby::Rectangle" => {
+                "RatatuiRuby::Shape::Rectangle" => {
                     let x: f64 = shape_val.funcall("x", ()).unwrap_or(0.0);
                     let y: f64 = shape_val.funcall("y", ()).unwrap_or(0.0);
                     let width: f64 = shape_val.funcall("width", ()).unwrap_or(0.0);
@@ -77,7 +77,7 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
                         color,
                     });
                 }
-                "RatatuiRuby::Circle" => {
+                "RatatuiRuby::Shape::Circle" => {
                     let x: f64 = shape_val.funcall("x", ()).unwrap_or(0.0);
                     let y: f64 = shape_val.funcall("y", ()).unwrap_or(0.0);
                     let radius: f64 = shape_val.funcall("radius", ()).unwrap_or(0.0);
@@ -91,7 +91,7 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
                         color,
                     });
                 }
-                "RatatuiRuby::Map" => {
+                "RatatuiRuby::Shape::Map" => {
                     let color_val: Value = shape_val.funcall("color", ()).unwrap();
                     let color =
                         parse_color(&color_val.to_string()).unwrap_or(ratatui::style::Color::Reset);

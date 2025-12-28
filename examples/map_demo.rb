@@ -16,9 +16,9 @@ module MapDemo
   def self.view(radius)
     Canvas.new(
       shapes: [
-        Map.new(color: :green, resolution: :high),
-        Circle.new(x: 0.0, y: 0.0, radius:, color: :red),
-        Line.new(x1: 0.0, y1: 0.0, x2: 50.0, y2: 25.0, color: :yellow),
+        Shape::Map.new(color: :green, resolution: :high),
+        Shape::Circle.new(x: 0.0, y: 0.0, radius:, color: :red),
+        Shape::Line.new(x1: 0.0, y1: 0.0, x2: 50.0, y2: 25.0, color: :yellow),
       ],
       x_bounds: [-180.0, 180.0],
       y_bounds: [-90.0, 90.0],

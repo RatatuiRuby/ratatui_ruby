@@ -2,61 +2,63 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  class Point < Data
-    attr_reader x: Float
-    attr_reader y: Float
+  module Shape
+    class Point < Data
+      attr_reader x: Float
+      attr_reader y: Float
 
-    def self.new: (x: Float, y: Float) -> Point
-               | (Float, Float) -> Point
-  end
+      def self.new: (x: Float, y: Float) -> Point
+                  | (Float, Float) -> Point
+    end
 
-  class Line < Data
-    attr_reader x1: Float
-    attr_reader y1: Float
-    attr_reader x2: Float
-    attr_reader y2: Float
-    attr_reader color: String | Symbol
+    class Line < Data
+      attr_reader x1: Float
+      attr_reader y1: Float
+      attr_reader x2: Float
+      attr_reader y2: Float
+      attr_reader color: String | Symbol
 
-    def self.new: (x1: Float, y1: Float, x2: Float, y2: Float, color: String | Symbol) -> Line
-               | (Float, Float, Float, Float, String | Symbol) -> Line
-  end
+      def self.new: (x1: Float, y1: Float, x2: Float, y2: Float, color: String | Symbol) -> Line
+                  | (Float, Float, Float, Float, String | Symbol) -> Line
+    end
 
-  class Rectangle < Data
-    attr_reader x: Float
-    attr_reader y: Float
-    attr_reader width: Float
-    attr_reader height: Float
-    attr_reader color: String | Symbol
+    class Rectangle < Data
+      attr_reader x: Float
+      attr_reader y: Float
+      attr_reader width: Float
+      attr_reader height: Float
+      attr_reader color: String | Symbol
 
-    def self.new: (x: Float, y: Float, width: Float, height: Float, color: String | Symbol) -> Rectangle
-               | (Float, Float, Float, Float, String | Symbol) -> Rectangle
-  end
+      def self.new: (x: Float, y: Float, width: Float, height: Float, color: String | Symbol) -> Rectangle
+                  | (Float, Float, Float, Float, String | Symbol) -> Rectangle
+    end
 
-  class Circle < Data
-    attr_reader x: Float
-    attr_reader y: Float
-    attr_reader radius: Float
-    attr_reader color: String | Symbol
+    class Circle < Data
+      attr_reader x: Float
+      attr_reader y: Float
+      attr_reader radius: Float
+      attr_reader color: String | Symbol
 
-    def self.new: (x: Float, y: Float, radius: Float, color: String | Symbol) -> Circle
-               | (Float, Float, Float, String | Symbol) -> Circle
-  end
+      def self.new: (x: Float, y: Float, radius: Float, color: String | Symbol) -> Circle
+                  | (Float, Float, Float, String | Symbol) -> Circle
+    end
 
-  class Map < Data
-    attr_reader color: String | Symbol
-    attr_reader resolution: Symbol
+    class Map < Data
+      attr_reader color: String | Symbol
+      attr_reader resolution: Symbol
 
-    def self.new: (color: String | Symbol, resolution: Symbol) -> Map
-               | (String | Symbol, Symbol) -> Map
+      def self.new: (color: String | Symbol, resolution: Symbol) -> Map
+                  | (String | Symbol, Symbol) -> Map
+    end
   end
 
   class Canvas < Data
-    attr_reader shapes: Array[Line | Rectangle | Circle | Map]
+    attr_reader shapes: Array[Shape::Line | Shape::Rectangle | Shape::Circle | Shape::Map]
     attr_reader x_bounds: Array[Float]
     attr_reader y_bounds: Array[Float]
     attr_reader marker: Symbol
     attr_reader block: Block?
 
-    def self.new: (?shapes: Array[Line | Rectangle | Circle | Map], ?x_bounds: Array[Float], ?y_bounds: Array[Float], ?marker: Symbol, ?block: Block?) -> Canvas
+    def self.new: (?shapes: Array[Shape::Line | Shape::Rectangle | Shape::Circle | Shape::Map], ?x_bounds: Array[Float], ?y_bounds: Array[Float], ?marker: Symbol, ?block: Block?) -> Canvas
   end
 end

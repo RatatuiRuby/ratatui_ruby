@@ -90,7 +90,7 @@ class TestMapDemo < Minitest::Test
       assert_operator draw_calls.size, :>=, 3
 
       # Check that the radius in each view is increasing
-      radii = draw_calls.map { |v| v.shapes.find { |s| s.is_a?(RatatuiRuby::Circle) }.radius }
+      radii = draw_calls.map { |v| v.shapes.find { |s| s.is_a?(RatatuiRuby::Shape::Circle) }.radius }
 
       assert_equal 0.5, radii[0]
       assert_equal 1.0, radii[1]
