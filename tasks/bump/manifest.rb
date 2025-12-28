@@ -14,6 +14,14 @@ class Manifest < Data.define(:path, :pattern, :primary)
     super
   end
 
+  def version
+    content = read
+    match = content.match(pattern)
+    raise "Version missing in manifest #{path}" unless match
+
+    SemVer.parse(match[0])
+  end
+
   def write(version)
     return unless File.exist?(path)
 

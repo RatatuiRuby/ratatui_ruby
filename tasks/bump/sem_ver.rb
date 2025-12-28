@@ -7,6 +7,12 @@
 class SemVer
   SEGMENTS = [:major, :minor, :patch].freeze
 
+  def self.parse(string)
+    require "rubygems"
+    segments = Gem::Version.new(string).segments.fill(0, 3).first(3)
+    new(segments)
+  end
+
   def initialize(segments)
     @segments = segments
   end

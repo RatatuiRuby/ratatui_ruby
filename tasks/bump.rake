@@ -9,6 +9,7 @@ require_relative "bump/sem_ver"
 require_relative "bump/manifest"
 require_relative "bump/cargo_lockfile"
 require_relative "bump/ruby_gem"
+require_relative "bump/changelog"
 
 namespace :bump do
   ratatuiRuby = RubyGem.new(
@@ -28,7 +29,8 @@ namespace :bump do
       path: "ext/ratatui_ruby/Cargo.lock",
       dir: "ext/ratatui_ruby",
       name: "ratatui_ruby"
-    )
+    ),
+    changelog: Changelog.new
   )
 
   SemVer::SEGMENTS.each do |segment|

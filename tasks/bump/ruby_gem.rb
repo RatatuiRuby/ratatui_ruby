@@ -4,35 +4,31 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 class RubyGem
-  def initialize(manifests:, lockfile:)
+  def initialize(manifests:, lockfile:, changelog:)
     raise ArgumentError, "Must have exactly one primary manifest" unless manifests.count(&:primary) == 1
     @manifests = manifests
     @lockfile = lockfile
+    @changelog = changelog
   end
 
   def version
-    source = @manifests.find(&:primary)
-    content = source.read
-    match = content.match(source.pattern)
-    raise "Version missing in manifest #{source.path}" unless match
-
-    segments = Gem::Version.new(match[0]).segments
-    SemVer.new(segments.fill(0, 3).first(3))
+    @manifests.find(&:primary).version
   end
 
   def bump(segment)
     target = version.next(segment)
 
     puts "Bumping #{segment}: #{version} -> #{target}"
+    @changelog.release(target)
     @manifests.each { |manifest| manifest.write(target) }
     @lockfile.refresh
   end
 
   def set(version_string)
-    segments = Gem::Version.new(version_string).segments.fill(0, 3).first(3)
-    target = SemVer.new(segments)
+    target = SemVer.parse(version_string)
 
     puts "Setting version: #{version} -> #{target}"
+    @changelog.release(target)
     @manifests.each { |manifest| manifest.write(target) }
     @lockfile.refresh
   end
