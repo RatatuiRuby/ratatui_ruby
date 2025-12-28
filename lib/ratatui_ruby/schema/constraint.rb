@@ -6,7 +6,7 @@
 module RatatuiRuby
   # Defines constraints for layout sections or table columns.
   #
-  # [type] The type of constraint (:length, :percentage, :min).
+  # [type] The type of constraint (:length, :percentage, :min, :max, :fill).
   # [value] The numeric value associated with the constraint.
   class Constraint < Data.define(:type, :value)
     # Creates a length constraint (fixed number of cells).
@@ -28,6 +28,24 @@ module RatatuiRuby
     # [v] The minimum number of cells.
     def self.min(v)
       new(type: :min, value: v)
+    end
+
+    # Creates a maximum size constraint.
+    #
+    # [v] The maximum number of cells.
+    def self.max(v)
+      new(type: :max, value: v)
+    end
+
+    # Creates a fill constraint that takes remaining space proportionally.
+    #
+    # Fill constraints distribute remaining space among themselves proportionally
+    # based on their values. For example, Fill(1) and Fill(3) would split space
+    # in a 1:3 ratio.
+    #
+    # [v] The proportional weight (default: 1).
+    def self.fill(v = 1)
+      new(type: :fill, value: v)
     end
   end
 end

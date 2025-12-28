@@ -4,7 +4,7 @@
 use crate::rendering::render_node;
 use magnus::{prelude::*, Error, Symbol, Value};
 use ratatui::{
-    layout::{Constraint, Direction, Layout, Rect},
+    layout::{Constraint, Direction, Flex, Layout, Rect},
     Frame,
 };
 
@@ -18,10 +18,21 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let constraints_val: Value = node.funcall("constraints", ())?;
     let constraints_array = magnus::RArray::from_value(constraints_val);
 
+    let flex_sym: Symbol = node.funcall("flex", ())?;
+
     let direction = if direction_sym.to_string() == "vertical" {
         Direction::Vertical
     } else {
         Direction::Horizontal
+    };
+
+    let flex = match flex_sym.to_string().as_str() {
+        "start" => Flex::Start,
+        "center" => Flex::Center,
+        "end" => Flex::End,
+        "space_between" => Flex::SpaceBetween,
+        "space_around" => Flex::SpaceAround,
+        _ => Flex::Legacy,
     };
 
     let len = children_array.len();
@@ -38,6 +49,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
                     "length" => ratatui_constraints.push(Constraint::Length(value)),
                     "percentage" => ratatui_constraints.push(Constraint::Percentage(value)),
                     "min" => ratatui_constraints.push(Constraint::Min(value)),
+                    "max" => ratatui_constraints.push(Constraint::Max(value)),
+                    "fill" => ratatui_constraints.push(Constraint::Fill(value)),
                     _ => {}
                 }
             }
@@ -52,6 +65,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
         let chunks = Layout::default()
             .direction(direction)
+            .flex(flex)
             .constraints(ratatui_constraints)
             .split(area);
 
@@ -67,8 +81,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
 #[cfg(test)]
 mod tests {
-
-    use ratatui::layout::{Constraint, Direction, Layout, Rect};
+    use ratatui::layout::{Constraint, Direction, Flex, Layout, Rect};
 
     #[test]
     fn test_layout_logic() {
@@ -79,5 +92,60 @@ mod tests {
             .split(area);
         assert_eq!(chunks.len(), 2);
         assert_eq!(chunks[0].height, 50);
+    }
+
+    #[test]
+    fn test_fill_constraint() {
+        let area = Rect::new(0, 0, 100, 10);
+        let chunks = Layout::default()
+            .direction(Direction::Horizontal)
+            .constraints([Constraint::Fill(1), Constraint::Fill(3)])
+            .split(area);
+        assert_eq!(chunks.len(), 2);
+        assert_eq!(chunks[0].width, 25);
+        assert_eq!(chunks[1].width, 75);
+    }
+
+    #[test]
+    fn test_flex_space_between() {
+        let area = Rect::new(0, 0, 100, 10);
+        let chunks = Layout::default()
+            .direction(Direction::Horizontal)
+            .flex(Flex::SpaceBetween)
+            .constraints([
+                Constraint::Length(10),
+                Constraint::Length(10),
+                Constraint::Length(10),
+            ])
+            .split(area);
+        assert_eq!(chunks.len(), 3);
+        assert_eq!(chunks[0].x, 0);
+        assert_eq!(chunks[1].x, 45);
+        assert_eq!(chunks[2].x, 90);
+    }
+
+    #[test]
+    fn test_flex_center() {
+        let area = Rect::new(0, 0, 100, 10);
+        let chunks = Layout::default()
+            .direction(Direction::Horizontal)
+            .flex(Flex::Center)
+            .constraints([Constraint::Length(20)])
+            .split(area);
+        assert_eq!(chunks.len(), 1);
+        assert_eq!(chunks[0].x, 40);
+        assert_eq!(chunks[0].width, 20);
+    }
+
+    #[test]
+    fn test_max_constraint() {
+        let area = Rect::new(0, 0, 100, 10);
+        let chunks = Layout::default()
+            .direction(Direction::Horizontal)
+            .constraints([Constraint::Max(30), Constraint::Fill(1)])
+            .split(area);
+        assert_eq!(chunks.len(), 2);
+        assert_eq!(chunks[0].width, 30);
+        assert_eq!(chunks[1].width, 70);
     }
 }

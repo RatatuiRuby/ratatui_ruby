@@ -18,6 +18,18 @@ class TestConstraint < Minitest::Test
     c3 = RatatuiRuby::Constraint.min(5)
     assert_equal :min, c3.type
     assert_equal 5, c3.value
+
+    c4 = RatatuiRuby::Constraint.max(20)
+    assert_equal :max, c4.type
+    assert_equal 20, c4.value
+
+    c5 = RatatuiRuby::Constraint.fill(3)
+    assert_equal :fill, c5.type
+    assert_equal 3, c5.value
+
+    c6 = RatatuiRuby::Constraint.fill
+    assert_equal :fill, c6.type
+    assert_equal 1, c6.value
   end
 
   def test_render
@@ -57,6 +69,44 @@ class TestConstraint < Minitest::Test
 
       assert_equal "┌L───────┐┌R───────┐", buffer_content[0]
       assert_equal "│        ││        │", buffer_content[1]
+    end
+  end
+
+  def test_fill_constraint_render
+    with_test_terminal(20, 4) do
+      l = RatatuiRuby::Layout.new(
+        direction: :horizontal,
+        constraints: [
+          RatatuiRuby::Constraint.fill(1),
+          RatatuiRuby::Constraint.fill(3)
+        ],
+        children: [
+          RatatuiRuby::Paragraph.new(text: "A"),
+          RatatuiRuby::Paragraph.new(text: "B")
+        ]
+      )
+      RatatuiRuby.draw(l)
+      # Fill(1) gets 5 chars, Fill(3) gets 15 chars (1:3 ratio of 20)
+      assert_equal "A    B              ", buffer_content[0]
+    end
+  end
+
+  def test_max_constraint_render
+    with_test_terminal(20, 4) do
+      l = RatatuiRuby::Layout.new(
+        direction: :horizontal,
+        constraints: [
+          RatatuiRuby::Constraint.max(8),
+          RatatuiRuby::Constraint.fill(1)
+        ],
+        children: [
+          RatatuiRuby::Paragraph.new(text: "Max"),
+          RatatuiRuby::Paragraph.new(text: "Fill")
+        ]
+      )
+      RatatuiRuby.draw(l)
+      # Max(8) caps first at 8, Fill gets rest (12)
+      assert_equal "Max     Fill        ", buffer_content[0]
     end
   end
 end

@@ -146,6 +146,11 @@ Uses `Layout`, `List`, and `Paragraph` to create a classic sidebar-and-content i
 
 ![Dashboard Screenshot](./images/examples-dashboard.rb.png)
 
+### [Flex Layout](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/flex_layout.rb)
+Demonstrates modern layout features including `Constraint.fill` for proportional space distribution and `flex: :space_between` for evenly distributing fixed-size elements.
+
+![Flex Layout Screenshot](./images/examples-flex_layout.rb.png)
+
 ### [LineGauge Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/line_gauge_demo.rb)
 Demonstrates the `LineGauge` widget with customizable filled and unfilled symbols, independent styling, and interactive ratio cycling with arrow keys.
 

@@ -8,6 +8,8 @@ module RatatuiRuby
     def self.length: (Integer) -> Constraint
     def self.percentage: (Integer) -> Constraint
     def self.min: (Integer) -> Constraint
+    def self.max: (Integer) -> Constraint
+    def self.fill: (?Integer) -> Constraint
     def self.new: (type: Symbol, value: Integer) -> Constraint
   end
 end

@@ -9,13 +9,19 @@ module RatatuiRuby
   # [direction] The direction of the layout (:vertical or :horizontal).
   # [constraints] An array of Constraint objects defining the size of each section.
   # [children] An array of widgets to render within each section.
-  class Layout < Data.define(:direction, :constraints, :children)
+  # [flex] Controls how empty space is distributed (:legacy, :start, :center, :end,
+  #        :space_between, :space_around).
+  class Layout < Data.define(:direction, :constraints, :children, :flex)
+    # :nodoc:
+    FLEX_MODES = %i[legacy start center end space_between space_around].freeze
+
     # Creates a new Layout.
     #
     # [direction] The direction of the layout (:vertical or :horizontal).
     # [constraints] An array of Constraint objects defining the size of each section.
     # [children] An array of widgets to render within each section.
-    def initialize(direction: :vertical, constraints: [], children: [])
+    # [flex] Controls how empty space is distributed (default: :legacy).
+    def initialize(direction: :vertical, constraints: [], children: [], flex: :legacy)
       super
     end
   end

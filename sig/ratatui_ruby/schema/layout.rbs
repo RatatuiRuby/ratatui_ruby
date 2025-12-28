@@ -2,10 +2,15 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
+  type flex_mode = :legacy | :start | :center | :end | :space_between | :space_around
+
   class Layout < Data
+    FLEX_MODES: Array[Symbol]
+
     attr_reader direction: Symbol
     attr_reader constraints: Array[Constraint]
     attr_reader children: Array[widget]
-    def self.new: (?direction: Symbol, ?constraints: Array[Constraint], ?children: Array[widget]) -> Layout
+    attr_reader flex: flex_mode
+    def self.new: (?direction: Symbol, ?constraints: Array[Constraint], ?children: Array[widget], ?flex: flex_mode) -> Layout
   end
 end
