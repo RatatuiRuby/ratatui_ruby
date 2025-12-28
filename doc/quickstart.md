@@ -125,6 +125,11 @@ Demonstrates the use of `Tabs` and `BarChart` widgets with a simple data-switchi
 
 ![Analytics Screenshot](./images/examples-analytics.rb.png)
 
+### [Block Padding](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/block_padding.rb)
+Demonstrates the `padding` property of the `Block` widget, supporting both uniform and directional padding.
+
+![Block Padding Screenshot](./images/examples-block_padding.rb.png)
+
 ### [Box Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/box_demo.rb)
 A simple demonstration of `Block` and `Paragraph` widgets, reacting to key presses to change colors border styles.
 

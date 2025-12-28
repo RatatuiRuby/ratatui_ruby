@@ -65,4 +65,34 @@ class TestBlock < Minitest::Test
       assert_equal "┗━━━━━━━━━━━━━━━━━━┛", buffer_content[2]
     end
   end
+  def test_render_with_padding_uniform
+    with_test_terminal(20, 5) do
+      # 1px padding on all sides
+      b = RatatuiRuby::Block.new(borders: [:all], padding: 1)
+      p = RatatuiRuby::Paragraph.new(text: "Hello", block: b)
+      RatatuiRuby.draw(p)
+
+      assert_equal "┌──────────────────┐", buffer_content[0]
+      assert_equal "│                  │", buffer_content[1]
+      assert_equal "│ Hello            │", buffer_content[2]
+      assert_equal "│                  │", buffer_content[3]
+      assert_equal "└──────────────────┘", buffer_content[4]
+    end
+  end
+
+  def test_render_with_padding_array
+    with_test_terminal(20, 5) do
+      # Left: 2, Right: 0, Top: 1, Bottom: 0
+      b = RatatuiRuby::Block.new(borders: [:all], padding: [2, 0, 1, 0])
+      p = RatatuiRuby::Paragraph.new(text: "Hello", block: b)
+      RatatuiRuby.draw(p)
+
+      assert_equal "┌──────────────────┐", buffer_content[0]
+      assert_equal "│                  │", buffer_content[1]
+      assert_equal "│  Hello           │", buffer_content[2]
+      # Remaining lines are empty
+      assert_equal "│                  │", buffer_content[3]
+      assert_equal "└──────────────────┘", buffer_content[4]
+    end
+  end
 end

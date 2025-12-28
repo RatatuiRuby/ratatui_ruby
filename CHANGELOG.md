@@ -12,6 +12,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **Block Padding**: `Block` widget now supports correct padding via the `padding` parameter, accepting either a single integer for uniform padding or an array of 4 integers for directional padding (`[left, right, top, bottom]`).
+
 - Added `Flex::SpaceEvenly` layout mode to `Layout` widget.
 - **Block Border Types**: Added `border_type` to `Block` widget, allowing `:plain`, `:rounded`, `:double`, `:thick`, `:quadrant_inside`, and `:quadrant_outside` border styles.
 - **Fill and Max Constraints**: Added `Constraint.fill(weight)` and `Constraint.max(value)` for modern ratatui layout patterns. Fill constraints distribute remaining space proportionally—for example, `Fill(1)` and `Fill(3)` split space in a 1:3 ratio. Max constraints cap the maximum size of a section.

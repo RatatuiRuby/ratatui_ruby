@@ -5,7 +5,7 @@ use magnus::{prelude::*, Error, Symbol, Value};
 use ratatui::{
     style::{Color, Modifier, Style},
     text::Line,
-    widgets::{Block, BorderType, Borders},
+    widgets::{Block, BorderType, Borders, Padding},
 };
 
 pub fn parse_color(color_str: &str) -> Option<Color> {
@@ -74,6 +74,7 @@ pub fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
     let borders_val: Value = block_val.funcall("borders", ())?;
     let border_color: Value = block_val.funcall("border_color", ())?;
     let border_type_val: Value = block_val.funcall("border_type", ())?;
+    let padding_val: Value = block_val.funcall("padding", ())?;
 
     let mut block = Block::default();
 
@@ -126,6 +127,20 @@ pub fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
                 "quadrant_inside" => block = block.border_type(BorderType::QuadrantInside),
                 "quadrant_outside" => block = block.border_type(BorderType::QuadrantOutside),
                 _ => {}
+            }
+        }
+    }
+
+    if !padding_val.is_nil() {
+        if let Ok(padding) = u16::try_convert(padding_val) {
+            block = block.padding(Padding::uniform(padding));
+        } else if let Some(padding_array) = magnus::RArray::from_value(padding_val) {
+            if padding_array.len() == 4 {
+                let left: u16 = padding_array.entry(0).unwrap_or(0);
+                let right: u16 = padding_array.entry(1).unwrap_or(0);
+                let top: u16 = padding_array.entry(2).unwrap_or(0);
+                let bottom: u16 = padding_array.entry(3).unwrap_or(0);
+                block = block.padding(Padding::new(left, right, top, bottom));
             }
         }
     }
