@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 require_relative "ratatui_ruby/version"
+require_relative "ratatui_ruby/schema/rect"
 require_relative "ratatui_ruby/schema/paragraph"
 require_relative "ratatui_ruby/schema/layout"
 require_relative "ratatui_ruby/schema/block"
@@ -71,7 +72,7 @@ module RatatuiRuby
   # Polls for a keyboard event.
   #
   #   poll_event
-  #   # => { type: "key", code: "char", value: "a", modifiers: [] }
+  #   # => { type: :key, code: "a", modifiers: ["ctrl"] }
   #
   # (Native method implemented in Rust)
 

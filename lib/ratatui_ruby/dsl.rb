@@ -46,6 +46,8 @@ module RatatuiRuby
 
     # Wrap classes as snake_case factories
     RatatuiRuby.constants.each do |const_name|
+      next if const_name == :Buffer
+
       klass = RatatuiRuby.const_get(const_name)
       next unless klass.is_a?(Class)
 

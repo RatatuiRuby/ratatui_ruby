@@ -1,11 +1,24 @@
 // SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+use crate::buffer::BufferWrapper;
 use crate::widgets;
 use magnus::{prelude::*, Error, Value};
 use ratatui::{layout::Rect, Frame};
 
 pub fn render_node(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+    if node.respond_to("render", true)? {
+        let wrapper = BufferWrapper::new(frame.buffer_mut());
+        let ruby_area = {
+            let ruby = magnus::Ruby::get().unwrap();
+            let module = ruby.define_module("RatatuiRuby")?;
+            let class = module.const_get::<_, magnus::RClass>("Rect")?;
+            class.funcall::<_, _, Value>("new", (area.x, area.y, area.width, area.height))?
+        };
+        node.funcall::<_, _, Value>("render", (ruby_area, wrapper))?;
+        return Ok(());
+    }
+
     let class = node.class();
     let class_name = unsafe { class.name() };
 

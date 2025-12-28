@@ -129,8 +129,17 @@ A simple demonstration of `Block` and `Paragraph` widgets, reacting to arrow key
 ### [Calendar Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/calendar_demo.rb)
 A simple demo application for the `Calendar` widget.
 
+![Calendar Screenshot](./images/examples-calendar_demo.rb.png)
+
 ### [Chart Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/chart_demo.rb)
 Demonstrates the `Chart` widget with both scatter and line datasets, including custom axes.
+
+![Chart Screenshot](./images/examples-chart_demo.rb.png)
+
+### [Custom Widget (Escape Hatch)](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/custom_widget.rb)
+Demonstrates how to define a custom widget in pure Ruby using the `render(area, buffer)` escape hatch for low-level drawing.
+
+![Custom Widget Screenshot](./images/examples-custom_widget.rb.png)
 
 ### [Dashboard](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/dashboard.rb)
 Uses `Layout`, `List`, and `Paragraph` to create a classic sidebar-and-content interface.

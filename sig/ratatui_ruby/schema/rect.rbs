@@ -1,0 +1,14 @@
+# frozen_string_literal: true
+
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class Rect < Data
+    attr_reader x: Integer
+    attr_reader y: Integer
+    attr_reader width: Integer
+    attr_reader height: Integer
+    def self.new: (x: Integer, y: Integer, width: Integer, height: Integer) -> instance
+  end
+end
