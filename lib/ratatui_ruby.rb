@@ -100,10 +100,10 @@ module RatatuiRuby
   #     break if event && event[:type] == :key && event[:code] == "q"
   #   end
   def self.main_loop
-    require_relative "ratatui_ruby/dsl"
+    require_relative "ratatui_ruby/session"
     init_terminal
     loop do
-      yield DSL.new
+      yield Session.new
     end
   ensure
     restore_terminal

@@ -4,10 +4,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 require "test_helper"
-require "ratatui_ruby/dsl"
+require "ratatui_ruby/session"
 
-class TestAppPattern < Minitest::Test
-  def test_dsl_object_delegation
+class TestSession < Minitest::Test
+  def test_session_delegation
     with_test_terminal(20, 1) do
       RatatuiRuby.main_loop do |tui|
         p = tui.paragraph(text: "Builder Works")
@@ -18,8 +18,8 @@ class TestAppPattern < Minitest::Test
     end
   end
 
-  def test_dsl_shape_methods
-    tui = RatatuiRuby::DSL.new
+  def test_session_shape_methods
+    tui = RatatuiRuby::Session.new
 
     point = tui.shape_point(x: 1.0, y: 2.0)
     assert_instance_of RatatuiRuby::Shape::Point, point
@@ -41,8 +41,8 @@ class TestAppPattern < Minitest::Test
     assert_instance_of RatatuiRuby::Shape::Map, map
   end
 
-  def test_dsl_text_methods
-    tui = RatatuiRuby::DSL.new
+  def test_session_text_methods
+    tui = RatatuiRuby::Session.new
 
     span = tui.text_span(content: "hello")
     assert_instance_of RatatuiRuby::Text::Span, span

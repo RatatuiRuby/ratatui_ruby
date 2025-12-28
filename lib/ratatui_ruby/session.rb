@@ -5,8 +5,8 @@
 
 module RatatuiRuby
   ##
-  # A wrapper class that provides a concise DSL for creating widgets and interacting
-  # with the terminal within the +main_loop+.
+  # A managed terminal session that provides convenience methods for creating widgets
+  # and interacting with the terminal within +main_loop+.
   #
   # This class is yielded to the block provided to {RatatuiRuby.main_loop}.
   # It uses metaprogramming to delegate method calls to {RatatuiRuby} module functions
@@ -19,7 +19,7 @@ module RatatuiRuby
   #    (e.g., +RatatuiRuby::Paragraph.new+).
   #
   # 2. **Method Shorthand**: Aliases module functions of {RatatuiRuby}, allowing you
-  #    to call methods like +draw+ and +poll_event+ directly on the DSL object.
+  #    to call methods like +draw+ and +poll_event+ directly on the session object.
   #
   # == Example
   #
@@ -36,7 +36,7 @@ module RatatuiRuby
   #
   #     break if event && event[:code] == "q"
   #   end
-  class DSL
+  class Session
     # Wrap methods directly
     RatatuiRuby.singleton_methods(false).each do |method_name|
       define_method(method_name) do |*args, **kwargs, &block|

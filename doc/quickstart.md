@@ -76,9 +76,9 @@ end
 4.  **`RatatuiRuby.poll_event`**: Checks for keyboard, mouse, or resize events.
 5.  **`RatatuiRuby.restore_terminal`**: Crucial for leaving raw mode and returning the user to their shell properly. Always wrap your loop in a `begin...ensure` block to guarantee this runs.
 
-### DSL
+### Managed Session
 
-A small DSL is provided for convenience when writing scripts.
+A managed session is provided for convenience when writing scripts.
 
 ```rb
 require "ratatui_ruby"
@@ -109,8 +109,8 @@ end
 #### How it works
 
 1.  **`RatatuiRuby.main_loop`**: This helper method manages the entire terminal lifecycle for you. It initializes the terminal before the block starts and ensures `restore_terminal` is called when the block exits (even if an error occurs).
-2.  **Widget Shorthand**: The block yields a special DSL object (here named `tui`). This object provides factory methods for every widget, allowing you to write `tui.paragraph(...)` instead of the more verbose `RatatuiRuby::Paragraph.new(...)`.
-3.  **Method SHorthand**: The DSL object also provides aliases for module functions of `RatatuiRuby`, allowing you to write `tui.draw(...)` instead of the more verbose `RatatuiRuby::draw(...)`.
+2.  **Widget Shorthand**: The block yields a `Session` object (here named `tui`). This object provides factory methods for every widget, allowing you to write `tui.paragraph(...)` instead of the more verbose `RatatuiRuby::Paragraph.new(...)`.
+3.  **Method Shorthand**: The session object also provides aliases for module functions of `RatatuiRuby`, allowing you to write `tui.draw(...)` instead of the more verbose `RatatuiRuby::draw(...)`.
 
 ## Examples
 
