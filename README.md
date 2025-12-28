@@ -23,7 +23,7 @@ Mailing List: Announcements](https://img.shields.io/badge/mailing_list-announcem
 > [!WARNING]  
 > **ratatui_ruby** is currently in an early stage of development. Use at your own risk.
 
-Please join our **announce** mailing list at https://lists.sr.ht/~kerrick/ratatui_ruby-announce to stay up-to-date on new releases and announcements.
+Please join the **announce** mailing list at https://lists.sr.ht/~kerrick/ratatui_ruby-announce to stay up-to-date on new releases and announcements.
 
 
 ## Compatibility
@@ -80,21 +80,21 @@ RatatuiRuby.main_loop do |tui|
 end
 ```
 
-For a full tutorial, see [the Quickstart](./docs/quickstart.md).
+For a full tutorial, see [the Quickstart](./doc/quickstart.md).
 
 
 ## Documentation
 
-For the full documentation on how to use **ratatui_ruby**, see our [docs](./docs/index.md).
+For the full documentation on how to use **ratatui_ruby**, see the [documentation](./doc/index.md).  For other information, see the [wiki](https://man.sr.ht/~kerrick/ratatui_ruby).
 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on [sourcehut](https://sourcehut.org) at https://sr.ht/~kerrick/ratatui_ruby/. This project is intended to be a safe, productive collaboration, and contributors are expected to adhere to the [Ruby Community Conduct Guideline](https://www.ruby-lang.org/en/conduct/).
+Bug reports and pull requests are welcome on [sourcehut](https://sourcehut.org) at https://sr.ht/~kerrick/ratatui_ruby/. This project is intended to be a safe, productive collaboration, and contributors are expected to adhere to the [Code of Conduct](https://man.sr.ht/~kerrick/ratatui_ruby/code_of_conduct.md).
 
 Issues for the underlying Rust library should be filed at [ratatui/ratatui](https://github.com/ratatui/ratatui).
 
-Want to help develop **ratatui_ruby**? Check out our [contribution guide](./CONTRIBUTING.md).
+Want to help develop **ratatui_ruby**? Check out the [contribution guide on the wiki](https://man.sr.ht/~kerrick/ratatui_ruby/contributing.md).
 
 
 ## Copyright & License

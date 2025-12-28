@@ -7,7 +7,8 @@
 
 ## Documentation for Contributors
 
-- [Contributing Guidelines](../../CONTRIBUTING.md)
+- [Contributing Guidelines](https://man.sr.ht/~kerrick/ratatui_ruby/contributing.md)
+- [Documentation Guide](https://man.sr.ht/~kerrick/ratatui_ruby/documentation_guide.md)
 - [The Design of **ratatui_ruby**](./design.md)
 
 ## Documentation for Users

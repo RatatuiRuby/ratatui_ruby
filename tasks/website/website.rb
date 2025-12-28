@@ -10,7 +10,7 @@ require_relative "version_menu"
 require "fileutils"
 
 class Website
-  def initialize(at: "public", project_name:, globs:, assets: [])
+  def initialize(at: "www", project_name:, globs:, assets: [])
     @destination = at
     @project_name = project_name
     @globs = globs

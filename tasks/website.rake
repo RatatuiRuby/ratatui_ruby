@@ -14,13 +14,13 @@ namespace :website do
     require_relative "website/website"
     
     spec = Gem::Specification.load(Dir["*.gemspec"].first)
-    globs = RDocConfig::RDOC_FILES + ["*.gemspec", "docs/images/**/*"]
+    globs = RDocConfig::RDOC_FILES + ["*.gemspec", "doc/images/**/*"]
     
     Website.new(
-      at: "public",
+      at: "www",
       project_name: spec.name,
       globs: globs,
-      assets: ["docs/images"] # directories to copy
+      assets: ["doc/images"] # directories to copy
     ).build
   end
 end

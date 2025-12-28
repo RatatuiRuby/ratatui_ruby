@@ -15,7 +15,7 @@ class VersionedDocumentation
     
     absolute_path = File.absolute_path(path)
     gemfile_path = File.absolute_path("Gemfile")
-    custom_css_path = File.absolute_path("docs/custom.css")
+    custom_css_path = File.absolute_path("doc/custom.css")
 
     @version.checkout(globs: globs) do |source_path|
       Dir.chdir(source_path) do

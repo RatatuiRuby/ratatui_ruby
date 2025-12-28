@@ -67,6 +67,7 @@ class Edge < Version
       
       files.each do |file|
         dest = File.join(path, file)
+        next unless File.exist?(file) # Skip files that are in the index but deleted in the working tree
         FileUtils.mkdir_p(File.dirname(dest))
         FileUtils.cp(file, dest)
       end

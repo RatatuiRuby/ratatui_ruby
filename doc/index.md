@@ -14,5 +14,5 @@
 
 ## Documentation for Contributors
 
-- [Contributing Guidelines](../CONTRIBUTING.md)
+- [Contributing Guidelines](https://man.sr.ht/~kerrick/ratatui_ruby/contributing.md)
 - [More Documentation for Contributors](./contributors/index.md)

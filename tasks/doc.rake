@@ -8,16 +8,16 @@ require "rdoc/task"
 require_relative "rdoc_config"
 
 RDoc::Task.new do |rdoc|
-  rdoc.rdoc_dir = "doc"
+  rdoc.rdoc_dir = "tmp/rdoc"
   rdoc.main = RDocConfig::MAIN
   rdoc.rdoc_files.include(RDocConfig::RDOC_FILES)
-  rdoc.options << "--template-stylesheets=docs/custom.css"
+  rdoc.options << "--template-stylesheets=doc/custom.css"
 end
 
 task :copy_doc_images do
-  if Dir.exist?("docs/images")
-    FileUtils.mkdir_p "doc/docs/images"
-    FileUtils.cp_r Dir["docs/images/*.png"], "doc/docs/images"
+  if Dir.exist?("doc/images")
+    FileUtils.mkdir_p "tmp/rdoc/doc/images"
+    FileUtils.cp_r Dir["doc/images/*.png"], "tmp/rdoc/doc/images"
   end
 end
 

@@ -5,12 +5,12 @@
 /.bundle/
 /.yardoc
 /_yardoc/
-/coverage/
-/doc/
+
+
 /pkg/
 /spec/reports/
 /tmp/
-/public/
+/www/
 site.tar.gz
 .output.txt
 /ext/ratatui_ruby/target/
