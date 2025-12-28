@@ -5,7 +5,7 @@ use magnus::{prelude::*, Error, Symbol, Value};
 use ratatui::{
     style::{Color, Modifier, Style},
     text::Line,
-    widgets::{Block, Borders},
+    widgets::{Block, BorderType, Borders},
 };
 
 pub fn parse_color(color_str: &str) -> Option<Color> {
@@ -73,6 +73,7 @@ pub fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
     let title: Value = block_val.funcall("title", ())?;
     let borders_val: Value = block_val.funcall("borders", ())?;
     let border_color: Value = block_val.funcall("border_color", ())?;
+    let border_type_val: Value = block_val.funcall("border_type", ())?;
 
     let mut block = Block::default();
 
@@ -112,6 +113,20 @@ pub fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
         let color_str: String = border_color.funcall("to_s", ())?;
         if let Some(color) = parse_color(&color_str) {
             block = block.border_style(Style::default().fg(color));
+        }
+    }
+
+    if !border_type_val.is_nil() {
+        if let Some(sym) = Symbol::from_value(border_type_val) {
+            match sym.to_string().as_str() {
+                "plain" => block = block.border_type(BorderType::Plain),
+                "rounded" => block = block.border_type(BorderType::Rounded),
+                "double" => block = block.border_type(BorderType::Double),
+                "thick" => block = block.border_type(BorderType::Thick),
+                "quadrant_inside" => block = block.border_type(BorderType::QuadrantInside),
+                "quadrant_outside" => block = block.border_type(BorderType::QuadrantOutside),
+                _ => {}
+            }
         }
     }
 

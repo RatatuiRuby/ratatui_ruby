@@ -9,7 +9,8 @@ require "ratatui_ruby"
 class BoxDemoApp
   def initialize
     @color = "green"
-    @text = "Press Arrow Keys (q to quit)"
+    @border_type = :plain
+    @text = "Press Arrow Keys (q to quit)\nSpace to switch border type"
   end
 
   def run
@@ -27,9 +28,10 @@ class BoxDemoApp
   def render
     # 1. State/View
     block = RatatuiRuby::Block.new(
-      title: "Box Demo",
+      title: "Box Demo - #{@border_type}",
       borders: [:all],
-      border_color: @color
+      border_color: @color,
+      border_type: @border_type
     )
 
     view_tree = RatatuiRuby::Paragraph.new(
@@ -40,6 +42,12 @@ class BoxDemoApp
 
     # 2. Render
     RatatuiRuby.draw(view_tree)
+  end
+
+  def next_border_type
+    types = [:plain, :rounded, :double, :thick, :quadrant_inside, :quadrant_outside]
+    current_index = types.index(@border_type) || 0
+    @border_type = types[(current_index + 1) % types.length]
   end
 
   def handle_input
@@ -63,6 +71,9 @@ class BoxDemoApp
       when "right"
         @color = "magenta"
         @text = "Right Pressed!"
+      when " "
+        next_border_type
+        @text = "Switched to #{@border_type}"
       end
     end
   end

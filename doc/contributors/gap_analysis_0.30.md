@@ -46,7 +46,7 @@ Comparison of ratatui 0.30 features vs ratatui_ruby current implementation.
 | `title_position()` | — | ❌ **MISSING** (deprecated approach) |
 | `borders()` | `borders:` | ✅ |
 | `border_style()` | `border_color:` | ⚠️ Partial (color only, not full style) |
-| `border_type()` | — | ❌ **MISSING** (Plain/Rounded/Double/Thick) |
+| `border_type()` | `border_type:` | ✅ |
 | `border_set()` | — | ❌ **MISSING** (custom border chars) |
 | `style()` | — | ❌ **MISSING** (base block style) |
 | `padding()` | — | ❌ **MISSING** |

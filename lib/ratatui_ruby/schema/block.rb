@@ -10,13 +10,16 @@ module RatatuiRuby
   # [borders] An array of symbols representing which borders to display:
   #           [:top, :bottom, :left, :right, :all, :none]
   # [border_color] The color of the border (e.g., "red", "#ff0000").
-  class Block < Data.define(:title, :borders, :border_color)
+  # [border_type] The type of border to display:
+  #               [:plain, :rounded, :double, :thick, :quadrant_inside, :quadrant_outside]
+  class Block < Data.define(:title, :borders, :border_color, :border_type)
     # Creates a new Block.
     #
     # [title] The title string to display on the border.
     # [borders] An array of symbols representing which borders to display.
     # [border_color] The color of the border.
-    def initialize(title: nil, borders: [:all], border_color: nil)
+    # [border_type] The type of border to display.
+    def initialize(title: nil, borders: [:all], border_color: nil, border_type: nil)
       super
     end
   end

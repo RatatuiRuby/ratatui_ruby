@@ -122,9 +122,9 @@ Demonstrates the use of `Tabs` and `BarChart` widgets with a simple data-switchi
 ![Analytics Screenshot](./images/examples-analytics.rb.png)
 
 ### [Box Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/box_demo.rb)
-A simple demonstration of `Block` and `Paragraph` widgets, reacting to arrow key presses to change colors.
+A simple demonstration of `Block` and `Paragraph` widgets, reacting to key presses to change colors border styles.
 
-![Box Demo Screenshot](./images/examples-box_demo.rb.png)
+![Box Demo Screenshot](./images/examples-box_demo.rb.gif)
 
 ### [Calendar Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/calendar_demo.rb)
 A simple demo application for the `Calendar` widget.
