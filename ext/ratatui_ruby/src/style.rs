@@ -12,6 +12,7 @@ pub fn parse_color(color_str: &str) -> Option<Color> {
 }
 
 pub fn parse_style(style_val: Value) -> Result<Style, Error> {
+    let ruby = magnus::Ruby::get().unwrap();
     if style_val.is_nil() {
         return Ok(Style::default());
     }
@@ -38,7 +39,7 @@ pub fn parse_style(style_val: Value) -> Result<Style, Error> {
     if !modifiers_val.is_nil() {
         let modifiers_array = magnus::RArray::from_value(modifiers_val).ok_or_else(|| {
             Error::new(
-                magnus::exception::type_error(),
+                ruby.exception_type_error(),
                 "expected array for modifiers",
             )
         })?;

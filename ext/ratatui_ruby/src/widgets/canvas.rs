@@ -36,8 +36,7 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
     }
 
     let canvas = canvas.paint(|ctx| {
-        for shape_val in shapes_val.each() {
-            let shape_val = shape_val.unwrap();
+        for shape_val in shapes_val {
             let class = shape_val.class();
             let class_name = unsafe { class.name() };
 

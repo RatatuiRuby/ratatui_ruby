@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use magnus::{Error, IntoValue, Symbol, TryConvert, Value};
+use magnus::{Error, IntoValue, TryConvert, Value};
 use std::sync::Mutex;
 
 lazy_static::lazy_static! {
@@ -9,11 +9,12 @@ lazy_static::lazy_static! {
 }
 
 pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), Error> {
+    let ruby = magnus::Ruby::get().unwrap();
     let event = match event_type.as_str() {
         "key" => {
-            let code_val: Value = data.get(Symbol::new("code")).ok_or_else(|| {
+            let code_val: Value = data.get(ruby.to_symbol("code")).ok_or_else(|| {
                 Error::new(
-                    magnus::exception::arg_error(),
+                    ruby.exception_arg_error(),
                     "Missing 'code' in key event",
                 )
             })?;
@@ -32,7 +33,7 @@ pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), 
             };
 
             let mut modifiers = ratatui::crossterm::event::KeyModifiers::empty();
-            if let Some(mods_val) = data.get(Symbol::new("modifiers")) {
+            if let Some(mods_val) = data.get(ruby.to_symbol("modifiers")) {
                 let mods: Vec<String> = Vec::try_convert(mods_val)?;
                 for m in mods {
                     match m.as_str() {
@@ -47,15 +48,15 @@ pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), 
             ratatui::crossterm::event::Event::Key(ratatui::crossterm::event::KeyEvent::new(code, modifiers))
         }
         "mouse" => {
-            let kind_val: Value = data.get(Symbol::new("kind")).ok_or_else(|| {
+            let kind_val: Value = data.get(ruby.to_symbol("kind")).ok_or_else(|| {
                 Error::new(
-                    magnus::exception::arg_error(),
+                    ruby.exception_arg_error(),
                     "Missing 'kind' in mouse event",
                 )
             })?;
             let kind_str: String = String::try_convert(kind_val)?;
 
-            let button = if let Some(btn_val) = data.get(Symbol::new("button")) {
+            let button = if let Some(btn_val) = data.get(ruby.to_symbol("button")) {
                 let button_str: String = String::try_convert(btn_val)?;
                 match button_str.as_str() {
                     "right" => ratatui::crossterm::event::MouseButton::Right,
@@ -66,13 +67,13 @@ pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), 
                 ratatui::crossterm::event::MouseButton::Left
             };
 
-            let x_val: Value = data.get(Symbol::new("x")).ok_or_else(|| {
-                Error::new(magnus::exception::arg_error(), "Missing 'x' in mouse event")
+            let x_val: Value = data.get(ruby.to_symbol("x")).ok_or_else(|| {
+                Error::new(ruby.exception_arg_error(), "Missing 'x' in mouse event")
             })?;
             let x: u16 = u16::try_convert(x_val)?;
 
-            let y_val: Value = data.get(Symbol::new("y")).ok_or_else(|| {
-                Error::new(magnus::exception::arg_error(), "Missing 'y' in mouse event")
+            let y_val: Value = data.get(ruby.to_symbol("y")).ok_or_else(|| {
+                Error::new(ruby.exception_arg_error(), "Missing 'y' in mouse event")
             })?;
             let y: u16 = u16::try_convert(y_val)?;
 
@@ -87,14 +88,14 @@ pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), 
                 "scroll_right" => ratatui::crossterm::event::MouseEventKind::ScrollRight,
                 _ => {
                     return Err(Error::new(
-                        magnus::exception::arg_error(),
+                        ruby.exception_arg_error(),
                         format!("Unknown mouse kind: {}", kind_str),
                     ))
                 }
             };
 
             let mut modifiers = ratatui::crossterm::event::KeyModifiers::empty();
-            if let Some(mods_val) = data.get(Symbol::new("modifiers")) {
+            if let Some(mods_val) = data.get(ruby.to_symbol("modifiers")) {
                 let mods: Vec<String> = Vec::try_convert(mods_val)?;
                 for m in mods {
                     match m.as_str() {
@@ -115,7 +116,7 @@ pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), 
         }
         _ => {
             return Err(Error::new(
-                magnus::exception::arg_error(),
+                ruby.exception_arg_error(),
                 format!("Unknown event type: {}", event_type),
             ))
         }
@@ -126,6 +127,7 @@ pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), 
 }
 
 pub fn poll_event() -> Result<Value, Error> {
+    let ruby = magnus::Ruby::get().unwrap();
     let event = {
         let mut queue = EVENT_QUEUE.lock().unwrap();
         if !queue.is_empty() {
@@ -149,26 +151,28 @@ pub fn poll_event() -> Result<Value, Error> {
     };
 
     if is_test_mode {
-        return Ok(magnus::value::qnil().into_value());
+        return Ok(ruby.qnil().into_value_with(&magnus::Ruby::get().unwrap()));
     }
 
     if ratatui::crossterm::event::poll(std::time::Duration::from_millis(16))
-        .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?
+        .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?
     {
         let event = ratatui::crossterm::event::read()
-            .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
+            .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
         handle_event(event)
     } else {
-        Ok(magnus::value::qnil().into_value())
+        Ok(ruby.qnil().into_value_with(&magnus::Ruby::get().unwrap()))
     }
 }
 
 fn handle_event(event: ratatui::crossterm::event::Event) -> Result<Value, Error> {
+    let ruby = magnus::Ruby::get().unwrap();
     match event {
         ratatui::crossterm::event::Event::Key(key) => {
             if key.kind == ratatui::crossterm::event::KeyEventKind::Press {
-                let hash = magnus::RHash::new();
-                hash.aset(Symbol::new("type"), Symbol::new("key"))?;
+                let ruby = magnus::Ruby::get().unwrap();
+                let hash = ruby.hash_new();
+                hash.aset(ruby.to_symbol("type"), ruby.to_symbol("key"))?;
 
                 let code = match key.code {
                     ratatui::crossterm::event::KeyCode::Char(c) => c.to_string(),
@@ -182,7 +186,7 @@ fn handle_event(event: ratatui::crossterm::event::Event) -> Result<Value, Error>
                     ratatui::crossterm::event::KeyCode::Tab => "tab".to_string(),
                     _ => "unknown".to_string(),
                 };
-                hash.aset(Symbol::new("code"), code)?;
+                hash.aset(ruby.to_symbol("code"), code)?;
 
                 let mut modifiers = Vec::new();
                 if key
@@ -201,15 +205,16 @@ fn handle_event(event: ratatui::crossterm::event::Event) -> Result<Value, Error>
                     modifiers.push("shift");
                 }
                 if !modifiers.is_empty() {
-                    hash.aset(Symbol::new("modifiers"), modifiers)?;
+                    hash.aset(ruby.to_symbol("modifiers"), modifiers)?;
                 }
 
-                return Ok(hash.into_value());
+            return Ok(hash.into_value_with(&ruby));
             }
         }
         ratatui::crossterm::event::Event::Mouse(event) => {
-            let hash = magnus::RHash::new();
-            hash.aset(Symbol::new("type"), Symbol::new("mouse"))?;
+            let ruby = magnus::Ruby::get().unwrap();
+            let hash = ruby.hash_new();
+            hash.aset(ruby.to_symbol("type"), ruby.to_symbol("mouse"))?;
 
             let (kind, button) = match event.kind {
                 ratatui::crossterm::event::MouseEventKind::Down(btn) => ("down", btn),
@@ -232,7 +237,7 @@ fn handle_event(event: ratatui::crossterm::event::Event) -> Result<Value, Error>
                 } // button is ignored for scroll
             };
 
-            hash.aset(Symbol::new("kind"), Symbol::new(kind))?;
+            hash.aset(ruby.to_symbol("kind"), ruby.to_symbol(kind))?;
 
             if matches!(
                 event.kind,
@@ -245,13 +250,13 @@ fn handle_event(event: ratatui::crossterm::event::Event) -> Result<Value, Error>
                     ratatui::crossterm::event::MouseButton::Right => "right",
                     ratatui::crossterm::event::MouseButton::Middle => "middle",
                 };
-                hash.aset(Symbol::new("button"), Symbol::new(btn_sym))?;
+                hash.aset(ruby.to_symbol("button"), ruby.to_symbol(btn_sym))?;
             } else {
-                hash.aset(Symbol::new("button"), Symbol::new("none"))?;
+                hash.aset(ruby.to_symbol("button"), ruby.to_symbol("none"))?;
             }
 
-            hash.aset(Symbol::new("x"), event.column)?;
-            hash.aset(Symbol::new("y"), event.row)?;
+            hash.aset(ruby.to_symbol("x"), event.column)?;
+            hash.aset(ruby.to_symbol("y"), event.row)?;
 
             let mut modifiers = Vec::new();
             if event
@@ -272,11 +277,11 @@ fn handle_event(event: ratatui::crossterm::event::Event) -> Result<Value, Error>
             {
                 modifiers.push("shift");
             }
-            hash.aset(Symbol::new("modifiers"), modifiers)?;
+            hash.aset(ruby.to_symbol("modifiers"), modifiers)?;
 
-            return Ok(hash.into_value());
+            return Ok(hash.into_value_with(&ruby));
         }
         _ => {}
     }
-    Ok(magnus::value::qnil().into_value())
+    Ok(ruby.qnil().into_value_with(&magnus::Ruby::get().unwrap()))
 }

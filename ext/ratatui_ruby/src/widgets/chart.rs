@@ -12,6 +12,7 @@ use ratatui::{
 };
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+    let ruby = magnus::Ruby::get().unwrap();
     let class = node.class();
     let class_name = unsafe { class.name() };
 
@@ -37,7 +38,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         for j in 0..data_array.len() {
             let point_array_val: Value = data_array.entry(j as isize)?;
             let point_array = magnus::RArray::from_value(point_array_val).ok_or_else(|| {
-                Error::new(magnus::exception::type_error(), "expected array for point")
+                Error::new(ruby.exception_type_error(), "expected array for point")
             })?;
             let x: f64 = point_array.entry(0)?;
             let y: f64 = point_array.entry(1)?;
@@ -125,6 +126,7 @@ fn parse_axis(axis_val: Value) -> Result<Axis<'static>, Error> {
 }
 
 fn render_line_chart(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+    let ruby = magnus::Ruby::get().unwrap();
     let datasets_val: magnus::RArray = node.funcall("datasets", ())?;
     let x_labels_val: magnus::RArray = node.funcall("x_labels", ())?;
     let y_labels_val: magnus::RArray = node.funcall("y_labels", ())?;
@@ -142,7 +144,7 @@ fn render_line_chart(frame: &mut Frame, area: Rect, node: Value) -> Result<(), E
         for j in 0..data_array.len() {
             let point_array_val: Value = data_array.entry(j as isize)?;
             let point_array = magnus::RArray::from_value(point_array_val).ok_or_else(|| {
-                Error::new(magnus::exception::type_error(), "expected array for point")
+                Error::new(ruby.exception_type_error(), "expected array for point")
             })?;
             let x: f64 = point_array.entry(0)?;
             let y: f64 = point_array.entry(1)?;
@@ -180,6 +182,11 @@ fn render_line_chart(frame: &mut Frame, area: Rect, node: Value) -> Result<(), E
     for i in 0..y_labels_val.len() {
         let label: String = y_labels_val.entry(i as isize)?;
         y_labels.push(Span::from(label));
+    }
+    // Ratatui 0.29+ requires labels to be present for the axis line to render
+    if y_labels.is_empty() {
+        y_labels.push(Span::from(""));
+        y_labels.push(Span::from(""));
     }
 
     let y_bounds: [f64; 2] = [y_bounds_val.entry(0)?, y_bounds_val.entry(1)?];

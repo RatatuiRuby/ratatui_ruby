@@ -10,9 +10,10 @@ use ratatui::{
 };
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+    let ruby = magnus::Ruby::get().unwrap();
     let items_val: Value = node.funcall("items", ())?;
     let items_array = magnus::RArray::from_value(items_val)
-        .ok_or_else(|| Error::new(magnus::exception::type_error(), "expected array"))?;
+        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array"))?;
     let selected_index_val: Value = node.funcall("selected_index", ())?;
     let style_val: Value = node.funcall("style", ())?;
     let highlight_style_val: Value = node.funcall("highlight_style", ())?;

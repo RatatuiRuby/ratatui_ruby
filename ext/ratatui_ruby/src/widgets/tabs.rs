@@ -6,12 +6,13 @@ use magnus::{prelude::*, Error, Value};
 use ratatui::{layout::Rect, text::Line, widgets::Tabs, Frame};
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+    let ruby = magnus::Ruby::get().unwrap();
     let titles_val: Value = node.funcall("titles", ())?;
     let selected_index: usize = node.funcall("selected_index", ())?;
     let block_val: Value = node.funcall("block", ())?;
 
     let titles_array = magnus::RArray::from_value(titles_val)
-        .ok_or_else(|| Error::new(magnus::exception::type_error(), "expected array for titles"))?;
+        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for titles"))?;
 
     let mut titles = Vec::new();
     for i in 0..titles_array.len() {

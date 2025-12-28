@@ -10,20 +10,21 @@ use ratatui::{
 };
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+    let ruby = magnus::Ruby::get().unwrap();
     let header_val: Value = node.funcall("header", ())?;
     let rows_val: Value = node.funcall("rows", ())?;
     let rows_array = magnus::RArray::from_value(rows_val)
-        .ok_or_else(|| Error::new(magnus::exception::type_error(), "expected array for rows"))?;
+        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for rows"))?;
     let widths_val: Value = node.funcall("widths", ())?;
     let widths_array = magnus::RArray::from_value(widths_val)
-        .ok_or_else(|| Error::new(magnus::exception::type_error(), "expected array for widths"))?;
+        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for widths"))?;
     let block_val: Value = node.funcall("block", ())?;
 
     let mut rows = Vec::new();
     for i in 0..rows_array.len() {
         let row_val: Value = rows_array.entry(i as isize)?;
         let row_array = magnus::RArray::from_value(row_val)
-            .ok_or_else(|| Error::new(magnus::exception::type_error(), "expected array for row"))?;
+            .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for row"))?;
 
         let mut cells = Vec::new();
         for j in 0..row_array.len() {
@@ -64,7 +65,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
     if !header_val.is_nil() {
         let header_array = magnus::RArray::from_value(header_val).ok_or_else(|| {
-            Error::new(magnus::exception::type_error(), "expected array for header")
+            Error::new(ruby.exception_type_error(), "expected array for header")
         })?;
         let mut header_cells = Vec::new();
         for i in 0..header_array.len() {

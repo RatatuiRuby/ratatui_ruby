@@ -7,10 +7,11 @@ mod style;
 mod terminal;
 mod widgets;
 
-use magnus::{define_module, function, Error, Value};
+use magnus::{function, Error, Value};
 use terminal::{init_terminal, restore_terminal, TERMINAL};
 
 fn draw(tree: Value) -> Result<(), Error> {
+    let ruby = magnus::Ruby::get().unwrap();
     let mut term_lock = TERMINAL.lock().unwrap();
     if let Some(wrapper) = term_lock.as_mut() {
         match wrapper {
@@ -20,7 +21,7 @@ fn draw(tree: Value) -> Result<(), Error> {
                         eprintln!("Render error: {:?}", e);
                     }
                 })
-                .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
+                .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
             }
             terminal::TerminalWrapper::Test(term) => {
                 term.draw(|f| {
@@ -28,7 +29,7 @@ fn draw(tree: Value) -> Result<(), Error> {
                         eprintln!("Render error: {:?}", e);
                     }
                 })
-                .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
+                .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
             }
         }
     } else {
@@ -39,7 +40,8 @@ fn draw(tree: Value) -> Result<(), Error> {
 
 #[magnus::init]
 fn init() -> Result<(), Error> {
-    let m = define_module("RatatuiRuby")?;
+    let ruby = magnus::Ruby::get().unwrap();
+    let m = ruby.define_module("RatatuiRuby")?;
     m.define_module_function("init_terminal", function!(init_terminal, 0))?;
     m.define_module_function("restore_terminal", function!(restore_terminal, 0))?;
     m.define_module_function("draw", function!(draw, 1))?;

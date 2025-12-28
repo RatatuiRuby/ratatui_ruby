@@ -12,6 +12,7 @@ use std::convert::TryFrom;
 use time::{Date, Month};
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+    let ruby = magnus::Ruby::get().unwrap();
     let year: i32 = node.funcall("year", ())?;
     let month_u8: u8 = node.funcall("month", ())?;
     let day_style_val: Value = node.funcall("day_style", ())?;
@@ -19,10 +20,10 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let block_val: Value = node.funcall("block", ())?;
 
     let month = Month::try_from(month_u8)
-        .map_err(|e| Error::new(magnus::exception::arg_error(), e.to_string()))?;
+        .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?;
 
     let date = Date::from_calendar_date(year, month, 1)
-        .map_err(|e| Error::new(magnus::exception::arg_error(), e.to_string()))?;
+        .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?;
 
     let mut calendar = Monthly::new(date, CalendarEventStore::default());
 

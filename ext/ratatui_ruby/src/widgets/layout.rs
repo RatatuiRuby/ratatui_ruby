@@ -9,10 +9,11 @@ use ratatui::{
 };
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+    let ruby = magnus::Ruby::get().unwrap();
     let direction_sym: Symbol = node.funcall("direction", ())?;
     let children_val: Value = node.funcall("children", ())?;
     let children_array = magnus::RArray::from_value(children_val)
-        .ok_or_else(|| Error::new(magnus::exception::type_error(), "expected array"))?;
+        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array"))?;
 
     let constraints_val: Value = node.funcall("constraints", ())?;
     let constraints_array = magnus::RArray::from_value(constraints_val);

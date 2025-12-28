@@ -19,30 +19,32 @@ lazy_static::lazy_static! {
 }
 
 pub fn init_terminal() -> Result<(), Error> {
+    let ruby = magnus::Ruby::get().unwrap();
     let mut term_lock = TERMINAL.lock().unwrap();
     if term_lock.is_none() {
         ratatui::crossterm::terminal::enable_raw_mode()
-            .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
+            .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
         let mut stdout = io::stdout();
         ratatui::crossterm::execute!(
             stdout,
             ratatui::crossterm::terminal::EnterAlternateScreen,
             ratatui::crossterm::event::EnableMouseCapture
         )
-        .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
+        .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
         let backend = CrosstermBackend::new(stdout);
         let terminal = Terminal::new(backend)
-            .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
+            .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
         *term_lock = Some(TerminalWrapper::Crossterm(terminal));
     }
     Ok(())
 }
 
 pub fn init_test_terminal(width: u16, height: u16) -> Result<(), Error> {
+    let ruby = magnus::Ruby::get().unwrap();
     let mut term_lock = TERMINAL.lock().unwrap();
     let backend = TestBackend::new(width, height);
     let terminal = Terminal::new(backend)
-        .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
+        .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
     *term_lock = Some(TerminalWrapper::Test(terminal));
     Ok(())
 }
@@ -61,6 +63,7 @@ pub fn restore_terminal() -> Result<(), Error> {
 }
 
 pub fn get_buffer_content() -> Result<String, Error> {
+    let ruby = magnus::Ruby::get().unwrap();
     let term_lock = TERMINAL.lock().unwrap();
     if let Some(TerminalWrapper::Test(terminal)) = term_lock.as_ref() {
         // We need to access the buffer.
@@ -82,28 +85,30 @@ pub fn get_buffer_content() -> Result<String, Error> {
         Ok(result)
     } else {
         Err(Error::new(
-            magnus::exception::runtime_error(),
+            ruby.exception_runtime_error(),
             "Terminal is not initialized as TestBackend",
         ))
     }
 }
 
 pub fn get_cursor_position() -> Result<Option<(u16, u16)>, Error> {
+    let ruby = magnus::Ruby::get().unwrap();
     let mut term_lock = TERMINAL.lock().unwrap();
     if let Some(TerminalWrapper::Test(terminal)) = term_lock.as_mut() {
         let pos = terminal
             .get_cursor_position()
-            .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
+            .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
         Ok(Some(pos.into()))
     } else {
         Err(Error::new(
-            magnus::exception::runtime_error(),
+            ruby.exception_runtime_error(),
             "Terminal is not initialized as TestBackend",
         ))
     }
 }
 
 pub fn resize_terminal(width: u16, height: u16) -> Result<(), Error> {
+    let ruby = magnus::Ruby::get().unwrap();
     let mut term_lock = TERMINAL.lock().unwrap();
     if let Some(wrapper) = term_lock.as_mut() {
         match wrapper {
@@ -118,7 +123,7 @@ pub fn resize_terminal(width: u16, height: u16) -> Result<(), Error> {
                 // We might need to call terminal.resize() too if Ratatui caches the size.
                 if let Err(e) = terminal.resize(ratatui::layout::Rect::new(0, 0, width, height)) {
                     return Err(Error::new(
-                        magnus::exception::runtime_error(),
+                        ruby.exception_runtime_error(),
                         e.to_string(),
                     ));
                 }
