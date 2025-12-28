@@ -14,11 +14,15 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
-- **Ruby 4 Support**: Updated magnus FFI bindings to use the modern API for Ruby 4.0.0 compatibility.
-
 ### Fixed
 
 ### Removed
+
+## [0.3.1] - 2025-12-28
+
+### Added
+
+- **Ruby 4 Support**: Updated magnus FFI bindings to use the modern API for Ruby 4.0.0 compatibility.
 
 ## [0.3.0] - 2025-12-28
 
@@ -61,7 +65,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Input Handling**: Robust handling for both Keyboard and Mouse events.
 - **Testing Support**: Included `RatatuiRuby::TestHelper` and RSpec integration to make testing your TUI applications possible.
 
-[Unreleased]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.3.0...HEAD
+[Unreleased]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.3.1...HEAD
+[0.3.1]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.3.0...v0.3.1
 [0.3.0]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.2.0...v0.3.0
 [0.2.0]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.1.0...v0.2.0
 [0.1.0]: https://git.sr.ht/~kerrick/ratatui_ruby/tree/v0.1.0
