@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **Rich Text Support**: Introduced `Text::Span` and `Text::Line` classes for creating styled text with inline formatting. Spans can be combined into lines with optional alignment, enabling word-level control over colors, modifiers, and other style attributes. The Rust backend includes a complete text parser supporting multiple input formats for future integration.
 - **LineGauge Widget**: New `LineGauge` widget for displaying compact, character-based progress bars using line characters. Supports ratio, label, style, and block customization.
 - **New Canvas Markers**: Support for the new `Quadrant`, `Sextant`, and `Octant` markers in the `Canvas` widget for higher-resolution pseudo-pixel rendering.
 

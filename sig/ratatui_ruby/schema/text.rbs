@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  module Text
+    class Span < Data
+      attr_reader content: String
+      attr_reader style: Style?
+
+      def self.new: (content: String, ?style: Style?) -> Span
+      def self.styled: (String, ?Style?) -> Span
+    end
+
+    class Line < Data
+      attr_reader spans: Array[Span]
+      attr_reader alignment: (:left | :center | :right)?
+
+      def self.new: (?spans: Array[Span], ?alignment: (:left | :center | :right)?) -> Line
+      def self.from_string: (String, ?alignment: (:left | :center | :right)?) -> Line
+    end
+  end
+end

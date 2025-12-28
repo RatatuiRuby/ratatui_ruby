@@ -25,6 +25,7 @@ require_relative "ratatui_ruby/schema/center"
 require_relative "ratatui_ruby/schema/scrollbar"
 require_relative "ratatui_ruby/schema/canvas"
 require_relative "ratatui_ruby/schema/calendar"
+require_relative "ratatui_ruby/schema/text"
 
 begin
   require "ratatui_ruby/ratatui_ruby"

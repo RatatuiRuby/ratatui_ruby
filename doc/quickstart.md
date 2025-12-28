@@ -176,6 +176,11 @@ Demonstrates the `Clear` widget and how to prevent "style bleed" when rendering 
 
 ![Popup Demo Screenshot](./images/examples-popup_demo.rb.gif)
 
+### [Rich Text](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/rich_text.rb)
+Demonstrates `Text::Span` and `Text::Line` for creating styled text with inline formatting, enabling word-level control over colors and text modifiers.
+
+![Rich Text Screenshot](./images/examples-rich_text.rb.png)
+
 ### [Scrollbar Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/scrollbar_demo.rb)
 A simple example of integrating the `Scrollbar` widget and handling mouse wheel events for scrolling.
 

@@ -6,6 +6,7 @@ mod events;
 mod rendering;
 mod style;
 mod terminal;
+mod text;
 mod widgets;
 
 use magnus::{function, Class, Error, Module, Value};
