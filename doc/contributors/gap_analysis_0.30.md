@@ -30,7 +30,7 @@ Comparison of ratatui 0.30 features vs ratatui_ruby current implementation.
 | `Constraint::Min` | `:min` | ✅ |
 | `Constraint::Max` | `:max` | ✅ |
 | `Constraint::Fill` | `:fill` | ✅ |
-| `Constraint::Ratio(n, d)` | — | ❌ **MISSING** (two-value constraint) |
+| `Constraint::Ratio(n, d)` | `:ratio` | ✅ |
 
 ---
 
@@ -89,7 +89,7 @@ Comparison of ratatui 0.30 features vs ratatui_ruby current implementation.
 | `column_spacing()` | — | ❌ **MISSING** |
 | `flex()` | — | ❌ **MISSING** |
 
-Note: Table widths only support `:length`, `:percentage`, `:min` in Rust renderer (missing `:max`, `:fill`).
+Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:max`, `:fill`, `:ratio`).
 
 ---
 

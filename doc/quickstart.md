@@ -158,7 +158,7 @@ Uses `Layout`, `List`, and `Paragraph` to create a classic sidebar-and-content i
 ![Dashboard Screenshot](./images/examples-dashboard.rb.png)
 
 ### [Flex Layout](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/flex_layout.rb)
-Demonstrates modern layout features including `Constraint.fill` for proportional space distribution and `flex: :space_between` for evenly distributing fixed-size elements.
+Demonstrates modern layout features including `Constraint.fill` and `Constraint.ratio` for proportional space distribution and `flex: :space_between` for evenly distributing fixed-size elements.
 
 ![Flex Layout Screenshot](./images/examples-flex_layout.rb.png)
 

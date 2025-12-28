@@ -109,4 +109,29 @@ class TestConstraint < Minitest::Test
       assert_equal "Max     Fill        ", buffer_content[0]
     end
   end
+
+  def test_ratio_constraint_render
+    with_test_terminal(20, 4) do
+      l = RatatuiRuby::Layout.new(
+        direction: :horizontal,
+        constraints: [
+          RatatuiRuby::Constraint.ratio(1, 4),
+          RatatuiRuby::Constraint.ratio(3, 4)
+        ],
+        children: [
+          RatatuiRuby::Paragraph.new(text: "A"),
+          RatatuiRuby::Paragraph.new(text: "B")
+        ]
+      )
+      RatatuiRuby.draw(l)
+      # Ratio(1/4) of 20 = 5. Ratio(3/4) of 20 = 15.
+      assert_equal "A    B              ", buffer_content[0]
+    end
+  end
+
+  def test_ratio_creation
+    c = RatatuiRuby::Constraint.ratio(1, 2)
+    assert_equal :ratio, c.type
+    assert_equal [1, 2], c.value
+  end
 end

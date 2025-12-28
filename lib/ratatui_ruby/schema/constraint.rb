@@ -6,8 +6,8 @@
 module RatatuiRuby
   # Defines constraints for layout sections or table columns.
   #
-  # [type] The type of constraint (:length, :percentage, :min, :max, :fill).
-  # [value] The numeric value associated with the constraint.
+  # [type] The type of constraint (:length, :percentage, :min, :max, :fill, :ratio).
+  # [value] The numeric value associated with the constraint (or array for ratio).
   class Constraint < Data.define(:type, :value)
     # Creates a length constraint (fixed number of cells).
     #
@@ -46,6 +46,14 @@ module RatatuiRuby
     # [v] The proportional weight (default: 1).
     def self.fill(v = 1)
       new(type: :fill, value: v)
+    end
+
+    # Creates a ratio constraint.
+    #
+    # [numerator] The numerator of the ratio.
+    # [denominator] The denominator of the ratio.
+    def self.ratio(numerator, denominator)
+      new(type: :ratio, value: [numerator, denominator])
     end
   end
 end

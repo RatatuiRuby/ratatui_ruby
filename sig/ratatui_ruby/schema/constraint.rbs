@@ -4,12 +4,13 @@
 module RatatuiRuby
   class Constraint < Data
     attr_reader type: Symbol
-    attr_reader value: Integer
+    attr_reader value: (Integer | Array[Integer])
     def self.length: (Integer) -> Constraint
     def self.percentage: (Integer) -> Constraint
     def self.min: (Integer) -> Constraint
     def self.max: (Integer) -> Constraint
     def self.fill: (?Integer) -> Constraint
-    def self.new: (type: Symbol, value: Integer) -> Constraint
+    def self.ratio: (Integer, Integer) -> Constraint
+    def self.new: (type: Symbol, value: (Integer | Array[Integer])) -> Constraint
   end
 end

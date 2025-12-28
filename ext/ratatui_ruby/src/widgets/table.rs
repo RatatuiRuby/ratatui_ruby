@@ -55,12 +55,38 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     for i in 0..widths_array.len() {
         let constraint_obj: Value = widths_array.entry(i as isize)?;
         let type_sym: Symbol = constraint_obj.funcall("type", ())?;
-        let value: u16 = constraint_obj.funcall("value", ())?;
+        let value_obj: Value = constraint_obj.funcall("value", ())?;
 
         match type_sym.to_string().as_str() {
-            "length" => constraints.push(Constraint::Length(value)),
-            "percentage" => constraints.push(Constraint::Percentage(value)),
-            "min" => constraints.push(Constraint::Min(value)),
+            "length" => {
+                let val = u16::try_convert(value_obj)?;
+                constraints.push(Constraint::Length(val));
+            }
+            "percentage" => {
+                let val = u16::try_convert(value_obj)?;
+                constraints.push(Constraint::Percentage(val));
+            }
+            "min" => {
+                let val = u16::try_convert(value_obj)?;
+                constraints.push(Constraint::Min(val));
+            }
+            "max" => {
+                let val = u16::try_convert(value_obj)?;
+                constraints.push(Constraint::Max(val));
+            }
+            "fill" => {
+                let val = u16::try_convert(value_obj)?;
+                constraints.push(Constraint::Fill(val));
+            }
+            "ratio" => {
+                if let Some(arr) = magnus::RArray::from_value(value_obj) {
+                    if arr.len() == 2 {
+                        let n = u32::try_convert(arr.entry(0)?)?;
+                        let d = u32::try_convert(arr.entry(1)?)?;
+                        constraints.push(Constraint::Ratio(n, d));
+                    }
+                }
+            }
             _ => {}
         }
     }
