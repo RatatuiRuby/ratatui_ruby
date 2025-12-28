@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ratatui_ruby (0.2.1)
+    ratatui_ruby (0.3.0)
       ostruct (~> 0.6)
       rb_sys (~> 0.9)
 
