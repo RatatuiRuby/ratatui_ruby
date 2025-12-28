@@ -19,7 +19,7 @@ Comparison of ratatui 0.30 features vs ratatui_ruby current implementation.
 | `Flex::Center` | `:center` | ✅ |
 | `Flex::SpaceBetween` | `:space_between` | ✅ |
 | `Flex::SpaceAround` | `:space_around` | ✅ |
-| `Flex::SpaceEvenly` | — | ❌ **MISSING** |
+| `Flex::SpaceEvenly` | `:space_evenly` | ✅ |
 
 ### Constraints
 

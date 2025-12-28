@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  type flex_mode = :legacy | :start | :center | :end | :space_between | :space_around
+  type flex_mode = :legacy | :start | :center | :end | :space_between | :space_around | :space_evenly
 
   class Layout < Data
     FLEX_MODES: Array[Symbol]

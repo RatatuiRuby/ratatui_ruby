@@ -25,6 +25,7 @@ class FlexLayoutApp
       constraints: [
         RatatuiRuby::Constraint.length(3),
         RatatuiRuby::Constraint.fill(1),
+        RatatuiRuby::Constraint.fill(1),
         RatatuiRuby::Constraint.fill(1)
       ],
       children: [
@@ -33,7 +34,8 @@ class FlexLayoutApp
           block: RatatuiRuby::Block.new(title: "Header", borders: [:all])
         ),
         fill_demo_row,
-        space_between_demo_row
+        space_between_demo_row,
+        space_evenly_demo_row
       ]
     )
 
@@ -86,6 +88,35 @@ class FlexLayoutApp
           title: "Block C",
           borders: [:all],
           border_color: "magenta"
+        )
+      ]
+    )
+  end
+
+  def space_evenly_demo_row
+    RatatuiRuby::Layout.new(
+      direction: :horizontal,
+      flex: :space_evenly,
+      constraints: [
+        RatatuiRuby::Constraint.length(12),
+        RatatuiRuby::Constraint.length(12),
+        RatatuiRuby::Constraint.length(12)
+      ],
+      children: [
+        RatatuiRuby::Block.new(
+          title: "Even A",
+          borders: [:all],
+          border_color: "cyan"
+        ),
+        RatatuiRuby::Block.new(
+          title: "Even B",
+          borders: [:all],
+          border_color: "blue"
+        ),
+        RatatuiRuby::Block.new(
+          title: "Even C",
+          borders: [:all],
+          border_color: "red"
         )
       ]
     )

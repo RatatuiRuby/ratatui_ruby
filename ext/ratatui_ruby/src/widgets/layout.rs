@@ -32,6 +32,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         "end" => Flex::End,
         "space_between" => Flex::SpaceBetween,
         "space_around" => Flex::SpaceAround,
+        "space_evenly" => Flex::SpaceEvenly,
         _ => Flex::Legacy,
     };
 
@@ -122,6 +123,24 @@ mod tests {
         assert_eq!(chunks[0].x, 0);
         assert_eq!(chunks[1].x, 45);
         assert_eq!(chunks[2].x, 90);
+    }
+
+    #[test]
+    fn test_flex_space_evenly() {
+        let area = Rect::new(0, 0, 100, 10);
+        let chunks = Layout::default()
+            .direction(Direction::Horizontal)
+            .flex(Flex::SpaceEvenly)
+            .constraints([
+                Constraint::Length(10),
+                Constraint::Length(10),
+                Constraint::Length(10),
+            ])
+            .split(area);
+        assert_eq!(chunks.len(), 3);
+        assert_eq!(chunks[0].x, 18);
+        assert_eq!(chunks[1].x, 45);
+        assert_eq!(chunks[2].x, 73);
     }
 
     #[test]

@@ -13,7 +13,7 @@ module RatatuiRuby
   #        :space_between, :space_around).
   class Layout < Data.define(:direction, :constraints, :children, :flex)
     # :nodoc:
-    FLEX_MODES = %i[legacy start center end space_between space_around].freeze
+    FLEX_MODES = %i[legacy start center end space_between space_around space_evenly].freeze
 
     # Creates a new Layout.
     #

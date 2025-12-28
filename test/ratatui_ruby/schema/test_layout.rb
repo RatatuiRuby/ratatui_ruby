@@ -32,6 +32,30 @@ class TestLayout < Minitest::Test
     assert_equal :center, l2.flex
   end
 
+
+
+  def test_render_flex_space_evenly_2
+    with_test_terminal(20, 3) do
+      l = RatatuiRuby::Layout.new(
+        direction: :horizontal,
+        flex: :space_evenly,
+        constraints: [
+          RatatuiRuby::Constraint.length(2),
+          RatatuiRuby::Constraint.length(2),
+          RatatuiRuby::Constraint.length(2)
+        ],
+        children: [
+          RatatuiRuby::Paragraph.new(text: "A"),
+          RatatuiRuby::Paragraph.new(text: "B"),
+          RatatuiRuby::Paragraph.new(text: "C")
+        ]
+      )
+
+      RatatuiRuby.draw(l)
+      assert_equal "    A    B     C    ", buffer_content[0]
+    end
+  end
+
   def test_flex_modes_constant
     assert_includes RatatuiRuby::Layout::FLEX_MODES, :legacy
     assert_includes RatatuiRuby::Layout::FLEX_MODES, :start
@@ -39,6 +63,7 @@ class TestLayout < Minitest::Test
     assert_includes RatatuiRuby::Layout::FLEX_MODES, :end
     assert_includes RatatuiRuby::Layout::FLEX_MODES, :space_between
     assert_includes RatatuiRuby::Layout::FLEX_MODES, :space_around
+    assert_includes RatatuiRuby::Layout::FLEX_MODES, :space_evenly
   end
 
   def test_nested_layout
