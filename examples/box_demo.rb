@@ -10,7 +10,8 @@ class BoxDemoApp
   def initialize
     @color = "green"
     @border_type = :plain
-    @text = "Press Arrow Keys (q to quit)\nSpace to switch border type"
+    @text = "Press Arrow Keys (q to quit)\nSpace to switch border type\nEnter to cycle Title Alignment"
+    @title_alignment = :left
   end
 
   def run
@@ -29,6 +30,7 @@ class BoxDemoApp
     # 1. State/View
     block = RatatuiRuby::Block.new(
       title: "Box Demo - #{@border_type}",
+      title_alignment: @title_alignment,
       borders: [:all],
       border_color: @color,
       border_type: @border_type
@@ -48,6 +50,12 @@ class BoxDemoApp
     types = [:plain, :rounded, :double, :thick, :quadrant_inside, :quadrant_outside]
     current_index = types.index(@border_type) || 0
     @border_type = types[(current_index + 1) % types.length]
+  end
+
+  def next_title_alignment
+    alignments = [:left, :center, :right]
+    current_index = alignments.index(@title_alignment) || 0
+    @title_alignment = alignments[(current_index + 1) % alignments.length]
   end
 
   def handle_input
@@ -74,6 +82,9 @@ class BoxDemoApp
       when " "
         next_border_type
         @text = "Switched to #{@border_type}"
+      when "enter"
+        next_title_alignment
+        @text = "Aligned #{@title_alignment}"
       end
     end
   end

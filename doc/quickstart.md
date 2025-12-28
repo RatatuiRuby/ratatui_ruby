@@ -46,6 +46,7 @@ begin
       align: :center,
       block: RatatuiRuby::Block.new(
         title: "My Ruby TUI App",
+        title_alignment: :center,
         borders: [:all],
         border_color: "cyan"
       )
@@ -92,6 +93,7 @@ RatatuiRuby.run do |tui|
       align: :center,
       block: tui.block(
         title: "My Ruby TUI App",
+        title_alignment: :center,
         borders: [:all],
         border_color: "cyan"
       )

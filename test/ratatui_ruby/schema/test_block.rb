@@ -13,6 +13,11 @@ class TestBlock < Minitest::Test
     assert_equal "red", b.border_color
   end
 
+  def test_block_creation_with_title_alignment
+    b = RatatuiRuby::Block.new(title: "Title", title_alignment: :center)
+    assert_equal :center, b.title_alignment
+  end
+
   def test_block_creation_with_border_type
     b = RatatuiRuby::Block.new(border_type: :rounded)
     assert_equal :rounded, b.border_type
@@ -31,6 +36,29 @@ class TestBlock < Minitest::Test
       b = RatatuiRuby::Block.new(borders: [:all], title: "Title")
       RatatuiRuby.draw(b)
       assert_equal "┌Title─────────────┐", buffer_content[0]
+      assert_equal "│                  │", buffer_content[1]
+      assert_equal "└──────────────────┘", buffer_content[2]
+      assert_equal "└──────────────────┘", buffer_content[2]
+    end
+  end
+
+  def test_render_title_alignment_center
+    with_test_terminal(20, 3) do
+      b = RatatuiRuby::Block.new(borders: [:all], title: "Title", title_alignment: :center)
+      RatatuiRuby.draw(b)
+      # Available width 18. Title 5. (18-5)/2 = 6. 6 spaces left, 7 right.
+      assert_equal "┌──────Title───────┐", buffer_content[0]
+      assert_equal "│                  │", buffer_content[1]
+      assert_equal "└──────────────────┘", buffer_content[2]
+    end
+  end
+
+  def test_render_title_alignment_right
+    with_test_terminal(20, 3) do
+      b = RatatuiRuby::Block.new(borders: [:all], title: "Title", title_alignment: :right)
+      RatatuiRuby.draw(b)
+      # Available width 18. Title 5. 13 spaces left.
+      assert_equal "┌─────────────Title┐", buffer_content[0]
       assert_equal "│                  │", buffer_content[1]
       assert_equal "└──────────────────┘", buffer_content[2]
     end

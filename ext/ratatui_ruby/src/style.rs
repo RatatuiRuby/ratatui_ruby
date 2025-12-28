@@ -6,6 +6,7 @@ use ratatui::{
     style::{Color, Modifier, Style},
     text::Line,
     widgets::{Block, BorderType, Borders, Padding},
+    layout::Alignment,
 };
 
 pub fn parse_color(color_str: &str) -> Option<Color> {
@@ -71,6 +72,7 @@ pub fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
     }
 
     let title: Value = block_val.funcall("title", ())?;
+    let title_alignment: Value = block_val.funcall("title_alignment", ())?;
     let borders_val: Value = block_val.funcall("borders", ())?;
     let border_color: Value = block_val.funcall("border_color", ())?;
     let border_type_val: Value = block_val.funcall("border_type", ())?;
@@ -81,6 +83,17 @@ pub fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
     if !title.is_nil() {
         let title_str: String = title.funcall("to_s", ())?;
         block = block.title(Line::from(title_str));
+    }
+
+    if !title_alignment.is_nil() {
+        if let Some(align_sym) = Symbol::from_value(title_alignment) {
+            match align_sym.to_string().as_str() {
+                "left" => block = block.title_alignment(Alignment::Left),
+                "center" => block = block.title_alignment(Alignment::Center),
+                "right" => block = block.title_alignment(Alignment::Right),
+                _ => {}
+            }
+        }
     }
 
     if !borders_val.is_nil() {

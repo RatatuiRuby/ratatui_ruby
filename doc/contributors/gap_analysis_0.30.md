@@ -42,7 +42,9 @@ Comparison of ratatui 0.30 features vs ratatui_ruby current implementation.
 | `title_top()` | — | ❌ **MISSING** |
 | `title_bottom()` | — | ❌ **MISSING** |
 | `title_style()` | — | ❌ **MISSING** |
-| `title_alignment()` | — | ❌ **MISSING** |
+| `title_style()` | — | ❌ **MISSING** |
+| `title_alignment()` | `title_alignment:` | ✅ |
+| `title_position()` | — | ❌ **MISSING** (deprecated approach) |
 | `title_position()` | — | ❌ **MISSING** (deprecated approach) |
 | `borders()` | `borders:` | ✅ |
 | `border_style()` | `border_color:` | ⚠️ Partial (color only, not full style) |

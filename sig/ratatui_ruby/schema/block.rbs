@@ -4,8 +4,11 @@
 module RatatuiRuby
   class Block < Data
     attr_reader title: String?
+    attr_reader title_alignment: Symbol?
     attr_reader borders: Array[Symbol]
     attr_reader border_color: (String | Symbol)?
-    def self.new: (?title: String?, ?borders: Array[Symbol], ?border_color: (String | Symbol)?) -> Block
+    attr_reader border_type: Symbol?
+    attr_reader padding: (Integer | Array[Integer])
+    def self.new: (?title: String?, ?title_alignment: Symbol?, ?borders: Array[Symbol], ?border_color: (String | Symbol)?, ?border_type: Symbol?, ?padding: (Integer | Array[Integer])) -> Block
   end
 end
