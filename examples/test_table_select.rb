@@ -24,7 +24,8 @@ class TestTableSelect < Minitest::Test
       selected_row: 0,
       highlight_style: RatatuiRuby::Style.new(fg: :yellow),
       highlight_symbol: "> ",
-      block: RatatuiRuby::Block.new(title: "Test", borders: :all)
+      block: RatatuiRuby::Block.new(title: "Test", borders: :all),
+      footer: ["Footer"]
     )
     
     # Verify it can be drawn

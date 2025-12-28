@@ -46,7 +46,8 @@ begin
       selected_row: selected_index,
       highlight_style: highlight_style,
       highlight_symbol: "> ",
-      block: RatatuiRuby::Block.new(title: "Process Monitor (↑/↓ to select, q to quit)", borders: :all)
+      block: RatatuiRuby::Block.new(title: "Process Monitor (↑/↓ to select, q to quit)", borders: :all),
+      footer: ["Total: #{PROCESSES.length}", "Total CPU: #{PROCESSES.sum { |p| p[:cpu] }}%", ""]
     )
 
     # Draw the table

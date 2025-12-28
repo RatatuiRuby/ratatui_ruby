@@ -76,7 +76,7 @@ Comparison of ratatui 0.30 features vs ratatui_ruby current implementation.
 | `rows()` | `rows:` | ✅ |
 | `widths()` | `widths:` | ✅ |
 | `header()` | `header:` | ✅ |
-| `footer()` | — | ❌ **MISSING** |
+| `footer()` | `footer:` | ✅ |
 | `block()` | `block:` | ✅ |
 | `style()` | — | ❌ **MISSING** |
 | `row_highlight_style()` | `highlight_style:` | ✅ |

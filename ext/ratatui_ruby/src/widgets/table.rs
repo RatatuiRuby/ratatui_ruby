@@ -12,6 +12,7 @@ use ratatui::{
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let header_val: Value = node.funcall("header", ())?;
+    let footer_val: Value = node.funcall("footer", ())?;
     let rows_val: Value = node.funcall("rows", ())?;
     let rows_array = magnus::RArray::from_value(rows_val)
         .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for rows"))?;
@@ -89,6 +90,29 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         table = table.header(Row::new(header_cells));
     }
 
+    if !footer_val.is_nil() {
+        let footer_array = magnus::RArray::from_value(footer_val).ok_or_else(|| {
+            Error::new(ruby.exception_type_error(), "expected array for footer")
+        })?;
+        let mut footer_cells = Vec::new();
+        for i in 0..footer_array.len() {
+            let cell_val: Value = footer_array.entry(i as isize)?;
+            let class = cell_val.class();
+            let class_name = unsafe { class.name() };
+
+            if class_name.as_ref() == "RatatuiRuby::Paragraph" {
+                let text: String = cell_val.funcall("text", ())?;
+                let style_val: Value = cell_val.funcall("style", ())?;
+                let cell_style = parse_style(style_val)?;
+                footer_cells.push(Cell::from(text).style(cell_style));
+            } else {
+                let cell_str: String = cell_val.funcall("to_s", ())?;
+                footer_cells.push(Cell::from(cell_str));
+            }
+        }
+        table = table.footer(Row::new(footer_cells));
+    }
+
     if !block_val.is_nil() {
         table = table.block(parse_block(block_val)?);
     }
@@ -122,14 +146,17 @@ mod tests {
     fn test_table_rendering() {
         let rows = vec![Row::new(vec!["C1", "C2"])];
         let table = Table::new(rows, [Constraint::Length(3), Constraint::Length(3)])
-            .header(Row::new(vec!["H1", "H2"]));
-        let mut buf = Buffer::empty(Rect::new(0, 0, 10, 2));
-        Widget::render(table, Rect::new(0, 0, 10, 2), &mut buf);
+            .header(Row::new(vec!["H1", "H2"]))
+            .footer(Row::new(vec!["F1", "F2"]));
+        let mut buf = Buffer::empty(Rect::new(0, 0, 10, 3));
+        Widget::render(table, Rect::new(0, 0, 10, 3), &mut buf);
 
         let content = buf.content().iter().map(|c| c.symbol()).collect::<String>();
         // Check for presence of header and row content
         assert!(content.contains("H1"));
         assert!(content.contains("H2"));
+        assert!(content.contains("F1"));
+        assert!(content.contains("F2"));
         assert!(content.contains("C1"));
         assert!(content.contains("C2"));
     }

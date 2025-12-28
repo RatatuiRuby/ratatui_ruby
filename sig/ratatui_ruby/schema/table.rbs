@@ -7,7 +7,8 @@ module RatatuiRuby
     attr_reader rows: Array[Array[String | Paragraph | Style | _ToS]]
     attr_reader widths: Array[Constraint]
     attr_reader block: Block?
+    attr_reader footer: Array[String | Paragraph]?
 
-    def self.new: (?header: Array[String | Paragraph]?, ?rows: Array[Array[String | Paragraph | Style | _ToS]], ?widths: Array[Constraint], ?block: Block?) -> Table
+    def self.new: (?header: Array[String | Paragraph]?, ?rows: Array[Array[String | Paragraph | Style | _ToS]], ?widths: Array[Constraint], ?highlight_style: Style?, ?highlight_symbol: String, ?selected_row: Integer?, ?block: Block?, ?footer: Array[String | Paragraph]?) -> Table
   end
 end
