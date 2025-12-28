@@ -64,7 +64,7 @@ Comparison of ratatui 0.30 features vs ratatui_ruby current implementation.
 | `highlight_style()` | `highlight_style:` | ✅ |
 | `repeat_highlight_symbol()` | — | ❌ **MISSING** |
 | `highlight_spacing()` | — | ❌ **MISSING** |
-| `direction()` | — | ❌ **MISSING** (TopToBottom/BottomToTop) |
+| `direction()` | `direction:` | ✅ |
 | `scroll_padding()` | — | ❌ **MISSING** |
 
 ---

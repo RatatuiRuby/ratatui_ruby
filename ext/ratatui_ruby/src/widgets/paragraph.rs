@@ -9,16 +9,19 @@ use ratatui::{
     Frame,
 };
 
+use crate::text::parse_text;
+
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
-    let text: String = node.funcall("text", ())?;
+    let text_val: Value = node.funcall("text", ())?;
     let style_val: Value = node.funcall("style", ())?;
     let block_val: Value = node.funcall("block", ())?;
     let wrap: bool = node.funcall("wrap", ())?;
     let align_sym: Symbol = node.funcall("align", ())?;
     let scroll_val: Value = node.funcall("scroll", ())?;
 
+    let lines = parse_text(text_val)?;
     let style = parse_style(style_val)?;
-    let mut paragraph = Paragraph::new(text).style(style);
+    let mut paragraph = Paragraph::new(lines).style(style);
 
     if !block_val.is_nil() {
         paragraph = paragraph.block(parse_block(block_val)?);

@@ -11,8 +11,9 @@ module RatatuiRuby
   # [style] The base style for all items.
   # [highlight_style] The style for the selected item.
   # [highlight_symbol] The symbol to display in front of the selected item.
+  # [direction] The direction to display the list items. One of :top_to_bottom or :bottom_to_top.
   # [block] An optional Block widget to wrap the list.
-  class List < Data.define(:items, :selected_index, :style, :highlight_style, :highlight_symbol, :block)
+  class List < Data.define(:items, :selected_index, :style, :highlight_style, :highlight_symbol, :direction, :block)
     # Creates a new List.
     #
     # [items] An array of strings to display in the list.
@@ -20,8 +21,9 @@ module RatatuiRuby
     # [style] The base style for all items.
     # [highlight_style] The style for the selected item.
     # [highlight_symbol] The symbol to display in front of the selected item.
+    # [direction] The direction to display the list items. One of :top_to_bottom or :bottom_to_top.
     # [block] An optional Block widget to wrap the list.
-    def initialize(items: [], selected_index: nil, style: nil, highlight_style: nil, highlight_symbol: "> ", block: nil)
+    def initialize(items: [], selected_index: nil, style: nil, highlight_style: nil, highlight_symbol: "> ", direction: :top_to_bottom, block: nil)
       super
     end
   end

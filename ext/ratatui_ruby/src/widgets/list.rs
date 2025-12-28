@@ -19,6 +19,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let style_val: Value = node.funcall("style", ())?;
     let highlight_style_val: Value = node.funcall("highlight_style", ())?;
     let highlight_symbol_val: Value = node.funcall("highlight_symbol", ())?;
+    let direction_val: Value = node.funcall("direction", ())?;
     let block_val: Value = node.funcall("block", ())?;
 
     let mut items = Vec::new();
@@ -44,6 +45,21 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
     if !highlight_symbol_val.is_nil() {
         list = list.highlight_symbol(Line::from(symbol));
+    }
+
+    if !direction_val.is_nil() {
+        let direction_sym: magnus::Symbol = TryConvert::try_convert(direction_val)?;
+        let direction_str = direction_sym.name().unwrap();
+        match direction_str.as_ref() {
+            "top_to_bottom" => list = list.direction(ratatui::widgets::ListDirection::TopToBottom),
+            "bottom_to_top" => list = list.direction(ratatui::widgets::ListDirection::BottomToTop),
+            _ => {
+                return Err(Error::new(
+                    ruby.exception_arg_error(),
+                    "direction must be :top_to_bottom or :bottom_to_top",
+                ))
+            }
+        }
     }
 
     if !style_val.is_nil() {

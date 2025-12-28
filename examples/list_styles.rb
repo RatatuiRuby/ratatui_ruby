@@ -14,6 +14,7 @@ class ListStylesApp
   def initialize
     @items = ["Item 1", "Item 2", "Item 3"]
     @selected_index = 0
+    @direction = :top_to_bottom
   end
 
   def run
@@ -37,8 +38,9 @@ class ListStylesApp
         style: RatatuiRuby::Style.new(fg: :white, bg: :black),
         highlight_style: RatatuiRuby::Style.new(fg: :blue, bg: :white, modifiers: [:bold]),
         highlight_symbol: ">> ",
+        direction: @direction,
         block: RatatuiRuby::Block.new(
-          title: "Styled List (Up/Down to move, Q to quit)",
+          title: "Styled List (Up/Down move, D direction, Q quit) - #{@direction}",
           borders: [:all]
         )
       )
@@ -55,6 +57,8 @@ class ListStylesApp
         @selected_index = (@selected_index - 1) % @items.size
       when "down"
         @selected_index = (@selected_index + 1) % @items.size
+      when "d"
+        @direction = (@direction == :top_to_bottom) ? :bottom_to_top : :top_to_bottom
       when "q"
         return :quit
       end

@@ -15,12 +15,13 @@ use terminal::{init_terminal, restore_terminal, TERMINAL};
 fn draw(tree: Value) -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let mut term_lock = TERMINAL.lock().unwrap();
+    let mut render_error = None;
     if let Some(wrapper) = term_lock.as_mut() {
         match wrapper {
             terminal::TerminalWrapper::Crossterm(term) => {
                 term.draw(|f| {
                     if let Err(e) = rendering::render_node(f, f.area(), tree) {
-                        eprintln!("Render error: {:?}", e);
+                        render_error = Some(e);
                     }
                 })
                 .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
@@ -28,7 +29,7 @@ fn draw(tree: Value) -> Result<(), Error> {
             terminal::TerminalWrapper::Test(term) => {
                 term.draw(|f| {
                     if let Err(e) = rendering::render_node(f, f.area(), tree) {
-                        eprintln!("Render error: {:?}", e);
+                        render_error = Some(e);
                     }
                 })
                 .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
@@ -37,6 +38,11 @@ fn draw(tree: Value) -> Result<(), Error> {
     } else {
         eprintln!("Terminal is None!");
     }
+
+    if let Some(e) = render_error {
+        return Err(e);
+    }
+
     Ok(())
 }
 

@@ -11,7 +11,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [Unreleased]
 
 ### Added
-
+- `List`: Added `direction` attribute (`:top_to_bottom` or `:bottom_to_top`).
 - **Block Padding**: `Block` widget now supports correct padding via the `padding` parameter, accepting either a single integer for uniform padding or an array of 4 integers for directional padding (`[left, right, top, bottom]`).
 
 - Added `Flex::SpaceEvenly` layout mode to `Layout` widget.

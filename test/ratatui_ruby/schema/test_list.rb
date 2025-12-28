@@ -45,4 +45,27 @@ class TestList < Minitest::Test
       assert_equal ">> Item 2           ", buffer_content[1]
     end
   end
+
+  def test_render_bottom_to_top
+    with_test_terminal(20, 3) do
+      list = RatatuiRuby::List.new(
+        items: ["Item 1", "Item 2"],
+        selected_index: 0,
+        direction: :bottom_to_top
+      )
+      RatatuiRuby.draw(list)
+      # In BottomToTop, the first item is at the bottom
+      assert_equal "  Item 2            ", buffer_content[1]
+      assert_equal "> Item 1            ", buffer_content[2]
+    end
+  end
+
+  def test_invalid_direction
+    assert_raises(ArgumentError) {
+      list = RatatuiRuby::List.new(items: [], direction: :invalid)
+      with_test_terminal(10, 10) do
+        RatatuiRuby.draw(list)
+      end
+    }
+  end
 end
