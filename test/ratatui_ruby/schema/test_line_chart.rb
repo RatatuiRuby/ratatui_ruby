@@ -35,7 +35,7 @@ class TestLineChart < Minitest::Test
       assert_equal "│                   ", buffer_content[4]
       assert_equal "│                   ", buffer_content[5]
       assert_equal "│                   ", buffer_content[6]
-      assert_equal "│⡀        ⠄        ⠠", buffer_content[7]
+      assert_equal "│⡀        ⢀        ⠠", buffer_content[7]
       assert_equal "└───────────────────", buffer_content[8]
       assert_equal "0         1        2", buffer_content[9]
     end

@@ -23,6 +23,10 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
         "dot" => Marker::Dot,
         "block" => Marker::Block,
         "bar" => Marker::Bar,
+        "braille" => Marker::Braille,
+        "quadrant" => Marker::Quadrant,
+        "sextant" => Marker::Sextant,
+        "octant" => Marker::Octant,
         _ => Marker::Braille,
     };
 

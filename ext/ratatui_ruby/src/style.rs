@@ -4,6 +4,7 @@
 use magnus::{prelude::*, Error, Symbol, Value};
 use ratatui::{
     style::{Color, Modifier, Style},
+    text::Line,
     widgets::{Block, Borders},
 };
 
@@ -77,7 +78,7 @@ pub fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
 
     if !title.is_nil() {
         let title_str: String = title.funcall("to_s", ())?;
-        block = block.title(title_str);
+        block = block.title(Line::from(title_str));
     }
 
     if !borders_val.is_nil() {

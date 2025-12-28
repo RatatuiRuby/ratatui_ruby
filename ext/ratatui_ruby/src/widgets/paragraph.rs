@@ -4,7 +4,7 @@
 use crate::style::{parse_block, parse_style};
 use magnus::{prelude::*, Error, Symbol, Value};
 use ratatui::{
-    layout::{Alignment, Rect},
+    layout::{HorizontalAlignment, Rect},
     widgets::{Paragraph, Wrap},
     Frame,
 };
@@ -29,8 +29,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     match align_sym.to_string().as_str() {
-        "center" => paragraph = paragraph.alignment(Alignment::Center),
-        "right" => paragraph = paragraph.alignment(Alignment::Right),
+        "center" => paragraph = paragraph.alignment(HorizontalAlignment::Center),
+        "right" => paragraph = paragraph.alignment(HorizontalAlignment::Right),
         _ => {}
     }
 
@@ -54,7 +54,7 @@ mod tests {
 
     #[test]
     fn test_paragraph_rendering() {
-        let p = Paragraph::new("test content").alignment(Alignment::Center);
+        let p = Paragraph::new("test content").alignment(HorizontalAlignment::Center);
         let mut buf = Buffer::empty(Rect::new(0, 0, 20, 1));
         use ratatui::widgets::Widget;
         p.render(Rect::new(0, 0, 20, 1), &mut buf);

@@ -16,7 +16,7 @@ end
 Rake::Task["test"].clear if Rake::Task.task_defined?("test")
 
 desc "Run all tests (Ruby and Rust)"
-task test: %w[test:ruby test:rust]
+task test: %w[compile test:ruby test:rust]
 
 namespace :test do
   desc "Run Rust tests"

@@ -5,6 +5,7 @@ use crate::style::{parse_block, parse_style};
 use magnus::{prelude::*, Error, TryConvert, Value};
 use ratatui::{
     layout::Rect,
+    text::Line,
     widgets::{List, ListState},
     Frame,
 };
@@ -42,7 +43,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let mut list = List::new(items);
 
     if !highlight_symbol_val.is_nil() {
-        list = list.highlight_symbol(&symbol);
+        list = list.highlight_symbol(Line::from(symbol));
     }
 
     if !style_val.is_nil() {
@@ -71,7 +72,7 @@ mod tests {
     fn test_list_rendering() {
         let items = vec!["Item 1", "Item 2"];
         let list = List::new(items)
-            .highlight_symbol(">> ")
+            .highlight_symbol(Line::from(">> "))
             .style(ratatui::style::Style::default().fg(ratatui::style::Color::White))
             .highlight_style(
                 ratatui::style::Style::default()

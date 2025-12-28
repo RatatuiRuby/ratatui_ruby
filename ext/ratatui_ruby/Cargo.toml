@@ -11,7 +11,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 magnus = "0.8.2"
-ratatui = { version = "0.29", features = ["widget-calendar"] }
+ratatui = { version = "0.30", features = ["widget-calendar", "layout-cache"] }
 
 lazy_static = "1.4"
 time = { version = "0.3", features = ["macros"] }
