@@ -24,6 +24,9 @@ tasks:
       curl https://mise.jdx.dev/install.sh | sh
       echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.buildenv
       echo 'eval "$($HOME/.local/bin/mise activate bash)"' >> ~/.buildenv
+      echo 'export LANG="en_US.UTF-8"' >> ~/.buildenv
+      echo 'export LC_ALL="en_US.UTF-8"' >> ~/.buildenv
+      echo 'export BINDGEN_EXTRA_CLANG_ARGS="-include stdbool.h"' >> ~/.buildenv
       . ~/.buildenv
       export CI="true"
       cd ratatui_ruby
