@@ -31,11 +31,11 @@ tasks:
       sed -i 's/ruby = .*/ruby = "3.3"/' mise.toml
       mise install
       mise x -- pip install reuse
-      mise x -- gem install bundler:2.6.9
+      mise x -- gem install bundler:4.0.3
       mise reshim
       mise x -- bundle config set --local frozen 'true'
       mise x -- bundle install
-      mise x -- bundle exec rake compile
+mise x -- bundle exec rake compile
   - test: |
       . ~/.buildenv
       cd ratatui_ruby

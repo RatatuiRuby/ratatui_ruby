@@ -35,30 +35,17 @@ tasks:
       mise reshim
       mise x -- bundle config set --local frozen 'true'
       mise x -- bundle install
-<% if ruby_version.start_with?("4.0") -%>
-      # We allow this to fail so we can see logs without stopping the CI pipeline
-      mise x -- bundle exec rake compile || echo "⚠️ Compilation failed (Allowed Failure)"
-<% else -%>
-      mise x -- bundle exec rake compile
-<% end -%>
+mise x -- bundle exec rake compile
   - test: |
       . ~/.buildenv
       cd ratatui_ruby
       echo "Testing Ruby <%= ruby_version %>"
-<% if ruby_version.start_with?("4.0") -%>
-      mise x -- bundle exec rake test || true
-<% else -%>
       mise x -- bundle exec rake test
-<% end -%>
   - lint: |
       . ~/.buildenv
       cd ratatui_ruby
       echo "Linting Ruby <%= ruby_version %>"
-<% if ruby_version.start_with?("4.0") -%>
-      mise x -- bundle exec rake lint || true
-<% else -%>
       mise x -- bundle exec rake lint
-<% end -%>
   - package: |
       . ~/.buildenv
       cd ratatui_ruby

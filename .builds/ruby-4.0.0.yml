@@ -31,22 +31,21 @@ tasks:
       sed -i 's/ruby = .*/ruby = "4.0.0"/' mise.toml
       mise install
       mise x -- pip install reuse
-      mise x -- gem install bundler:2.6.9
+      mise x -- gem install bundler:4.0.3
       mise reshim
       mise x -- bundle config set --local frozen 'true'
       mise x -- bundle install
-      # We allow this to fail so we can see logs without stopping the CI pipeline
-      mise x -- bundle exec rake compile || echo "⚠️ Compilation failed (Allowed Failure)"
+mise x -- bundle exec rake compile
   - test: |
       . ~/.buildenv
       cd ratatui_ruby
       echo "Testing Ruby 4.0.0"
-      mise x -- bundle exec rake test || true
+      mise x -- bundle exec rake test
   - lint: |
       . ~/.buildenv
       cd ratatui_ruby
       echo "Linting Ruby 4.0.0"
-      mise x -- bundle exec rake lint || true
+      mise x -- bundle exec rake lint
   - package: |
       . ~/.buildenv
       cd ratatui_ruby
