@@ -76,41 +76,45 @@ end
 4.  **`RatatuiRuby.poll_event`**: Checks for keyboard, mouse, or resize events.
 5.  **`RatatuiRuby.restore_terminal`**: Crucial for leaving raw mode and returning the user to their shell properly. Always wrap your loop in a `begin...ensure` block to guarantee this runs.
 
-### Managed Session
+### Idiomatic Session
 
-A managed session is provided for convenience when writing scripts.
+You can simplify your code by using `RatatuiRuby.run`. This method handles the terminal lifecycle for you, yielding a `Session` object with factory methods for widgets.
 
 ```rb
 require "ratatui_ruby"
 
-# 1. Initialize the terminal, start the main loop, and ensure the terminal is restored.
-RatatuiRuby.main_loop do |tui|
-  # 2. Create your UI with methods instead of classes.
-  view = tui.paragraph(
-    text: "Hello, Ratatui! Press 'q' to quit.",
-    align: :center,
-    block: tui.block(
-      title: "My Ruby TUI App",
-      borders: [:all],
-      border_color: "cyan"
+# 1. Initialize the terminal and ensure it is restored.
+RatatuiRuby.run do |tui|
+  loop do
+    # 2. Create your UI with methods instead of classes.
+    view = tui.paragraph(
+      text: "Hello, Ratatui! Press 'q' to quit.",
+      align: :center,
+      block: tui.block(
+        title: "My Ruby TUI App",
+        borders: [:all],
+        border_color: "cyan"
+      )
     )
-  )
 
-  # 3. Use RatatuiRuby methods, too.
-  tui.draw(view)
-  event = tui.poll_event
-  
-  if event && event[:type] == :key && event[:code] == "q"
-    break
+    # 3. Use RatatuiRuby methods, too.
+    tui.draw(view)
+    event = tui.poll_event
+    
+    if event && event[:type] == :key && event[:code] == "q"
+      break
+    end
   end
 end
 ```
 
 #### How it works
 
-1.  **`RatatuiRuby.main_loop`**: This helper method manages the entire terminal lifecycle for you. It initializes the terminal before the block starts and ensures `restore_terminal` is called when the block exits (even if an error occurs).
+1.  **`RatatuiRuby.run`**: This context manager initializes the terminal before the block starts and ensures `restore_terminal` is called when the block exits (even if an error occurs).
 2.  **Widget Shorthand**: The block yields a `Session` object (here named `tui`). This object provides factory methods for every widget, allowing you to write `tui.paragraph(...)` instead of the more verbose `RatatuiRuby::Paragraph.new(...)`.
 3.  **Method Shorthand**: The session object also provides aliases for module functions of `RatatuiRuby`, allowing you to write `tui.draw(...)` instead of the more verbose `RatatuiRuby::draw(...)`.
+
+For a deeper dive into the available application architectures (Manual vs Managed), see [Application Architecture](./application_architecture.md).
 
 ## Examples
 

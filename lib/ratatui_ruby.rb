@@ -91,21 +91,25 @@ module RatatuiRuby
   # (Native method implemented in Rust)
 
   ##
-  # Provides a convenience wrapper for the main TUI loop.
-  # Initializes the terminal, runs the loop, and ensures the terminal is restored.
+  # :method: run
+  # :call-seq: run { |session| ... } -> Object
   #
-  #   RatatuiRuby.main_loop do
-  #     draw RatatuiRuby::Paragraph.new(text: "Hello")
-  #     event = RatatuiRuby::poll_event
-  #     break if event && event[:type] == :key && event[:code] == "q"
+  # Initializes the terminal, yields a session, and ensures the terminal is restored.
+  # Returns the result of the block.
+  #
+  #   RatatuiRuby.run do |tui|
+  #     loop do
+  #       tui.draw(...)
+  #       event = tui.poll_event
+  #       break if event[:type] == :key && event[:code] == "q"
+  #     end
   #   end
-  def self.main_loop
+  def self.run
     require_relative "ratatui_ruby/session"
     init_terminal
-    loop do
-      yield Session.new
-    end
+    yield Session.new
   ensure
     restore_terminal
   end
+
 end

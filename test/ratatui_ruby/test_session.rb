@@ -9,11 +9,13 @@ require "ratatui_ruby/session"
 class TestSession < Minitest::Test
   def test_session_delegation
     with_test_terminal(20, 1) do
-      RatatuiRuby.main_loop do |tui|
-        p = tui.paragraph(text: "Builder Works")
-        tui.draw(p)
-        assert_equal "Builder Works       ", buffer_content[0]
-        break
+      RatatuiRuby.run do |tui|
+        loop do
+          p = tui.paragraph(text: "Builder Works")
+          tui.draw(p)
+          assert_equal "Builder Works       ", buffer_content[0]
+          break
+        end
       end
     end
   end

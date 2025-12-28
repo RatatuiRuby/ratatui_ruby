@@ -6,9 +6,9 @@
 module RatatuiRuby
   ##
   # A managed terminal session that provides convenience methods for creating widgets
-  # and interacting with the terminal within +main_loop+.
+  # and interacting with the terminal within a run loop.
   #
-  # This class is yielded to the block provided to {RatatuiRuby.main_loop}.
+  # This class is yielded to the block provided to {RatatuiRuby.run}.
   # It uses metaprogramming to delegate method calls to {RatatuiRuby} module functions
   # and to act as a factory for {RatatuiRuby} widget classes.
   #
@@ -23,18 +23,20 @@ module RatatuiRuby
   #
   # == Example
   #
-  #   RatatuiRuby.main_loop do |tui|
-  #     # Create UI using shorthand methods
-  #     view = tui.paragraph(
-  #       text: "Hello World",
-  #       block: tui.block(borders: [:all])
-  #     )
+  #   RatatuiRuby.run do |tui|
+  #     loop do
+  #       # Create UI using shorthand methods
+  #       view = tui.paragraph(
+  #         text: "Hello World",
+  #         block: tui.block(borders: [:all])
+  #       )
   #
-  #     # Use module aliases to draw and handle events
-  #     tui.draw(view)
-  #     event = tui.poll_event
+  #       # Use module aliases to draw and handle events
+  #       tui.draw(view)
+  #       event = tui.poll_event
   #
-  #     break if event && event[:code] == "q"
+  #       break if event && event[:code] == "q"
+  #     end
   #   end
   class Session
     # Wrap methods directly

@@ -65,22 +65,24 @@ gem install ratatui_ruby
 
 ```ruby
 require "ratatui_ruby"
-RatatuiRuby.main_loop do |tui|
-  tui.draw \
-    tui.paragraph \
-        text: "Hello, Ratatui! Press 'q' to quit.",
-        align: :center,
-        block: tui.block(
-          title: "My Ruby TUI App",
-          borders: [:all],
-          border_color: "cyan"
-        )
-  event = tui.poll_event
-  break if event && event[:type] == :key && event[:code] == "q"
+RatatuiRuby.run do |tui|
+  loop do
+    tui.draw \
+      tui.paragraph \
+          text: "Hello, Ratatui! Press 'q' to quit.",
+          align: :center,
+          block: tui.block(
+            title: "My Ruby TUI App",
+            borders: [:all],
+            border_color: "cyan"
+          )
+    event = tui.poll_event
+    break if event && event[:type] == :key && event[:code] == "q"
+  end
 end
 ```
 
-For a full tutorial, see [the Quickstart](./doc/quickstart.md).
+For a full tutorial, see [the Quickstart](./doc/quickstart.md). For an explanation of the application architecture, see [Application Architecture](./doc/application_architecture.md).
 
 
 ## Documentation

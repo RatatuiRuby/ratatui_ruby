@@ -23,21 +23,23 @@ class DiagonalWidget
   end
 end
 
-RatatuiRuby.main_loop do |tui|
-  tui.draw(
-    RatatuiRuby::Layout.new(
-      direction: :vertical,
-      constraints: [
-        RatatuiRuby::Constraint.percentage(50),
-        RatatuiRuby::Constraint.percentage(50),
-      ],
-      children: [
-        RatatuiRuby::Paragraph.new(text: "Above custom widget"),
-        DiagonalWidget.new,
-      ]
+RatatuiRuby.run do |tui|
+  loop do
+    tui.draw(
+      RatatuiRuby::Layout.new(
+        direction: :vertical,
+        constraints: [
+          RatatuiRuby::Constraint.percentage(50),
+          RatatuiRuby::Constraint.percentage(50),
+        ],
+        children: [
+          RatatuiRuby::Paragraph.new(text: "Above custom widget"),
+          DiagonalWidget.new,
+        ]
+      )
     )
-  )
 
-  event = RatatuiRuby.poll_event
-  break if event && event[:type] == :key && event[:code] == "q"
+    event = RatatuiRuby.poll_event
+    break if event && event[:type] == :key && event[:code] == "q"
+  end
 end
