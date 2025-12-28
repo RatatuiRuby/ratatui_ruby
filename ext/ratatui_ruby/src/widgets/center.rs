@@ -5,7 +5,6 @@ use crate::rendering::render_node;
 use magnus::{prelude::*, Error, Value};
 use ratatui::{
     layout::{Constraint, Direction, Layout, Rect},
-    widgets::Clear,
     Frame,
 };
 
@@ -36,7 +35,6 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
     let center_area = popup_layout_horizontal[1];
 
-    frame.render_widget(Clear, center_area);
     render_node(frame, center_area, child)?;
     Ok(())
 }

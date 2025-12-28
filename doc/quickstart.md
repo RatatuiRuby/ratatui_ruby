@@ -155,6 +155,11 @@ Detailed plumbing of mouse events, including clicks, drags, and movement trackin
 
 ![Mouse Events Screenshot](./images/examples-mouse_events.rb.png)
 
+### [Popup Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/popup_demo.rb)
+Demonstrates the `Clear` widget and how to prevent "style bleed" when rendering opaque popups over colored backgrounds.
+
+![Popup Demo Screenshot](./images/examples-popup_demo.rb.gif)
+
 ### [Scrollbar Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/scrollbar_demo.rb)
 A simple example of integrating the `Scrollbar` widget and handling mouse wheel events for scrolling.
 

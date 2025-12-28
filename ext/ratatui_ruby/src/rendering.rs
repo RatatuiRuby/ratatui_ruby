@@ -11,6 +11,7 @@ pub fn render_node(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Err
 
     match class_name.as_ref() {
         "RatatuiRuby::Paragraph" => widgets::paragraph::render(frame, area, node)?,
+        "RatatuiRuby::Clear" => widgets::clear::render(frame, area, node)?,
         "RatatuiRuby::Cursor" => widgets::cursor::render(frame, area, node)?,
         "RatatuiRuby::Overlay" => widgets::overlay::render(frame, area, node)?,
         "RatatuiRuby::Center" => widgets::center::render(frame, area, node)?,

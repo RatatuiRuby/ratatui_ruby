@@ -36,7 +36,7 @@ Every file must begin with an SPDX-compliant header. Use the following format:
 ### Ruby Standards
 
 -   **Version:** Tested against the latest releases of Ruby 3.2, 3.3, and 3.4, and must work. Also tested in CI (with allowed failures) against the latest preview Ruby 4.0 to prepare for its release. Local development happens on the latest stable release.
--   **Linter:** Run via `rake lint`. You are not done until all linting passes.
+-   **Linter:** Run via `bundle exec rake lint`. You are not done until all linting passes.
 -   **Style:**
     -   Use `Data.define` for all value objects (UI Nodes). (Prefer `class Foo < Data.define()` over `Foo = Data.define() do`).
     -   Prefer `frozen_string_literal: true`.
@@ -94,7 +94,7 @@ The project follows a standard Gem layout with an `ext/` directory for Rust code
 ### Development Environment
 
 -   **Setup:** `bin/setup` must handle both Bundler and Cargo dependencies.
--   **Pre-commit:** Use `.pre-commit-config.yaml` to enforce `rake` and `cargo fmt`.
+-   **Pre-commit:** Use `.pre-commit-config.yaml` to enforce `bundle exec rake` and `cargo fmt`.
 
 ### Documentation
 
@@ -102,7 +102,7 @@ The project follows a standard Gem layout with an `ext/` directory for Rust code
 -   Documentation should separate "User Guide" (Ruby API for TUI developers) from "Contributor Guide" (Ruby/Rust/Magnus internals).
 -   Don't write .md files for something RDoc (Ruby) or rustdoc (Rust) can generate.
 -   **The `doc/` folder contains source markdown files** that are included in RDoc output. You can edit these files.
--   **The `tmp/rdoc/` folder is auto-generated** by `rake rerdoc`. Never edit files in `tmp/rdoc/` directly.
+-   **The `tmp/rdoc/` folder is auto-generated** by `bundle exec rake rerdoc`. Never edit files in `tmp/rdoc/` directly.
 
 ## 4. The Ruby <-> Rust Bridge Contract
 
@@ -161,7 +161,7 @@ The project follows a standard Gem layout with an `ext/` directory for Rust code
 
 Before considering a task complete and returning control to the user, you **MUST** ensure:
 
-1.  **Tests & Linting Pass:** Run `rake` and confirm it passes. No new errors **or warnings** should be introduced.
+1.  **Tests & Linting Pass:** Run `bundle exec rake` and confirm it passes. No new errors **or warnings** should be introduced.
 2.  **Documentation Updated:** If public APIs or observable behavior changed, update relevant `doc/` files, `README.md`, and/or `ratatui_ruby-wiki` files,.
 3.  **Changelog Updated:** If public APIs, observable behavior, or gemspec dependencies changed, update [CHANGELOG.md](CHANGELOG.md)'s **Unreleased** section according to the [Semantic Versioning](https://semver.org/) and [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) specifications. Changelogs should be useful to human users of the library, not simple restatements of diffs or commit messages. **Do not add entries for internal tooling, CI, or build configuration changes that do not affect the distributed gem.**
 4.  **Commit Message Suggested:** You **MUST** ensure the final message to the user includes a suggested commit message block. This is NOT optional.

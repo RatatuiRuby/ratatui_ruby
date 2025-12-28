@@ -7,6 +7,7 @@ pub mod calendar;
 pub mod canvas;
 pub mod center;
 pub mod chart;
+pub mod clear;
 pub mod cursor;
 pub mod gauge;
 pub mod layout;
