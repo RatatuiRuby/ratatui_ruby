@@ -9,15 +9,21 @@ module RatatuiRuby
   # [header] An array of strings or Paragraphs representing the header row.
   # [rows] An array of arrays of strings or Paragraphs representing the data rows.
   # [widths] An array of Constraint objects defining column widths.
+  # [highlight_style] The style for the selected row.
+  # [highlight_symbol] The symbol to display in front of the selected row.
+  # [selected_row] The index of the currently selected row, or nil if none.
   # [block] An optional Block widget to wrap the table.
-  class Table < Data.define(:header, :rows, :widths, :block)
+  class Table < Data.define(:header, :rows, :widths, :highlight_style, :highlight_symbol, :selected_row, :block)
     # Creates a new Table.
     #
     # [header] An array of strings or Paragraphs representing the header row.
     # [rows] An array of arrays of strings or Paragraphs representing the data rows.
     # [widths] An array of Constraint objects defining column widths.
+    # [highlight_style] The style for the selected row.
+    # [highlight_symbol] The symbol to display in front of the selected row.
+    # [selected_row] The index of the currently selected row, or nil if none.
     # [block] An optional Block widget to wrap the table.
-    def initialize(header: nil, rows: [], widths: [], block: nil)
+    def initialize(header: nil, rows: [], widths: [], highlight_style: nil, highlight_symbol: "> ", selected_row: nil, block: nil)
       super
     end
   end

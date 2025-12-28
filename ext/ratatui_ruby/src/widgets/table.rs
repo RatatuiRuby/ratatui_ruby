@@ -5,7 +5,7 @@ use crate::style::{parse_block, parse_style};
 use magnus::{prelude::*, Error, Symbol, Value};
 use ratatui::{
     layout::{Constraint, Rect},
-    widgets::{Cell, Row, Table},
+    widgets::{Cell, Row, Table, TableState},
     Frame,
 };
 
@@ -18,6 +18,9 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let widths_val: Value = node.funcall("widths", ())?;
     let widths_array = magnus::RArray::from_value(widths_val)
         .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for widths"))?;
+    let highlight_style_val: Value = node.funcall("highlight_style", ())?;
+    let highlight_symbol_val: Value = node.funcall("highlight_symbol", ())?;
+    let selected_row_val: Value = node.funcall("selected_row", ())?;
     let block_val: Value = node.funcall("block", ())?;
 
     let mut rows = Vec::new();
@@ -90,7 +93,22 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         table = table.block(parse_block(block_val)?);
     }
 
-    frame.render_widget(table, area);
+    if !highlight_style_val.is_nil() {
+        table = table.row_highlight_style(parse_style(highlight_style_val)?);
+    }
+
+    if !highlight_symbol_val.is_nil() {
+        let symbol: String = highlight_symbol_val.funcall("to_s", ())?;
+        table = table.highlight_symbol(symbol);
+    }
+
+    let mut state = TableState::default();
+    if !selected_row_val.is_nil() {
+        let index: usize = selected_row_val.funcall("to_int", ())?;
+        state.select(Some(index));
+    }
+
+    frame.render_stateful_widget(table, area, &mut state);
     Ok(())
 }
 
