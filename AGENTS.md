@@ -101,7 +101,7 @@ The project follows a standard Gem layout with an `ext/` directory for Rust code
 ### Development Environment
 
 -   **Setup:** `bin/setup` must handle both Bundler and Cargo dependencies.
--   **Pre-commit:** Use `.pre-commit-config.yaml` to enforce `bundle exec rake` and `cargo fmt`.
+-   **Pre-commit:** Use `bin/agent_rake` to ensure commit-readiness.
 
 ### Documentation
 
@@ -183,7 +183,7 @@ The project follows a standard Gem layout with an `ext/` directory for Rust code
 
 Before considering a task complete and returning control to the user, you **MUST** ensure:
 
-1.  **Default Rake Task Passes:** Run `bundle exec rake && echo "PASS"|| echo "FAIL"` (the default task) to execute **ALL** tests and linting. Do not rely on partial test runs, or `rake test`, or `rake lint` alone. Confirm it passes with no new errors **or warnings**.
+1.  **Default Rake Task Passes:** Run `bin/agent_rake` to execute **ALL** tests and linting. Do not rely on partial test runs, or `rake test`, or `rake lint` alone. Confirm it passes with no new errors **or warnings**.
 2.  **Documentation Updated:** If public APIs or observable behavior changed, update relevant `doc/` files, `README.md`, and/or `ratatui_ruby-wiki` files,.
 3.  **Changelog Updated:** If public APIs, observable behavior, or gemspec dependencies changed, update [CHANGELOG.md](CHANGELOG.md)'s **Unreleased** section according to the [Semantic Versioning](https://semver.org/) and [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) specifications. Changelogs should be useful to human users of the library, not simple restatements of diffs or commit messages. **Do not add entries for internal tooling, CI, or build configuration changes that do not affect the distributed gem.**
 4.  **Commit Message Suggested:** You **MUST** ensure the final message to the user includes a suggested commit message block. This is NOT optional.

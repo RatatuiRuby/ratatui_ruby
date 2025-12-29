@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+require "tempfile"
+
+# We use a Tempfile to capture output. It automatically deletes itself
+# when the object is garbage collected or the script exits (usually).
+# We explicitly delete it in the ensure block just to be safe.
+Tempfile.create('agent_rake_log') do |file|
+  begin
+    # [:out, :err] => file.path
+    # This redirects BOTH Standard Output and Standard Error to the file.
+    # It is the only way to silence "noisy" build tools like Make/Cargo.
+    success = system("bundle exec rake", [:out, :err] => file.path)
+
+    if success
+      puts "PASS"
+      exit 0
+    else
+      puts "FAIL"
+      puts
+      puts "---"
+      puts
+      # If failed, rewind the file and dump it to the screen so you see
+      # the stack traces, compile errors, and test failures.
+      file.rewind
+      puts file.read
+      exit 1
+    end
+  ensure
+    # Good hygiene: Ensure the file acts like a temp file
+    file.close
+    File.unlink(file.path) if File.exist?(file.path)
+  end
+end
