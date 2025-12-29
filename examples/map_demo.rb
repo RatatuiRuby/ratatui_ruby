@@ -35,37 +35,36 @@ module MapDemo
 
   # Runs the map demo loop.
   def self.run
-    RatatuiRuby.init_terminal
-    radius = 0.0
-    direction = 1
-    bg_index = 0
-    marker_index = 0
+    RatatuiRuby.run do
+      radius = 0.0
+      direction = 1
+      bg_index = 0
+      marker_index = 0
 
-    loop do
-      # Animate the circle radius
-      radius += 0.5 * direction
-      if radius > 10.0 || radius < 0.0
-        direction *= -1
+      loop do
+        # Animate the circle radius
+        radius += 0.5 * direction
+        if radius > 10.0 || radius < 0.0
+          direction *= -1
+        end
+
+        # Define the view
+        view = view(radius, MARKERS[marker_index], COLORS[bg_index])
+
+        RatatuiRuby.draw(view)
+
+        event = RatatuiRuby.poll_event
+        break if event == "q" || event == :ctrl_c
+
+        if event == "b"
+          bg_index = (bg_index + 1) % COLORS.size
+        elsif event == "m"
+          marker_index = (marker_index + 1) % MARKERS.size
+        end
+
+        sleep 0.05
       end
-
-      # Define the view
-      view = view(radius, MARKERS[marker_index], COLORS[bg_index])
-
-      RatatuiRuby.draw(view)
-
-      event = RatatuiRuby.poll_event
-      break if event == "q" || event == :ctrl_c
-
-      if event == "b"
-        bg_index = (bg_index + 1) % COLORS.size
-      elsif event == "m"
-        marker_index = (marker_index + 1) % MARKERS.size
-      end
-
-      sleep 0.05
     end
-  ensure
-    RatatuiRuby.restore_terminal
   end
 end
 

@@ -17,14 +17,11 @@ class DashboardApp
   end
 
   def run
-    RatatuiRuby.init_terminal
-    begin
+    RatatuiRuby.run do
       loop do
         render
         break if handle_input == :quit
       end
-    ensure
-      RatatuiRuby.restore_terminal
     end
   end
 

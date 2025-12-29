@@ -20,8 +20,7 @@ class AllEventsApp
   end
 
   def run
-    RatatuiRuby.init_terminal
-    begin
+    RatatuiRuby.run do
       # Capture initial terminal size
       @resize_info = "#{terminal_width}×#{terminal_height}"
       loop do
@@ -29,8 +28,6 @@ class AllEventsApp
         break if handle_input == :quit
         sleep 0.016
       end
-    ensure
-      RatatuiRuby.restore_terminal
     end
   end
 

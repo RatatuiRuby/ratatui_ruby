@@ -15,16 +15,13 @@ class RichTextApp
   end
 
   def run
-    RatatuiRuby.init_terminal
-    begin
+    RatatuiRuby.run do
       loop do
         render
         event = handle_input
         break if event == :quit
         sleep 0.05
       end
-    ensure
-      RatatuiRuby.restore_terminal
     end
   end
 

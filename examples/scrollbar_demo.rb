@@ -63,8 +63,7 @@ class ScrollbarDemo
   end
 
   def run
-    RatatuiRuby.init_terminal
-    begin
+    RatatuiRuby.run do
       loop do
         draw
         event = RatatuiRuby.poll_event
@@ -72,8 +71,6 @@ class ScrollbarDemo
 
         handle_event(event)
       end
-    ensure
-      RatatuiRuby.restore_terminal
     end
   end
 

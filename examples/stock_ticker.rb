@@ -19,15 +19,12 @@ class StockTickerApp
   end
 
   def run
-    RatatuiRuby.init_terminal
-    begin
+    RatatuiRuby.run do
       loop do
         render
         break if handle_input == :quit
         sleep 0.1
       end
-    ensure
-      RatatuiRuby.restore_terminal
     end
   end
 

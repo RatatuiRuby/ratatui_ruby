@@ -3,9 +3,7 @@ require "ratatui_ruby"
 puts "Press any key, click mouse, resize window, or paste text."
 puts "Press 'q' to exit."
 
-RatatuiRuby.init_terminal
-
-begin
+RatatuiRuby.run do
   loop do
     event = RatatuiRuby.poll_event
     next unless event
@@ -31,6 +29,4 @@ begin
       break
     end
   end
-ensure
-  RatatuiRuby.restore_terminal
 end

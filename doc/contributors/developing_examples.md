@@ -18,14 +18,11 @@ class MyExampleApp
   end
 
   def run
-    RatatuiRuby.init_terminal
-    begin
+    RatatuiRuby.run do
       loop do
         render
         break if handle_input == :quit
       end
-    ensure
-      RatatuiRuby.restore_terminal
     end
   end
 
@@ -49,7 +46,7 @@ MyExampleApp.new.run if __FILE__ == $PROGRAM_NAME
 
 1. **Only `run` should be public.** All other methods (`render`, `handle_input`, helper methods) must be private. This prevents tests from calling internal methods directly.
 
-2. **The `run` method contains the main loop.** It initializes the terminal, loops on render/input, and restores the terminal in an ensure block.
+2. **Use `RatatuiRuby.run` for terminal management.** Never call `init_terminal` or `restore_terminal` directly. The `run` block handles terminal setup/teardown automatically and safely, even if an exception occurs.
 
 3. **Use keyboard keys to cycle through widget attributes.** Users should be able to interactively explore all widget options. Common patterns:
    - Arrow keys: Navigate or adjust values

@@ -7,13 +7,11 @@ $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 
 require "ratatui_ruby"
 
-# 1. Initialize the terminal
-RatatuiRuby.init_terminal
-
-begin
+# Using the RatatuiRuby.run block for automatic terminal setup/teardown
+RatatuiRuby.run do |tui|
   # The Main Loop
   loop do
-    # 2. Create your UI (Immediate Mode)
+    # 1. Create your UI (Immediate Mode)
     # We define a Paragraph widget inside a Block with a title and borders.
     view = RatatuiRuby::Paragraph.new(
       text: "Hello, Ratatui! Press 'q' to quit.",
@@ -25,14 +23,11 @@ begin
       )
     )
 
-    # 3. Draw the UI
-    RatatuiRuby.draw(view)
+    # 2. Draw the UI
+    tui.draw(view)
 
-    # 4. Poll for events
+    # 3. Poll for events
     event = RatatuiRuby.poll_event
     break if event == "q" || event == :ctrl_c
   end
-ensure
-  # 5. Restore the terminal to its original state
-  RatatuiRuby.restore_terminal
 end
