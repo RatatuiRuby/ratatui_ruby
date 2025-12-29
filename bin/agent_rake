@@ -4,35 +4,92 @@
 # SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-require "tempfile"
+# ==============================================================================
+# bin/agent_rake: The AI-Friendly Build Wrapper
+# ==============================================================================
+#
+# WHY THIS EXISTS:
+# 1. Noise Reduction for AI Agents:
+#    Compiling Rust extensions (Via Cargo) and installing gems produces massive
+#    amounts of "noisy" output (compilation steps, warnings, progress bars).
+#    This noise fills up an AI agent's limited context window, truncating the
+#    actual error message we need to fix.
+#
+# 2. Atomic Dump vs. Streaming:
+#    Humans like "Streaming" (seeing lines appear in real-time).
+#    Agents need an "Atomic Dump" of *only* the failure.
+#    If we stream, the agent's context fills with noise before the failure occurs.
+#    By capturing to a file, we can discard the noise and only show the failure.
+#
+# 3. Merging Stdout/Stderr:
+#    We merge stdout and stderr because:
+#    - Minitest prints failures to stdout, not stderr.
+#    - We need to preserve temporal order (e.g., a "warning" in stderr right
+#      before a "failure" in stdout).
+#
+# 4. Transparent Passthrough:
+#    This script wraps `bundle exec rake`. Any arguments you pass to this script
+#    (e.g., `bin/agent_rake test:ruby`) are passed directly to rake.
+#    Environment variables (e.g., `TEST=...`) are inherited naturally.
+#
+# ==============================================================================
 
-# We use a Tempfile to capture output. It automatically deletes itself
-# when the object is garbage collected or the script exits (usually).
-# We explicitly delete it in the ensure block just to be safe.
-Tempfile.create('agent_rake_log') do |file|
+require "fileutils"
+require "shellwords"
+
+# Persist the log file so it can be inspected manually if summarization fails.
+# We do NOT use a Tempfile because we want the log to survive script exit.
+LOG_FILE = File.expand_path(File.join(__dir__, "..", "tmp", "agent_rake.log"))
+FileUtils.mkdir_p(File.dirname(LOG_FILE))
+
+cmd = "bundle exec rake #{ARGV.shelljoin}"
+
+# Run the command, redirecting everything to the log file.
+# This silences the terminal output completely unless there's a failure.
+success = system(cmd, [:out, :err] => LOG_FILE)
+
+if success
+  puts "PASS"
+  exit 0
+else
+  puts "FAIL"
+  puts "Full output saved to: #{LOG_FILE}"
+  puts "---"
+  puts "Failure Summary (extracted from log):"
+  puts
+
   begin
-    # [:out, :err] => file.path
-    # This redirects BOTH Standard Output and Standard Error to the file.
-    # It is the only way to silence "noisy" build tools like Make/Cargo.
-    success = system("bundle exec rake", [:out, :err] => file.path)
+    # aggressively force UTF-8 to avoid "incompatible encoding regexp match" errors
+    # when the log contains binary data or weird sequences from Cargo.
+    raw_content = File.binread(LOG_FILE)
+    content = raw_content.encode('UTF-8', invalid: :replace, undef: :replace, replace: '?')
 
-    if success
-      puts "PASS"
-      exit 0
+    # Try to extract meaningful failure information
+    if content.include?("Failure:") || content.include?("Error:")
+      # Regex explanation:
+      # Look for a line starting with "  1) Failure:"
+      # Capture everything until the next "  N) Failure:" or End Of String (\Z).
+      # /m (multiline) mode allows . to match newlines.
+      failures = content.scan(/(?:^\s*\d+\) (?:Failure|Error):.*?(?=\n\s*\d+\) (?:Failure|Error):|\Z))/ms)
+      
+      if failures.any?
+        puts failures.join("\n")
+      else
+        # Fallback: Print lines containing "Error" or "Failure" with context
+        puts content.lines.grep(/(Failure:|Error:|error\[)/).first(20).join
+        puts "... (summarization failed to find full blocks, see log for more)"
+      end
     else
-      puts "FAIL"
-      puts
-      puts "---"
-      puts
-      # If failed, rewind the file and dump it to the screen so you see
-      # the stack traces, compile errors, and test failures.
-      file.rewind
-      puts file.read
-      exit 1
+      # If no standard Ruby/Minitest failure patterns found, it might be a build error.
+      # Dump the last 50 lines which usually contain the crash/build error.
+      puts "No structured failure pattern detected. Dumping last 50 lines:"
+      puts content.lines.last(50).join
     end
-  ensure
-    # Good hygiene: Ensure the file acts like a temp file
-    file.close
-    File.unlink(file.path) if File.exist?(file.path)
+  rescue => e
+    puts "Error summarizing log file: #{e.class}: #{e.message}"
   end
+
+  puts "Use `grep` or run `cat #{LOG_FILE}` to see details."
+  exit 1
 end
+

@@ -43,7 +43,7 @@ Every file must begin with an SPDX-compliant header. Use the following format:
 ### Ruby Standards
 
 -   **Version:** Tested against the latest releases of Ruby 3.2, 3.3, 3.4, and 4.0, and must work on all of them. Local development happens on the latest stable release.
--   **Linter:** Always use `bin/agent_rake` for testing, linting, and compilation. Never run `bundle exec rake test`, `bundle exec rake lint`, or `bundle exec rake compile` directly. The `bin/agent_rake` script silences noisy build output and runs the complete default task (test + lint + compile), showing output only on failure. This is the canonical way to verify commit-readiness. Note: `bin/agent_rake` does not accept arguments; it always runs the full default task.
+-   **Linter:** Always use `bin/agent_rake` for testing, linting, and compilation. Never run `bundle exec rake test`, `bundle exec rake lint`, or `bundle exec rake compile` directly. The `bin/agent_rake` script silences noisy build output and runs the default task (test + lint + compile) by default, showing output only on failure. This is the canonical way to verify commit-readiness. You can pass arguments to it just like rake (e.g., `bin/agent_rake test:ruby`), but ensure you run the full suite before committing.
 -   **Style:**
     -   Use `Data.define` for all value objects (UI Nodes). (Prefer `class Foo < Data.define()` over `Foo = Data.define() do`).
     -   Prefer `frozen_string_literal: true`.
