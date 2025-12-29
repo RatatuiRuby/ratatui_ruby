@@ -5,6 +5,7 @@
 
 require "minitest/autorun"
 require "ratatui_ruby"
+require "ratatui_ruby/test_helper"
 require_relative "calendar_demo"
 
 module CalendarDemo

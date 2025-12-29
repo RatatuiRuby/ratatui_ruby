@@ -66,4 +66,27 @@ class TestAnalytics < Minitest::Test
       # Success if returns
     end
   end
+
+  def test_switch_divider
+    with_test_terminal(60, 10) do
+      # Switch divider (d) then quit (q)
+      inject_keys(:d, :q)
+      @app.run
+      
+      # Default is " | ", next is " • "
+      assert buffer_content.any? { |line| line.include?(" • ") }
+    end
+  end
+
+  def test_switch_style
+    with_test_terminal(60, 10) do
+      # Switch style (space) then quit (q)
+      inject_keys(:" ", :q)
+      @app.run
+      
+      # Verify it runs without error. 
+      # Style visual verification is limited with simple string buffer checks,
+      # but this ensures the event handling works.
+    end
+  end
 end

@@ -5,7 +5,7 @@
 
 require "test_helper"
 
-class TestEvents < Minitest::Test
+class TestPollEvent < Minitest::Test
   def setup
     RatatuiRuby.init_test_terminal(80, 24)
     RatatuiRuby.clear_events

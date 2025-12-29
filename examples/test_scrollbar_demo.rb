@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 require "test_helper"
-require_relative "../../examples/scrollbar_demo"
+require_relative "scrollbar_demo"
 
 class TestScrollbarDemo < Minitest::Test
   def setup

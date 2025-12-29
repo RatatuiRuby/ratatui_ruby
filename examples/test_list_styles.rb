@@ -59,4 +59,22 @@ class TestListStylesExample < Minitest::Test
       # Success
     end
   end
+
+  def test_toggle_direction
+    with_test_terminal(80, 10) do
+      # Toggle to bottom_to_top
+      # Assuming 'd' key toggles direction based on example code logic
+      inject_key(:d)
+      @app.handle_input
+      
+      @app.render
+      content = buffer_content
+      
+      # Just verify the title or content change reflecting the new state
+      # The exact title validation depends on how the app renders it, 
+      # but assuming it updates the block title or similar.
+      assert_includes content[0], "bottom_to_top"
+      assert_includes content.join("\n"), "Item 1"
+    end
+  end
 end
