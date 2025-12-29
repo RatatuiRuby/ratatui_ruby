@@ -51,6 +51,16 @@ class TestTabs < Minitest::Test
       # Check that titles are present
       assert_includes line, "Tab1"
       assert_includes line, "Tab2"
+      assert_includes line, "Tab2"
     end
+  end
+
+  def test_tabs_with_style
+    tabs = RatatuiRuby::Tabs.new(
+      titles: ["Tab"],
+      style: RatatuiRuby::Style.new(fg: :red, bg: :blue)
+    )
+    assert_equal :red, tabs.style.fg
+    assert_equal :blue, tabs.style.bg
   end
 end

@@ -32,6 +32,9 @@ class TestAnalytics < Minitest::Test
 
       # Check initial selected tab content
       assert buffer_content.any? { |line| line.include?("Analytics: Revenue") }
+
+      # Check help text visibility
+      assert buffer_content.any? { |line| line.include?("q: Quit") }
     end
   end
 

@@ -6,6 +6,9 @@ module RatatuiRuby
     attr_reader titles: Array[String | _ToS]
     attr_reader selected_index: Integer
     attr_reader block: Block?
-    def self.new: (?titles: Array[String | _ToS], ?selected_index: Integer, ?block: Block?) -> Tabs
+    attr_reader divider: String?
+    attr_reader highlight_style: Style
+    attr_reader style: Style?
+    def self.new: (?titles: Array[String | _ToS], ?selected_index: Integer, ?block: Block?, ?divider: String?, ?highlight_style: Style?, ?style: Style?) -> Tabs
   end
 end

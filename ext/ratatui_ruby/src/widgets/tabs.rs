@@ -34,6 +34,11 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         tabs = tabs.highlight_style(style);
     }
 
+    let style_val: Value = node.funcall("style", ())?;
+    if !style_val.is_nil() {
+        tabs = tabs.style(crate::style::parse_style(style_val)?);
+    }
+
     if !block_val.is_nil() {
         tabs = tabs.block(parse_block(block_val)?);
     }

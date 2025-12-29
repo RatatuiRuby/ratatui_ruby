@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - **Typed Event API**: `RatatuiRuby.poll_event` now returns rich, typed Ruby objects instead of raw Hashes. The new event classes (`Event::Key`, `Event::Mouse`, `Event::Resize`, `Event::Paste`, `Event::FocusGained`, `Event::FocusLost`) provide predicate methods (`key?`, `mouse?`, `ctrl?`, etc.), pattern matching support, and direct Symbol/String comparison for cleaner event handling code.
 - **Table**: Added `column_spacing` support ([#gap-analysis](https://github.com/kerricklong/ratatui_ruby/issues/21)).
+- **Tabs Style**: Added `style` parameter to `Tabs` widget, allowing a base style to be applied to the entire tabs area.
 - **Resize Events**: The event system now exposes terminal resize events via `Event::Resize`, which includes `width` and `height` attributes for building responsive layouts.
 - **Paste Events**: Bracketed paste is now surfaced via `Event::Paste(content:)`, enabling safe handling of pasted text as a single atomic event.
 - **Focus Events**: Terminal focus changes are now surfaced via `Event::FocusGained` and `Event::FocusLost` for terminals that support it (e.g., iTerm2, Kitty).

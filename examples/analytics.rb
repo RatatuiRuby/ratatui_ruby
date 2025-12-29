@@ -22,6 +22,13 @@ class AnalyticsApp
     ]
     @divider_index = 0
     @dividers = [" | ", " • ", " > ", " / "]
+    @base_style_index = 0
+    @base_styles = [
+      nil, # Default
+      RatatuiRuby::Style.new(fg: :white, bg: :dark_gray),
+      RatatuiRuby::Style.new(fg: :white, bg: :blue),
+      RatatuiRuby::Style.new(modifiers: [:italic])
+    ]
   end
 
   def run
@@ -66,11 +73,15 @@ class AnalyticsApp
           titles: @tabs,
           selected_index: @selected_tab,
           block: RatatuiRuby::Block.new(
-            title: "Views (Space: style, 'd': divider, 'q': quit)",
+            title: "Views (q: Quit)",
+            titles: [
+              { content: " Space:Highlight Style | s:Style | d:Divider ", position: :bottom, alignment: :center }
+            ],
             borders: [:all]
           ),
           divider: @dividers[@divider_index],
-          highlight_style: @styles[@style_index]
+          highlight_style: @styles[@style_index],
+          style: @base_styles[@base_style_index]
         ),
         RatatuiRuby::BarChart.new(
           data:,
@@ -96,6 +107,8 @@ class AnalyticsApp
       @style_index = (@style_index + 1) % @styles.size
     in type: :key, code: "d"
       @divider_index = (@divider_index + 1) % @dividers.size
+    in type: :key, code: "s"
+      @base_style_index = (@base_style_index + 1) % @base_styles.size
     else
       # Ignore other events
     end

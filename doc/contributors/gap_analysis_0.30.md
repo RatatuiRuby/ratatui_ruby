@@ -101,7 +101,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `titles()` | `titles:` | ✅ |
 | `select()` | `selected_index:` | ✅ |
 | `block()` | `block:` | ✅ |
-| `style()` | — | ❌ **MISSING** |
+| `style()` | `style:` | ✅ |
 | `highlight_style()` | `highlight_style:` | ✅ |
 | `divider()` | `divider:` | ✅ |
 | `padding()` / `padding_left()` / `padding_right()` | — | ❌ **MISSING** |
