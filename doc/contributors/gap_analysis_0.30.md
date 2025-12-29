@@ -130,14 +130,14 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `position` | `position:` | ✅ |
 | `orientation()` | `orientation:` | ⚠️ Partial |
 | `thumb_symbol()` | `thumb_symbol:` | ✅ |
-| `thumb_style()` | — | ❌ **MISSING** |
-| `track_symbol()` | — | ❌ **MISSING** |
-| `track_style()` | — | ❌ **MISSING** |
-| `begin_symbol()` | — | ❌ **MISSING** |
-| `begin_style()` | — | ❌ **MISSING** |
-| `end_symbol()` | — | ❌ **MISSING** |
-| `end_style()` | — | ❌ **MISSING** |
-| `style()` | — | ❌ **MISSING** |
+| `thumb_style()` | `thumb_style:` | ✅ |
+| `track_symbol()` | `track_symbol:` | ✅ |
+| `track_style()` | `track_style:` | ✅ |
+| `begin_symbol()` | `begin_symbol:` | ✅ |
+| `begin_style()` | `begin_style:` | ✅ |
+| `end_symbol()` | `end_symbol:` | ✅ |
+| `end_style()` | `end_style:` | ✅ |
+| `style()` | `style:` | ✅ |
 
 Orientation: Ruby supports `:vertical`/`:horizontal` but ratatui has 4 variants:
 - `VerticalRight`, `VerticalLeft`, `HorizontalBottom`, `HorizontalTop`
@@ -312,7 +312,7 @@ All modifiers are covered. ✅
 
 ### High Priority (Common Use Cases)
 1. **Scrollbar orientation variants** - VerticalLeft, HorizontalTop
-2. **Scrollbar styling** - track_symbol, begin/end symbols
+
 
 ### Medium Priority
 3. **Chart::legend_position** - Nice to have

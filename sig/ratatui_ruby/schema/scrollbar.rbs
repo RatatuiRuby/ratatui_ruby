@@ -7,6 +7,14 @@ module RatatuiRuby
     attr_reader position: Integer
     attr_reader orientation: Symbol
     attr_reader thumb_symbol: String
+    attr_reader thumb_style: Style?
+    attr_reader track_symbol: String?
+    attr_reader track_style: Style?
+    attr_reader begin_symbol: String?
+    attr_reader begin_style: Style?
+    attr_reader end_symbol: String?
+    attr_reader end_style: Style?
+    attr_reader style: Style?
     attr_reader block: Block?
 
     def self.new: (
@@ -14,6 +22,14 @@ module RatatuiRuby
       position: Integer,
       ?orientation: Symbol,
       ?thumb_symbol: String,
+      ?thumb_style: Style?,
+      ?track_symbol: String?,
+      ?track_style: Style?,
+      ?begin_symbol: String?,
+      ?begin_style: Style?,
+      ?end_symbol: String?,
+      ?end_style: Style?,
+      ?style: Style?,
       ?block: Block?
     ) -> Scrollbar
   end

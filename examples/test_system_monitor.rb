@@ -20,7 +20,11 @@ class TestSystemMonitor < Minitest::Test
 
   def test_render_initial_state
     with_test_terminal(60, 20) do
-      @app.render
+      # Queue quit event
+      inject_key(:q)
+
+      @app.run
+
       assert buffer_content.any? { |line| line.include?("Processes") }
       assert buffer_content.any? { |line| line.include?("Memory Usage") }
       assert buffer_content.any? { |line| line.include?("50%") }
@@ -28,12 +32,12 @@ class TestSystemMonitor < Minitest::Test
   end
 
   def test_interaction
-    # Increase percentage
-    inject_event(RatatuiRuby::Event::Key.new(code: "up"))
-    @app.handle_input
-
     with_test_terminal(60, 20) do
-      @app.render
+      # Increase percentage then quit
+      inject_keys(:up, :q)
+
+      @app.run
+
       assert buffer_content.any? { |line| line.include?("55%") }
     end
   end

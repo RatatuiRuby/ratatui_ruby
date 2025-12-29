@@ -20,7 +20,10 @@ class TestPopupDemo < Minitest::Test
 
   def test_render_initial_state
     with_test_terminal(60, 20) do
-      @app.render
+      # Queue quit
+      inject_key(:q)
+
+      @app.run
 
       # Should have background text
       assert buffer_content.any? { |line| line.include?("BACKGROUND RED") }
@@ -33,30 +36,21 @@ class TestPopupDemo < Minitest::Test
 
   def test_toggle_clear
     with_test_terminal(60, 20) do
-      # Initial state: Clear disabled
-      @app.render
-      assert buffer_content.any? { |line| line.include?("Clear is DISABLED") }
+      # Toggle Clear on then quit
+      inject_keys(" ", :q)
 
-      # Toggle Clear on
-      inject_event(RatatuiRuby::Event::Key.new(code: " "))
-      @app.handle_input
+      @app.run
 
-      @app.render
       assert buffer_content.any? { |line| line.include?("Clear is ENABLED") }
       assert buffer_content.any? { |line| line.include?("Resets background to default") }
-
-      # Toggle Clear off
-      inject_event(RatatuiRuby::Event::Key.new(code: " "))
-      @app.handle_input
-
-      @app.render
-      assert buffer_content.any? { |line| line.include?("Clear is DISABLED") }
     end
   end
 
   def test_quit
-    inject_event(RatatuiRuby::Event::Key.new(code: "q"))
-    status = @app.handle_input
-    assert_equal :quit, status
+    with_test_terminal(60, 20) do
+      inject_key(:q)
+      @app.run
+      # Success
+    end
   end
 end

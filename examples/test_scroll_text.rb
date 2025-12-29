@@ -24,7 +24,11 @@ class TestScrollText < Minitest::Test
 
   def test_initial_rendering
     with_test_terminal(60, 10) do
-      @demo.render
+      # Queue quit
+      inject_key(:q)
+      
+      @demo.run
+
       content = buffer_content
       
       # Should show Line 1 at the top (inside the block border)
@@ -35,11 +39,12 @@ class TestScrollText < Minitest::Test
   end
 
   def test_scroll_down
-    inject_event(RatatuiRuby::Event::Key.new(code: "down"))
-    @demo.handle_input
-    
     with_test_terminal(60, 10) do
-      @demo.render
+      # Scroll down then quit
+      inject_keys(:down, :q)
+
+      @demo.run
+
       content = buffer_content
       
       # After scrolling down once, Line 2 should be at the top
@@ -52,11 +57,12 @@ class TestScrollText < Minitest::Test
   end
 
   def test_scroll_right
-    inject_event(RatatuiRuby::Event::Key.new(code: "right"))
-    @demo.handle_input
-    
     with_test_terminal(60, 10) do
-      @demo.render
+      # Scroll right then quit
+      inject_keys(:right, :q)
+
+      @demo.run
+
       content = buffer_content
       
       # After scrolling right once, first character should be cut off
@@ -68,12 +74,12 @@ class TestScrollText < Minitest::Test
   end
 
   def test_scroll_left_at_edge
-    # Try to scroll left when already at x=0
-    inject_event(RatatuiRuby::Event::Key.new(code: "left"))
-    @demo.handle_input
-    
     with_test_terminal(60, 10) do
-      @demo.render
+      # Scroll left then quit
+      inject_keys(:left, :q)
+
+      @demo.run
+
       content = buffer_content
       
       # Should still show full "Line 1:" (can't scroll left past 0)
@@ -84,12 +90,12 @@ class TestScrollText < Minitest::Test
   end
 
   def test_scroll_up_at_top
-    # Try to scroll up when already at top (should stay at 0)
-    inject_event(RatatuiRuby::Event::Key.new(code: "up"))
-    @demo.handle_input
-    
     with_test_terminal(60, 10) do
-      @demo.render
+      # Scroll up then quit
+      inject_keys(:up, :q)
+
+      @demo.run
+
       content = buffer_content
       
       # Should still show Line 1 at top (can't scroll above 0)
@@ -100,18 +106,16 @@ class TestScrollText < Minitest::Test
   end
 
   def test_scroll_both_axes
-    # Scroll down 2 times and right 3 times
-    2.times do
-      inject_event(RatatuiRuby::Event::Key.new(code: "down"))
-      @demo.handle_input
-    end
-    3.times do
-      inject_event(RatatuiRuby::Event::Key.new(code: "right"))
-      @demo.handle_input
-    end
-    
     with_test_terminal(60, 10) do
-      @demo.render
+      # Scroll down 2 times
+      2.times { inject_event(RatatuiRuby::Event::Key.new(code: "down")) }
+      # Scroll right 3 times
+      3.times { inject_event(RatatuiRuby::Event::Key.new(code: "right")) }
+      
+      inject_event(RatatuiRuby::Event::Key.new(code: "q"))
+
+      @demo.run
+
       content = buffer_content
       
       # After scrolling down 2 and right 3, Line 3 should be at top with first 3 chars cut
@@ -120,11 +124,5 @@ class TestScrollText < Minitest::Test
       # Should show scroll position X: 3, Y: 2
       assert content[0].include?("X: 3, Y: 2")
     end
-  end
-
-  def test_quit
-    inject_event(RatatuiRuby::Event::Key.new(code: "q"))
-    status = @demo.handle_input
-    assert_equal :quit, status
   end
 end

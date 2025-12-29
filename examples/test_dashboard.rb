@@ -20,18 +20,23 @@ class TestDashboard < Minitest::Test
 
   def test_render_initial_state
     with_test_terminal(60, 20) do
-      @app.render
+      # Queue quit
+      inject_key(:q)
+
+      @app.run
+
       assert buffer_content.any? { |line| line.include?("Item 1") }
       assert buffer_content.any? { |line| line.include?("You selected: Item 1") }
     end
   end
 
   def test_navigation
-    inject_event(RatatuiRuby::Event::Key.new(code: "down"))
-    @app.handle_input
-
     with_test_terminal(60, 20) do
-      @app.render
+      # Move down then quit
+      inject_keys(:down, :q)
+
+      @app.run
+
       assert buffer_content.any? { |line| line.include?("You selected: Item 2") }
     end
   end

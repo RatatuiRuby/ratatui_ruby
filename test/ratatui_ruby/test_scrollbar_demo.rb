@@ -13,12 +13,16 @@ class TestScrollbarDemo < Minitest::Test
 
   def test_initial_render
     with_test_terminal(20, 5) do
-      # We need to access private methods to test without running the full loop
-      @demo.__send__(:draw)
+      # Queue quit event to exit loop immediately
+      inject_key(:q)
+
+      # Stub init_terminal/restore_terminal to use test terminal
+      @demo.run
+
       content = buffer_content
 
-      # Top border with title
-      assert_includes content[0], "Scroll with Mouse"
+      # Top border with title (truncated due to small width)
+      assert_includes content[0], "Scroll"
       # First line of content
       assert_includes content[1], "Line 1"
       # Scrollbar area (far right)
@@ -28,11 +32,12 @@ class TestScrollbarDemo < Minitest::Test
 
   def test_scroll_down
     with_test_terminal(20, 5) do
-      # Simulate scroll down event
-      # ScrollbarDemo#handle_event expects a hash from poll_event
-      @demo.__send__(:handle_event, RatatuiRuby::Event::Mouse.new(kind: "scroll_down", x: 0, y: 0, button: "none"))
+      # Queue scroll down + quit
+      inject_event(RatatuiRuby::Event::Mouse.new(kind: "scroll_down", x: 0, y: 0, button: "none"))
+      inject_key(:q)
 
-      @demo.__send__(:draw)
+      @demo.run
+
       content = buffer_content
 
       # Now it should start from Line 2
@@ -43,14 +48,28 @@ class TestScrollbarDemo < Minitest::Test
 
   def test_scroll_up
     with_test_terminal(20, 5) do
-      # Scroll down then up
-      @demo.__send__(:handle_event, RatatuiRuby::Event::Mouse.new(kind: "scroll_down", x: 0, y: 0, button: "none"))
-      @demo.__send__(:handle_event, RatatuiRuby::Event::Mouse.new(kind: "scroll_up", x: 0, y: 0, button: "none"))
+      # Queue scroll down + scroll up + quit
+      inject_event(RatatuiRuby::Event::Mouse.new(kind: "scroll_down", x: 0, y: 0, button: "none"))
+      inject_event(RatatuiRuby::Event::Mouse.new(kind: "scroll_up", x: 0, y: 0, button: "none"))
+      inject_key(:q)
 
-      @demo.__send__(:draw)
+      @demo.run
+
       content = buffer_content
 
       assert_includes content[1], "Line 1"
+    end
+  end
+
+  def test_theme_cycling
+    with_test_terminal(80, 5) do
+      # Queue 's' + quit
+      inject_keys(:s, :q)
+
+      @demo.run
+
+      content = buffer_content
+      assert_match(/Theme: Rounded/, content[0])
     end
   end
 end

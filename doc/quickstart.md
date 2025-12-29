@@ -207,7 +207,7 @@ Demonstrates `Text::Span` and `Text::Line` for creating styled text with inline 
 ![Rich Text Screenshot](./images/examples-rich_text.rb.png)
 
 ### [Scrollbar Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/scrollbar_demo.rb)
-A simple example of integrating the `Scrollbar` widget and handling mouse wheel events for scrolling.
+A demonstration of the `Scrollbar` widget, featuring mouse wheel scrolling and extensive customization of symbols and styles.
 
 ![Scrollbar Demo Screenshot](./images/examples-scrollbar_demo.rb.png)
 

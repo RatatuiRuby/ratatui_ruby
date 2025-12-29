@@ -20,7 +20,10 @@ class TestListStylesExample < Minitest::Test
 
   def test_render_initial_state
     with_test_terminal(50, 20) do
-      @app.render
+      # Queue quit
+      inject_key(:q)
+
+      @app.run
 
       assert buffer_content.any? { |line| line.include?(">> Item 1") }
       assert buffer_content.any? { |line| line.include?("   Item 2") }
@@ -28,34 +31,32 @@ class TestListStylesExample < Minitest::Test
   end
 
   def test_navigation_down
-    inject_event(RatatuiRuby::Event::Key.new(code: "down"))
-    @app.handle_input
-
     with_test_terminal(50, 20) do
-      @app.render
+      inject_keys(:down, :q)
+
+      @app.run
+
       assert buffer_content.any? { |line| line.include?("   Item 1") }
       assert buffer_content.any? { |line| line.include?(">> Item 2") }
     end
   end
 
   def test_navigation_up
-    # Move down to Item 2
-    inject_event(RatatuiRuby::Event::Key.new(code: "down"))
-    @app.handle_input
-
-    # Move up back to Item 1
-    inject_event(RatatuiRuby::Event::Key.new(code: "up"))
-    @app.handle_input
-
     with_test_terminal(50, 20) do
-      @app.render
+      # Move down to Item 2
+      inject_keys(:down, :up, :q)
+
+      @app.run
+
       assert buffer_content.any? { |line| line.include?(">> Item 1") }
     end
   end
 
   def test_quit
-    inject_event(RatatuiRuby::Event::Key.new(code: "q"))
-    status = @app.handle_input
-    assert_equal :quit, status
+    with_test_terminal(50, 20) do
+      inject_key(:q)
+      @app.run
+      # Success
+    end
   end
 end

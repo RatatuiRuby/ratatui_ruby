@@ -117,12 +117,15 @@ module RatatuiRuby
       # - If +other+ is a +Symbol+, compares against #to_sym.
       # - If +other+ is a +String+, compares against #to_s.
       # - Otherwise, performs standard equality check.
+      # - Otherwise, compares internal state (code + modifiers).
       def ==(other)
         case other
         when Symbol
           to_sym == other
         when String
           to_s == other
+        when Key
+          code == other.code && modifiers == other.modifiers
         else
           super
         end
@@ -319,6 +322,13 @@ module RatatuiRuby
       def deconstruct_keys(keys)
         { type: :mouse, kind: @kind, x: @x, y: @y, button: @button, modifiers: @modifiers }
       end
+
+      ##
+      # Compares this event with another for equality.
+      def ==(other)
+        return false unless other.is_a?(Mouse)
+        kind == other.kind && x == other.x && y == other.y && button == other.button && modifiers == other.modifiers
+      end
     end
 
     # Signals a change in terminal dimensions.
@@ -384,6 +394,13 @@ module RatatuiRuby
       def deconstruct_keys(keys)
         { type: :resize, width: @width, height: @height }
       end
+
+      ##
+      # Compares this event with another for equality.
+      def ==(other)
+        return false unless other.is_a?(Resize)
+        width == other.width && height == other.height
+      end
     end
 
     # Encapsulates pasted text.
@@ -440,6 +457,13 @@ module RatatuiRuby
       def deconstruct_keys(keys)
         { type: :paste, content: @content }
       end
+
+      ##
+      # Compares this event with another for equality.
+      def ==(other)
+        return false unless other.is_a?(Paste)
+        content == other.content
+      end
     end
 
     # Signals that the application is now active.
@@ -474,6 +498,12 @@ module RatatuiRuby
       #   end
       def deconstruct_keys(keys)
         { type: :focus_gained }
+      end
+
+      ##
+      # Compares this event with another for equality.
+      def ==(other)
+        other.is_a?(FocusGained)
       end
     end
 
@@ -510,6 +540,12 @@ module RatatuiRuby
       #   end
       def deconstruct_keys(keys)
         { type: :focus_lost }
+      end
+
+      ##
+      # Compares this event with another for equality.
+      def ==(other)
+        other.is_a?(FocusLost)
       end
     end
   end

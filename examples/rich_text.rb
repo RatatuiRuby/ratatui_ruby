@@ -137,4 +137,6 @@ class RichTextApp
   end
 end
 
-RichTextApp.new.run
+if __FILE__ == $0
+  RichTextApp.new.run
+end

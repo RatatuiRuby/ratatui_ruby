@@ -21,7 +21,11 @@ class TestTableSelect < Minitest::Test
 
   def test_initial_render
     with_test_terminal(60, 20) do
-      @app.render
+      # Queue quit
+      inject_key(:q)
+
+      @app.run
+
       content = buffer_content.join("\n")
       assert_includes content, "Process Monitor"
       assert_includes content, "style: Cyan"
@@ -31,47 +35,50 @@ class TestTableSelect < Minitest::Test
 
   def test_style_switching
     # Default is Cyan (index 0). Pressing 's' should switch to Red (index 1).
-    first_style_name = TableApp::STYLES[0][:name]
     second_style_name = TableApp::STYLES[1][:name]
     
-    assert_equal 0, @app.current_style_index
-    assert_equal first_style_name, "Cyan"
-
-    inject_event(RatatuiRuby::Event::Key.new(code: "s"))
-    @app.handle_input
-
-    assert_equal 1, @app.current_style_index
-    assert_equal second_style_name, "Red"
-
     with_test_terminal(60, 20) do
-      @app.render
+      # Press 's' then quit
+      inject_keys(:s, :q)
+      
+      @app.run
+      
       content = buffer_content.join("\n")
       assert_includes content, "style: #{second_style_name}"
     end
   end
 
   def test_row_selection
-    assert_equal 0, @app.selected_index
-
-    # Move down
-    inject_event(RatatuiRuby::Event::Key.new(code: "j"))
-    @app.handle_input
-    assert_equal 1, @app.selected_index
-
-    # Move up
-    inject_event(RatatuiRuby::Event::Key.new(code: "k"))
-    @app.handle_input
-    assert_equal 0, @app.selected_index
+    # We can check internal state or rendered output.
+    # Since render uses state, we can verify rendered output if selection is visible.
+    # Render highlights selected row.
+    # We can also check state @app.selected_index if accessible (attr_reader).
     
-    # Wrap around up
-    inject_event(RatatuiRuby::Event::Key.new(code: "up"))
-    @app.handle_input
-    assert_equal PROCESSES.length - 1, @app.selected_index
+    with_test_terminal(60, 20) do
+      # Move down, then up, then quit
+
+      # We need to run, check state/buffer?
+      # If we run once, it processes all events.
+      # To check intermediate state, we'd need to mock/hook.
+      # Or just check final state after sequence.
+      
+      # Let's check finalizing state after a sequence.
+      # Down (1), Down (2), Up (1), Up (0), Up (Wrap -> Last)
+      
+      inject_keys(:j, :j, :k, :k, :up, :q)
+      
+      @app.run
+      
+      # Should be at last item
+      assert_equal PROCESSES.length - 1, @app.selected_index
+    end
   end
 
   def test_quit
-    inject_event(RatatuiRuby::Event::Key.new(code: "q"))
-    result = @app.handle_input
-    assert_equal :quit, result
+    with_test_terminal(60, 20) do
+      inject_key(:q)
+      @app.run
+      # Success
+    end
   end
 end

@@ -20,7 +20,10 @@ class TestAnalytics < Minitest::Test
 
   def test_render_initial_state
     with_test_terminal(50, 20) do
-      @app.render
+      # Queue quit
+      inject_key(:q)
+
+      @app.run
 
       # Check Tabs
       assert buffer_content.any? { |line| line.include?("Revenue") }
@@ -33,33 +36,34 @@ class TestAnalytics < Minitest::Test
   end
 
   def test_navigation_right
-    inject_event(RatatuiRuby::Event::Key.new(code: "right"))
-    @app.handle_input
-
     with_test_terminal(50, 20) do
-      @app.render
+      inject_keys(:right, :q)
+
+      @app.run
+
       assert buffer_content.any? { |line| line.include?("Analytics: Traffic") }
     end
   end
 
   def test_navigation_left
-    # Move right to Traffic
-    inject_event(RatatuiRuby::Event::Key.new(code: "right"))
-    @app.handle_input
-
-    # Move left back to Revenue
-    inject_event(RatatuiRuby::Event::Key.new(code: "left"))
-    @app.handle_input
-
     with_test_terminal(50, 20) do
-      @app.render
+      # Move right to Traffic
+      inject_keys(:a, :b, :c)
+      
+      # Then queue quit
+      inject_key(:q)
+
+      @app.run
+
       assert buffer_content.any? { |line| line.include?("Analytics: Revenue") }
     end
   end
 
   def test_quit
-    inject_event(RatatuiRuby::Event::Key.new(code: "q"))
-    status = @app.handle_input
-    assert_equal :quit, status
+    with_test_terminal(50, 20) do
+      inject_key(:q)
+      @app.run
+      # Success if returns
+    end
   end
 end

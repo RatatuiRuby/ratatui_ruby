@@ -12,6 +12,45 @@ class ScrollbarDemo
     @scroll_position = 0
     @content_length = 50
     @lines = (1..@content_length).map { |i| "Line #{i}" }
+    @theme_index = 0
+    @themes = [
+      {
+        name: "Standard",
+        track_symbol: nil,
+        thumb_symbol: "█",
+        track_style: nil,
+        thumb_style: nil,
+        begin_symbol: nil,
+        end_symbol: nil
+      },
+      {
+        name: "Rounded",
+        track_symbol: "│",
+        thumb_symbol: "┃",
+        track_style: { fg: "dark_gray" },
+        thumb_style: { fg: "cyan" },
+        begin_symbol: "▲",
+        end_symbol: "▼"
+      },
+      {
+        name: "ASCII",
+        track_symbol: "|",
+        thumb_symbol: "#",
+        track_style: { fg: "white" },
+        thumb_style: { fg: "red" },
+        begin_symbol: "^",
+        end_symbol: "v"
+      },
+      {
+        name: "Minimal",
+        track_symbol: " ",
+        thumb_symbol: "▐",
+        track_style: nil,
+        thumb_style: { fg: "yellow" },
+        begin_symbol: nil,
+        end_symbol: nil
+      }
+    ]
   end
 
   def run
@@ -30,13 +69,19 @@ class ScrollbarDemo
   end
 
   private def handle_event(event)
-    return unless event && event.mouse?
+    return unless event
 
-    case event.kind
-    when "scroll_up"
-      @scroll_position = [@scroll_position - 1, 0].max
-    when "scroll_down"
-      @scroll_position = [@scroll_position + 1, @content_length].min
+    if event.mouse?
+      case event.kind
+      when "scroll_up"
+        @scroll_position = [@scroll_position - 1, 0].max
+      when "scroll_down"
+        @scroll_position = [@scroll_position + 1, @content_length].min
+      end
+    end
+
+    if event.key? && event.to_s == "s"
+      @theme_index = (@theme_index + 1) % @themes.length
     end
   end
 
@@ -47,15 +92,25 @@ class ScrollbarDemo
     visible_lines = @lines[@scroll_position..-1] || []
 
     # Paragraph with content
+    theme = @themes[@theme_index]
     p = RatatuiRuby::Paragraph.new(
       text: visible_lines.join("\n"),
-      block: RatatuiRuby::Block.new(title: "Scroll with Mouse Wheel", borders: [:all])
+      block: RatatuiRuby::Block.new(
+        title: "Scroll with Mouse Wheel | Theme: #{theme[:name]} (Press 's' to cycle)",
+        borders: [:all]
+      )
     )
 
     # Scrollbar on the right
     s = RatatuiRuby::Scrollbar.new(
       content_length: @content_length,
-      position: @scroll_position
+      position: @scroll_position,
+      track_symbol: theme[:track_symbol],
+      thumb_symbol: theme[:thumb_symbol],
+      track_style: theme[:track_style],
+      thumb_style: theme[:thumb_style],
+      begin_symbol: theme[:begin_symbol],
+      end_symbol: theme[:end_symbol]
     )
 
     # Use a Layout to place scrollbar on the right

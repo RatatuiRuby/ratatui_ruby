@@ -20,7 +20,11 @@ class TestFlexLayout < Minitest::Test
 
   def test_render_header
     with_test_terminal(60, 20) do
-      @app.render
+      # Queue quit
+      inject_key(:q)
+      
+      @app.run
+
       assert_includes buffer_content[0], "Header"
       assert buffer_content.any? { |line| line.include?("Fill & Flex Layout Demo") }
     end
@@ -28,9 +32,12 @@ class TestFlexLayout < Minitest::Test
 
   def test_fill_constraint_ratio
     with_test_terminal(60, 20) do
-      @app.render
+      # Queue quit
+      inject_key(:q)
+      
+      @app.run
+
       # Fill(1) and Fill(3) should split horizontally in a 1:3 ratio
-      # With width 60, Fill(1) gets ~15, Fill(3) gets ~45
       assert buffer_content.any? { |line| line.include?("Fill(1)") }
       assert buffer_content.any? { |line| line.include?("Fill(3)") }
     end
@@ -38,7 +45,11 @@ class TestFlexLayout < Minitest::Test
 
   def test_space_between_blocks
     with_test_terminal(60, 20) do
-      @app.render
+      # Queue quit
+      inject_key(:q)
+
+      @app.run
+
       # Three blocks with space_between flex should have equal spacing
       assert buffer_content.any? { |line| line.include?("Block A") }
       assert buffer_content.any? { |line| line.include?("Block B") }
@@ -47,7 +58,10 @@ class TestFlexLayout < Minitest::Test
   end
 
   def test_quit_on_q
-    inject_event(RatatuiRuby::Event::Key.new(code: "q"))
-    assert_equal :quit, @app.handle_input
+    with_test_terminal(60, 20) do
+      inject_key(:q)
+      @app.run
+      # Success if it returns
+    end
   end
 end

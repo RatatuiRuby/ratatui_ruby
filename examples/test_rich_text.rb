@@ -140,3 +140,22 @@ class TestRichText < Minitest::Test
     end
   end
 end
+
+require_relative "rich_text"
+
+class TestRichTextApp < Minitest::Test
+  include RatatuiRuby::TestHelper
+
+  def test_app_runs
+    with_test_terminal do
+      inject_key(:q)
+      RichTextApp.new.run
+      
+      assert buffer_content.any? { |line| line.include?("Simple Rich Text") }
+      assert buffer_content.any? { |line| line.include?("Status Report") }
+    end
+  end
+end
+
+
+

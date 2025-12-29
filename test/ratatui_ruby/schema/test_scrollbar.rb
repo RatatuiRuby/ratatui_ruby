@@ -8,11 +8,22 @@ require "test_helper"
 module RatatuiRuby
   class TestScrollbar < Minitest::Test
     def test_scrollbar_creation
-      s = Scrollbar.new(content_length: 100, position: 10, orientation: :horizontal, thumb_symbol: "X")
+      s = Scrollbar.new(
+        content_length: 100,
+        position: 10,
+        orientation: :horizontal,
+        thumb_symbol: "X",
+        track_symbol: "-",
+        begin_symbol: "<",
+        end_symbol: ">"
+      )
       assert_equal 100, s.content_length
       assert_equal 10, s.position
       assert_equal :horizontal, s.orientation
       assert_equal "X", s.thumb_symbol
+      assert_equal "-", s.track_symbol
+      assert_equal "<", s.begin_symbol
+      assert_equal ">", s.end_symbol
     end
 
     def test_scrollbar_defaults
@@ -49,6 +60,23 @@ module RatatuiRuby
         RatatuiRuby.draw(s)
         # Position 0 has thumb at column 1-4
         assert_equal "◄████════►", buffer_content[0]
+      end
+    end
+
+    def test_render_styled
+      with_test_terminal(10, 1) do
+        s = Scrollbar.new(
+          content_length: 10,
+          position: 0,
+          orientation: :horizontal,
+          thumb_symbol: "#",
+          track_symbol: "-",
+          begin_symbol: "<",
+          end_symbol: ">"
+        )
+        RatatuiRuby.draw(s)
+        # Custom symbols should be rendered
+        assert_equal "<####---->", buffer_content[0]
       end
     end
   end

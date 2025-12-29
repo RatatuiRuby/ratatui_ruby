@@ -19,7 +19,21 @@ module RatatuiRuby
     #     position: 25,
     #     orientation: :vertical
     #   )
-    class Scrollbar < Data.define(:content_length, :position, :orientation, :thumb_symbol, :block)
+    class Scrollbar < Data.define(
+      :content_length,
+      :position,
+      :orientation,
+      :thumb_symbol,
+      :thumb_style,
+      :track_symbol,
+      :track_style,
+      :begin_symbol,
+      :begin_style,
+      :end_symbol,
+      :end_style,
+      :style,
+      :block
+    )
       ##
       # :attr_reader: content_length
       # Total items or lines in the content.
@@ -30,13 +44,45 @@ module RatatuiRuby
 
       ##
       # :attr_reader: orientation
-      # Orientation.
+      # Direction of the scrollbar.
       #
       # <tt>:vertical</tt> or <tt>:horizontal</tt>.
 
       ##
       # :attr_reader: thumb_symbol
-      # Character used for the thumb.
+      # Symbol used to represent the current position indicator.
+
+      ##
+      # :attr_reader: thumb_style
+      # Style of the position indicator (thumb).
+
+      ##
+      # :attr_reader: track_symbol
+      # Symbol used to represent the empty space of the scrollbar.
+
+      ##
+      # :attr_reader: track_style
+      # Style of the filled track area.
+
+      ##
+      # :attr_reader: begin_symbol
+      # Symbol rendered at the start of the track (e.g., arrow).
+
+      ##
+      # :attr_reader: begin_style
+      # Style of the start symbol.
+
+      ##
+      # :attr_reader: end_symbol
+      # Symbol rendered at the end of the track (e.g., arrow).
+
+      ##
+      # :attr_reader: end_style
+      # Style of the end symbol.
+
+      ##
+      # :attr_reader: style
+      # Base style applied to the entire widget.
 
       ##
       # :attr_reader: block
@@ -48,8 +94,30 @@ module RatatuiRuby
       # [position] Integer.
       # [orientation] Symbol (default: <tt>:vertical</tt>).
       # [thumb_symbol] String (default: <tt>"█"</tt>).
+      # [thumb_style] Style (optional).
+      # [track_symbol] String (optional).
+      # [track_style] Style (optional).
+      # [begin_symbol] String (optional).
+      # [begin_style] Style (optional).
+      # [end_symbol] String (optional).
+      # [end_style] Style (optional).
+      # [style] Style (optional).
       # [block] Block (optional).
-      def initialize(content_length:, position:, orientation: :vertical, thumb_symbol: "█", block: nil)
+      def initialize(
+        content_length:,
+        position:,
+        orientation: :vertical,
+        thumb_symbol: "█",
+        thumb_style: nil,
+        track_symbol: nil,
+        track_style: nil,
+        begin_symbol: nil,
+        begin_style: nil,
+        end_symbol: nil,
+        end_style: nil,
+        style: nil,
+        block: nil
+      )
         super
       end
     end

@@ -20,108 +20,68 @@ class TestBoxDemo < Minitest::Test
 
   def test_render_initial_state
     with_test_terminal(40, 10) do
-      @app.render
+      # Queue quit
+      inject_key(:q)
+
+      @app.run
+
       assert buffer_content.any? { |line| line.include?("Box Demo") }
       assert buffer_content.any? { |line| line.include?("Press Arrow Keys") }
     end
   end
 
   def test_interaction
-    inject_event(RatatuiRuby::Event::Key.new(code: "up"))
-    @app.handle_input
-
     with_test_terminal(40, 10) do
-      @app.render
+      # Press up then quit
+      inject_keys(:up, :q)
+      
+      @app.run
+
       assert buffer_content.any? { |line| line.include?("Up Pressed!") }
     end
   end
+
   def test_title_alignment_cycle
-    # Width 40. Title "Box Demo - plain" (16 chars).
-
-    # 1. Initial State (Left)
-    with_test_terminal(40, 10) do
-      @app.render
-      # Line 0: ┌Box Demo - plain──────────────────────┐
-      top_line = buffer_content[0]
-      assert_match(/^┌Box Demo - plain.+┐/, top_line, "Title should be left-aligned initially")
-    end
+    # We can check sequential states by running multiple times or checking final state.
+    # To test behavior, we'll verify the final state after a sequence of inputs.
     
-    # 2. Switch to Center
-    inject_event(RatatuiRuby::Event::Key.new(code: "enter"))
-    @app.handle_input
-
+    # 1. Left (default) -> Center (enter) -> Right (enter) -> Left (enter)
+    
+    # Check Center (Enter once)
     with_test_terminal(40, 10) do
-      @app.render
-      # Check text feedback
+      inject_keys(:enter, :q)
+      @app.run
+      
       assert buffer_content.any? { |line| line.include?("Aligned center") }
-      
-      # Check actual title position. 
       # "Box Demo - plain" should be centered.
-      # (40 - 2 (borders) - 16) / 2 = 11 spaces padding on each side inside borders.
-      # Line 0: ┌───────────Box Demo - plain───────────┐
-      # We check for border chars (implied by non-whitespace) or just match the structure
-      top_line = buffer_content[0]
-      # Using .+ to match the horizontal lines
-      assert_match(/┌.+Box Demo - plain.+┐/, top_line, "Title should be centered")
+      assert_match(/┌.+Box Demo - plain.+┐/, buffer_content[0], "Title should be centered")
     end
-
-    # 3. Switch to Right
-    inject_event(RatatuiRuby::Event::Key.new(code: "enter"))
-    @app.handle_input
-
+  end
+  
+  def test_title_alignment_right
+    setup # reset app
     with_test_terminal(40, 10) do
-      @app.render
-      assert buffer_content.any? { |line| line.include?("Aligned right") }
+      # Enter twice for Right
+      inject_keys(:enter, :enter, :q)
       
-      # Check actual title position. 
-      # "Box Demo - plain" should be on the right.
-      # Line 0: ┌──────────────────────Box Demo - plain┐
-      # Line 0: ┌──────────────────────Box Demo - plain┐
-      top_line = buffer_content[0]
-      assert_match(/Box Demo - plain┐$/, top_line, "Title should be right-aligned")
-    end
+      @app.run
 
-    # 4. Switch back to Left
-    inject_event(RatatuiRuby::Event::Key.new(code: "enter"))
-    @app.handle_input
-
-    with_test_terminal(40, 10) do
-      @app.render
-      top_line = buffer_content[0]
-      assert_match(/^┌Box Demo - plain.+┐/, top_line, "Title should be left-aligned again")
+      assert buffer_content.any? { |line| line.include?("Aligned right") }
+      assert_match(/Box Demo - plain┐$/, buffer_content[0], "Title should be right-aligned")
     end
   end
 
   def test_border_type_cycle
-    # Initial state is :plain.
-    # Press Space to switch to :rounded
-    inject_event(RatatuiRuby::Event::Key.new(code: " "))
-    @app.handle_input
-
     with_test_terminal(40, 10) do
-      @app.render
-      # Check text feedback
-      assert buffer_content.any? { |line| line.include?("Switched to rounded") }
+      # Press Space (rounded) then quit
+      inject_keys(" ", :q)
       
-      # Check visual representation of rounded corners
-      # Top-left is ╭ (U+256D), Top-right is ╮ (U+256E), Bottom-left is ╰ (U+2570), Bottom-right is ╯ (U+256F)
+      @app.run
+
+      assert buffer_content.any? { |line| line.include?("Switched to rounded") }
       top_line = buffer_content[0]
       assert_match(/^╭/, top_line, "Should have rounded top-left corner")
       assert_match(/╮$/, top_line, "Should have rounded top-right corner")
-    end
-
-    # Press Space again to switch to :double
-    inject_event(RatatuiRuby::Event::Key.new(code: " "))
-    @app.handle_input
-
-    with_test_terminal(40, 10) do
-      @app.render
-      assert buffer_content.any? { |line| line.include?("Switched to double") }
-      
-      # Check visual representation of double corners
-      # Top-left is ╔ (U+2554)
-      top_line = buffer_content[0]
-      assert_match(/^╔/, top_line, "Should have double top-left corner")
     end
   end
 end

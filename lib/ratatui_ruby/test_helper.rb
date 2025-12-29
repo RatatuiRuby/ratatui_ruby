@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+require "timeout"
+
 
 # SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
@@ -38,10 +40,25 @@ module RatatuiRuby
     # +width+:: width of the test terminal (default: 20)
     # +height+:: height of the test terminal (default: 10)
     #
+    # +timeout+:: maximum execution time in seconds (default: 2). Pass nil to disable.
+    #
     # If a block is given, it is executed within the test terminal context.
-    def with_test_terminal(width = 20, height = 10)
+    def with_test_terminal(width = 20, height = 10, timeout: 2)
       RatatuiRuby.init_test_terminal(width, height)
-      yield
+      # Flush any lingering events from previous tests
+      while RatatuiRuby.poll_event; end
+
+      RatatuiRuby.stub :init_terminal, nil do
+        RatatuiRuby.stub :restore_terminal, nil do
+          if timeout
+            Timeout.timeout(timeout) do
+              yield
+            end
+          else
+            yield
+          end
+        end
+      end
     ensure
       RatatuiRuby.restore_terminal
     end
@@ -114,6 +131,44 @@ module RatatuiRuby
         raise ArgumentError, "Unknown event type: #{event.class}"
       end
     end
+
+    ##
+    # Injects multiple Key events into the queue.
+    #
+    # Supports multiple formats for convenience:
+    #
+    # * String: Converted to a Key event with that code.
+    # * Symbol: Parsed as modifier_code (e.g., <tt>:ctrl_c</tt>, <tt>:enter</tt>).
+    # * Hash: Passed to Key.new constructor.
+    # * Key: Passed directly.
+    #
+    # == Examples
+    #
+    #   inject_keys("a", "b", "c")
+    #   inject_keys(:enter, :esc)
+    #   inject_keys(:ctrl_c, :alt_shift_left)
+    #   inject_keys("j", { code: "k", modifiers: ["ctrl"] })
+    def inject_keys(*args)
+      args.each do |arg|
+        event = case arg
+                when String
+                  RatatuiRuby::Event::Key.new(code: arg)
+                when Symbol
+                  parts = arg.to_s.split("_")
+                  code = parts.pop
+                  modifiers = parts
+                  RatatuiRuby::Event::Key.new(code: code, modifiers: modifiers)
+                when Hash
+                  RatatuiRuby::Event::Key.new(**arg)
+                when RatatuiRuby::Event::Key
+                  arg
+                else
+                  raise ArgumentError, "Invalid key argument: #{arg.inspect}. Expected String, Symbol, Hash, or Key event."
+                end
+        inject_event(event)
+      end
+    end
+    alias inject_key inject_keys
   end
 end
 

@@ -20,44 +20,34 @@ class TestLoginForm < Minitest::Test
 
   def test_render_initial_state
     with_test_terminal(60, 20) do
-      @app.render
+      # Queue quit
+      inject_keys(:esc)
+
+      @app.run
+
       assert buffer_content.any? { |line| line.include?("Enter Username:") }
-      # Initial cursor position check could be tricky without inspecting cursor state,
-      # but we can rely on visual cursor rendering if we had a way to check attributes,
-      # or just assume the widget logic puts it there.
     end
   end
 
   def test_input_handling
-    # Type 'a'
-    inject_event(RatatuiRuby::Event::Key.new(code: "a"))
-    @app.handle_input
-
     with_test_terminal(60, 20) do
-      @app.render
+      # Type 'a' then quit
+      inject_keys("a", :esc)
+
+      @app.run
+
       assert buffer_content.any? { |line| line.include?("Enter Username: [ a ]") }
     end
   end
 
   def test_popup_flow
-    # Enter username 'user'
-    %w[u s e r].each do |char|
-      inject_event(RatatuiRuby::Event::Key.new(code: char))
-      @app.handle_input
-    end
-
-    # Press Enter
-    inject_event(RatatuiRuby::Event::Key.new(code: "enter"))
-    @app.handle_input
-
     with_test_terminal(60, 20) do
-      @app.render
+      # Enter username 'user', press Enter, then quit
+      inject_keys("u", "s", "e", "r", :enter, :q)
+
+      @app.run
+
       assert buffer_content.any? { |line| line.include?("Successful!") }
     end
-
-    # Press 'q' to quit popup/app
-    inject_event(RatatuiRuby::Event::Key.new(code: "q"))
-    status = @app.handle_input
-    assert_equal :quit, status
   end
 end
