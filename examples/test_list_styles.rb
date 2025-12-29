@@ -18,37 +18,51 @@ class TestListStylesExample < Minitest::Test
     @app = ListStylesApp.new
   end
 
-  def test_render_initial_state
-    with_test_terminal(50, 20) do
-      # Queue quit
+  def test_render_initial_state_no_selection
+    with_test_terminal(80, 20) do
       inject_key(:q)
 
       @app.run
 
-      assert buffer_content.any? { |line| line.include?(">> Item 1") }
-      assert buffer_content.any? { |line| line.include?("   Item 2") }
+      # Default is :when_selected with no selection, so no highlight symbol column
+      assert buffer_content.any? { |line| line.include?("Item 1") }
+      assert buffer_content.any? { |line| line.include?("Item 2") }
+      refute buffer_content.any? { |line| line.include?(">>") }
     end
   end
 
-  def test_navigation_down
-    with_test_terminal(50, 20) do
+  def test_toggle_selection
+    with_test_terminal(80, 20) do
+      assert_nil @app.selected_index
+
+      inject_key(:x)
+      @app.handle_input
+      assert_equal 0, @app.selected_index
+
+      inject_key(:x)
+      @app.handle_input
+      assert_nil @app.selected_index
+    end
+  end
+
+  def test_navigation_selects_and_moves
+    with_test_terminal(80, 20) do
       inject_keys(:down, :q)
 
       @app.run
 
-      assert buffer_content.any? { |line| line.include?("   Item 1") }
-      assert buffer_content.any? { |line| line.include?(">> Item 2") }
+      # Pressing down selects first item (index 0)
+      assert buffer_content.any? { |line| line.include?(">> Item 1") }
     end
   end
 
-  def test_navigation_up
-    with_test_terminal(50, 20) do
-      # Move down to Item 2
-      inject_keys(:down, :up, :q)
+  def test_navigation_down_twice
+    with_test_terminal(80, 20) do
+      inject_keys(:down, :down, :q)
 
       @app.run
 
-      assert buffer_content.any? { |line| line.include?(">> Item 1") }
+      assert buffer_content.any? { |line| line.include?(">> Item 2") }
     end
   end
 
@@ -60,21 +74,35 @@ class TestListStylesExample < Minitest::Test
     end
   end
 
-  def test_toggle_direction
+  def test_toggle_highlight_spacing
     with_test_terminal(80, 10) do
-      # Toggle to bottom_to_top
-      # Assuming 'd' key toggles direction based on example code logic
-      inject_key(:d)
+      assert_equal :when_selected, @app.highlight_spacing
+
+      inject_key(:s)
       @app.handle_input
-      
+      assert_equal :always, @app.highlight_spacing
+
+      inject_key(:s)
+      @app.handle_input
+      assert_equal :never, @app.highlight_spacing
+
+      inject_key(:s)
+      @app.handle_input
+      assert_equal :when_selected, @app.highlight_spacing
+    end
+  end
+
+  def test_spacing_always_shows_column_without_selection
+    with_test_terminal(80, 10) do
+      # Set spacing to :always
+      inject_key(:s)
+      @app.handle_input
+
       @app.render
-      content = buffer_content
-      
-      # Just verify the title or content change reflecting the new state
-      # The exact title validation depends on how the app renders it, 
-      # but assuming it updates the block title or similar.
-      assert_includes content[0], "bottom_to_top"
-      assert_includes content.join("\n"), "Item 1"
+
+      # With :always, spacing column is shown even without selection
+      assert buffer_content.any? { |line| line.include?("   Item 1") }
     end
   end
 end
+

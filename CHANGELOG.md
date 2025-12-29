@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - **Typed Event API**: `RatatuiRuby.poll_event` now returns rich, typed Ruby objects instead of raw Hashes. The new event classes (`Event::Key`, `Event::Mouse`, `Event::Resize`, `Event::Paste`, `Event::FocusGained`, `Event::FocusLost`) provide predicate methods (`key?`, `mouse?`, `ctrl?`, etc.), pattern matching support, and direct Symbol/String comparison for cleaner event handling code.
 - **Table Highlight Spacing**: Added `highlight_spacing` parameter to `Table` widget, accepting `:always`, `:when_selected`, or `:never`. This controls whether the selection column is reserved or hidden when no row is selected.
+- **List Highlight Spacing**: Added `highlight_spacing` parameter to `List` widget, accepting `:always`, `:when_selected`, or `:never`. This controls whether the selection column is reserved when no item is selected.
 - **Table**: Added `column_spacing` support ([#gap-analysis](https://github.com/kerricklong/ratatui_ruby/issues/21)).
 - **Canvas**: Added `background_color` property to `Canvas` widget ([#gap-analysis](https://github.com/kerricklong/ratatui_ruby/issues/21)).
 - **Tabs Style**: Added `style` parameter to `Tabs` widget, allowing a base style to be applied to the entire tabs area.

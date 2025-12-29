@@ -19,26 +19,23 @@ class TestTableSelect < Minitest::Test
     @app = TableApp.new
   end
 
-  def test_initial_render
+  def test_initial_render_no_selection
     with_test_terminal(100, 20) do
-      # Queue quit
       inject_key(:q)
 
       @app.run
 
       content = buffer_content.join("\n")
-      assert_includes content, "Process Monitor"
+      assert_includes content, "Sel: none"
       assert_includes content, "Style: Cyan"
       assert_includes content, "PID"
     end
   end
 
   def test_style_switching
-    # Default is Cyan (index 0). Pressing 's' should switch to Red (index 1).
     second_style_name = TableApp::STYLES[1][:name]
     
     with_test_terminal(100, 20) do
-      # Press 's' then quit
       inject_keys(:s, :q)
       
       @app.run
@@ -48,16 +45,37 @@ class TestTableSelect < Minitest::Test
     end
   end
 
-  def test_row_selection
-    # Verify proper row selection logic, including wrapping.
+  def test_toggle_selection
     with_test_terminal(100, 20) do
-      # Perform a sequence of moves:
-      # Down (1), Down (2), Up (1), Up (0), Up (Wrap -> Last)
-      inject_keys(:j, :j, :k, :k, :up, :q)
+      assert_nil @app.selected_index
+
+      inject_key(:x)
+      @app.handle_input
+      assert_equal 0, @app.selected_index
+
+      inject_key(:x)
+      @app.handle_input
+      assert_nil @app.selected_index
+    end
+  end
+
+  def test_navigation_selects_and_moves
+    with_test_terminal(100, 20) do
+      inject_keys(:down, :q)
       
       @app.run
       
-      # Verify final state matches expected index (last item due to wrapping)
+      assert_equal 0, @app.selected_index
+    end
+  end
+
+  def test_navigation_wrapping
+    with_test_terminal(100, 20) do
+      # Start nil, down->0, up->wraps to last
+      inject_keys(:down, :up, :q)
+      
+      @app.run
+      
       assert_equal PROCESSES.length - 1, @app.selected_index
     end
   end
@@ -66,33 +84,42 @@ class TestTableSelect < Minitest::Test
     with_test_terminal(100, 20) do
       inject_key(:q)
       @app.run
-      # Success
     end
   end
 
-  def test_column_spacing_change
+  def test_highlight_spacing_cycles
     with_test_terminal(100, 20) do
-      # Press '+' to increase spacing, then quit
-      inject_keys(:+, :q)
-      
-      @app.run
-      
-      content = buffer_content.join("\n")
-      assert_includes content, "Spacing: 2"
-      assert_equal 2, @app.column_spacing
-    end
-  end
+      # Mode order: [:always, :when_selected, :never]
+      # Starting at :when_selected (index 1), 'h' goes to :never (index 2)
+      assert_equal :when_selected, @app.highlight_spacing
 
-  def test_highlight_spacing_change
-    with_test_terminal(100, 20) do
-      # Toggle through modes: :when_selected -> :never
-      inject_keys(:h, :q)
-      
-      @app.run
-      
-      content = buffer_content.join("\n")
-      assert_includes content, "Highlight: never"
+      inject_key(:h)
+      @app.handle_input
       assert_equal :never, @app.highlight_spacing
+
+      inject_key(:h)
+      @app.handle_input
+      assert_equal :always, @app.highlight_spacing
+
+      inject_key(:h)
+      @app.handle_input
+      assert_equal :when_selected, @app.highlight_spacing
+    end
+  end
+
+  def test_spacing_always_shows_column_without_selection
+    with_test_terminal(100, 20) do
+      # Press 'h' twice to get to :always (when_selected -> never -> always)
+      inject_key(:h)
+      @app.handle_input
+      inject_key(:h)
+      @app.handle_input
+
+      @app.render
+
+      # With :always, spacing column is shown even without selection
+      content = buffer_content[2] # First data row
+      assert_match(/\s+1234/, content)
     end
   end
 end

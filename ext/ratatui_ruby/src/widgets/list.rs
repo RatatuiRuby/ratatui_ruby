@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::{parse_block, parse_style};
-use magnus::{prelude::*, Error, TryConvert, Value};
+use magnus::{prelude::*, Error, Symbol, TryConvert, Value};
 use ratatui::{
     layout::Rect,
     text::Line,
-    widgets::{List, ListState},
+    widgets::{HighlightSpacing, List, ListState},
     Frame,
 };
 
@@ -19,6 +19,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let style_val: Value = node.funcall("style", ())?;
     let highlight_style_val: Value = node.funcall("highlight_style", ())?;
     let highlight_symbol_val: Value = node.funcall("highlight_symbol", ())?;
+    let highlight_spacing_sym: Symbol = node.funcall("highlight_spacing", ())?;
     let direction_val: Value = node.funcall("direction", ())?;
     let block_val: Value = node.funcall("block", ())?;
 
@@ -42,6 +43,13 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     let mut list = List::new(items);
+
+    let highlight_spacing = match highlight_spacing_sym.to_string().as_str() {
+        "always" => HighlightSpacing::Always,
+        "never" => HighlightSpacing::Never,
+        _ => HighlightSpacing::WhenSelected,
+    };
+    list = list.highlight_spacing(highlight_spacing);
 
     if !highlight_symbol_val.is_nil() {
         list = list.highlight_symbol(Line::from(symbol));

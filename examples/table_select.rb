@@ -31,7 +31,7 @@ class TableApp
   ].freeze
 
   def initialize
-    @selected_index = 0
+    @selected_index = nil
     @current_style_index = 0
     @column_spacing = 1
     @highlight_spacing = :when_selected
@@ -61,6 +61,7 @@ class TableApp
     highlight_style = RatatuiRuby::Style.new(fg: :yellow)
 
     current_style_entry = STYLES[@current_style_index]
+    selection_label = @selected_index.nil? ? "none" : @selected_index.to_s
 
     # Create table with selection and base style
     table = RatatuiRuby::Table.new(
@@ -75,8 +76,8 @@ class TableApp
       column_spacing: @column_spacing,
       block: RatatuiRuby::Block.new(
         titles: [
-          { content: "Process Monitor - Style: #{current_style_entry[:name]} - Spacing: #{@column_spacing} - Highlight: #{@highlight_spacing}" },
-          { content: "↑/↓ select | 's' style | +/- spacing | 'h' highlight_spacing | 'q' quit", position: :bottom, alignment: :center }
+          { content: "Style: #{current_style_entry[:name]} | Sel: #{selection_label} | Spacing: #{@highlight_spacing}" },
+          { content: "↑/↓ nav | 's' style | 'h' highlight | 'x' toggle sel | 'q' quit", position: :bottom, alignment: :center }
         ],
         borders: :all
       ),
@@ -95,9 +96,10 @@ class TableApp
     in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
       :quit
     in type: :key, code: "down" | "j"
-      @selected_index = (@selected_index + 1) % PROCESSES.length
+      @selected_index = ((@selected_index || -1) + 1) % PROCESSES.length
     in type: :key, code: "up" | "k"
-      @selected_index = (@selected_index - 1) % PROCESSES.length
+      @selected_index = (@selected_index || 0) - 1
+      @selected_index = PROCESSES.length - 1 if @selected_index.negative?
     in type: :key, code: "s"
       @current_style_index = (@current_style_index + 1) % STYLES.length
     in type: :key, code: "+"
@@ -108,6 +110,8 @@ class TableApp
       modes = [:always, :when_selected, :never]
       current_idx = modes.index(@highlight_spacing)
       @highlight_spacing = modes[(current_idx + 1) % modes.length]
+    in type: :key, code: "x"
+      @selected_index = @selected_index.nil? ? 0 : nil
     else
       nil
     end
@@ -117,3 +121,4 @@ end
 if __FILE__ == $0
   TableApp.new.run
 end
+

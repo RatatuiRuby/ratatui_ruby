@@ -20,6 +20,7 @@ class TestList < Minitest::Test
     assert_nil list.style
     assert_nil list.highlight_style
     assert_equal "> ", list.highlight_symbol
+    assert_equal :when_selected, list.highlight_spacing
     assert_nil list.block
   end
 
@@ -68,4 +69,65 @@ class TestList < Minitest::Test
       end
     }
   end
+
+  def test_highlight_spacing_always
+    with_test_terminal(20, 3) do
+      list = RatatuiRuby::List.new(
+        items: ["Item 1", "Item 2"],
+        selected_index: nil,
+        highlight_symbol: ">> ",
+        highlight_spacing: :always
+      )
+      RatatuiRuby.draw(list)
+      # Even with no selection, spacing column is always reserved
+      assert_equal "   Item 1           ", buffer_content[0]
+      assert_equal "   Item 2           ", buffer_content[1]
+    end
+  end
+
+  def test_highlight_spacing_when_selected
+    with_test_terminal(20, 3) do
+      # With selection
+      list = RatatuiRuby::List.new(
+        items: ["Item 1", "Item 2"],
+        selected_index: 0,
+        highlight_symbol: ">> ",
+        highlight_spacing: :when_selected
+      )
+      RatatuiRuby.draw(list)
+      assert_equal ">> Item 1           ", buffer_content[0]
+      assert_equal "   Item 2           ", buffer_content[1]
+    end
+  end
+
+  def test_highlight_spacing_when_selected_no_selection
+    with_test_terminal(20, 3) do
+      # Without selection, no spacing
+      list = RatatuiRuby::List.new(
+        items: ["Item 1", "Item 2"],
+        selected_index: nil,
+        highlight_symbol: ">> ",
+        highlight_spacing: :when_selected
+      )
+      RatatuiRuby.draw(list)
+      assert_equal "Item 1              ", buffer_content[0]
+      assert_equal "Item 2              ", buffer_content[1]
+    end
+  end
+
+  def test_highlight_spacing_never
+    with_test_terminal(20, 3) do
+      list = RatatuiRuby::List.new(
+        items: ["Item 1", "Item 2"],
+        selected_index: 0,
+        highlight_symbol: ">> ",
+        highlight_spacing: :never
+      )
+      RatatuiRuby.draw(list)
+      # With :never, no spacing column or symbol is shown
+      assert_equal "Item 1              ", buffer_content[0]
+      assert_equal "Item 2              ", buffer_content[1]
+    end
+  end
 end
+

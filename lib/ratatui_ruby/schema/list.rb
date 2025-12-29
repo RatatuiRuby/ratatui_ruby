@@ -25,7 +25,7 @@ module RatatuiRuby
     #     highlight_style: Style.new(bg: :blue),
     #     highlight_symbol: ">> "
     #   )
-    class List < Data.define(:items, :selected_index, :style, :highlight_style, :highlight_symbol, :direction, :block)
+    class List < Data.define(:items, :selected_index, :style, :highlight_style, :highlight_symbol, :highlight_spacing, :direction, :block)
       ##
       # :attr_reader: items
       # The items to display (Array of Strings).
@@ -47,6 +47,12 @@ module RatatuiRuby
       # Symbol drawn before the selected item.
 
       ##
+      # :attr_reader: highlight_spacing
+      # When to show the highlight symbol column.
+      #
+      # <tt>:always</tt>, <tt>:when_selected</tt>, or <tt>:never</tt>.
+
+      ##
       # :attr_reader: direction
       # Render direction.
       #
@@ -63,9 +69,10 @@ module RatatuiRuby
       # [style] Style object.
       # [highlight_style] Style object.
       # [highlight_symbol] String (default: <tt>"> "</tt>).
+      # [highlight_spacing] Symbol (default: <tt>:when_selected</tt>).
       # [direction] Symbol (default: <tt>:top_to_bottom</tt>).
       # [block] Block (optional).
-      def initialize(items: [], selected_index: nil, style: nil, highlight_style: nil, highlight_symbol: "> ", direction: :top_to_bottom, block: nil)
+      def initialize(items: [], selected_index: nil, style: nil, highlight_style: nil, highlight_symbol: "> ", highlight_spacing: :when_selected, direction: :top_to_bottom, block: nil)
         super
       end
     end

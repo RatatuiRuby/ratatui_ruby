@@ -177,7 +177,7 @@ Demonstrates the `LineGauge` widget with customizable filled and unfilled symbol
 ![LineGauge Screenshot](./images/examples-line_gauge_demo.rb.png)
 
 ### [List Styles](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/list_styles.rb)
-Showcases advanced styling options for the `List` widget, including selection highlighting.
+Showcases advanced styling options for the `List` widget, including selection highlighting and the `highlight_spacing` option (`:always`, `:when_selected`, `:never`). Press 'x' to toggle selection off and see the difference between spacing modes.
 
 ![List Styles Screenshot](./images/examples-list_styles.rb.png)
 
