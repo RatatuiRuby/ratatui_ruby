@@ -86,17 +86,15 @@ class AnalyticsApp
 
   def handle_input
     case RatatuiRuby.poll_event
-    in RatatuiRuby::Event::Key(code: "q")
+    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
       :quit
-    in RatatuiRuby::Event::Key(code: "c", modifiers: ["ctrl"])
-      :quit
-    in RatatuiRuby::Event::Key(code: "right")
+    in type: :key, code: "right"
       @selected_tab = (@selected_tab + 1) % @tabs.size
-    in RatatuiRuby::Event::Key(code: "left")
+    in type: :key, code: "left"
       @selected_tab = (@selected_tab - 1) % @tabs.size
-    in RatatuiRuby::Event::Key(code: " ")
+    in type: :key, code: " "
       @style_index = (@style_index + 1) % @styles.size
-    in RatatuiRuby::Event::Key(code: "d")
+    in type: :key, code: "d"
       @divider_index = (@divider_index + 1) % @dividers.size
     else
       # Ignore other events

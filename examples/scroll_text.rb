@@ -34,15 +34,15 @@ class ScrollTextDemo
 
   def handle_input
     case RatatuiRuby.poll_event
-    in RatatuiRuby::Event::Key(code: "q") | RatatuiRuby::Event::Key(code: "c", modifiers: ["ctrl"])
+    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
       :quit
-    in RatatuiRuby::Event::Key(code: "up")
+    in type: :key, code: "up"
       @scroll_y = [@scroll_y - 1, 0].max
-    in RatatuiRuby::Event::Key(code: "down")
+    in type: :key, code: "down"
       @scroll_y = [@scroll_y + 1, @lines.length].min
-    in RatatuiRuby::Event::Key(code: "left")
+    in type: :key, code: "left"
       @scroll_x = [@scroll_x - 1, 0].max
-    in RatatuiRuby::Event::Key(code: "right")
+    in type: :key, code: "right"
       @scroll_x = [@scroll_x + 1, 100].min
     else
       nil

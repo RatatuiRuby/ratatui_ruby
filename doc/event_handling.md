@@ -79,26 +79,26 @@ end
 
 ## 3. Pattern Matching (Powerful)
 
-For complex applications, Ruby 3.0+ Pattern Matching is the most idiomatic and powerful approach. It allows you to match class and attributes simultaneously.
+For complex applications, Ruby 3.0+ Pattern Matching with the `type:` discriminator is the most idiomatic and concise approach.
 
 ```ruby
 loop do
   case RatatuiRuby.poll_event
   
   # Match specific key code
-  in RatatuiRuby::Event::Key(code: "q")
+  in type: :key, code: "q"
     break
 
   # Match complex combo
-  in RatatuiRuby::Event::Key(code: "c", modifiers: [:ctrl])
+  in type: :key, code: "c", modifiers: ["ctrl"]
     break
 
   # Capture variables
-  in RatatuiRuby::Event::Key(code: "up" | "down" => direction)
+  in type: :key, code: "up" | "down" => direction
     move_cursor(direction)
 
   # Match mouse events
-  in RatatuiRuby::Event::Mouse(kind: "down", x: x, y: y)
+  in type: :mouse, kind: "down", x:, y:
     handle_click(x, y)
 
   else
@@ -109,11 +109,11 @@ end
 
 ## Summary of Event Classes
 
-| Event Class | Attributes | Predicate |
-| :--- | :--- | :--- |
-| `RatatuiRuby::Event::Key` | `code`, `modifiers` | `key?` |
-| `RatatuiRuby::Event::Mouse` | `kind`, `x`, `y`, `button`, `modifiers` | `mouse?` |
-| `RatatuiRuby::Event::Resize` | `width`, `height` | `resize?` |
-| `RatatuiRuby::Event::Paste` | `content` | `paste?` |
-| `RatatuiRuby::Event::FocusGained` | (none) | `focus_gained?` |
-| `RatatuiRuby::Event::FocusLost` | (none) | `focus_lost?` |
+| Event Class | Discriminator (`type:`) | Attributes | Predicate |
+| :--- | :--- | :--- | :--- |
+| `RatatuiRuby::Event::Key` | `:key` | `code`, `modifiers` | `key?` |
+| `RatatuiRuby::Event::Mouse` | `:mouse` | `kind`, `x`, `y`, `button`, `modifiers` | `mouse?` |
+| `RatatuiRuby::Event::Resize` | `:resize` | `width`, `height` | `resize?` |
+| `RatatuiRuby::Event::Paste` | `:paste` | `content` | `paste?` |
+| `RatatuiRuby::Event::FocusGained` | `:focus_gained` | (none) | `focus_gained?` |
+| `RatatuiRuby::Event::FocusLost` | `:focus_lost` | (none) | `focus_lost?` |

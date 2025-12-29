@@ -130,35 +130,37 @@ class AllEventsApp
 
     case event
     # Quit
-    when ->(e) { e == "q" || e == :ctrl_c }
+    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
       return :quit
 
     # Key events
-    when ->(e) { e.key? }
-      mods = event.modifiers.empty? ? "" : " [#{event.modifiers.join('+')}]"
-      @key_info = "Key: #{event.code}#{mods}"
+    in type: :key, code:, modifiers:
+      mods = modifiers.empty? ? "" : " [#{modifiers.join('+')}]"
+      @key_info = "Key: #{code}#{mods}"
 
     # Mouse events
-    when ->(e) { e.mouse? }
-      @mouse_info = "#{event.kind}: #{event.button} at (#{event.x}, #{event.y})"
+    in type: :mouse, kind:, button:, x:, y:
+      @mouse_info = "#{kind}: #{button} at (#{x}, #{y})"
 
     # Resize events
-    when ->(e) { e.resize? }
-      @resize_info = "#{event.width}×#{event.height}"
+    in type: :resize, width:, height:
+      @resize_info = "#{width}×#{height}"
 
     # Paste events
-    when ->(e) { e.paste? }
-      content = event.content.length > 30 ? "#{event.content[0..27]}..." : event.content
-      @special_info = "Pasted: #{content.inspect}"
+    in type: :paste, content:
+      display_content = content.length > 30 ? "#{content[0..27]}..." : content
+      @special_info = "Pasted: #{display_content.inspect}"
 
     # Focus events
-    when ->(e) { e.focus_gained? }
+    in type: :focus_gained
       @focused = true
       @special_info = "Focus gained! ✓"
 
-    when ->(e) { e.focus_lost? }
+    in type: :focus_lost
       @focused = false
       @special_info = "Focus lost..."
+    else
+      nil
     end
 
     nil

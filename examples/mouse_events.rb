@@ -61,30 +61,35 @@ class MouseEventsApp
     event = RatatuiRuby.poll_event
     return unless event
 
-    return :quit if event == "q" || event == :ctrl_c
-
-    if event.mouse?
+    case event
+    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
+      return :quit
+    in type: :mouse, kind:, button:, x:, y:, modifiers:
       @color = "green"
-      case event.kind
+      case kind
       when "down"
-        @message = "#{event.button.capitalize} Click at [#{event.x}, #{event.y}]"
-        @details = "Modifiers: #{event.modifiers.join(', ')}"
+        @message = "#{button.capitalize} Click at [#{x}, #{y}]"
+        @details = "Modifiers: #{modifiers.join(', ')}"
       when "up"
-        @message = "#{event.button.capitalize} Release at [#{event.x}, #{event.y}]"
-        @details = "Modifiers: #{event.modifiers.join(', ')}"
+        @message = "#{button.capitalize} Release at [#{x}, #{y}]"
+        @details = "Modifiers: #{modifiers.join(', ')}"
       when "drag"
-        @message = "Dragging #{event.button.capitalize} Button at [#{event.x}, #{event.y}]"
-        @details = "Modifiers: #{event.modifiers.join(', ')}"
+        @message = "Dragging #{button.capitalize} Button at [#{x}, #{y}]"
+        @details = "Modifiers: #{modifiers.join(', ')}"
       when "moved"
-        @message = "Mouse Moved to [#{event.x}, #{event.y}]"
-        @details = "Modifiers: #{event.modifiers.join(', ')}"
+        @message = "Mouse Moved to [#{x}, #{y}]"
+        @details = "Modifiers: #{modifiers.join(', ')}"
       when "scroll_down"
         @message = "Scrolled Down"
-        @details = "Position: [#{event.x}, #{event.y}]"
+        @details = "Position: [#{x}, #{y}]"
       when "scroll_up"
         @message = "Scrolled Up"
-        @details = "Position: [#{event.x}, #{event.y}]"
+        @details = "Position: [#{x}, #{y}]"
+      else
+        nil
       end
+    else
+      nil
     end
     nil
   end

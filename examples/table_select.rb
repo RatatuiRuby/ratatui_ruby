@@ -58,11 +58,11 @@ begin
     next unless event
 
     case event
-    in RatatuiRuby::Event::Key(code: "q") | RatatuiRuby::Event::Key(code: "c", modifiers: ["ctrl"])
+    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
       break
-    in RatatuiRuby::Event::Key(code: "down" | "j")
+    in type: :key, code: "down" | "j"
       selected_index = (selected_index + 1) % PROCESSES.length
-    in RatatuiRuby::Event::Key(code: "up" | "k")
+    in type: :key, code: "up" | "k"
       selected_index = (selected_index - 1) % PROCESSES.length
     else
       nil

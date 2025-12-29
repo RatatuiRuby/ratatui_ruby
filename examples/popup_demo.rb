@@ -91,9 +91,9 @@ class PopupDemo
 
   def handle_input
     case RatatuiRuby.poll_event
-    in RatatuiRuby::Event::Key(code: "q" | "c", modifiers: [] | ["ctrl"])
+    in type: :key, code: "q" | "c", modifiers: [] | ["ctrl"]
       :quit
-    in RatatuiRuby::Event::Key(code: " ")
+    in type: :key, code: " "
       @clear_enabled = !@clear_enabled
     else
       nil

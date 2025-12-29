@@ -46,7 +46,7 @@ module RatatuiRuby
     # Keys argument is unused but required by the protocol.
     #
     #   case event
-    #   in RatatuiRuby::Event::Key(code:)
+    #   in type: :key, code:
     #     puts "Key: #{code}"
     #   end
     def deconstruct_keys(keys)
@@ -78,7 +78,7 @@ module RatatuiRuby
     #
     # Using pattern matching:
     #   case event
-    #   in RatatuiRuby::Event::Key(code: "c", modifiers: [:ctrl])
+    #   in type: :key, code: "c", modifiers: ["ctrl"]
     #     exit
     #   end
     class Key < Event
@@ -206,11 +206,11 @@ module RatatuiRuby
       # Deconstructs the event for pattern matching.
       #
       #   case event
-      #   in RatatuiRuby::Event::Key(code: "c", modifiers: [:ctrl])
+      #   in type: :key, code: "c", modifiers: ["ctrl"]
       #     puts "Ctrl+C pressed"
       #   end
       def deconstruct_keys(keys)
-        { code: @code, modifiers: @modifiers }
+        { type: :key, code: @code, modifiers: @modifiers }
       end
     end
 
@@ -313,11 +313,11 @@ module RatatuiRuby
       # Deconstructs the event for pattern matching.
       #
       #   case event
-      #   in RatatuiRuby::Event::Mouse(kind: "down", x:, y:)
+      #   in type: :mouse, kind: "down", x:, y:
       #     puts "Click at #{x}, #{y}"
       #   end
       def deconstruct_keys(keys)
-        { kind: @kind, x: @x, y: @y, button: @button, modifiers: @modifiers }
+        { type: :mouse, kind: @kind, x: @x, y: @y, button: @button, modifiers: @modifiers }
       end
     end
 
@@ -341,7 +341,7 @@ module RatatuiRuby
     #
     # Using pattern matching:
     #   case event
-    #   in RatatuiRuby::Event::Resize(width:, height:)
+    #   in type: :resize, width:, height:
     #     puts "Resized to #{width}x#{height}"
     #   end
     class Resize < Event
@@ -378,11 +378,11 @@ module RatatuiRuby
       # Deconstructs the event for pattern matching.
       #
       #   case event
-      #   in RatatuiRuby::Event::Resize(width:, height:)
+      #   in type: :resize, width:, height:
       #     puts "Resized to #{width}x#{height}"
       #   end
       def deconstruct_keys(keys)
-        { width: @width, height: @height }
+        { type: :resize, width: @width, height: @height }
       end
     end
 
@@ -405,7 +405,7 @@ module RatatuiRuby
     #
     # Using pattern matching:
     #   case event
-    #   in RatatuiRuby::Event::Paste(content:)
+    #   in type: :paste, content:
     #     puts "Pasted: #{content}"
     #   end
     class Paste < Event
@@ -434,11 +434,11 @@ module RatatuiRuby
       # Deconstructs the event for pattern matching.
       #
       #   case event
-      #   in RatatuiRuby::Event::Paste(content:)
+      #   in type: :paste, content:
       #     puts "User pasted: #{content}"
       #   end
       def deconstruct_keys(keys)
-        { content: @content }
+        { type: :paste, content: @content }
       end
     end
 
@@ -465,6 +465,16 @@ module RatatuiRuby
       def focus_gained?
         true
       end
+
+      # Deconstructs the event for pattern matching.
+      #
+      #   case event
+      #   in type: :focus_gained
+      #     puts "Application gained focus"
+      #   end
+      def deconstruct_keys(keys)
+        { type: :focus_gained }
+      end
     end
 
     # Signals that the application is in the background.
@@ -490,6 +500,16 @@ module RatatuiRuby
       #   event.key?        # => false
       def focus_lost?
         true
+      end
+
+      # Deconstructs the event for pattern matching.
+      #
+      #   case event
+      #   in type: :focus_lost
+      #     puts "Application lost focus"
+      #   end
+      def deconstruct_keys(keys)
+        { type: :focus_lost }
       end
     end
   end

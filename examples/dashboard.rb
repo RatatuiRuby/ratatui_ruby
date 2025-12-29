@@ -56,11 +56,11 @@ class DashboardApp
 
   def handle_input
     case RatatuiRuby.poll_event
-    in RatatuiRuby::Event::Key(code: "q" | "esc") | RatatuiRuby::Event::Key(code: "c", modifiers: ["ctrl"])
+    in {type: :key, code: "q" | "esc"} | {type: :key, code: "c", modifiers: ["ctrl"]}
       :quit
-    in RatatuiRuby::Event::Key(code: "up")
+    in type: :key, code: "up"
       @selected_index = (@selected_index - 1) % @items.length
-    in RatatuiRuby::Event::Key(code: "down")
+    in type: :key, code: "down"
       @selected_index = (@selected_index + 1) % @items.length
     else
       nil

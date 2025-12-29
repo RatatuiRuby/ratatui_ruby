@@ -73,27 +73,27 @@ class BoxDemoApp
   def handle_input
     # 3. Events
     case RatatuiRuby.poll_event
-    in RatatuiRuby::Event::Key(code: "q") | RatatuiRuby::Event::Key(code: "c", modifiers: ["ctrl"])
+    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
       :quit
-    in RatatuiRuby::Event::Key(code: "up")
+    in type: :key, code: "up"
       @color = "red"
       @text = "Up Pressed!"
-    in RatatuiRuby::Event::Key(code: "down")
+    in type: :key, code: "down"
       @color = "blue"
       @text = "Down Pressed!"
-    in RatatuiRuby::Event::Key(code: "left")
+    in type: :key, code: "left"
       @color = "yellow"
       @text = "Left Pressed!"
-    in RatatuiRuby::Event::Key(code: "right")
+    in type: :key, code: "right"
       @color = "magenta"
       @text = "Right Pressed!"
-    in RatatuiRuby::Event::Key(code: " ")
+    in type: :key, code: " "
       next_border_type
       @text = "Switched to #{@border_type}"
-    in RatatuiRuby::Event::Key(code: "enter")
+    in type: :key, code: "enter"
       next_title_alignment
       @text = "Aligned #{@title_alignment}"
-    in RatatuiRuby::Event::Key(code: "s")
+    in type: :key, code: "s"
       toggle_style
       @text = "Style: #{@style ? 'Blue on White' : 'Default'}"
     else

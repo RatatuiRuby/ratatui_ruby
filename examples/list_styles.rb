@@ -49,13 +49,13 @@ class ListStylesApp
 
   def handle_input
     case RatatuiRuby.poll_event
-    in RatatuiRuby::Event::Key(code: "q") | RatatuiRuby::Event::Key(code: "c", modifiers: ["ctrl"])
+    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
       :quit
-    in RatatuiRuby::Event::Key(code: "up")
+    in type: :key, code: "up"
       @selected_index = (@selected_index - 1) % @items.size
-    in RatatuiRuby::Event::Key(code: "down")
+    in type: :key, code: "down"
       @selected_index = (@selected_index + 1) % @items.size
-    in RatatuiRuby::Event::Key(code: "d")
+    in type: :key, code: "d"
       @direction = (@direction == :top_to_bottom) ? :bottom_to_top : :top_to_bottom
     else
       nil

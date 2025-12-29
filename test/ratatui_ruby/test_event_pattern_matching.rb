@@ -1,52 +1,72 @@
 # frozen_string_literal: true
 
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
-# SPDX-License-Identifier: AGPL-3.0-or-later
-
-require "test_helper"
+require "minitest/autorun"
+require_relative "../../lib/ratatui_ruby/event"
 
 class TestEventPatternMatching < Minitest::Test
-  def test_pattern_match_key_event
-    event = RatatuiRuby::Event::Key.new(code: "c", modifiers: ["ctrl"])
-
-    matched = false
+  def test_key_pattern_matching
+    event = RatatuiRuby::Event::Key.new(code: "q", modifiers: ["ctrl"])
+    
     case event
-    in RatatuiRuby::Event::Key(code: "c", modifiers: ["ctrl"])
-      matched = true
+    in type: :key, code: "q", modifiers: ["ctrl"]
+      assert true
     else
-      matched = false
+      flunk "Key event did not match"
     end
-
-    assert matched, "Should match Event::Key with code and modifiers"
   end
 
-  def test_pattern_match_mouse_event
-    event = RatatuiRuby::Event::Mouse.new(kind: "down", x: 10, y: 20, button: "left", modifiers: [])
-
-    matched = false
+  def test_mouse_pattern_matching
+    event = RatatuiRuby::Event::Mouse.new(kind: "down", x: 10, y: 5, button: "left")
+    
     case event
-    in RatatuiRuby::Event::Mouse(kind: "down", x: x, y: y)
-      matched = true
-      assert_equal 10, x
-      assert_equal 20, y
+    in type: :mouse, kind: "down", x: 10, y: 5, button: "left"
+      assert true
     else
-      matched = false
+      flunk "Mouse event did not match"
     end
-
-    assert matched, "Should match Event::Mouse and bind variables"
   end
 
-  def test_pattern_match_resize_event
+  def test_resize_pattern_matching
     event = RatatuiRuby::Event::Resize.new(width: 80, height: 24)
-
-    matched = false
+    
     case event
-    in RatatuiRuby::Event::Resize(width: 80, height: 24)
-      matched = true
+    in type: :resize, width: 80, height: 24
+      assert true
     else
-      matched = false
+      flunk "Resize event did not match"
     end
+  end
 
-    assert matched, "Should match Event::Resize"
+  def test_paste_pattern_matching
+    event = RatatuiRuby::Event::Paste.new(content: "hello")
+    
+    case event
+    in type: :paste, content: "hello"
+      assert true
+    else
+      flunk "Paste event did not match"
+    end
+  end
+
+  def test_focus_gained_pattern_matching
+    event = RatatuiRuby::Event::FocusGained.new
+    
+    case event
+    in type: :focus_gained
+      assert true
+    else
+      flunk "FocusGained event did not match"
+    end
+  end
+
+  def test_focus_lost_pattern_matching
+    event = RatatuiRuby::Event::FocusLost.new
+    
+    case event
+    in type: :focus_lost
+      assert true
+    else
+      flunk "FocusLost event did not match"
+    end
   end
 end
