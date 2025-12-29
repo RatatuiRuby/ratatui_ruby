@@ -58,7 +58,7 @@ class TableFlexApp
   def handle_input(tui)
     event = tui.poll_event
     return unless event
-    :quit if event[:type] == :key && event[:code] == "q"
+    :quit if event == "q" || event == :ctrl_c
   end
 end
 

@@ -7,6 +7,7 @@ $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 require "ratatui_ruby"
 require "ratatui_ruby/test_helper"
 require "minitest/autorun"
+require "minitest/mock"
 require_relative "map_demo"
 
 class TestMapDemo < Minitest::Test

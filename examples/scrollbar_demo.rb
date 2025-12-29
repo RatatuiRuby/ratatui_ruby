@@ -20,7 +20,7 @@ class ScrollbarDemo
       loop do
         draw
         event = RatatuiRuby.poll_event
-        break if event && event[:type] == :key && event[:code] == "q"
+        break if event == "q" || event == :ctrl_c
 
         handle_event(event)
       end
@@ -30,12 +30,12 @@ class ScrollbarDemo
   end
 
   private def handle_event(event)
-    return unless event && event[:type] == :mouse
+    return unless event && event.mouse?
 
-    case event[:kind]
-    when :scroll_up
+    case event.kind
+    when "scroll_up"
       @scroll_position = [@scroll_position - 1, 0].max
-    when :scroll_down
+    when "scroll_down"
       @scroll_position = [@scroll_position + 1, @content_length].min
     end
   end

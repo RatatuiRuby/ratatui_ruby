@@ -30,7 +30,7 @@ class TestScrollbarDemo < Minitest::Test
     with_test_terminal(20, 5) do
       # Simulate scroll down event
       # ScrollbarDemo#handle_event expects a hash from poll_event
-      @demo.__send__(:handle_event, { type: :mouse, kind: :scroll_down, x: 0, y: 0 })
+      @demo.__send__(:handle_event, RatatuiRuby::Event::Mouse.new(kind: "scroll_down", x: 0, y: 0, button: "none"))
 
       @demo.__send__(:draw)
       content = buffer_content
@@ -44,8 +44,8 @@ class TestScrollbarDemo < Minitest::Test
   def test_scroll_up
     with_test_terminal(20, 5) do
       # Scroll down then up
-      @demo.__send__(:handle_event, { type: :mouse, kind: :scroll_down, x: 0, y: 0 })
-      @demo.__send__(:handle_event, { type: :mouse, kind: :scroll_up, x: 0, y: 0 })
+      @demo.__send__(:handle_event, RatatuiRuby::Event::Mouse.new(kind: "scroll_down", x: 0, y: 0, button: "none"))
+      @demo.__send__(:handle_event, RatatuiRuby::Event::Mouse.new(kind: "scroll_up", x: 0, y: 0, button: "none"))
 
       @demo.__send__(:draw)
       content = buffer_content

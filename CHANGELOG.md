@@ -7,30 +7,35 @@
 All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [Unreleased]
 
 ### Added
 
-- **Block:** Added support for multiple titles with individual alignment and positioning (top/bottom) via `titles` array. (#issue_id)
-- **Block:** Added `style` parameter to `Block` widget. **Note:** This inserts a new member into the `Block` Data object, which changes the positional order of members. Pattern matching or positional initialization of `Block` is affected.
-- `List`: Added `direction` attribute (`:top_to_bottom` or `:bottom_to_top`).
+- **Typed Event API**: `RatatuiRuby.poll_event` now returns rich, typed Ruby objects instead of raw Hashes. The new event classes (`Event::Key`, `Event::Mouse`, `Event::Resize`, `Event::Paste`, `Event::FocusGained`, `Event::FocusLost`) provide predicate methods (`key?`, `mouse?`, `ctrl?`, etc.), pattern matching support, and direct Symbol/String comparison for cleaner event handling code.
+- **Resize Events**: The event system now exposes terminal resize events via `Event::Resize`, which includes `width` and `height` attributes for building responsive layouts.
+- **Paste Events**: Bracketed paste is now surfaced via `Event::Paste(content:)`, enabling safe handling of pasted text as a single atomic event.
+- **Focus Events**: Terminal focus changes are now surfaced via `Event::FocusGained` and `Event::FocusLost` for terminals that support it (e.g., iTerm2, Kitty).
+- **Block Titles**: Added support for multiple titles with individual alignment and positioning (top/bottom) via `titles` array.
+- **Block Style**: Added `style` parameter to `Block` widget. **Note:** This inserts a new member into the `Block` Data object, which changes the positional order of members. Pattern matching or positional initialization of `Block` is affected.
+- **List Direction**: Added `direction` attribute (`:top_to_bottom` or `:bottom_to_top`) to `List` widget.
 - **Table Footer**: The `Table` widget now supports a `footer` parameter, allowing for summary rows at the bottom of the table.
 - **Block Padding**: `Block` widget now supports correct padding via the `padding` parameter, accepting either a single integer for uniform padding or an array of 4 integers for directional padding (`[left, right, top, bottom]`).
 - **Block Title Alignment**: `Block` widget now supports `title_alignment` (`:left`, `:center`, `:right`) for positioning the title on the border.
 - **Constraint Ratio**: Added `Constraint.ratio(numerator, denominator)` to support proportional constraints where the ratio is explicit (e.g., 1/4 and 3/4).
 - **Table Constraints**: `Table` widget `widths` now support all constraint types including `:max`, `:fill` and `:ratio`, matching the flexibility of the `Layout` widget.
 - **Table Flex**: Added `flex` parameter to `Table` widget to support modern table layouts (`:legacy`, `:start`, `:center`, `:end`, `:space_between`, `:space_around`, `:space_evenly`).
-
-- Added `Flex::SpaceEvenly` layout mode to `Layout` widget.
+- **Flex::SpaceEvenly**: Added `Flex::SpaceEvenly` layout mode to `Layout` widget.
 - **Block Border Types**: Added `border_type` to `Block` widget, allowing `:plain`, `:rounded`, `:double`, `:thick`, `:quadrant_inside`, and `:quadrant_outside` border styles.
 - **Fill and Max Constraints**: Added `Constraint.fill(weight)` and `Constraint.max(value)` for modern ratatui layout patterns. Fill constraints distribute remaining space proportionally—for example, `Fill(1)` and `Fill(3)` split space in a 1:3 ratio. Max constraints cap the maximum size of a section.
 - **Flex Layout**: The `Layout` widget now supports a `flex` parameter to control how empty space is distributed. Options include `:legacy` (default), `:start`, `:center`, `:end`, `:space_between`, and `:space_around`.
-- **Rich Text Support**: Introduced `Text::Span` and `Text::Line` classes for creating styled text with inline formatting. Spans can be combined into lines with optional alignment, enabling word-level control over colors, modifiers, and other style attributes. The Rust backend includes a complete text parser supporting multiple input formats for future integration.
+- **Rich Text Support**: Introduced `Text::Span` and `Text::Line` classes for creating styled text with inline formatting. Spans can be combined into lines with optional alignment, enabling word-level control over colors, modifiers, and other style attributes.
 - **LineGauge Widget**: New `LineGauge` widget for displaying compact, character-based progress bars using line characters. Supports ratio, label, style, and block customization.
 - **New Canvas Markers**: Support for the new `Quadrant`, `Sextant`, and `Octant` markers in the `Canvas` widget for higher-resolution pseudo-pixel rendering.
 - **Shape Module**: Canvas shape primitives (`Point`, `Line`, `Rectangle`, `Circle`, `Map`) are now organized under the `Shape` module (e.g., `Shape::Line`) to avoid naming conflicts with `Text::Line`. The session provides disambiguated helper methods: `shape_line`, `shape_circle`, etc. for shapes and `text_span`, `text_line` for text components.
 
 ### Changed
 
+- **Event API (Breaking)**: `RatatuiRuby.poll_event` now returns typed `Event` objects instead of raw Hashes. Code that previously used `event[:type]`, `event[:code]`, etc. must be updated to use `event.key?`, `event.code`, and similar methods. See `doc/event_handling.md` for migration guidance.
 - **Ratatui Upgraded to 0.30.0**: Upgraded the underlying `ratatui` library from 0.29 to 0.30.0, bringing significant improvements including modularized crates, `no_std` support for embedded targets, and major widget and layout enhancements. Layout cache is now explicitly enabled to maintain performance.
 - **RatatuiRuby.run**: Added `RatatuiRuby.run` as a lifecycle context manager that initializes the terminal, yields a session, and ensures the terminal is restored, allowing users to define their own application loops. `RatatuiRuby.main_loop` has been removed in favor of this more explicit API.
 - **Session**: The `DSL` class previously yielded by `main_loop` has been renamed to `Session` to better reflect its purpose as a managed terminal session with convenience methods.
@@ -38,7 +43,6 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Fixed
 
 - **Alpine Linux Support**: Fixed gem installation failures on Alpine Linux (musl targets) by properly configuring `crate-type` to support static linking where dynamic linking is unsupported.
-
 
 ## [0.3.1] - 2025-12-28
 

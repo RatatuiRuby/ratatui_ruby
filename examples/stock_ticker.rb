@@ -84,9 +84,7 @@ class StockTickerApp
 
   def handle_input
     event = RatatuiRuby.poll_event
-    if event && event[:code] == "q"
-      :quit
-    end
+    :quit if event == "q" || event == :ctrl_c
   end
 end
 

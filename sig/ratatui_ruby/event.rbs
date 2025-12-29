@@ -1,0 +1,67 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class Event
+    def key?: () -> bool
+    def mouse?: () -> bool
+    def resize?: () -> bool
+    def paste?: () -> bool
+    def focus_gained?: () -> bool
+    def focus_lost?: () -> bool
+    def deconstruct_keys: (Array[Symbol]?) -> Hash[Symbol, untyped]
+
+    class Key < Event
+      attr_reader code: String
+      attr_reader modifiers: Array[String]
+
+      def initialize: (code: String, modifiers: Array[String]) -> void
+      def ==: (untyped other) -> bool
+      def to_sym: () -> Symbol
+      def to_s: () -> String
+      def inspect: () -> String
+      def ctrl?: () -> bool
+      def alt?: () -> bool
+      def shift?: () -> bool
+      def text?: () -> bool
+      def deconstruct_keys: (Array[Symbol]?) -> Hash[Symbol, untyped]
+    end
+
+    class Mouse < Event
+      attr_reader kind: String
+      attr_reader x: Integer
+      attr_reader y: Integer
+      attr_reader button: String
+      attr_reader modifiers: Array[String]
+
+      def initialize: (kind: String, x: Integer, y: Integer, button: String, modifiers: Array[String]) -> void
+      def down?: () -> bool
+      def up?: () -> bool
+      def drag?: () -> bool
+      def scroll_up?: () -> bool
+      def scroll_down?: () -> bool
+      def deconstruct_keys: (Array[Symbol]?) -> Hash[Symbol, untyped]
+    end
+
+    class Resize < Event
+      attr_reader width: Integer
+      attr_reader height: Integer
+
+      def initialize: (width: Integer, height: Integer) -> void
+      def deconstruct_keys: (Array[Symbol]?) -> Hash[Symbol, untyped]
+    end
+
+    class Paste < Event
+      attr_reader content: String
+
+      def initialize: (content: String) -> void
+      def deconstruct_keys: (Array[Symbol]?) -> Hash[Symbol, untyped]
+    end
+
+    class FocusGained < Event
+    end
+
+    class FocusLost < Event
+    end
+  end
+end

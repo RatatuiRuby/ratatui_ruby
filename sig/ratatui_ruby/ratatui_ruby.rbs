@@ -11,6 +11,7 @@ module RatatuiRuby
   def self.init_terminal: () -> void
   def self.restore_terminal: () -> void
   def self.draw: (widget) -> void
-  def self.poll_event: () -> Hash[Symbol, untyped]?
+  def self._poll_event: () -> Hash[Symbol, untyped]?
+  def self.poll_event: () -> Event?
   def self.inject_test_event: (String, Hash[Symbol, untyped]) -> void
 end

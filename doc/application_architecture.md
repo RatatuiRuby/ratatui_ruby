@@ -71,7 +71,7 @@ RatatuiRuby.run do |tui|
     tui.draw(layout)
     
     event = tui.poll_event
-    break if event[:code] == "q"
+    break if event == "q" || event == :ctrl_c
   end
 end
 ```
@@ -110,7 +110,7 @@ RatatuiRuby.run do
     RatatuiRuby.draw(layout)
 
     event = RatatuiRuby.poll_event
-    break if event[:code] == "q"
+    break if event == "q" || event == :ctrl_c
   end
 end
 ```

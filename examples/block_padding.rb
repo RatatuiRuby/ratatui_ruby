@@ -51,9 +51,7 @@ if __FILE__ == $0
       tui.draw(layout)
 
       event = tui.poll_event
-      if event && event[:type] == :key && event[:code] == "q"
-        break
-      end
+      break if event == "q" || event == :ctrl_c
     end
   end
 end

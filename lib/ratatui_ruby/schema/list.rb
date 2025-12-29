@@ -4,27 +4,69 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  # A widget that displays a list of selectable items.
-  #
-  # [items] An array of strings to display in the list.
-  # [selected_index] The index of the currently selected item, or nil if none.
-  # [style] The base style for all items.
-  # [highlight_style] The style for the selected item.
-  # [highlight_symbol] The symbol to display in front of the selected item.
-  # [direction] The direction to display the list items. One of :top_to_bottom or :bottom_to_top.
-  # [block] An optional Block widget to wrap the list.
-  class List < Data.define(:items, :selected_index, :style, :highlight_style, :highlight_symbol, :direction, :block)
-    # Creates a new List.
+    # Displays a selectable list of items.
     #
-    # [items] An array of strings to display in the list.
-    # [selected_index] The index of the currently selected item, or nil if none.
-    # [style] The base style for all items.
-    # [highlight_style] The style for the selected item.
-    # [highlight_symbol] The symbol to display in front of the selected item.
-    # [direction] The direction to display the list items. One of :top_to_bottom or :bottom_to_top.
-    # [block] An optional Block widget to wrap the list.
-    def initialize(items: [], selected_index: nil, style: nil, highlight_style: nil, highlight_symbol: "> ", direction: :top_to_bottom, block: nil)
-      super
+    # Users need to choose from options. Menus, file explorers, and selectors are everywhere.
+    # Implementing navigation, highlighting, and scrolling state from scratch is tedious.
+    #
+    # This widget manages the list. It renders the items. It highlights the selection. It handles the scrolling window.
+    #
+    # Use it to build main menus, navigation sidebars, or logs.
+    #
+    # === Examples
+    #
+    #   # Basic List
+    #   List.new(items: ["Item 1", "Item 2"])
+    #
+    #   # Navigation Menu
+    #   List.new(
+    #     items: ["New Game", "Load Game", "Options", "Quit"],
+    #     selected_index: 0,
+    #     highlight_style: Style.new(bg: :blue),
+    #     highlight_symbol: ">> "
+    #   )
+    class List < Data.define(:items, :selected_index, :style, :highlight_style, :highlight_symbol, :direction, :block)
+      ##
+      # :attr_reader: items
+      # The items to display (Array of Strings).
+
+      ##
+      # :attr_reader: selected_index
+      # Index of the active selection (Integer or nil).
+
+      ##
+      # :attr_reader: style
+      # Base style for unselected items.
+
+      ##
+      # :attr_reader: highlight_style
+      # Style for the selected item.
+
+      ##
+      # :attr_reader: highlight_symbol
+      # Symbol drawn before the selected item.
+
+      ##
+      # :attr_reader: direction
+      # Render direction.
+      #
+      # <tt>:top_to_bottom</tt> or <tt>:bottom_to_top</tt>.
+
+      ##
+      # :attr_reader: block
+      # Optional wrapping block.
+
+      # Creates a new List.
+      #
+      # [items] Array of Strings.
+      # [selected_index] Integer (nullable).
+      # [style] Style object.
+      # [highlight_style] Style object.
+      # [highlight_symbol] String (default: <tt>"> "</tt>).
+      # [direction] Symbol (default: <tt>:top_to_bottom</tt>).
+      # [block] Block (optional).
+      def initialize(items: [], selected_index: nil, style: nil, highlight_style: nil, highlight_symbol: "> ", direction: :top_to_bottom, block: nil)
+        super
+      end
     end
-  end
 end

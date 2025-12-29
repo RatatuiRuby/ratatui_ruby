@@ -25,7 +25,10 @@ require_relative "ratatui_ruby/schema/center"
 require_relative "ratatui_ruby/schema/scrollbar"
 require_relative "ratatui_ruby/schema/canvas"
 require_relative "ratatui_ruby/schema/calendar"
+require_relative "ratatui_ruby/schema/canvas"
+require_relative "ratatui_ruby/schema/calendar"
 require_relative "ratatui_ruby/schema/text"
+require_relative "ratatui_ruby/event"
 
 begin
   require "ratatui_ruby/ratatui_ruby"
@@ -34,8 +37,13 @@ rescue LoadError
   require_relative "ratatui_ruby/ratatui_ruby"
 end
 
-# The RatatuiRuby module acts as a namespace for the entire gem.
-# It provides the main entry points for initializing the terminal and drawing the UI.
+# Main entry point for the library.
+#
+# Terminal UIs require low-level control using C/Rust and high-level abstraction in Ruby.
+#
+# This module bridges the gap. It provides the native methods to initialize the terminal, handle raw mode, and render the widget tree.
+#
+# Use `RatatuiRuby.run` to start your application.
 module RatatuiRuby
   # Generic error class for RatatuiRuby.
   class Error < StandardError; end
@@ -69,14 +77,48 @@ module RatatuiRuby
 
   ##
   # :method: poll_event
-  # :call-seq: poll_event() -> Hash, nil
+  # :call-seq: poll_event() -> Event, nil
   #
-  # Polls for a keyboard event.
+  # Checks for user input.
   #
-  #   poll_event
-  #   # => { type: :key, code: "a", modifiers: ["ctrl"] }
+  # Returns a discrete event (Key, Mouse, Resize) if one is available in the queue.
+  # Returns nil immediately if the queue is empty (non-blocking).
   #
-  # (Native method implemented in Rust)
+  # === Example
+  #
+  #   event = RatatuiRuby.poll_event
+  #   puts "Key pressed" if event.is_a?(RatatuiRuby::Event::Key)
+  #
+  def self.poll_event
+    raw = _poll_event
+    return nil if raw.nil?
+
+    case raw[:type]
+    when :key
+      Event::Key.new(code: raw[:code], modifiers: raw[:modifiers] || [])
+    when :mouse
+      Event::Mouse.new(
+        kind: raw[:kind].to_s,
+        x: raw[:x],
+        y: raw[:y],
+        button: raw[:button].to_s,
+        modifiers: raw[:modifiers] || []
+      )
+    when :resize
+      Event::Resize.new(width: raw[:width], height: raw[:height])
+    when :paste
+      Event::Paste.new(content: raw[:content])
+    when :focus_gained
+      Event::FocusGained.new
+    when :focus_lost
+      Event::FocusLost.new
+    else
+      # Fallback for unknown events, though ideally we cover them all
+      nil
+    end
+  end
+
+  # (Native method _poll_event implemented in Rust)
 
   ##
   # :method: inject_test_event
@@ -94,15 +136,17 @@ module RatatuiRuby
   # :method: run
   # :call-seq: run { |session| ... } -> Object
   #
-  # Initializes the terminal, yields a session, and ensures the terminal is restored.
-  # Returns the result of the block.
+  # Starts the TUI application lifecycle.
+  #
+  # Managing generic setup/teardown (raw mode, alternate screen) manualy is error-prone. If your app crashes, the terminal might be left in a broken state.
+  #
+  # This method handles the safety net. It initializes the terminal, yields a {Session}, and ensures the terminal state is restored even if exceptions occur.
+  #
+  # === Example
   #
   #   RatatuiRuby.run do |tui|
-  #     loop do
-  #       tui.draw(...)
-  #       event = tui.poll_event
-  #       break if event[:type] == :key && event[:code] == "q"
-  #     end
+  #     tui.draw(tui.paragraph(text: "Hi"))
+  #     sleep 1
   #   end
   def self.run
     require_relative "ratatui_ruby/session"

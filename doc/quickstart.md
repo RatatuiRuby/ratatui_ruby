@@ -58,9 +58,7 @@ begin
  
     # 4. Poll for events
     event = RatatuiRuby.poll_event
-    if event && event[:type] == :key && event[:code] == "q"
-      break
-    end
+    break if event == "q" || event == :ctrl_c
   end
 ensure
   # 5. Restore the terminal to its original state
@@ -105,9 +103,7 @@ RatatuiRuby.run do |tui|
     tui.draw(view)
     event = tui.poll_event
     
-    if event && event[:type] == :key && event[:code] == "q"
-      break
-    end
+    break if event == "q" || event == :ctrl_c
   end
 end
 ```

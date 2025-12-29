@@ -19,7 +19,7 @@ class LineGaugeDemoApp
       loop do
         draw
         event = RatatuiRuby.poll_event
-        break if event && event[:type] == :key && event[:code] == "q"
+        break if event == "q" || event == :ctrl_c
 
         handle_event(event)
       end
@@ -31,9 +31,9 @@ class LineGaugeDemoApp
   private
 
   def handle_event(event)
-    return unless event && event[:type] == :key
+    return unless event.key?
 
-    case event[:code]
+    case event.code
     when "right"
       @ratio_index = (@ratio_index + 1) % @ratios.length
     when "left"

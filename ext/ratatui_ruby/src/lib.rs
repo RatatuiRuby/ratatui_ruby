@@ -59,8 +59,9 @@ fn init() -> Result<(), Error> {
     m.define_module_function("init_terminal", function!(init_terminal, 0))?;
     m.define_module_function("restore_terminal", function!(restore_terminal, 0))?;
     m.define_module_function("draw", function!(draw, 1))?;
-    m.define_module_function("poll_event", function!(events::poll_event, 0))?;
+    m.define_module_function("_poll_event", function!(events::poll_event, 0))?;
     m.define_module_function("inject_test_event", function!(events::inject_test_event, 2))?;
+    m.define_module_function("clear_events", function!(events::clear_events, 0))?;
 
     // Test backend helpers
     m.define_module_function(

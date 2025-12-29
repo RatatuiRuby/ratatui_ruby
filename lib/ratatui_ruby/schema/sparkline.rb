@@ -4,21 +4,48 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  # A widget that displays a compact data row.
-  #
-  # [data] Array of Integers.
-  # [max] Optional maximum value.
-  # [style] Optional style for the sparkline.
-  # [block] Optional block widget to wrap the sparkline.
-  class Sparkline < Data.define(:data, :max, :style, :block)
-    # Creates a new Sparkline widget.
+    # Displays high-density data in a compact row.
     #
-    # [data] Array of Integers.
-    # [max] Optional maximum value.
-    # [style] Optional style for the sparkline.
-    # [block] Optional block widget to wrap the sparkline.
-    def initialize(data:, max: nil, style: nil, block: nil)
-      super
+    # Users need context. A single value ("90% CPU") tells you current status, but not the trend.
+    # Full charts take up too much room.
+    #
+    # This widget solves the density problem. It condenses history into a single line of variable-height blocks.
+    #
+    # Use it in dashboards, headers, or list items to providing trending data at a glance.
+    #
+    # === Examples
+    #
+    #   Sparkline.new(
+    #     data: [1, 4, 3, 8, 2, 9, 3, 2],
+    #     style: Style.new(fg: :yellow)
+    #   )
+    class Sparkline < Data.define(:data, :max, :style, :block)
+      ##
+      # :attr_reader: data
+      # Array of integer values to plot.
+
+      ##
+      # :attr_reader: max
+      # Maximum value for scaling (optional).
+      #
+      # If nil, derived from data max.
+
+      ##
+      # :attr_reader: style
+      # Style for the bars.
+
+      ##
+      # :attr_reader: block
+      # Optional wrapping block.
+
+      # Creates a new Sparkline widget.
+      #
+      # [data] Array of Integers.
+      # [max] Max value (optional).
+      # [style] Style (optional).
+      # [block] Block (optional).
+      def initialize(data:, max: nil, style: nil, block: nil)
+        super
+      end
     end
-  end
 end

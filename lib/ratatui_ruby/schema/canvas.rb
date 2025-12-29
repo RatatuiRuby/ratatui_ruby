@@ -12,6 +12,13 @@ module RatatuiRuby
     # [x] The x-coordinate.
     # [y] The y-coordinate.
     class Point < Data.define(:x, :y)
+      ##
+      # :attr_reader: x
+      # X coordinate.
+
+      ##
+      # :attr_reader: y
+      # Y coordinate.
     end
 
     # A line shape on a canvas.
@@ -22,6 +29,25 @@ module RatatuiRuby
     # [y2] The ending y-coordinate.
     # [color] The color of the line.
     class Line < Data.define(:x1, :y1, :x2, :y2, :color)
+      ##
+      # :attr_reader: x1
+      # Start X.
+
+      ##
+      # :attr_reader: y1
+      # Start Y.
+
+      ##
+      # :attr_reader: x2
+      # End X.
+
+      ##
+      # :attr_reader: y2
+      # End Y.
+
+      ##
+      # :attr_reader: color
+      # Line color.
     end
 
     # A rectangle shape on a canvas.
@@ -32,6 +58,25 @@ module RatatuiRuby
     # [height] The height of the rectangle.
     # [color] The color of the rectangle.
     class Rectangle < Data.define(:x, :y, :width, :height, :color)
+      ##
+      # :attr_reader: x
+      # Bottom-left X.
+
+      ##
+      # :attr_reader: y
+      # Bottom-left Y.
+
+      ##
+      # :attr_reader: width
+      # Width.
+
+      ##
+      # :attr_reader: height
+      # Height.
+
+      ##
+      # :attr_reader: color
+      # Color.
     end
 
     # A circle shape on a canvas.
@@ -41,33 +86,91 @@ module RatatuiRuby
     # [radius] The radius of the circle.
     # [color] The color of the circle.
     class Circle < Data.define(:x, :y, :radius, :color)
+      ##
+      # :attr_reader: x
+      # Center X.
+
+      ##
+      # :attr_reader: y
+      # Center Y.
+
+      ##
+      # :attr_reader: radius
+      # Radius.
+
+      ##
+      # :attr_reader: color
+      # Color.
     end
 
     # A world map shape on a canvas.
     #
     # [color] The color of the map.
-    # [resolution] The resolution of the map (:low, :high).
+    # [resolution] The resolution of the map (<tt>:low</tt>, <tt>:high</tt>).
     class Map < Data.define(:color, :resolution)
+      ##
+      # :attr_reader: color
+      # Map color.
+
+      ##
+      # :attr_reader: resolution
+      # Resolution (<tt>:low</tt> or <tt>:high</tt>).
     end
   end
 
-  # The Canvas Widget.
-  #
-  # [shapes] Array of shape objects (Shape::Line, Shape::Rectangle, Shape::Circle, Shape::Map).
-  # [x_bounds] [min, max] range for the x-axis.
-  # [y_bounds] [min, max] range for the y-axis.
-  # [marker] The marker to use for drawing (:braille, :dot, :block, :bar).
-  # [block] Optional Block widget to wrap the canvas.
-  class Canvas < Data.define(:shapes, :x_bounds, :y_bounds, :marker, :block)
-    # Creates a new Canvas.
+    # Provides a drawing surface for custom shapes.
     #
-    # [shapes] Array of shape objects (Shape::Line, Shape::Rectangle, Shape::Circle, Shape::Map).
-    # [x_bounds] [min, max] range for the x-axis.
-    # [y_bounds] [min, max] range for the y-axis.
-    # [marker] The marker to use for drawing (:braille, :dot, :block, :bar).
-    # [block] Optional Block widget to wrap the canvas.
-    def initialize(shapes: [], x_bounds: [0.0, 100.0], y_bounds: [0.0, 100.0], marker: :braille, block: nil)
-      super
+    # Standard widgets cover standard cases. Sometimes you need to draw a map, a custom diagram, or a game.
+    # Character grids are too coarse for fine detail.
+    #
+    # This widget increases the resolution. It uses Braille patterns or block characters to create a "sub-pixel" drawing surface.
+    #
+    # Use it to implement free-form graphics, high-resolution plots, or geographic maps.
+    #
+    # === Examples
+    #
+    #   Canvas.new(
+    #     x_bounds: [-180, 180],
+    #     y_bounds: [-90, 90],
+    #     shapes: [
+    #       Shape::Map.new(color: :green, resolution: :high),
+    #       Shape::Circle.new(x: 0, y: 0, radius: 10, color: :red)
+    #     ]
+    #   )
+    class Canvas < Data.define(:shapes, :x_bounds, :y_bounds, :marker, :block)
+      ##
+      # :attr_reader: shapes
+      # Array of shapes to render.
+      #
+      # Includes {Shape::Line}, {Shape::Circle}, {Shape::Map}, etc.
+
+      ##
+      # :attr_reader: x_bounds
+      # [min, max] range for the x-axis.
+
+      ##
+      # :attr_reader: y_bounds
+      # [min, max] range for the y-axis.
+
+      ##
+      # :attr_reader: marker
+      # The marker type used for drawing.
+      #
+      # <tt>:braille</tt> (high res), <tt>:dot</tt>, <tt>:block</tt>, <tt>:bar</tt>.
+
+      ##
+      # :attr_reader: block
+      # Optional wrapping block.
+
+      # Creates a new Canvas.
+      #
+      # [shapes] Array of Shapes.
+      # [x_bounds] Array of [min, max].
+      # [y_bounds] Array of [min, max].
+      # [marker] Symbol (default: <tt>:braille</tt>).
+      # [block] Block (optional).
+      def initialize(shapes: [], x_bounds: [0.0, 100.0], y_bounds: [0.0, 100.0], marker: :braille, block: nil)
+        super
+      end
     end
-  end
 end

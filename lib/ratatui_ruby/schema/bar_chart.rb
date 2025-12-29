@@ -4,25 +4,66 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  # A widget that displays numeric data as a bar chart.
-  #
-  # [data] A hash of { "Label" => value (Integer) }.
-  # [bar_width] The width of each bar in the chart.
-  # [bar_gap] The gap between bars.
-  # [max] Optional maximum value for the Y-axis.
-  # [style] Optional style for the bars.
-  # [block] Optional block widget to wrap the chart.
-  class BarChart < Data.define(:data, :bar_width, :bar_gap, :max, :style, :block)
-    # Creates a new BarChart widget.
+    # Displays categorical data as bars.
     #
-    # [data] A hash of { "Label" => value (Integer) }.
-    # [bar_width] The width of each bar in the chart.
-    # [bar_gap] The gap between bars.
-    # [max] Optional maximum value for the Y-axis.
-    # [style] Optional style for the bars.
-    # [block] Optional block widget to wrap the chart.
-    def initialize(data:, bar_width: 3, bar_gap: 1, max: nil, style: nil, block: nil)
-      super
+    # Raw tables of numbers are hard to scan. Comparing magnitudes requires mental arithmetic, which slows down decision-making.
+    #
+    # This widget visualizes the data. It renders vertical bars proportional to their value.
+    #
+    # Use it to compare server loads, sales figures, or any discrete datasets.
+    #
+    # === Examples
+    #
+    #   BarChart.new(
+    #     data: { "US" => 40, "EU" => 35, "AP" => 25 },
+    #     bar_width: 5,
+    #     style: Style.new(fg: :green)
+    #   )
+    class BarChart < Data.define(:data, :bar_width, :bar_gap, :max, :style, :block)
+      ##
+      # :attr_reader: data
+      # The dataset relative to category labels.
+      #
+      #   { "CPU" => 90, "MEM" => 40 }
+
+      ##
+      # :attr_reader: bar_width
+      # Width of each bar in characters.
+
+      ##
+      # :attr_reader: bar_gap
+      # Spaces between bars.
+
+      ##
+      # :attr_reader: max
+      # Maximum value for the Y-axis (optional).
+      #
+      # If nil, it is calculated from the data.
+
+      ##
+      # :attr_reader: style
+      # Style for the bars.
+
+      ##
+      # :attr_reader: block
+      # Optional wrapping block.
+
+      # Creates a new BarChart widget.
+      #
+      # [data]
+      #   Hash of { "Label" => Integer }.
+      # [bar_width]
+      #   Width in cells (Integer, default: 3).
+      # [bar_gap]
+      #   Gap in cells (Integer, default: 1).
+      # [max]
+      #   Max Y value (Integer, optional).
+      # [style]
+      #   Style object (optional).
+      # [block]
+      #   Block wrapper (optional).
+      def initialize(data:, bar_width: 3, bar_gap: 1, max: nil, style: nil, block: nil)
+        super
+      end
     end
-  end
 end

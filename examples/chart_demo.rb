@@ -76,7 +76,7 @@ class ChartDemoApp
     event = RatatuiRuby.poll_event
     return nil unless event
 
-    return :quit if event[:type] == :key && event[:code] == "q"
+    return :quit if event == "q" || event == :ctrl_c
     nil
   end
 end

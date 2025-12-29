@@ -72,35 +72,32 @@ class BoxDemoApp
 
   def handle_input
     # 3. Events
-    event = RatatuiRuby.poll_event
-    return unless event
-
-    if event[:type] == :key
-      case event[:code]
-      when "q"
-        :quit
-      when "up"
-        @color = "red"
-        @text = "Up Pressed!"
-      when "down"
-        @color = "blue"
-        @text = "Down Pressed!"
-      when "left"
-        @color = "yellow"
-        @text = "Left Pressed!"
-      when "right"
-        @color = "magenta"
-        @text = "Right Pressed!"
-      when " "
-        next_border_type
-        @text = "Switched to #{@border_type}"
-      when "enter"
-        next_title_alignment
-        @text = "Aligned #{@title_alignment}"
-      when "s"
-        toggle_style
-        @text = "Style: #{@style ? 'Blue on White' : 'Default'}"
-      end
+    case RatatuiRuby.poll_event
+    in RatatuiRuby::Event::Key(code: "q") | RatatuiRuby::Event::Key(code: "c", modifiers: ["ctrl"])
+      :quit
+    in RatatuiRuby::Event::Key(code: "up")
+      @color = "red"
+      @text = "Up Pressed!"
+    in RatatuiRuby::Event::Key(code: "down")
+      @color = "blue"
+      @text = "Down Pressed!"
+    in RatatuiRuby::Event::Key(code: "left")
+      @color = "yellow"
+      @text = "Left Pressed!"
+    in RatatuiRuby::Event::Key(code: "right")
+      @color = "magenta"
+      @text = "Right Pressed!"
+    in RatatuiRuby::Event::Key(code: " ")
+      next_border_type
+      @text = "Switched to #{@border_type}"
+    in RatatuiRuby::Event::Key(code: "enter")
+      next_title_alignment
+      @text = "Aligned #{@title_alignment}"
+    in RatatuiRuby::Event::Key(code: "s")
+      toggle_style
+      @text = "Style: #{@style ? 'Blue on White' : 'Default'}"
+    else
+      nil
     end
   end
 end

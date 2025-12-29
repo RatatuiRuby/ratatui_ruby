@@ -9,55 +9,126 @@ module RatatuiRuby
   # [bounds] Array<Float> [min, max]
   # [labels] Array<String>
   # [style] Style
-  class Axis < Data.define(:title, :bounds, :labels, :style)
-    # Creates a new Axis.
-    #
-    # [title] String
-    # [bounds] Array<Float> [min, max]
-    # [labels] Array<String>
-    # [style] Style
-    def initialize(title: "", bounds: [0.0, 10.0], labels: [], style: nil)
-      super
+    class Axis < Data.define(:title, :bounds, :labels, :style)
+      ##
+      # :attr_reader: title
+      # Label for the axis (String).
+
+      ##
+      # :attr_reader: bounds
+      # Range [min, max] (Array of Floats).
+
+      ##
+      # :attr_reader: labels
+      # Explicit labels for ticks (Array of Strings).
+
+      ##
+      # :attr_reader: style
+      # Style for axis lines/text.
+
+      # Creates a new Axis.
+      #
+      # [title] String.
+      # [bounds] Array [min, max].
+      # [labels] Array of Strings.
+      # [style] Style.
+      def initialize(title: "", bounds: [0.0, 10.0], labels: [], style: nil)
+        super
+      end
     end
-  end
 
   # Defines a Dataset for a Chart.
   # [name] The name of the dataset.
   # [data] Array of arrays [[x, y], [x, y]] (Floats).
   # [color] The color of the line.
-  # [marker] Symbol (:dot, :braille, :block, :bar)
-  # [graph_type] Symbol (:line, :scatter)
-  class Dataset < Data.define(:name, :data, :color, :marker, :graph_type)
-    # Creates a new Dataset.
-    #
-    # [name] The name of the dataset.
-    # [data] Array of arrays [[x, y], [x, y]] (Floats).
-    # [color] The color of the line.
-    # [marker] Symbol (:dot, :braille, :block, :bar)
-    # [graph_type] Symbol (:line, :scatter)
-    def initialize(name:, data:, color: "reset", marker: :dot, graph_type: :line)
-      super
-    end
-  end
+  # [marker] Symbol (<tt>:dot</tt>, <tt>:braille</tt>, <tt>:block</tt>, <tt>:bar</tt>)
+  # [graph_type] Symbol (<tt>:line</tt>, <tt>:scatter</tt>)
+    class Dataset < Data.define(:name, :data, :color, :marker, :graph_type)
+      ##
+      # :attr_reader: name
+      # Name for logical identification or legend.
 
-  # A generic Cartesian chart.
-  # [datasets] Array<Dataset>
-  # [x_axis] Axis
-  # [y_axis] Axis
-  # [block] Block
-  # [style] Style (base style)
-  class Chart < Data.define(:datasets, :x_axis, :y_axis, :block, :style)
-    # Creates a new Chart widget.
-    #
-    # [datasets] Array<Dataset>
-    # [x_axis] Axis
-    # [y_axis] Axis
-    # [block] Block
-    # [style] Style (base style)
-    def initialize(datasets:, x_axis:, y_axis:, block: nil, style: nil)
-      super
+      ##
+      # :attr_reader: data
+      # list of [x, y] coordinates.
+
+      ##
+      # :attr_reader: color
+      # Color of the line/marker (Symbol/String).
+
+      ##
+      # :attr_reader: marker
+      # Marker type (<tt>:dot</tt>, <tt>:braille</tt>).
+
+      ##
+      # :attr_reader: graph_type
+      # Type of graph (<tt>:line</tt>, <tt>:scatter</tt>).
+
+      # Creates a new Dataset.
+      #
+      # [name] String.
+      # [data] Array of [x, y].
+      # [color] Symbol/String.
+      # [marker] Symbol.
+      # [graph_type] Symbol.
+      def initialize(name:, data:, color: "reset", marker: :dot, graph_type: :line)
+        super
+      end
     end
-  end
+
+    # Plots data points on a Cartesian coordinate system.
+    #
+    # Trends and patterns are invisible in raw logs. You need to see the shape of the data to understand the story it tells.
+    #
+    # This widget plots X/Y coordinates. It supports multiple datasets, custom axes, and different marker types.
+    #
+    # Use it for analytics, scientific data, or monitoring metrics over time.
+    #
+    # === Examples
+    #
+    #   Chart.new(
+    #     datasets: [
+    #       Dataset.new(
+    #         name: "Requests",
+    #         data: [[0.0, 1.0], [1.0, 2.0], [2.0, 1.5]],
+    #         color: :yellow
+    #       )
+    #     ],
+    #     x_axis: Axis.new(title: "Time", bounds: [0.0, 5.0]),
+    #     y_axis: Axis.new(title: "RPS", bounds: [0.0, 5.0])
+    #   )
+    class Chart < Data.define(:datasets, :x_axis, :y_axis, :block, :style)
+      ##
+      # :attr_reader: datasets
+      # Array of Dataset objects to plot.
+
+      ##
+      # :attr_reader: x_axis
+      # Configuration for the X Axis.
+
+      ##
+      # :attr_reader: y_axis
+      # Configuration for the Y Axis.
+
+      ##
+      # :attr_reader: block
+      # Optional wrapping block.
+
+      ##
+      # :attr_reader: style
+      # Base style for the chart area.
+
+      # Creates a new Chart widget.
+      #
+      # [datasets] Array of Datasets.
+      # [x_axis] X Axis config.
+      # [y_axis] Y Axis config.
+      # [block] Wrapper (optional).
+      # [style] Base style (optional).
+      def initialize(datasets:, x_axis:, y_axis:, block: nil, style: nil)
+        super
+      end
+    end
 
   # A complex chart widget. (Legacy/Alias for Chart)
   #

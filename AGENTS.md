@@ -101,6 +101,7 @@ The project follows a standard Gem layout with an `ext/` directory for Rust code
 -   **The `doc/` folder contains source markdown files** that are included in RDoc output. Follow the structure: `index.md` -> `contributors/` | `quickstart.md`.
 -   **The `tmp/rdoc/` folder is auto-generated** by `bundle exec rake rerdoc`. Never edit files in `tmp/rdoc/` directly.
 -   Documentation should separate "User Guide" (Ruby API for TUI developers) from "Contributor Guide" (Ruby/Rust/Magnus internals).
+-   **Style Guide:** You **MUST** follow the [Documentation Style Guide](doc/contributors/documentation_style.md). This dictates the Alexandrian/Zinsser prose style and strict RDoc formatting required for all public API documentation.
 -   Don't write .md files for something RDoc (Ruby) or rustdoc (Rust) can generate.
 
 ## 4. The Ruby <-> Rust Bridge Contract

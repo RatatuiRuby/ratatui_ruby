@@ -41,7 +41,7 @@ The application loop typically looks like this:
 loop do
   # 1. & 2. Handle events and update state
   event = RatatuiRuby.poll_event
-  break if event[:type] == :key && event[:code] == "esc"
+  break if event == :esc
 
   # 3. Construct View Tree
   ui = RatatuiRuby::Paragraph.new(text: "Time: #{Time.now}")

@@ -57,13 +57,15 @@ begin
     event = RatatuiRuby.poll_event
     next unless event
 
-    case event[:code]
-    when "q"
+    case event
+    in RatatuiRuby::Event::Key(code: "q") | RatatuiRuby::Event::Key(code: "c", modifiers: ["ctrl"])
       break
-    when "down", "j"
+    in RatatuiRuby::Event::Key(code: "down" | "j")
       selected_index = (selected_index + 1) % PROCESSES.length
-    when "up", "k"
+    in RatatuiRuby::Event::Key(code: "up" | "k")
       selected_index = (selected_index - 1) % PROCESSES.length
+    else
+      nil
     end
   end
 ensure

@@ -126,6 +126,11 @@ pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), 
     Ok(())
 }
 
+pub fn clear_events() -> Result<(), Error> {
+    EVENT_QUEUE.lock().unwrap().clear();
+    Ok(())
+}
+
 pub fn poll_event() -> Result<Value, Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let event = {
@@ -166,7 +171,7 @@ pub fn poll_event() -> Result<Value, Error> {
 }
 
 fn handle_event(event: ratatui::crossterm::event::Event) -> Result<Value, Error> {
-    let ruby = magnus::Ruby::get().unwrap();
+    let _ruby = magnus::Ruby::get().unwrap();
     match event {
         ratatui::crossterm::event::Event::Key(key) => {
             if key.kind == ratatui::crossterm::event::KeyEventKind::Press {
@@ -281,7 +286,33 @@ fn handle_event(event: ratatui::crossterm::event::Event) -> Result<Value, Error>
 
             return Ok(hash.into_value_with(&ruby));
         }
-        _ => {}
+        ratatui::crossterm::event::Event::Resize(w, h) => {
+            let ruby = magnus::Ruby::get().unwrap();
+            let hash = ruby.hash_new();
+            hash.aset(ruby.to_symbol("type"), ruby.to_symbol("resize"))?;
+            hash.aset(ruby.to_symbol("width"), w)?;
+            hash.aset(ruby.to_symbol("height"), h)?;
+            return Ok(hash.into_value_with(&ruby));
+        }
+        ratatui::crossterm::event::Event::Paste(content) => {
+            let ruby = magnus::Ruby::get().unwrap();
+            let hash = ruby.hash_new();
+            hash.aset(ruby.to_symbol("type"), ruby.to_symbol("paste"))?;
+            hash.aset(ruby.to_symbol("content"), content)?;
+            return Ok(hash.into_value_with(&ruby));
+        }
+        ratatui::crossterm::event::Event::FocusGained => {
+            let ruby = magnus::Ruby::get().unwrap();
+            let hash = ruby.hash_new();
+            hash.aset(ruby.to_symbol("type"), ruby.to_symbol("focus_gained"))?;
+            return Ok(hash.into_value_with(&ruby));
+        }
+        ratatui::crossterm::event::Event::FocusLost => {
+            let ruby = magnus::Ruby::get().unwrap();
+            let hash = ruby.hash_new();
+            hash.aset(ruby.to_symbol("type"), ruby.to_symbol("focus_lost"))?;
+            return Ok(hash.into_value_with(&ruby));
+        }
     }
-    Ok(ruby.qnil().into_value_with(&magnus::Ruby::get().unwrap()))
+    Ok(magnus::Ruby::get().unwrap().qnil().into_value_with(&magnus::Ruby::get().unwrap()))
 }

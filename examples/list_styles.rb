@@ -48,22 +48,18 @@ class ListStylesApp
   end
 
   def handle_input
-    event = RatatuiRuby.poll_event
-    return nil unless event
-
-    if event[:type] == :key
-      case event[:code]
-      when "up"
-        @selected_index = (@selected_index - 1) % @items.size
-      when "down"
-        @selected_index = (@selected_index + 1) % @items.size
-      when "d"
-        @direction = (@direction == :top_to_bottom) ? :bottom_to_top : :top_to_bottom
-      when "q"
-        return :quit
-      end
+    case RatatuiRuby.poll_event
+    in RatatuiRuby::Event::Key(code: "q") | RatatuiRuby::Event::Key(code: "c", modifiers: ["ctrl"])
+      :quit
+    in RatatuiRuby::Event::Key(code: "up")
+      @selected_index = (@selected_index - 1) % @items.size
+    in RatatuiRuby::Event::Key(code: "down")
+      @selected_index = (@selected_index + 1) % @items.size
+    in RatatuiRuby::Event::Key(code: "d")
+      @direction = (@direction == :top_to_bottom) ? :bottom_to_top : :top_to_bottom
+    else
+      nil
     end
-    nil
   end
 end
 

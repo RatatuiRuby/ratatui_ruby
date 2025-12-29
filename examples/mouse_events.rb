@@ -61,31 +61,29 @@ class MouseEventsApp
     event = RatatuiRuby.poll_event
     return unless event
 
-    if event[:type] == :key && event[:code] == "q"
-      return :quit
-    end
+    return :quit if event == "q" || event == :ctrl_c
 
-    if event[:type] == :mouse
+    if event.mouse?
       @color = "green"
-      case event[:kind]
-      when :down
-        @message = "#{event[:button].to_s.capitalize} Click at [#{event[:x]}, #{event[:y]}]"
-        @details = "Modifiers: #{event[:modifiers].join(', ')}"
-      when :up
-        @message = "#{event[:button].to_s.capitalize} Release at [#{event[:x]}, #{event[:y]}]"
-        @details = "Modifiers: #{event[:modifiers].join(', ')}"
-      when :drag
-        @message = "Dragging #{event[:button].to_s.capitalize} Button at [#{event[:x]}, #{event[:y]}]"
-        @details = "Modifiers: #{event[:modifiers].join(', ')}"
-      when :moved
-        @message = "Mouse Moved to [#{event[:x]}, #{event[:y]}]"
-        @details = "Modifiers: #{event[:modifiers].join(', ')}"
-      when :scroll_down
+      case event.kind
+      when "down"
+        @message = "#{event.button.capitalize} Click at [#{event.x}, #{event.y}]"
+        @details = "Modifiers: #{event.modifiers.join(', ')}"
+      when "up"
+        @message = "#{event.button.capitalize} Release at [#{event.x}, #{event.y}]"
+        @details = "Modifiers: #{event.modifiers.join(', ')}"
+      when "drag"
+        @message = "Dragging #{event.button.capitalize} Button at [#{event.x}, #{event.y}]"
+        @details = "Modifiers: #{event.modifiers.join(', ')}"
+      when "moved"
+        @message = "Mouse Moved to [#{event.x}, #{event.y}]"
+        @details = "Modifiers: #{event.modifiers.join(', ')}"
+      when "scroll_down"
         @message = "Scrolled Down"
-        @details = "Position: [#{event[:x]}, #{event[:y]}]"
-      when :scroll_up
+        @details = "Position: [#{event.x}, #{event.y}]"
+      when "scroll_up"
         @message = "Scrolled Up"
-        @details = "Position: [#{event[:x]}, #{event[:y]}]"
+        @details = "Position: [#{event.x}, #{event.y}]"
       end
     end
     nil

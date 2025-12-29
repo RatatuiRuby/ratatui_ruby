@@ -85,16 +85,12 @@ class LoginFormApp
     event = RatatuiRuby.poll_event
     return unless event
 
-    if event[:type] == :key
+    if event.key?
       if @show_popup
-        # If popup is shown, any key (or specifically q) quits?
-        # "The Center widget contains a Green Box saying 'Login Successful! Press q.'"
-        if event[:code] == "q"
-          :quit
-        end
+        return :quit if event == "q" || event == :ctrl_c
       else
         # Login Form Input
-        case event[:code]
+        case event.code
         when "enter"
           @show_popup = true
         when "backspace"
@@ -103,8 +99,8 @@ class LoginFormApp
           :quit
         else
           # Simple text input
-          if event[:code].length == 1
-            @username += event[:code]
+          if event.text? && !event.ctrl? && !event.alt?
+            @username += event.code
           end
         end
       end

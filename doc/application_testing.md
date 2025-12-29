@@ -88,7 +88,7 @@ inject_event("key", { code: "q" })
 
 # Now poll_event will return the 'q' key event
 event = RatatuiRuby.poll_event
-assert_equal "q", event[:code]
+assert_equal "q", event.code
 ```
 
 ## Example

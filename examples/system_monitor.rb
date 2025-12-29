@@ -77,16 +77,15 @@ class SystemMonitorApp
   end
 
   def handle_input
-    event = RatatuiRuby.poll_event
-    if event
-      case event[:code]
-      when "q"
-        :quit
-      when "up"
-        @percentage = [@percentage + 5, 100].min
-      when "down"
-        @percentage = [@percentage - 5, 0].max
-      end
+    case RatatuiRuby.poll_event
+    in RatatuiRuby::Event::Key(code: "q") | RatatuiRuby::Event::Key(code: "c", modifiers: ["ctrl"])
+      :quit
+    in RatatuiRuby::Event::Key(code: "up")
+      @percentage = [@percentage + 5, 100].min
+    in RatatuiRuby::Event::Key(code: "down")
+      @percentage = [@percentage - 5, 0].max
+    else
+      nil
     end
   end
 end

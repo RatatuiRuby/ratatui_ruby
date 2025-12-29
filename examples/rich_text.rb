@@ -131,8 +131,7 @@ class RichTextApp
     event = RatatuiRuby.poll_event
     return nil unless event
 
-    return :quit if (event[:type] == :key && event[:code] == "q") ||
-                    (event[:type] == :key && event[:code] == "esc")
+    return :quit if event == "q" || event == :esc || event == :ctrl_c
 
     nil
   end

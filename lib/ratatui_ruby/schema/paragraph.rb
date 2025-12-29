@@ -4,37 +4,72 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  # A widget that displays a block of text.
-  #
-  # [text] the text to display.
-  # [style] the style to apply (Style object).
-  # [block] an optional Block widget to wrap the paragraph.
-  # [scroll] scroll offset as (y, x) array matching ratatui convention.
-  class Paragraph < Data.define(:text, :style, :block, :wrap, :align, :scroll)
-    # Creates a new Paragraph.
+    # Displays a block of text.
     #
-    # [text] the text to display.
-    # [style] the style to apply.
-    # [block] the block to wrap the paragraph.
-    # [wrap] whether to wrap text at width.
-    # [align] alignment (:left, :center, :right).
-    # [scroll] scroll offset as (y, x) array (default: [0, 0]).
-    def initialize(text:, style: Style.default, block: nil, wrap: false, align: :left, scroll: [0, 0])
-      super
-    end
+    # Raw strings are insufficient for UIs. They overflow constraints. They don't respect alignment (left, center, right).
+    #
+    # This widget creates a smart text container. It wraps content to fit the area. It aligns text as requested. It supports scrolling.
+    #
+    # Use it for everything from simple labels to complex, multi-paragraph documents.
+    #
+    # === Examples
+    #
+    #   # Basic Text
+    #   Paragraph.new(text: "Hello, World!")
+    #
+    #   # Styled container with wrapping
+    #   Paragraph.new(
+    #     text: "This is a long line that will wrap automatically.",
+    #     style: Style.new(fg: :green),
+    #     wrap: true,
+    #     block: Block.new(title: "Output", borders: [:all])
+    #   )
+    #
+    #   # Scrolling mechanism
+    #   Paragraph.new(text: large_text, scroll: [scroll_y, 0])
+    class Paragraph < Data.define(:text, :style, :block, :wrap, :align, :scroll)
+      ##
+      # :attr_reader: text
+      # The content to display.
 
-    # Support for legacy fg/bg arguments.
-    # [text] the text to display.
-    # [style] the style to apply.
-    # [fg] legacy foreground color.
-    # [bg] legacy background color.
-    # [block] the block to wrap the paragraph.
-    # [wrap] whether to wrap text at width.
-    # [align] alignment (:left, :center, :right).
-    # [scroll] scroll offset as (y, x) array (default: [0, 0]).
-    def self.new(text:, style: nil, fg: nil, bg: nil, block: nil, wrap: false, align: :left, scroll: [0, 0])
-      style ||= Style.new(fg:, bg:)
-      super(text:, style:, block:, wrap:, align:, scroll:)
+      ##
+      # :attr_reader: style
+      # Base style for the text.
+
+      ##
+      # :attr_reader: block
+      # Optional wrapping block.
+
+      ##
+      # :attr_reader: wrap
+      # Whether to wrap text at the edge of the container (Boolean).
+
+      ##
+      # :attr_reader: align
+      # Text alignment.
+      #
+      # <tt>:left</tt>, <tt>:center</tt>, or <tt>:right</tt>.
+
+      ##
+      # :attr_reader: scroll
+      # Scroll offset [y, x].
+
+      # Creates a new Paragraph.
+      #
+      # [text] String or Text::Line array.
+      # [style] Style object.
+      # [block] Block object.
+      # [wrap] Boolean (default: false).
+      # [align] Symbol (default: <tt>:left</tt>).
+      # [scroll] Array of [y, x] integers.
+      def initialize(text:, style: Style.default, block: nil, wrap: false, align: :left, scroll: [0, 0])
+        super
+      end
+
+      # Legacy constructor support.
+      def self.new(text:, style: nil, fg: nil, bg: nil, block: nil, wrap: false, align: :left, scroll: [0, 0])
+        style ||= Style.new(fg:, bg:)
+        super(text:, style:, block:, wrap:, align:, scroll:)
+      end
     end
-  end
 end

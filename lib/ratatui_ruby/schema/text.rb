@@ -9,54 +9,79 @@ module RatatuiRuby
   module Text
     # A styled string fragment.
     #
-    # Used to compose rich text where individual words or phrases can have distinct styles.
-    # Multiple Spans are combined into a Line for display.
+    # Text is rarely uniform. You need to bold a keyword, colorize an error, or dim a timestamp.
     #
-    # [content] The text content of this span.
-    # [style] The style to apply to this span (Style object or nil for no styling).
+    # This class attaches style to content. It pairs a string with visual attributes.
+    #
+    # combine spans into a {Line} to create rich text.
+    #
+    # === Examples
+    #
+    #   Text::Span.new(content: "Error", style: Style.new(fg: :red, modifiers: [:bold]))
     class Span < Data.define(:content, :style)
+      ##
+      # :attr_reader: content
+      # The text content.
+
+      ##
+      # :attr_reader: style
+      # The style to apply.
+
       # Creates a new Span.
       #
-      # [content] The text content of this span.
-      # [style] The style to apply (Style object or nil for no styling).
+      # [content] String.
+      # [style] Style object (optional).
       def initialize(content:, style: nil)
         super
       end
 
-      # Helper to create a styled span more concisely.
+      # Concise helper for styling.
       #
-      #   Text::Span.styled("bold text", Style.new(modifiers: [:bold]))
-      #
-      # [content] The text content.
-      # [style] The style to apply.
+      #   Text::Span.styled("Bold", Style.new(modifiers: [:bold]))
       def self.styled(content, style = nil)
         new(content:, style:)
       end
     end
 
-    # A single line of text, composed of multiple Spans.
+    # A sequence of styled spans.
     #
-    # Used to display rich text with inline styling where different words or phrases
-    # can have distinct colors, modifiers, and other style attributes.
+    # Words form sentences. Spans form lines.
     #
-    # [spans] Array of Span objects that compose this line.
-    # [alignment] Optional alignment for this line (:left, :center, :right).
+    # This class composes multiple {Span} objects into a single horizontal row of text.
+    # It handles the layout of rich text fragments within the flow of a paragraph.
+    #
+    # Use it to build multi-colored headers, status messages, or log entries.
+    #
+    # === Examples
+    #
+    #   Text::Line.new(
+    #     spans: [
+    #       Text::Span.styled("User: ", Style.new(modifiers: [:bold])),
+    #       Text::Span.styled("kerrick", Style.new(fg: :blue))
+    #     ]
+    #   )
     class Line < Data.define(:spans, :alignment)
+      ##
+      # :attr_reader: spans
+      # Array of Span objects.
+
+      ##
+      # :attr_reader: alignment
+      # Alignment within the container.
+      #
+      # <tt>:left</tt>, <tt>:center</tt>, or <tt>:right</tt>.
+
       # Creates a new Line.
       #
-      # [spans] Array of Span objects (or array of strings/objects that can be coerced to spans).
-      # [alignment] Optional alignment for this line (:left, :center, :right).
+      # [spans] Array of Span objects (or Strings).
+      # [alignment] Symbol (optional).
       def initialize(spans: [], alignment: nil)
         super
       end
 
-      # Helper to create a line from a simple string.
+      # Creates a simple line from a string.
       #
-      #   Text::Line.from_string("plain text")
-      #   # => Line with a single unstyled Span
-      #
-      # [content] The text content.
-      # [alignment] Optional alignment.
+      #   Text::Line.from_string("Hello")
       def self.from_string(content, alignment: nil)
         new(spans: [Span.new(content:, style: nil)], alignment:)
       end

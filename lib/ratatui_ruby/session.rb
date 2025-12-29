@@ -4,38 +4,97 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  ##
-  # A managed terminal session that provides convenience methods for creating widgets
-  # and interacting with the terminal within a run loop.
+  # Manages the terminal lifecycle and provides a concise API for the render loop.
   #
-  # This class is yielded to the block provided to {RatatuiRuby.run}.
-  # It uses metaprogramming to delegate method calls to {RatatuiRuby} module functions
-  # and to act as a factory for {RatatuiRuby} widget classes.
+  # Writing a TUI loop involves repetitive boilerplate. You constantly instantiate widgets (<tt>RatatuiRuby::Paragraph.new</tt>) and call global methods (<tt>RatatuiRuby.draw</tt>). This is verbose and hard to read.
   #
-  # == Features
+  # The Session object simplifies this. It acts as a factory and a facade. It provides short helper methods for every widget and delegates core commands to the main module.
   #
-  # 1. **Widget Shorthand**: Provides factory methods for every widget class.
-  #    Converts snake_case method calls (e.g., +paragraph+) into CamelCase class instantiations
-  #    (e.g., +RatatuiRuby::Paragraph.new+).
+  # Use it within <tt>RatatuiRuby.run</tt> to build your interface cleanly.
   #
-  # 2. **Method Shorthand**: Aliases module functions of {RatatuiRuby}, allowing you
-  #    to call methods like +draw+ and +poll_event+ directly on the session object.
+  # == Available Methods
   #
-  # == Example
+  # The session dynamically defines factory methods for all RatatuiRuby constants.
+  #
+  # *   <tt>draw(node)</tt> -> Delegates to <tt>RatatuiRuby.draw</tt>
+  # *   <tt>poll_event</tt> -> Delegates to <tt>RatatuiRuby.poll_event</tt>
+  #
+  # === Widget Factories
+  #
+  # The session acts as a dynamic factory. It creates a helper method for **every** class defined in the `RatatuiRuby` module.
+  #
+  # **The Rule:**
+  # To instantiate a class like `RatatuiRuby::SomeWidget`, call `tui.some_widget(...)`.
+  #
+  # **Common Examples:**
+  # *   <tt>paragraph(...)</tt> -> <tt>RatatuiRuby::Paragraph.new(...)</tt>
+  # *   <tt>block(...)</tt> -> <tt>RatatuiRuby::Block.new(...)</tt>
+  # *   <tt>layout(...)</tt> -> <tt>RatatuiRuby::Layout.new(...)</tt>
+  # *   <tt>list(...)</tt> -> <tt>RatatuiRuby::List.new(...)</tt>
+  # *   <tt>table(...)</tt> -> <tt>RatatuiRuby::Table.new(...)</tt>
+  # *   <tt>style(...)</tt> -> <tt>RatatuiRuby::Style.new(...)</tt>
+  #
+  # If a new class is added to the library, it is automatically available here.
+  #
+  # === Nested Helpers
+  #
+  # *   <tt>text_span(...)</tt> -> <tt>RatatuiRuby::Text::Span.new(...)</tt>
+  # *   <tt>text_line(...)</tt> -> <tt>RatatuiRuby::Text::Line.new(...)</tt>
+  #
+  # === Examples
+  #
+  # ==== Basic Usage (Recommended)
   #
   #   RatatuiRuby.run do |tui|
   #     loop do
-  #       # Create UI using shorthand methods
-  #       view = tui.paragraph(
-  #         text: "Hello World",
-  #         block: tui.block(borders: [:all])
-  #       )
-  #
-  #       # Use module aliases to draw and handle events
-  #       tui.draw(view)
+  #       tui.draw \
+  #         tui.paragraph \
+  #             text: "Hello, Ratatui! Press 'q' to quit.",
+  #             align: :center,
+  #             block: tui.block(
+  #               title: "My Ruby TUI App",
+  #               borders: [:all],
+  #               border_color: "cyan"
+  #             )
   #       event = tui.poll_event
+  #       break if event == "q" || event == :ctrl_c
+  #     end
+  #   end
   #
-  #       break if event && event[:code] == "q"
+  # ==== Raw API (Verbose)
+  #
+  #   RatatuiRuby.run do
+  #     loop do
+  #       RatatuiRuby.draw \
+  #         RatatuiRuby::Paragraph.new(
+  #             text: "Hello, Ratatui! Press 'q' to quit.",
+  #             align: :center,
+  #             block: RatatuiRuby::Block.new(
+  #               title: "My Ruby TUI App",
+  #               borders: [:all],
+  #               border_color: "cyan"
+  #             )
+  #         )
+  #       event = RatatuiRuby.poll_event
+  #       break if event == "q" || event == :ctrl_c
+  #     end
+  #   end
+  #
+  # ==== Mixed Usage (Flexible)
+  #
+  #   RatatuiRuby.run do |tui|
+  #     loop do
+  #       RatatuiRuby.draw \
+  #         tui.paragraph \
+  #             text: "Hello, Ratatui! Press 'q' to quit.",
+  #             align: :center,
+  #             block: tui.block(
+  #               title: "My Ruby TUI App",
+  #               borders: [:all],
+  #               border_color: "cyan"
+  #             )
+  #       event = RatatuiRuby.poll_event
+  #       break if event == "q" || event == :ctrl_c
   #     end
   #   end
   class Session

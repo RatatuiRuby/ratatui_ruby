@@ -4,56 +4,90 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  # Defines constraints for layout sections or table columns.
-  #
-  # [type] The type of constraint (:length, :percentage, :min, :max, :fill, :ratio).
-  # [value] The numeric value associated with the constraint (or array for ratio).
-  class Constraint < Data.define(:type, :value)
-    # Creates a length constraint (fixed number of cells).
+    # Defines the sizing rule for a layout section.
     #
-    # [v] The length value in cells.
-    def self.length(v)
-      new(type: :length, value: v)
-    end
+    # Flexible layouts need rules. You can't just place widgets at absolute coordinates; they must adapt to changing terminal sizes.
+    #
+    # This class defines the rules of engagement. It tells the layout engine exactly how much space a section requires relative to others.
+    #
+    # Mix and match fixed lengths, percentages, ratios, and minimums. Build layouts that breathe.
+    #
+    # === Examples
+    #
+    #   Constraint.length(5)      # Exactly 5 cells
+    #   Constraint.percentage(50) # Half the available space
+    #   Constraint.min(10)        # At least 10 cells, maybe more
+    #   Constraint.fill(1)        # Fill remaining space (weight 1)
+    class Constraint < Data.define(:type, :value)
+      ##
+      # :attr_reader: type
+      # The type of constraint.
+      #
+      # <tt>:length</tt>, <tt>:percentage</tt>, <tt>:min</tt>, <tt>:max</tt>, <tt>:fill</tt>, or <tt>:ratio</tt>.
 
-    # Creates a percentage constraint (portion of available space).
-    #
-    # [v] The percentage value (0-100).
-    def self.percentage(v)
-      new(type: :percentage, value: v)
-    end
+      ##
+      # :attr_reader: value
+      # The numeric value (or array for ratio) associated with the rule.
 
-    # Creates a minimum size constraint.
-    #
-    # [v] The minimum number of cells.
-    def self.min(v)
-      new(type: :min, value: v)
-    end
+      # Requests a fixed size.
+      #
+      #   Constraint.length(10) # 10 characters wide/high
+      #
+      # [v] Number of cells (Integer).
+      def self.length(v)
+        new(type: :length, value: v)
+      end
 
-    # Creates a maximum size constraint.
-    #
-    # [v] The maximum number of cells.
-    def self.max(v)
-      new(type: :max, value: v)
-    end
+      # Requests a percentage of available space.
+      #
+      #   Constraint.percentage(25) # 25% of the area
+      #
+      # [v] Percentage 0-100 (Integer).
+      def self.percentage(v)
+        new(type: :percentage, value: v)
+      end
 
-    # Creates a fill constraint that takes remaining space proportionally.
-    #
-    # Fill constraints distribute remaining space among themselves proportionally
-    # based on their values. For example, Fill(1) and Fill(3) would split space
-    # in a 1:3 ratio.
-    #
-    # [v] The proportional weight (default: 1).
-    def self.fill(v = 1)
-      new(type: :fill, value: v)
-    end
+      # Enforces a minimum size.
+      #
+      #   Constraint.min(5) # At least 5 cells
+      #
+      # This section will grow if space permits, but never shrink below +v+.
+      #
+      # [v] Minimum cells (Integer).
+      def self.min(v)
+        new(type: :min, value: v)
+      end
 
-    # Creates a ratio constraint.
-    #
-    # [numerator] The numerator of the ratio.
-    # [denominator] The denominator of the ratio.
-    def self.ratio(numerator, denominator)
-      new(type: :ratio, value: [numerator, denominator])
+      # Enforces a maximum size.
+      #
+      #   Constraint.max(10) # At most 10 cells
+      #
+      # [v] Maximum cells (Integer).
+      def self.max(v)
+        new(type: :max, value: v)
+      end
+
+      # Fills remaining space proportionally.
+      #
+      #   Constraint.fill(1) # Equal share
+      #   Constraint.fill(2) # Double share
+      #
+      # Fill constraints distribute any space left after satisfying strict rules.
+      # They behave like flex-grow. A fill(2) takes twice as much space as a fill(1).
+      #
+      # [v] Proportional weight (Integer, default: 1).
+      def self.fill(v = 1)
+        new(type: :fill, value: v)
+      end
+
+      # Requests a specific ratio of the total space.
+      #
+      #   Constraint.ratio(1, 3) # 1/3rd of the area
+      #
+      # [numerator] Top part of fraction (Integer).
+      # [denominator] Bottom part of fraction (Integer).
+      def self.ratio(numerator, denominator)
+        new(type: :ratio, value: [numerator, denominator])
+      end
     end
-  end
 end

@@ -40,6 +40,6 @@ RatatuiRuby.run do |tui|
     )
 
     event = RatatuiRuby.poll_event
-    break if event && event[:type] == :key && event[:code] == "q"
+    break if event == "q" || event == :ctrl_c
   end
 end
