@@ -36,6 +36,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **New Canvas Markers**: Support for the new `Quadrant`, `Sextant`, and `Octant` markers in the `Canvas` widget for higher-resolution pseudo-pixel rendering.
 - **Shape Module**: Canvas shape primitives (`Point`, `Line`, `Rectangle`, `Circle`, `Map`) are now organized under the `Shape` module (e.g., `Shape::Line`) to avoid naming conflicts with `Text::Line`. The session provides disambiguated helper methods: `shape_line`, `shape_circle`, etc. for shapes and `text_span`, `text_line` for text components.
 - **Scrollbar Styling**: Added full styling support to the `Scrollbar` widget, including `thumb_style`, `track_symbol`, `track_style`, `begin_symbol`, `begin_style`, `end_symbol`, `end_style`, and `style`.
+- **Scrollbar Orientation**: Added support for all `ratatui` scrollbar orientations: `:vertical_left`, `:vertical_right`, `:horizontal_top`, and `:horizontal_bottom`. Existing `:vertical` and `:horizontal` options remain as aliases.
 - **Gauge Enhancements**: Added `percent` initialization parameter as a convenience alternative to `ratio`, and explicitly exposed `use_unicode` attribute to toggle between unicode blocks and ASCII rendering (defaults to `true`).
 - **TestHelper Improvements**: Added `inject_keys` helper for concise event injection and a default `timeout` (2s) to `with_test_terminal` to prevent hanging tests. Also implemented value equality (`==`) for `Event` objects to simplify assertions.
 

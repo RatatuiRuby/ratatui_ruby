@@ -30,6 +30,10 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let mut scrollbar = Scrollbar::default();
 
     scrollbar = match orientation_sym.to_string().as_str() {
+        "vertical_left" => scrollbar.orientation(ScrollbarOrientation::VerticalLeft),
+        "vertical_right" => scrollbar.orientation(ScrollbarOrientation::VerticalRight),
+        "horizontal_top" => scrollbar.orientation(ScrollbarOrientation::HorizontalTop),
+        "horizontal_bottom" => scrollbar.orientation(ScrollbarOrientation::HorizontalBottom),
         "horizontal" => scrollbar.orientation(ScrollbarOrientation::HorizontalBottom),
         _ => scrollbar.orientation(ScrollbarOrientation::VerticalRight),
     };

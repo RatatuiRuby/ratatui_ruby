@@ -46,7 +46,8 @@ module RatatuiRuby
       # :attr_reader: orientation
       # Direction of the scrollbar.
       #
-      # <tt>:vertical</tt> or <tt>:horizontal</tt>.
+      # <tt>:vertical</tt> (default, alias for <tt>:vertical_right</tt>), <tt>:horizontal</tt> (alias for <tt>:horizontal_bottom</tt>),
+      # <tt>:vertical_left</tt>, <tt>:vertical_right</tt>, <tt>:horizontal_top</tt>, or <tt>:horizontal_bottom</tt>.
 
       ##
       # :attr_reader: thumb_symbol

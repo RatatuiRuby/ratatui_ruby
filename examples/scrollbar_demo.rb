@@ -12,6 +12,15 @@ class ScrollbarDemo
     @scroll_position = 0
     @content_length = 50
     @lines = (1..@content_length).map { |i| "Line #{i}" }
+    @orientation_index = 0
+    @orientations = [
+      :vertical,
+      :vertical_right,
+      :vertical_left,
+      :horizontal,
+      :horizontal_bottom,
+      :horizontal_top
+    ]
     @theme_index = 0
     @themes = [
       {
@@ -83,6 +92,10 @@ class ScrollbarDemo
     if event.key? && event.to_s == "s"
       @theme_index = (@theme_index + 1) % @themes.length
     end
+
+    if event.key? && event.to_s == "o"
+      @orientation_index = (@orientation_index + 1) % @orientations.length
+    end
   end
 
   private def draw
@@ -93,18 +106,24 @@ class ScrollbarDemo
 
     # Paragraph with content
     theme = @themes[@theme_index]
+    orientation = @orientations[@orientation_index]
+
     p = RatatuiRuby::Paragraph.new(
       text: visible_lines.join("\n"),
       block: RatatuiRuby::Block.new(
-        title: "Scroll with Mouse Wheel | Theme: #{theme[:name]} (Press 's' to cycle)",
+        titles: [
+          { content: "Scroll with Mouse Wheel | Theme: #{theme[:name]} | Orientation: #{orientation}" },
+          { content: "Press 's' to cycle theme, 'o' to cycle orientation", position: :bottom, alignment: :center }
+        ],
         borders: [:all]
       )
     )
 
-    # Scrollbar on the right
+    # Scrollbar
     s = RatatuiRuby::Scrollbar.new(
       content_length: @content_length,
       position: @scroll_position,
+      orientation: orientation,
       track_symbol: theme[:track_symbol],
       thumb_symbol: theme[:thumb_symbol],
       track_style: theme[:track_style],
@@ -113,17 +132,14 @@ class ScrollbarDemo
       end_symbol: theme[:end_symbol]
     )
 
-    # Use a Layout to place scrollbar on the right
-    layout = RatatuiRuby::Layout.new(
-      direction: :horizontal,
-      constraints: [
-        RatatuiRuby::Constraint.percentage(95),
-        RatatuiRuby::Constraint.percentage(5),
-      ],
-      children: [p, s]
+    # Use Overlay to stack Scrollbar on top of Paragraph.
+    # The Scrollbar will position itself on the correct edge (top/bottom/left/right)
+    # based on its orientation, demonstrating that the property works independently of layout.
+    overlay = RatatuiRuby::Overlay.new(
+      layers: [p, s]
     )
 
-    RatatuiRuby.draw(layout)
+    RatatuiRuby.draw(overlay)
   end
 end
 

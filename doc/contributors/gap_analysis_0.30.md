@@ -128,7 +128,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 |-----------------|--------------|--------|
 | `content_length` | `content_length:` | ✅ |
 | `position` | `position:` | ✅ |
-| `orientation()` | `orientation:` | ⚠️ Partial |
+| `orientation()` | `orientation:` | ✅ |
 | `thumb_symbol()` | `thumb_symbol:` | ✅ |
 | `thumb_style()` | `thumb_style:` | ✅ |
 | `track_symbol()` | `track_symbol:` | ✅ |
@@ -139,8 +139,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `end_style()` | `end_style:` | ✅ |
 | `style()` | `style:` | ✅ |
 
-Orientation: Ruby supports `:vertical`/`:horizontal` but ratatui has 4 variants:
-- `VerticalRight`, `VerticalLeft`, `HorizontalBottom`, `HorizontalTop`
+
 
 ---
 
@@ -311,7 +310,7 @@ All modifiers are covered. ✅
 ## Priority Recommendations
 
 ### High Priority (Common Use Cases)
-1. **Scrollbar orientation variants** - VerticalLeft, HorizontalTop
+
 
 
 ### Medium Priority
