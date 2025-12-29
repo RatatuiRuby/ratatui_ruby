@@ -7,7 +7,13 @@ class TestRun < Minitest::Test
     # In CI/headless environments, we can't initialize the real terminal.
     # We divert init_terminal to init_test_terminal (headless backend).
     if ENV["CI"] || !$stdout.tty?
-      RatatuiRuby.define_singleton_method(:original_init_terminal, RatatuiRuby.method(:init_terminal))
+      # Only define original_init_terminal if we haven't already
+      unless RatatuiRuby.respond_to?(:original_init_terminal)
+        RatatuiRuby.define_singleton_method(:original_init_terminal, RatatuiRuby.method(:init_terminal))
+      end
+      
+      # Remove the existing init_terminal before redefining to avoid warnings
+      RatatuiRuby.singleton_class.send(:remove_method, :init_terminal)
       RatatuiRuby.define_singleton_method(:init_terminal) do |**_opts|
         init_test_terminal(80, 24)
       end
@@ -16,6 +22,8 @@ class TestRun < Minitest::Test
 
   def teardown
     if RatatuiRuby.respond_to?(:original_init_terminal)
+      # Remove the mock before restoring the original
+      RatatuiRuby.singleton_class.send(:remove_method, :init_terminal)
       RatatuiRuby.define_singleton_method(:init_terminal, RatatuiRuby.method(:original_init_terminal))
       RatatuiRuby.singleton_class.send(:remove_method, :original_init_terminal)
     end
