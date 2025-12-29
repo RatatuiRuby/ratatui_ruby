@@ -41,9 +41,16 @@ class TestBlock < Minitest::Test
     assert_equal :rounded, b.border_type
   end
 
+  def test_block_creation_with_title_style
+    b = RatatuiRuby::Block.new(title_style: { fg: "yellow" })
+    assert_equal({ fg: "yellow" }, b.title_style)
+  end
+
   def test_block_defaults
     b = RatatuiRuby::Block.new
     assert_nil b.title
+    assert_equal [], b.titles
+    assert_nil b.title_style
     assert_equal [:all], b.borders
     assert_nil b.border_color
     assert_nil b.border_type
@@ -140,6 +147,23 @@ class TestBlock < Minitest::Test
       # Remaining lines are empty
       assert_equal "│                  │", buffer_content[3]
       assert_equal "└──────────────────┘", buffer_content[4]
+    end
+  end
+  def test_render_titles
+    with_test_terminal(20, 3) do
+      b = RatatuiRuby::Block.new(
+        borders: [:all],
+        titles: [
+          { content: "TopLeft", alignment: :left, position: :top },
+          { content: "TopRight", alignment: :right, position: :top },
+          { content: "BottomCenter", alignment: :center, position: :bottom }
+        ]
+      )
+      RatatuiRuby.draw(b)
+      # Inner width: 18. TopLeft(7) + TopRight(8) = 15. 18-15 = 3 dashes.
+      assert_equal "┌TopLeft───TopRight┐", buffer_content[0]
+      assert_equal "│                  │", buffer_content[1]
+      assert_equal "└───BottomCenter───┘", buffer_content[2]
     end
   end
 end

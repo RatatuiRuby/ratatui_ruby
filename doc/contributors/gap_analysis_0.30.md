@@ -41,8 +41,8 @@ Comparison of ratatui 0.30 features vs ratatui_ruby current implementation.
 | `title()` | `title:` (and `titles:`) | ✅ |
 | `title_top()` | `titles: [{position: :top}]` | ✅ |
 | `title_bottom()` | `titles: [{position: :bottom}]` | ✅ |
-| `title_style()` | — | ❌ **MISSING** |
-| `title_style()` | — | ❌ **MISSING** |
+| `title_style()` | `title_style:` | ✅ |
+| `title_style()` | `titles: [{style: ...}]` | ✅ |
 | `title_alignment()` | `title_alignment:` / `titles: [{alignment: ...}]` | ✅ |
 | `title_position()` | `titles: [{position: ...}]` | ✅ |
 | `title_position()` | `titles: [{position: ...}]` | ✅ |

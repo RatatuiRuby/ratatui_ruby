@@ -24,10 +24,12 @@ module RatatuiRuby
     #     style: Style.new(fg: :yellow),
     #     padding: [1, 1, 0, 0] # Left, Right, Top, Bottom
     #   )
-    class Block < Data.define(:title, :titles, :title_alignment, :borders, :border_color, :border_type, :style, :padding)
+    class Block < Data.define(:title, :titles, :title_alignment, :title_style, :borders, :border_color, :border_type, :style, :padding)
       ##
       # :attr_reader: title
       # The main title displayed on the top border.
+      #
+      # === Example
       #
       #   Block.new(title: "Main").title # => "Main"
 
@@ -35,7 +37,11 @@ module RatatuiRuby
       # :attr_reader: titles
       # Additional titles for complex labeling.
       #
-      #   Block.new(titles: ["Top", "Bottom"]).titles
+      # Each title can be a <tt>String</tt> or a <tt>Hash</tt> with keys <tt>:content</tt>, <tt>:alignment</tt>, <tt>:position</tt> (<tt>:top</tt> or <tt>:bottom</tt>), and <tt>:style</tt>.
+      #
+      # === Example
+      #
+      #   Block.new(titles: ["Top", { content: "Bottom", position: :bottom }]).titles
 
       ##
       # :attr_reader: title_alignment
@@ -43,13 +49,25 @@ module RatatuiRuby
       #
       # One of <tt>:left</tt>, <tt>:center</tt>, or <tt>:right</tt>.
       #
+      # === Example
+      #
       #   Block.new(title_alignment: :center).title_alignment # => :center
+
+      ##
+      # :attr_reader: title_style
+      # Style applied to all titles if not overridden.
+      #
+      # === Example
+      #
+      #   Block.new(title_style: Style.new(fg: :red)).title_style
 
       ##
       # :attr_reader: borders
       # Visible borders.
       #
       # An array containing any of <tt>:top</tt>, <tt>:bottom</tt>, <tt>:left</tt>, <tt>:right</tt>, or <tt>:all</tt>.
+      #
+      # === Example
       #
       #   Block.new(borders: [:left, :right]).borders # => [:left, :right]
 
@@ -71,7 +89,9 @@ module RatatuiRuby
       # :attr_reader: padding
       # Inner padding.
       #
-      # Can be a single Integer (uniform) or a 4-element Array (left, right, top, bottom).
+      # Can be a single <tt>Integer</tt> (uniform) or a 4-element <tt>Array</tt> (left, right, top, bottom).
+      #
+      # === Example
       #
       #   Block.new(padding: 2).padding # => 2
       #   Block.new(padding: [1, 1, 0, 0]).padding # => [1, 1, 0, 0]
@@ -84,17 +104,19 @@ module RatatuiRuby
       #   Array of additional titles (optional).
       # [title_alignment]
       #   Alignment symbol: <tt>:left</tt> (default), <tt>:center</tt>, <tt>:right</tt>.
+      # [title_style]
+      #   Base style for all titles (optional).
       # [borders]
       #   Array of borders to show: <tt>:top</tt>, <tt>:bottom</tt>, <tt>:left</tt>, <tt>:right</tt>, or <tt>:all</tt> (default).
       # [border_color]
       #   Color string or symbol (e.g., <tt>:red</tt>).
       # [border_type]
-      #   Symbol: <tt>:plain</tt> (default), <tt>:rounded</tt>, <tt>:double</tt>, <tt>:thick</tt>, <tt>:hidden</tt>.
+      #   Symbol: <tt>:plain</tt> (default), <tt>:rounded</tt>, <tt>:double</tt>, <tt>:thick</tt>, <tt>:hidden</tt>, <tt>:quadrant_inside</tt>, <tt>:quadrant_outside</tt>.
       # [style]
       #   Style object or Hash for the block's content area.
       # [padding]
       #   Integer (uniform) or Array[4] (left, right, top, bottom).
-      def initialize(title: nil, titles: [], title_alignment: nil, borders: [:all], border_color: nil, border_type: nil, style: nil, padding: 0)
+      def initialize(title: nil, titles: [], title_alignment: nil, title_style: nil, borders: [:all], border_color: nil, border_type: nil, style: nil, padding: 0)
         super
       end
     end

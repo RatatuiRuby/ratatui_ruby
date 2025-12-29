@@ -106,7 +106,6 @@ class TestBoxDemo < Minitest::Test
       # Check visual representation of rounded corners
       # Top-left is ╭ (U+256D), Top-right is ╮ (U+256E), Bottom-left is ╰ (U+2570), Bottom-right is ╯ (U+256F)
       top_line = buffer_content[0]
-      bottom_line = buffer_content[2] # Since we are only drawing enough to cover content + borders
       assert_match(/^╭/, top_line, "Should have rounded top-left corner")
       assert_match(/╮$/, top_line, "Should have rounded top-right corner")
     end

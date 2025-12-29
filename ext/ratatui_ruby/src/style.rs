@@ -88,6 +88,7 @@ pub fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
 
     let title: Value = block_val.funcall("title", ())?;
     let title_alignment: Value = block_val.funcall("title_alignment", ())?;
+    let title_style_val: Value = block_val.funcall("title_style", ())?;
     let borders_val: Value = block_val.funcall("borders", ())?;
     let border_color: Value = block_val.funcall("border_color", ())?;
     let border_type_val: Value = block_val.funcall("border_type", ())?;
@@ -98,6 +99,10 @@ pub fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
 
     if !style_val.is_nil() {
         block = block.style(crate::style::parse_style(style_val)?);
+    }
+
+    if !title_style_val.is_nil() {
+        block = block.title_style(crate::style::parse_style(title_style_val)?);
     }
 
     if !title.is_nil() {
@@ -126,12 +131,14 @@ pub fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
                 let mut content = String::new();
                 let mut alignment = Alignment::Left;
                 let mut position = "top"; // "top" or "bottom"
+                let mut title_style = Style::default();
 
                 if let Some(hash) = magnus::RHash::from_value(title_item) {
                      let ruby = magnus::Ruby::get().unwrap();
                      let content_sym = ruby.to_symbol("content");
                      let align_sym_key = ruby.to_symbol("alignment");
                      let pos_sym_key = ruby.to_symbol("position");
+                     let style_sym_key = ruby.to_symbol("style");
 
                      let content_val: Value = hash.lookup(content_sym).unwrap_or(ruby.qnil().as_value());
                      if !content_val.is_nil() {
@@ -154,12 +161,17 @@ pub fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
                              position = "bottom";
                          }
                      }
+
+                     let style_val: Value = hash.lookup(style_sym_key).unwrap_or(ruby.qnil().as_value());
+                     if !style_val.is_nil() {
+                         title_style = crate::style::parse_style(style_val)?;
+                     }
                 } else {
                     // Assume it's a string
                     content = title_item.funcall("to_s", ())?;
                 }
 
-                let line = Line::from(content).alignment(alignment);
+                let line = Line::from(content).alignment(alignment).style(title_style);
                 
                 if position == "bottom" {
                     block = block.title_bottom(line);

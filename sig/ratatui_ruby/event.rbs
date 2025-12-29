@@ -59,9 +59,11 @@ module RatatuiRuby
     end
 
     class FocusGained < Event
+      def deconstruct_keys: (Array[Symbol]?) -> Hash[Symbol, untyped]
     end
 
     class FocusLost < Event
+      def deconstruct_keys: (Array[Symbol]?) -> Hash[Symbol, untyped]
     end
   end
 end

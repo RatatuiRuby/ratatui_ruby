@@ -13,7 +13,7 @@ class Minitest::Test
   include RatatuiRuby::TestHelper
 end
 
-class TestListStyles < Minitest::Test
+class TestListStylesExample < Minitest::Test
   def setup
     @app = ListStylesApp.new
   end

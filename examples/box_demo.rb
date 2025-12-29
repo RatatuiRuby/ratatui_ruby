@@ -10,9 +10,10 @@ class BoxDemoApp
   def initialize
     @color = "green"
     @border_type = :plain
-    @text = "Press Arrow Keys (q to quit)\nSpace: border type | Enter: title align | 's': style"
+    @text = "Press Arrow Keys (q to quit)\nSpace: border type | Enter: title align | 's': style | 't': title style"
     @title_alignment = :left
     @style = nil
+    @title_style = nil
   end
 
   def run
@@ -33,7 +34,11 @@ class BoxDemoApp
 
     block = RatatuiRuby::Block.new(
       title: "Box Demo - #{@border_type}",
+      titles: [
+        { content: " (Press T to style titles) ", alignment: :right, position: :bottom, style: { fg: :cyan, modifiers: [:italic] } }
+      ],
       title_alignment: @title_alignment,
+      title_style: @title_style,
       borders: [:all],
       border_color: effective_border_color,
       border_type: @border_type,
@@ -70,6 +75,10 @@ class BoxDemoApp
     @style = @style ? nil : { fg: "blue", bg: "white", modifiers: [:bold] }
   end
 
+  def toggle_title_style
+    @title_style = @title_style ? nil : { fg: "yellow", modifiers: [:bold, :underlined] }
+  end
+
   def handle_input
     # 3. Events
     case RatatuiRuby.poll_event
@@ -96,6 +105,9 @@ class BoxDemoApp
     in type: :key, code: "s"
       toggle_style
       @text = "Style: #{@style ? 'Blue on White' : 'Default'}"
+    in type: :key, code: "t"
+      toggle_title_style
+      @text = "Title Style: #{@title_style ? 'Yellow Bold Underlined' : 'Default'}"
     else
       nil
     end

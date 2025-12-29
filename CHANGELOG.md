@@ -15,7 +15,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Resize Events**: The event system now exposes terminal resize events via `Event::Resize`, which includes `width` and `height` attributes for building responsive layouts.
 - **Paste Events**: Bracketed paste is now surfaced via `Event::Paste(content:)`, enabling safe handling of pasted text as a single atomic event.
 - **Focus Events**: Terminal focus changes are now surfaced via `Event::FocusGained` and `Event::FocusLost` for terminals that support it (e.g., iTerm2, Kitty).
-- **Block Titles**: Added support for multiple titles with individual alignment and positioning (top/bottom) via `titles` array.
+- **Event Discriminator Pattern**: Implementation of a discriminator pattern for events via a `type:` key in `#deconstruct_keys`. This enables more concise and idiomatic Ruby 3.0+ pattern matching (e.g., `in type: :key, code: "q"`). All existing subclasses (`Key`, `Mouse`, `Resize`, `Paste`, `FocusGained`, `FocusLost`) now support this pattern.
+- **Block Title Styling**: Adds `title_style` to the `Block` widget. This paints a default style across all titles. Each entry in the `titles` array can also carry its own `style`.
+- **Block Titles**: Adds multiple titles with individual alignment and positioning (top/bottom) via the `titles` array.
 - **Block Style**: Added `style` parameter to `Block` widget. **Note:** This inserts a new member into the `Block` Data object, which changes the positional order of members. Pattern matching or positional initialization of `Block` is affected.
 - **List Direction**: Added `direction` attribute (`:top_to_bottom` or `:bottom_to_top`) to `List` widget.
 - **Table Footer**: The `Table` widget now supports a `footer` parameter, allowing for summary rows at the bottom of the table.
