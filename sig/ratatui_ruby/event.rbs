@@ -34,7 +34,7 @@ module RatatuiRuby
       attr_reader button: String
       attr_reader modifiers: Array[String]
 
-      def initialize: (kind: String, x: Integer, y: Integer, button: String, modifiers: Array[String]) -> void
+      def initialize: (kind: String, x: Integer, y: Integer, button: String?, modifiers: Array[String]) -> void
       def down?: () -> bool
       def up?: () -> bool
       def drag?: () -> bool

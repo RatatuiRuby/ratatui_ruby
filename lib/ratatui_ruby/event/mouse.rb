@@ -37,6 +37,8 @@ module RatatuiRuby
       # The button pressed (<tt>"left"</tt>, <tt>"right"</tt>, <tt>"middle"</tt>, <tt>"none"</tt>).
       #
       #   puts event.button # => "left"
+      #
+      # Can be <tt>nil</tt>, which is treated as <tt>"none"</tt>.
       attr_reader :button
       # List of active modifiers.
       #
@@ -61,14 +63,14 @@ module RatatuiRuby
       # [y]
       #   Y coordinate (Integer).
       # [button]
-      #   Button name (String).
+      #   Button name (String or <tt>nil</tt>).
       # [modifiers]
       #   List of modifiers (Array<String>).
       def initialize(kind:, x:, y:, button:, modifiers: [])
         @kind = kind
         @x = x
         @y = y
-        @button = button
+        @button = button || "none"
         @modifiers = modifiers.sort
       end
 

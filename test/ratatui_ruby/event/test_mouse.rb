@@ -17,6 +17,9 @@ module RatatuiRuby
       
       assert_predicate event, :mouse?
       refute_predicate event, :key?
+
+      event = Event::Mouse.new(kind: "scroll_up", x: 0, y: 0, button: nil)
+      assert_equal "none", event.button
     end
 
     def test_predicates
