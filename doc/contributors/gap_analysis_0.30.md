@@ -184,7 +184,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `block()` | `block:` | ✅ |
 | `style()` | `style:` | ✅ |
 | `bar_set()` | — | ❌ **MISSING** |
-| `direction()` | — | ❌ **MISSING** (LeftToRight/RightToLeft) |
+| `direction()` | `direction:` | ✅ |
 | `absent_value_style()` | — | ❌ **MISSING** |
 | `absent_value_symbol()` | — | ❌ **MISSING** |
 

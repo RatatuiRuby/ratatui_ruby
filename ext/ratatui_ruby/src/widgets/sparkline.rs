@@ -2,14 +2,15 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::{parse_block, parse_style};
-use magnus::{prelude::*, Error, Value};
-use ratatui::{layout::Rect, widgets::Sparkline, Frame};
+use magnus::{prelude::*, Error, RString, Value};
+use ratatui::{layout::Rect, widgets::Sparkline, widgets::RenderDirection, Frame};
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let data_val: magnus::RArray = node.funcall("data", ())?;
     let max_val: Value = node.funcall("max", ())?;
     let style_val: Value = node.funcall("style", ())?;
     let block_val: Value = node.funcall("block", ())?;
+    let direction_val: Value = node.funcall("direction", ())?;
 
     let mut data_vec = Vec::new();
     for i in 0..data_val.len() {
@@ -30,6 +31,16 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
     if !block_val.is_nil() {
         sparkline = sparkline.block(parse_block(block_val)?);
+    }
+
+    if !direction_val.is_nil() {
+        let direction_sym: RString = direction_val.funcall("to_s", ())?;
+        let direction_str = direction_sym.to_string()?;
+        let direction = match direction_str.as_str() {
+            "right_to_left" => RenderDirection::RightToLeft,
+            _ => RenderDirection::LeftToRight,
+        };
+        sparkline = sparkline.direction(direction);
     }
 
     frame.render_widget(sparkline, area);

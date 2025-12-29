@@ -217,7 +217,7 @@ Demonstrates the `Paragraph` widget's scroll functionality, allowing navigation 
 ![Scroll Text Screenshot](./images/examples-scroll_text.rb.png)
 
 ### [Stock Ticker](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/stock_ticker.rb)
-Utilizes `Sparkline` and `Chart` widgets to visualize real-time (simulated) data.
+Utilizes `Sparkline` and `Chart` widgets to visualize real-time (simulated) data. Demonstrates the `direction: :right_to_left` option for new data appearing on the left.
 
 ![Stock Ticker Screenshot](./images/examples-stock_ticker.rb.png)
 

@@ -45,6 +45,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Scrollbar Styling**: Added full styling support to the `Scrollbar` widget, including `thumb_style`, `track_symbol`, `track_style`, `begin_symbol`, `begin_style`, `end_symbol`, `end_style`, and `style`.
 - **Scrollbar Orientation**: Added support for all `ratatui` scrollbar orientations: `:vertical_left`, `:vertical_right`, `:horizontal_top`, and `:horizontal_bottom`. Existing `:vertical` and `:horizontal` options remain as aliases.
 - **Gauge Enhancements**: Added `percent` initialization parameter as a convenience alternative to `ratio`, and explicitly exposed `use_unicode` attribute to toggle between unicode blocks and ASCII rendering (defaults to `true`).
+- **Sparkline Direction**: Added `direction` parameter to `Sparkline` widget, accepting `:left_to_right` (default) or `:right_to_left`. Use `:right_to_left` when new data should appear on the left.
 - **TestHelper Improvements**: Added `inject_keys` helper for concise event injection and a default `timeout` (2s) to `with_test_terminal` to prevent hanging tests. Also implemented value equality (`==`) for `Event` objects to simplify assertions.
 - **Test Color Inspection**: Added `RatatuiRuby::TestHelper#get_cell` and `#assert_cell_style` for testing terminal cell attributes (colors, characters).
 - **Test Safegaurds**: `RatatuiRuby::TestHelper#inject_event` (and `inject_keys`) now raises a helpful error if called outside of `with_test_terminal`, preventing test hangs caused by race conditions.

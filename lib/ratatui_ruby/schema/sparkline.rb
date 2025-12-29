@@ -19,7 +19,7 @@ module RatatuiRuby
     #     data: [1, 4, 3, 8, 2, 9, 3, 2],
     #     style: Style.new(fg: :yellow)
     #   )
-    class Sparkline < Data.define(:data, :max, :style, :block)
+    class Sparkline < Data.define(:data, :max, :style, :block, :direction)
       ##
       # :attr_reader: data
       # Array of integer values to plot.
@@ -38,13 +38,21 @@ module RatatuiRuby
       # :attr_reader: block
       # Optional wrapping block.
 
+      ##
+      # :attr_reader: direction
+      # Direction to render data.
+      #
+      # Accepts +:left_to_right+ (default) or +:right_to_left+.
+      # Use +:right_to_left+ when new data should appear on the left.
+
       # Creates a new Sparkline widget.
       #
       # [data] Array of Integers.
       # [max] Max value (optional).
       # [style] Style (optional).
       # [block] Block (optional).
-      def initialize(data:, max: nil, style: nil, block: nil)
+      # [direction] +:left_to_right+ or +:right_to_left+ (default: +:left_to_right+).
+      def initialize(data:, max: nil, style: nil, block: nil, direction: :left_to_right)
         super
       end
     end

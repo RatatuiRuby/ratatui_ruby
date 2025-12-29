@@ -7,6 +7,7 @@ module RatatuiRuby
     attr_reader max: Integer?
     attr_reader style: Style?
     attr_reader block: Block?
-    def self.new: (data: Array[Integer], ?max: Integer?, ?style: Style?, ?block: Block?) -> Sparkline
+    attr_reader direction: (:left_to_right | :right_to_left)?
+    def self.new: (data: Array[Integer], ?max: Integer?, ?style: Style?, ?block: Block?, ?direction: (:left_to_right | :right_to_left)?) -> Sparkline
   end
 end

@@ -31,4 +31,20 @@ class TestSparkline < Minitest::Test
       assert_equal "▆███      ", buffer_content[2]
     end
   end
+
+  def test_direction_default
+    sparkline = RatatuiRuby::Sparkline.new(data: [1, 2, 3])
+    assert_equal :left_to_right, sparkline.direction
+  end
+
+  def test_direction_right_to_left
+    with_test_terminal(10, 3) do
+      spark = RatatuiRuby::Sparkline.new(data: [1, 2, 3, 4], direction: :right_to_left)
+      RatatuiRuby.draw(spark)
+      # Data renders right-to-left: from right edge, filling leftward
+      assert_equal "      █▂  ", buffer_content[0]
+      assert_equal "      ██▄ ", buffer_content[1]
+      assert_equal "      ███▆", buffer_content[2]
+    end
+  end
 end

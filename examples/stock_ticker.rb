@@ -8,11 +8,14 @@ require "ratatui_ruby"
 
 # Simulate a stock ticker
 class StockTickerApp
+  DIRECTIONS = %i[left_to_right right_to_left].freeze
+
   def initialize
     @network_data = Array.new(50) { rand(0..10) }
     @ruby_stock = []
     @rust_stock = []
     @counter = 0
+    @direction_index = 1 # Start with :right_to_left
   end
 
   def run
@@ -46,6 +49,8 @@ class StockTickerApp
       @rust_stock.shift
     end
 
+    direction = DIRECTIONS[@direction_index]
+
     # Define UI
     ui = RatatuiRuby::Layout.new(
       direction: :vertical,
@@ -56,8 +61,12 @@ class StockTickerApp
       children: [
         RatatuiRuby::Sparkline.new(
           data: @network_data,
+          direction:,
           style: RatatuiRuby::Style.new(fg: :cyan),
-          block: RatatuiRuby::Block.new(title: "Network Activity", borders: :all)
+          block: RatatuiRuby::Block.new(
+            title: "Network Activity (d: #{direction})",
+            borders: :all
+          )
         ),
         RatatuiRuby::Chart.new(
           datasets: [
@@ -83,8 +92,14 @@ class StockTickerApp
   end
 
   def handle_input
-    event = RatatuiRuby.poll_event
-    :quit if event == "q" || event == :ctrl_c
+    case RatatuiRuby.poll_event
+    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
+      :quit
+    in type: :key, code: "d"
+      @direction_index = (@direction_index + 1) % DIRECTIONS.size
+    else
+      nil
+    end
   end
 end
 
