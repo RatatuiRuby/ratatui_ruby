@@ -19,6 +19,8 @@ class FlexLayoutApp
     end
   end
 
+  private
+
   def render
     view_tree = RatatuiRuby::Layout.new(
       direction: :vertical,

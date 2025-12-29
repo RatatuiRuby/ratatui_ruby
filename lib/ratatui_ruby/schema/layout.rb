@@ -73,5 +73,32 @@ module RatatuiRuby
       def initialize(direction: :vertical, constraints: [], children: [], flex: :legacy)
         super
       end
+
+      # Splits an area into multiple rectangles.
+      #
+      # This is a pure calculation helper for hit testing. It computes where
+      # widgets *would* be placed without actually rendering them.
+      #
+      #   rects = Layout.split(
+      #     area,
+      #     direction: :horizontal,
+      #     constraints: [Constraint.percentage(50), Constraint.percentage(50)]
+      #   )
+      #   left, right = rects
+      #
+      # [area]
+      #   The area to split (a Rect or any object responding to x, y, width, height).
+      # [direction]
+      #   <tt>:vertical</tt> or <tt>:horizontal</tt> (default: <tt>:vertical</tt>).
+      # [constraints]
+      #   Array of Constraint objects defining section sizes.
+      # [flex]
+      #   Flex mode for spacing (default: <tt>:legacy</tt>).
+      #
+      # Returns an Array of Rect objects.
+      def self.split(area, direction: :vertical, constraints:, flex: :legacy)
+        raw_rects = _split(area, direction, constraints, flex)
+        raw_rects.map { |r| Rect.new(x: r[:x], y: r[:y], width: r[:width], height: r[:height]) }
+      end
     end
 end

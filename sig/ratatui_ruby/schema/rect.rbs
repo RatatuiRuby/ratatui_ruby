@@ -10,5 +10,6 @@ module RatatuiRuby
     attr_reader width: Integer
     attr_reader height: Integer
     def self.new: (x: Integer, y: Integer, width: Integer, height: Integer) -> instance
+    def contains?: (Integer px, Integer py) -> bool
   end
 end

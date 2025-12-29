@@ -46,6 +46,8 @@ class TableApp
     end
   end
 
+  private
+
   def render
     # Create table rows from process data
     rows = PROCESSES.map { |p| [p[:pid].to_s, p[:name], "#{p[:cpu]}%"] }

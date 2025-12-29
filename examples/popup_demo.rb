@@ -27,6 +27,8 @@ class PopupDemo
     end
   end
 
+  private
+
   def render
     # 1. Background: Loud Red Background
     # This demonstrates "Style Bleed" where the background color persists

@@ -27,6 +27,8 @@ class LoginFormApp
     end
   end
 
+  private
+
   def render
     # 1. Base Layer Construction
     # We want a cursor relative to the paragraph.

@@ -195,4 +195,7 @@ module RatatuiRuby
   # (Native method _get_cell_at implemented in Rust)
   private_class_method :_get_cell_at
 
+  # Hide native Layout._split helper
+  Layout.singleton_class.send(:private, :_split)
+
 end

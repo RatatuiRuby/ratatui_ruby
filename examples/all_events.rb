@@ -34,6 +34,8 @@ class AllEventsApp
     end
   end
 
+  private
+
   def terminal_width
     80 # Approximation; actual size comes from Resize events
   end

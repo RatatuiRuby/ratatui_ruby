@@ -22,6 +22,8 @@ class ChartDemoApp
     end
   end
 
+  private
+
   def render
     # Scatter data: Random points
     scatter_data = Array.new(20) { [rand(0.0..10.0), rand(-1.0..1.0)] }

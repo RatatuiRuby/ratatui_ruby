@@ -148,4 +148,62 @@ class TestLayout < Minitest::Test
       assert_equal "               Right", buffer_content[0]
     end
   end
+
+  def test_split_horizontal
+    area = RatatuiRuby::Rect.new(x: 0, y: 0, width: 80, height: 24)
+    rects = RatatuiRuby::Layout.split(
+      area,
+      direction: :horizontal,
+      constraints: [
+        RatatuiRuby::Constraint.percentage(50),
+        RatatuiRuby::Constraint.percentage(50)
+      ]
+    )
+    assert_equal 2, rects.length
+    assert_equal 0, rects[0].x
+    assert_equal 40, rects[0].width
+    assert_equal 40, rects[1].x
+    assert_equal 40, rects[1].width
+  end
+
+  def test_split_vertical
+    area = RatatuiRuby::Rect.new(x: 0, y: 0, width: 80, height: 24)
+    rects = RatatuiRuby::Layout.split(
+      area,
+      direction: :vertical,
+      constraints: [
+        RatatuiRuby::Constraint.length(5),
+        RatatuiRuby::Constraint.fill(1)
+      ]
+    )
+    assert_equal 2, rects.length
+    assert_equal 5, rects[0].height
+    assert_equal 19, rects[1].height
+    assert_equal 5, rects[1].y
+  end
+
+  def test_split_returns_rect_objects
+    area = RatatuiRuby::Rect.new(x: 10, y: 5, width: 60, height: 20)
+    rects = RatatuiRuby::Layout.split(
+      area,
+      direction: :horizontal,
+      constraints: [RatatuiRuby::Constraint.percentage(100)]
+    )
+    assert_instance_of RatatuiRuby::Rect, rects.first
+    assert_equal 10, rects.first.x
+    assert_equal 5, rects.first.y
+  end
+
+  def test_split_with_flex
+    area = RatatuiRuby::Rect.new(x: 0, y: 0, width: 100, height: 10)
+    rects = RatatuiRuby::Layout.split(
+      area,
+      direction: :horizontal,
+      constraints: [RatatuiRuby::Constraint.length(20)],
+      flex: :center
+    )
+    assert_equal 1, rects.length
+    assert_equal 40, rects.first.x
+    assert_equal 20, rects.first.width
+  end
 end

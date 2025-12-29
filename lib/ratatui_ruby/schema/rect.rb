@@ -44,5 +44,23 @@ module RatatuiRuby
       def initialize(x: 0, y: 0, width: 0, height: 0)
         super
       end
+
+      # Tests whether a point is inside this rectangle.
+      #
+      # Essential for hit testing mouse clicks against layout regions.
+      #
+      #   area = Rect.new(x: 10, y: 5, width: 20, height: 10)
+      #   area.contains?(15, 8) # => true
+      #   area.contains?(5, 8)  # => false
+      #
+      # [px]
+      #   X coordinate to test (column).
+      # [py]
+      #   Y coordinate to test (row).
+      #
+      # Returns true if the point (px, py) is within the rectangle bounds.
+      def contains?(px, py)
+        px >= x && px < x + width && py >= y && py < y + height
+      end
     end
 end

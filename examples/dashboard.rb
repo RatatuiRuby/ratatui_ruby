@@ -28,6 +28,8 @@ class DashboardApp
     end
   end
 
+  private
+
   def render
     selected_item = @items[@selected_index]
 

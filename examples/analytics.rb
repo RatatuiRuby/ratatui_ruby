@@ -46,6 +46,8 @@ class AnalyticsApp
     end
   end
 
+  private
+
   def render
     # Data for different tabs
     data = case @selected_tab

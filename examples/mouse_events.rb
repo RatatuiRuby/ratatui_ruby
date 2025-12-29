@@ -25,6 +25,8 @@ class MouseEventsApp
     end
   end
 
+  private
+
   def render
     # Create a centered block with the mouse event details
     block = RatatuiRuby::Block.new(

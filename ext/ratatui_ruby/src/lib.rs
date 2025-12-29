@@ -9,7 +9,7 @@ mod terminal;
 mod text;
 mod widgets;
 
-use magnus::{function, Class, Error, Module, Value};
+use magnus::{function, Class, Error, Module, Object, Value};
 use terminal::{init_terminal, restore_terminal, TERMINAL};
 
 fn draw(tree: Value) -> Result<(), Error> {
@@ -82,6 +82,10 @@ fn init() -> Result<(), Error> {
         function!(terminal::get_cell_at, 2),
     )?;
     m.define_module_function("resize_terminal", function!(terminal::resize_terminal, 2))?;
+
+    // Register Layout.split on the Layout class
+    let layout_class = m.const_get::<_, magnus::RClass>("Layout")?;
+    layout_class.define_singleton_method("_split", function!(widgets::layout::split_layout, 4))?;
 
     Ok(())
 }

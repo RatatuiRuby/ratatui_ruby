@@ -33,6 +33,8 @@ class ListStylesApp
     end
   end
 
+  private
+
   def render
     selection_label = @selected_index.nil? ? "none" : @selected_index.to_s
     RatatuiRuby.draw(

@@ -13,7 +13,7 @@ class Minitest::Test
   include RatatuiRuby::TestHelper
 end
 
-# Smoke test to ensure the table_select example can be loaded and instantiated
+# Tests for the table_select example
 class TestTableSelect < Minitest::Test
   def setup
     @app = TableApp.new
@@ -22,7 +22,6 @@ class TestTableSelect < Minitest::Test
   def test_initial_render_no_selection
     with_test_terminal(100, 20) do
       inject_key(:q)
-
       @app.run
 
       content = buffer_content.join("\n")
@@ -34,38 +33,46 @@ class TestTableSelect < Minitest::Test
 
   def test_style_switching
     second_style_name = TableApp::STYLES[1][:name]
-    
+
     with_test_terminal(100, 20) do
       inject_keys(:s, :q)
-      
       @app.run
-      
+
       content = buffer_content.join("\n")
       assert_includes content, "Style: #{second_style_name}"
     end
   end
 
-  def test_toggle_selection
+  def test_toggle_selection_on
     with_test_terminal(100, 20) do
-      assert_nil @app.selected_index
+      # Press x to toggle on, then quit
+      inject_keys(:x, :q)
+      @app.run
 
-      inject_key(:x)
-      @app.handle_input
-      assert_equal 0, @app.selected_index
+      content = buffer_content.join("\n")
+      assert_includes content, "Sel: 0"
+      refute_includes content, "Sel: none"
+    end
+  end
 
-      inject_key(:x)
-      @app.handle_input
-      assert_nil @app.selected_index
+  def test_toggle_selection_off
+    with_test_terminal(100, 20) do
+      # Press x to toggle on, x again to toggle off, then quit
+      inject_keys(:x, :x, :q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      assert_includes content, "Sel: none"
     end
   end
 
   def test_navigation_selects_and_moves
     with_test_terminal(100, 20) do
       inject_keys(:down, :q)
-      
       @app.run
-      
-      assert_equal 0, @app.selected_index
+
+      content = buffer_content.join("\n")
+      assert_includes content, "Sel: 0"
     end
   end
 
@@ -73,10 +80,11 @@ class TestTableSelect < Minitest::Test
     with_test_terminal(100, 20) do
       # Start nil, down->0, up->wraps to last
       inject_keys(:down, :up, :q)
-      
       @app.run
-      
-      assert_equal PROCESSES.length - 1, @app.selected_index
+
+      content = buffer_content.join("\n")
+      last_index = PROCESSES.length - 1
+      assert_includes content, "Sel: #{last_index}"
     end
   end
 
@@ -87,39 +95,37 @@ class TestTableSelect < Minitest::Test
     end
   end
 
-  def test_highlight_spacing_cycles
+  def test_highlight_spacing_cycles_to_never
     with_test_terminal(100, 20) do
-      # Mode order: [:always, :when_selected, :never]
-      # Starting at :when_selected (index 1), 'h' goes to :never (index 2)
-      assert_equal :when_selected, @app.highlight_spacing
+      # Mode order: [:always, :when_selected, :never], starting at :when_selected
+      # 'h' goes to :never
+      inject_keys(:h, :q)
+      @app.run
 
-      inject_key(:h)
-      @app.handle_input
-      assert_equal :never, @app.highlight_spacing
-
-      inject_key(:h)
-      @app.handle_input
-      assert_equal :always, @app.highlight_spacing
-
-      inject_key(:h)
-      @app.handle_input
-      assert_equal :when_selected, @app.highlight_spacing
+      content = buffer_content.join("\n")
+      assert_includes content, "Spacing: never"
     end
   end
 
-  def test_spacing_always_shows_column_without_selection
+  def test_highlight_spacing_cycles_to_always
     with_test_terminal(100, 20) do
-      # Press 'h' twice to get to :always (when_selected -> never -> always)
-      inject_key(:h)
-      @app.handle_input
-      inject_key(:h)
-      @app.handle_input
+      # 'h' goes: when_selected -> never -> always
+      inject_keys(:h, :h, :q)
+      @app.run
 
-      @app.render
+      content = buffer_content.join("\n")
+      assert_includes content, "Spacing: always"
+    end
+  end
 
-      # With :always, spacing column is shown even without selection
-      content = buffer_content[2] # First data row
-      assert_match(/\s+1234/, content)
+  def test_highlight_spacing_cycles_back_to_when_selected
+    with_test_terminal(100, 20) do
+      # 'h' goes: when_selected -> never -> always -> when_selected
+      inject_keys(:h, :h, :h, :q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      assert_includes content, "Spacing: when_selected"
     end
   end
 end

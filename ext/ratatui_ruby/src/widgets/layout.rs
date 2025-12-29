@@ -104,6 +104,112 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     Ok(())
 }
 
+/// Splits an area into multiple rectangles based on constraints.
+/// This is a pure calculation helper for hit testing.
+///
+/// # Arguments
+/// * `area` - A Ruby Hash or Rect with :x, :y, :width, :height keys
+/// * `direction` - Symbol :vertical or :horizontal
+/// * `constraints` - Array of Constraint objects
+/// * `flex` - Symbol for flex mode
+///
+/// # Returns
+/// An array of Ruby Hashes representing Rect objects
+pub fn split_layout(
+    area: Value,
+    direction: Symbol,
+    constraints: magnus::RArray,
+    flex: Symbol,
+) -> Result<magnus::RArray, Error> {
+    let ruby = magnus::Ruby::get().unwrap();
+
+    // Parse area from Hash or Rect-like object
+    let x: u16 = area.funcall("x", ())?;
+    let y: u16 = area.funcall("y", ())?;
+    let width: u16 = area.funcall("width", ())?;
+    let height: u16 = area.funcall("height", ())?;
+    let rect = Rect::new(x, y, width, height);
+
+    // Parse direction
+    let dir = if direction.to_string() == "vertical" {
+        Direction::Vertical
+    } else {
+        Direction::Horizontal
+    };
+
+    // Parse flex
+    let flex_mode = match flex.to_string().as_str() {
+        "start" => Flex::Start,
+        "center" => Flex::Center,
+        "end" => Flex::End,
+        "space_between" => Flex::SpaceBetween,
+        "space_around" => Flex::SpaceAround,
+        "space_evenly" => Flex::SpaceEvenly,
+        _ => Flex::Legacy,
+    };
+
+    // Parse constraints
+    let mut ratatui_constraints = Vec::new();
+    for i in 0..constraints.len() {
+        let constraint_obj: Value = constraints.entry(i as isize)?;
+        let type_sym: Symbol = constraint_obj.funcall("type", ())?;
+        let value_obj: Value = constraint_obj.funcall("value", ())?;
+
+        match type_sym.to_string().as_str() {
+            "length" => {
+                let val = u16::try_convert(value_obj)?;
+                ratatui_constraints.push(Constraint::Length(val));
+            }
+            "percentage" => {
+                let val = u16::try_convert(value_obj)?;
+                ratatui_constraints.push(Constraint::Percentage(val));
+            }
+            "min" => {
+                let val = u16::try_convert(value_obj)?;
+                ratatui_constraints.push(Constraint::Min(val));
+            }
+            "max" => {
+                let val = u16::try_convert(value_obj)?;
+                ratatui_constraints.push(Constraint::Max(val));
+            }
+            "fill" => {
+                let val = u16::try_convert(value_obj)?;
+                ratatui_constraints.push(Constraint::Fill(val));
+            }
+            "ratio" => {
+                if let Some(arr) = magnus::RArray::from_value(value_obj) {
+                    if arr.len() == 2 {
+                        let n = u32::try_convert(arr.entry(0)?)?;
+                        let d = u32::try_convert(arr.entry(1)?)?;
+                        ratatui_constraints.push(Constraint::Ratio(n, d));
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
+
+    // Compute layout
+    let chunks = Layout::default()
+        .direction(dir)
+        .flex(flex_mode)
+        .constraints(ratatui_constraints)
+        .split(rect);
+
+    // Convert to Ruby array of Hashes
+    let result = ruby.ary_new_capa(chunks.len());
+    for chunk in chunks.iter() {
+        let hash = ruby.hash_new();
+        hash.aset(ruby.sym_new("x"), chunk.x)?;
+        hash.aset(ruby.sym_new("y"), chunk.y)?;
+        hash.aset(ruby.sym_new("width"), chunk.width)?;
+        hash.aset(ruby.sym_new("height"), chunk.height)?;
+        result.push(hash)?;
+    }
+
+    Ok(result)
+}
+
 #[cfg(test)]
 mod tests {
     use ratatui::layout::{Constraint, Direction, Flex, Layout, Rect};

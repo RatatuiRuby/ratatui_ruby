@@ -28,6 +28,8 @@ class RichTextApp
     end
   end
 
+  private
+
   def render
     RatatuiRuby.draw(
       RatatuiRuby::Layout.new(

@@ -31,6 +31,8 @@ class StockTickerApp
     end
   end
 
+  private
+
   def render
     # Update data
     @counter += 1

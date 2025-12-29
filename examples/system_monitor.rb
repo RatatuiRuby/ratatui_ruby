@@ -23,6 +23,8 @@ class SystemMonitorApp
     end
   end
 
+  private
+
   def render
     # System Monitor Layout
     # Top: Table (50%)

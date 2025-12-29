@@ -50,6 +50,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Test Color Inspection**: Added `RatatuiRuby::TestHelper#get_cell` and `#assert_cell_style` for testing terminal cell attributes (colors, characters).
 - **Test Safegaurds**: `RatatuiRuby::TestHelper#inject_event` (and `inject_keys`) now raises a helpful error if called outside of `with_test_terminal`, preventing test hangs caused by race conditions.
 - **Cell Example**: Added `examples/cell_demo.rb` showcasing how to mix `Cell` objects with Strings in tables and custom widgets, demonstrating advanced styling and layout composition.
+- **Layout Reflection**: Added `Layout.split(area, direction:, constraints:, flex:)` class method that computes layout rectangles without rendering. This enables hit testing by letting Ruby calculate where widgets will be placed before drawing.
+- **Rect Hit Testing**: Added `Rect#contains?(x, y)` method for testing whether a point is inside a rectangle, essential for implementing mouse click handlers in component systems.
 
 ### Changed
 

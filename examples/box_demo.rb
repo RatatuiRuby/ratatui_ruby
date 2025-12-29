@@ -28,6 +28,8 @@ class BoxDemoApp
     end
   end
 
+  private
+
   def render
     # 1. State/View
     effective_border_color = @style ? nil : @color

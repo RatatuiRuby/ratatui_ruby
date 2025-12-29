@@ -12,5 +12,10 @@ module RatatuiRuby
     attr_reader children: Array[widget]
     attr_reader flex: flex_mode
     def self.new: (?direction: Symbol, ?constraints: Array[Constraint], ?children: Array[widget], ?flex: flex_mode) -> Layout
+    def self.split: (Rect | Hash[Symbol, Integer] area, ?direction: Symbol, constraints: Array[Constraint], ?flex: flex_mode) -> Array[Rect]
+
+    private
+
+    def self._split: (Rect | Hash[Symbol, Integer], Symbol, Array[Constraint], Symbol) -> Array[Hash[Symbol, Integer]]
   end
 end

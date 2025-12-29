@@ -21,48 +21,55 @@ class TestListStylesExample < Minitest::Test
   def test_render_initial_state_no_selection
     with_test_terminal(80, 20) do
       inject_key(:q)
-
       @app.run
 
       # Default is :when_selected with no selection, so no highlight symbol column
-      assert buffer_content.any? { |line| line.include?("Item 1") }
-      assert buffer_content.any? { |line| line.include?("Item 2") }
-      refute buffer_content.any? { |line| line.include?(">>") }
+      content = buffer_content
+      assert content.any? { |line| line.include?("Item 1") }
+      assert content.any? { |line| line.include?("Item 2") }
+      refute content.any? { |line| line.include?(">>") }
     end
   end
 
-  def test_toggle_selection
+  def test_toggle_selection_on
     with_test_terminal(80, 20) do
-      assert_nil @app.selected_index
+      # Press x to toggle on, then quit
+      inject_keys(:x, :q)
+      @app.run
 
-      inject_key(:x)
-      @app.handle_input
-      assert_equal 0, @app.selected_index
+      content = buffer_content
+      assert content.any? { |line| line.include?(">> Item 1") }
+    end
+  end
 
-      inject_key(:x)
-      @app.handle_input
-      assert_nil @app.selected_index
+  def test_toggle_selection_off
+    with_test_terminal(80, 20) do
+      # Press x to toggle on, x again to toggle off, then quit
+      inject_keys(:x, :x, :q)
+      @app.run
+
+      content = buffer_content
+      refute content.any? { |line| line.include?(">>") }
     end
   end
 
   def test_navigation_selects_and_moves
     with_test_terminal(80, 20) do
       inject_keys(:down, :q)
-
       @app.run
 
-      # Pressing down selects first item (index 0)
-      assert buffer_content.any? { |line| line.include?(">> Item 1") }
+      content = buffer_content
+      assert content.any? { |line| line.include?(">> Item 1") }
     end
   end
 
   def test_navigation_down_twice
     with_test_terminal(80, 20) do
       inject_keys(:down, :down, :q)
-
       @app.run
 
-      assert buffer_content.any? { |line| line.include?(">> Item 2") }
+      content = buffer_content
+      assert content.any? { |line| line.include?(">> Item 2") }
     end
   end
 
@@ -70,39 +77,49 @@ class TestListStylesExample < Minitest::Test
     with_test_terminal(50, 20) do
       inject_key(:q)
       @app.run
-      # Success
     end
   end
 
-  def test_toggle_highlight_spacing
+  def test_toggle_highlight_spacing_to_always
     with_test_terminal(80, 10) do
-      assert_equal :when_selected, @app.highlight_spacing
+      # 's' cycles: when_selected -> always -> never
+      inject_keys(:s, :q)
+      @app.run
 
-      inject_key(:s)
-      @app.handle_input
-      assert_equal :always, @app.highlight_spacing
+      content = buffer_content.join("\n")
+      assert_includes content, "(S)pacing: always"
+    end
+  end
 
-      inject_key(:s)
-      @app.handle_input
-      assert_equal :never, @app.highlight_spacing
+  def test_toggle_highlight_spacing_to_never
+    with_test_terminal(80, 10) do
+      inject_keys(:s, :s, :q)
+      @app.run
 
-      inject_key(:s)
-      @app.handle_input
-      assert_equal :when_selected, @app.highlight_spacing
+      content = buffer_content.join("\n")
+      assert_includes content, "(S)pacing: never"
+    end
+  end
+
+  def test_toggle_highlight_spacing_back_to_when_selected
+    with_test_terminal(80, 10) do
+      inject_keys(:s, :s, :s, :q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      assert_includes content, "(S)pacing: when_selected"
     end
   end
 
   def test_spacing_always_shows_column_without_selection
     with_test_terminal(80, 10) do
       # Set spacing to :always
-      inject_key(:s)
-      @app.handle_input
+      inject_keys(:s, :q)
+      @app.run
 
-      @app.render
-
+      content = buffer_content
       # With :always, spacing column is shown even without selection
-      assert buffer_content.any? { |line| line.include?("   Item 1") }
+      assert content.any? { |line| line.include?("   Item 1") }
     end
   end
 end
-
