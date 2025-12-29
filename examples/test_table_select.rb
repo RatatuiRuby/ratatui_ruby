@@ -20,7 +20,7 @@ class TestTableSelect < Minitest::Test
   end
 
   def test_initial_render
-    with_test_terminal(60, 20) do
+    with_test_terminal(100, 20) do
       # Queue quit
       inject_key(:q)
 
@@ -37,7 +37,7 @@ class TestTableSelect < Minitest::Test
     # Default is Cyan (index 0). Pressing 's' should switch to Red (index 1).
     second_style_name = TableApp::STYLES[1][:name]
     
-    with_test_terminal(60, 20) do
+    with_test_terminal(100, 20) do
       # Press 's' then quit
       inject_keys(:s, :q)
       
@@ -54,7 +54,7 @@ class TestTableSelect < Minitest::Test
     # Render highlights selected row.
     # We can also check state @app.selected_index if accessible (attr_reader).
     
-    with_test_terminal(60, 20) do
+    with_test_terminal(100, 20) do
       # Move down, then up, then quit
 
       # We need to run, check state/buffer?
@@ -75,10 +75,23 @@ class TestTableSelect < Minitest::Test
   end
 
   def test_quit
-    with_test_terminal(60, 20) do
+    with_test_terminal(100, 20) do
       inject_key(:q)
       @app.run
       # Success
+    end
+  end
+
+  def test_column_spacing_change
+    with_test_terminal(100, 20) do
+      # Press '+' to increase spacing, then quit
+      inject_keys(:+, :q)
+      
+      @app.run
+      
+      content = buffer_content.join("\n")
+      assert_includes content, "spacing: 2"
+      assert_equal 2, @app.column_spacing
     end
   end
 end

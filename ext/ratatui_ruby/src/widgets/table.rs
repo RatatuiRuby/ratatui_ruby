@@ -168,6 +168,12 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         table = table.style(parse_style(style_val)?);
     }
 
+    let column_spacing_val: Value = node.funcall("column_spacing", ())?;
+    if !column_spacing_val.is_nil() {
+        let spacing: u16 = column_spacing_val.funcall("to_int", ())?;
+        table = table.column_spacing(spacing);
+    }
+
     let mut state = TableState::default();
     if !selected_row_val.is_nil() {
         let index: usize = selected_row_val.funcall("to_int", ())?;

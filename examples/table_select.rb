@@ -20,7 +20,7 @@ PROCESSES = [
 ].freeze
 
 class TableApp
-  attr_reader :selected_index, :current_style_index
+  attr_reader :selected_index, :current_style_index, :column_spacing
 
   STYLES = [
     { name: "Cyan", style: RatatuiRuby::Style.new(fg: :cyan) },
@@ -33,6 +33,7 @@ class TableApp
   def initialize
     @selected_index = 0
     @current_style_index = 0
+    @column_spacing = 1
   end
 
   def run
@@ -69,8 +70,9 @@ class TableApp
       highlight_style: highlight_style,
       highlight_symbol: "> ",
       style: current_style_entry[:style],
+      column_spacing: @column_spacing,
       block: RatatuiRuby::Block.new(
-        title: "Process Monitor (↑/↓ select, 's' style: #{current_style_entry[:name]}, q quit)",
+        title: "Process Monitor (↑/↓ select, 's' style: #{current_style_entry[:name]}, +/- spacing: #{@column_spacing}, q quit)",
         borders: :all
       ),
       footer: ["Total: #{PROCESSES.length}", "Total CPU: #{PROCESSES.sum { |p| p[:cpu] }}%", ""]
@@ -93,6 +95,10 @@ class TableApp
       @selected_index = (@selected_index - 1) % PROCESSES.length
     in type: :key, code: "s"
       @current_style_index = (@current_style_index + 1) % STYLES.length
+    in type: :key, code: "+"
+      @column_spacing += 1
+    in type: :key, code: "-"
+      @column_spacing = [@column_spacing - 1, 0].max
     else
       nil
     end

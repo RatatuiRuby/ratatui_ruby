@@ -186,4 +186,23 @@ class TestTable < Minitest::Test
       assert_match(/A\s{0,3}B\s{4,}/, line)
     end
   end
+
+  def test_column_spacing
+    rows = [["A", "B"]]
+    widths = [RatatuiRuby::Constraint.length(1), RatatuiRuby::Constraint.length(1)]
+
+    # column_spacing: 5
+    table = RatatuiRuby::Table.new(
+      rows: rows,
+      widths: widths,
+      column_spacing: 5
+    )
+
+    with_test_terminal(10, 1) do
+      RatatuiRuby.draw(table)
+      line = buffer_content.first
+      # "A     B" (5 spaces)
+      assert_match(/A\s{5}B/, line)
+    end
+  end
 end

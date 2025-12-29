@@ -227,7 +227,7 @@ Combines `Table` and `Gauge` widgets in a vertical layout to create a functional
 ![System Monitor Screenshot](./images/examples-system_monitor.rb.png)
 
 ### [Table Select](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/table_select.rb)
-Demonstrates interactive row selection in the `Table` widget with keyboard navigation, highlighting selected rows with custom styles and symbols, and applying a base style to the entire table.
+Demonstrates interactive row selection in the `Table` widget with keyboard navigation, highlighting selected rows with custom styles and symbols, applying a base style, and dynamically adjusting `column_spacing`.
 
 ![Table Select Screenshot](./images/examples-table_select.rb.png)
 
