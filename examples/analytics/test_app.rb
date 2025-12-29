@@ -97,14 +97,14 @@ class TestAnalytics < Minitest::Test
       inject_keys(:l, :l, :k, :k, :k, :q)
       @app.run
 
-      # Verify that padding values are shown in status
-      assert buffer_content.any? { |line| line.include?("Pad L (2)") }
-      assert buffer_content.any? { |line| line.include?("Pad R (3)") }
+      # Verify that padding values are shown in status with hotkeys
+      assert buffer_content.any? { |line| line.include?("h/l: Pad L (2)") }
+      assert buffer_content.any? { |line| line.include?("j/k: Pad R (3)") }
     end
   end
 
   def test_styling_controls
-    with_test_terminal(80, 20) do
+    with_test_terminal(80, 30) do
       # Cycle label style (x) and value style (z)
       inject_keys(:x, :z, :z, :q)
       @app.run

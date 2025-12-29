@@ -11,6 +11,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **Block Children**: Added `children` parameter to `Block` widget, enabling declarative composition of child widgets within the block's area. This allows nested UI structures like `Block.new(children: [Paragraph.new(...)])` for more ergonomic view composition.
 - **Typed Event API**: `RatatuiRuby.poll_event` now returns rich, typed Ruby objects instead of raw Hashes. The new event classes (`Event::Key`, `Event::Mouse`, `Event::Resize`, `Event::Paste`, `Event::FocusGained`, `Event::FocusLost`) provide predicate methods (`key?`, `mouse?`, `ctrl?`, etc.), pattern matching support, and direct Symbol/String comparison for cleaner event handling code.
 - **Table Highlight Spacing**: Added `highlight_spacing` parameter to `Table` widget, accepting `:always`, `:when_selected`, or `:never`. This controls whether the selection column is reserved or hidden when no row is selected.
 - **List Highlight Spacing**: Added `highlight_spacing` parameter to `List` widget, accepting `:always`, `:when_selected`, or `:never`. This controls whether the selection column is reserved when no item is selected.

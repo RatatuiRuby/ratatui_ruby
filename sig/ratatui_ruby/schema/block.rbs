@@ -5,6 +5,7 @@ module RatatuiRuby
   class Block < Data
     attr_reader titles: Array[Hash[Symbol, untyped]]
     attr_reader title_style: (Style | Hash[Symbol, untyped])?
-    def self.new: (?title: String?, ?titles: Array[Hash[Symbol, untyped]], ?title_alignment: Symbol?, ?title_style: (Style | Hash[Symbol, untyped])?, ?borders: Array[Symbol], ?border_color: (String | Symbol)?, ?border_type: Symbol?, ?style: (Style | Hash[Symbol, untyped])?, ?padding: (Integer | Array[Integer])) -> Block
+    attr_reader children: Array[untyped]
+    def self.new: (?title: String?, ?titles: Array[Hash[Symbol, untyped]], ?title_alignment: Symbol?, ?title_style: (Style | Hash[Symbol, untyped])?, ?borders: Array[Symbol], ?border_color: (String | Symbol)?, ?border_type: Symbol?, ?style: (Style | Hash[Symbol, untyped])?, ?padding: (Integer | Array[Integer]), ?children: Array[untyped]) -> Block
   end
 end

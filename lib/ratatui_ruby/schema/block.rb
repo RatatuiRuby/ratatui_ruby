@@ -24,7 +24,7 @@ module RatatuiRuby
     #     style: Style.new(fg: :yellow),
     #     padding: [1, 1, 0, 0] # Left, Right, Top, Bottom
     #   )
-    class Block < Data.define(:title, :titles, :title_alignment, :title_style, :borders, :border_color, :border_type, :style, :padding)
+    class Block < Data.define(:title, :titles, :title_alignment, :title_style, :borders, :border_color, :border_type, :style, :padding, :children)
       ##
       # :attr_reader: title
       # The main title displayed on the top border.
@@ -96,6 +96,20 @@ module RatatuiRuby
       #   Block.new(padding: 2).padding # => 2
       #   Block.new(padding: [1, 1, 0, 0]).padding # => [1, 1, 0, 0]
 
+      ##
+      # :attr_reader: children
+      # Widgets to render inside the block (optional).
+      #
+      # When provided, each child widget is rendered within the block's area.
+      #
+      # === Example
+      #
+      #   Block.new(
+      #     title: "Content",
+      #     borders: [:all],
+      #     children: [Paragraph.new(text: "Hello")]
+      #   )
+
       # Creates a new Block.
       #
       # [title]
@@ -116,7 +130,9 @@ module RatatuiRuby
       #   Style object or Hash for the block's content area.
       # [padding]
       #   Integer (uniform) or Array[4] (left, right, top, bottom).
-      def initialize(title: nil, titles: [], title_alignment: nil, title_style: nil, borders: [:all], border_color: nil, border_type: nil, style: nil, padding: 0)
+      # [children]
+      #   Array of widgets to render inside the block (optional).
+      def initialize(title: nil, titles: [], title_alignment: nil, title_style: nil, borders: [:all], border_color: nil, border_type: nil, style: nil, padding: 0, children: [])
         super
       end
     end

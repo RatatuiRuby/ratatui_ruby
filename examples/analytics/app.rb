@@ -105,33 +105,60 @@ class AnalyticsApp
             ),
           ]
         ),
-        # Sidebar
-        RatatuiRuby::Block.new(
-          title: "Status & Controls",
-          borders: [:all],
+        # Sidebar with separate blocks for each section
+        RatatuiRuby::Layout.new(
+          direction: :vertical,
+          constraints: [
+            RatatuiRuby::Constraint.length(6),  # General controls
+            RatatuiRuby::Constraint.length(7),  # Padding controls
+            RatatuiRuby::Constraint.fill(1)    # Style controls + spacing
+          ],
           children: [
-            RatatuiRuby::Paragraph.new(
-              text: [
-                RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "GENERAL", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
-                "q: Quit",
-                "arrows: Navigate",
-                "v: Dir (#{@direction})",
-                "",
-                RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "TABS", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
-                "space: Highlight Style",
-                "  #{@styles[@style_index][:name]}",
-                "s: Base Style",
-                "  #{@base_styles[@base_style_index][:name]}",
-                "d: Divider (#{@dividers[@divider_index]})",
-                "h/l: Pad L (#{@padding_left})",
-                "j/k: Pad R (#{@padding_right})",
-                "",
-                RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "BAR CHART", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
-                "x: Label Style",
-                "  #{@styles[@label_style_index][:name]}",
-                "z: Value Style",
-                "  #{@styles[@value_style_index][:name]}",
-              ].flatten
+            # General Controls
+            RatatuiRuby::Block.new(
+              title: "General",
+              borders: [:all],
+              children: [
+                RatatuiRuby::Paragraph.new(
+                  text: [
+                    "q: Quit",
+                    "←→: Navigate",
+                    "v: Dir (#{@direction})"
+                  ]
+                )
+              ]
+            ),
+            # Padding Controls
+            RatatuiRuby::Block.new(
+              title: "Padding",
+              borders: [:all],
+              children: [
+                RatatuiRuby::Paragraph.new(
+                  text: [
+                    "h/l: Pad L (#{@padding_left})",
+                    "j/k: Pad R (#{@padding_right})",
+                    "",
+                    "d: Divider (#{@dividers[@divider_index]})"
+                  ]
+                )
+              ]
+            ),
+            # Style Controls
+            RatatuiRuby::Block.new(
+              title: "Styles",
+              borders: [:all],
+              children: [
+                RatatuiRuby::Paragraph.new(
+                  text: [
+                    "space: Highlight",
+                    "  #{@styles[@style_index][:name]}",
+                    "x: Label",
+                    "  #{@styles[@label_style_index][:name]}",
+                    "z: Value",
+                    "  #{@styles[@value_style_index][:name]}"
+                  ]
+                )
+              ]
             )
           ]
         )

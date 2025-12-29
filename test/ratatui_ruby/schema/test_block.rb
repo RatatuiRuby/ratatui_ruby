@@ -56,6 +56,7 @@ class TestBlock < Minitest::Test
     assert_nil b.border_color
     assert_nil b.border_type
     assert_nil b.style
+    assert_equal [], b.children
   end
 
   def test_render
