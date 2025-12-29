@@ -6,6 +6,7 @@
 require "test_helper"
 
 class TestGauge < Minitest::Test
+    include RatatuiRuby::TestHelper
   def test_gauge_creation
     g = RatatuiRuby::Gauge.new(ratio: 0.5, label: "50%", style: RatatuiRuby::Style.new(fg: :green))
     assert_equal 0.5, g.ratio

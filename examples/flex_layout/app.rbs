@@ -1,0 +1,7 @@
+class FlexLayoutApp
+  # @public
+  def self.new: () -> FlexLayoutApp
+
+  # @public
+  def run: () -> void
+end

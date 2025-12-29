@@ -6,6 +6,7 @@
 require "test_helper"
 
 class TestBlock < Minitest::Test
+    include RatatuiRuby::TestHelper
   def test_block_creation
     b = RatatuiRuby::Block.new(title: "Title", borders: [:top, :bottom], border_color: "red")
     assert_equal "Title", b.title

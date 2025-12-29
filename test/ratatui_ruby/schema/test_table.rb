@@ -6,6 +6,7 @@
 require "test_helper"
 
 class TestTable < Minitest::Test
+    include RatatuiRuby::TestHelper
   def test_table_creation
     header = ["A", "B"]
     rows = [["1", "2"], ["3", "4"]]

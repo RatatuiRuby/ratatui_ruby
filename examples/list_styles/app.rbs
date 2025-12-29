@@ -1,0 +1,7 @@
+class ListStylesApp
+  # @public
+  def self.new: () -> ListStylesApp
+
+  # @public
+  def run: () -> void
+end

@@ -1,0 +1,7 @@
+class ReadmeUsageApp
+  # @public
+  def self.new: () -> ReadmeUsageApp
+
+  # @public
+  def run: () -> void
+end

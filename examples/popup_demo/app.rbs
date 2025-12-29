@@ -1,0 +1,7 @@
+class PopupDemoApp
+  # @public
+  def self.new: () -> PopupDemoApp
+
+  # @public
+  def run: () -> void
+end

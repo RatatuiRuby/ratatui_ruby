@@ -8,6 +8,7 @@ require "minitest/autorun"
 
 module RatatuiRuby
   class TestChart < Minitest::Test
+    include RatatuiRuby::TestHelper
     def setup
       RatatuiRuby.init_test_terminal(80, 24)
     end

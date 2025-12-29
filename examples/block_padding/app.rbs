@@ -1,0 +1,7 @@
+class BlockPaddingApp
+  # @public
+  def self.new: () -> BlockPaddingApp
+
+  # @public
+  def run: () -> void
+end

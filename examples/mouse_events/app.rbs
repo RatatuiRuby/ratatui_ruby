@@ -1,0 +1,7 @@
+class MouseEventsApp
+  # @public
+  def self.new: () -> MouseEventsApp
+
+  # @public
+  def run: () -> void
+end

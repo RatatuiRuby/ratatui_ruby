@@ -1,0 +1,7 @@
+class ScrollTextApp
+  # @public
+  def self.new: () -> ScrollTextApp
+
+  # @public
+  def run: () -> void
+end

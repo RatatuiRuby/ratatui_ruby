@@ -9,9 +9,13 @@ Guidelines for creating and testing examples in the `examples/` directory.
 
 ## Example Structure
 
-Every interactive example should follow this pattern:
+Every interactive example should follow this pattern, living in its own directory:
 
+`examples/my_example/app.rb`:
 ```ruby
+$LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
+require "ratatui_ruby"
+
 class MyExampleApp
   def initialize
     # Initialize state
@@ -42,6 +46,19 @@ end
 MyExampleApp.new.run if __FILE__ == $PROGRAM_NAME
 ```
 
+Every example must also have an RBS file documenting its public methods:
+
+`examples/my_example/app.rbs`:
+```rbs
+class MyExampleApp
+  # @public
+  def self.new: () -> MyExampleApp
+
+  # @public
+  def run: () -> void
+end
+```
+
 ### Key Requirements
 
 1. **Only `run` should be public.** All other methods (`render`, `handle_input`, helper methods) must be private. This prevents tests from calling internal methods directly.
@@ -56,15 +73,19 @@ MyExampleApp.new.run if __FILE__ == $PROGRAM_NAME
 
 ## Testing Examples
 
-Example tests live alongside examples as `test_*.rb` files.
+Example tests live alongside examples as `test_app.rb` files in the same directory.
 
 ### Testing Pattern
 
+`examples/my_example/test_app.rb`:
 ```ruby
-require "test_helper"
-require_relative "my_example"
+$LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
+require "ratatui_ruby"
+require "ratatui_ruby/test_helper"
+require "minitest/autorun"
+require_relative "app"
 
-class TestMyExample < Minitest::Test
+class TestMyExampleApp < Minitest::Test
   include RatatuiRuby::TestHelper
 
   def setup
@@ -76,8 +97,8 @@ class TestMyExample < Minitest::Test
       inject_key(:q)  # Queue quit event
       @app.run        # Run the app loop
       
-      content = buffer_content
-      assert_includes content[0], "Expected Text"
+      content = buffer_content.join("\n")
+      assert_includes content, "Expected Text"
     end
   end
 

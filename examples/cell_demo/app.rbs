@@ -1,0 +1,7 @@
+class CellDemoApp
+  # @public
+  def self.new: () -> CellDemoApp
+
+  # @public
+  def run: () -> void
+end

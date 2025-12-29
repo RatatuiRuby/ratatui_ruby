@@ -7,6 +7,7 @@ require "test_helper"
 
 module RatatuiRuby
   class TestScrollbar < Minitest::Test
+    include RatatuiRuby::TestHelper
     def test_scrollbar_creation
       s = Scrollbar.new(
         content_length: 100,

@@ -6,6 +6,7 @@
 require "test_helper"
 
 class TestClear < Minitest::Test
+    include RatatuiRuby::TestHelper
   def test_clear_creation
     clear = RatatuiRuby::Clear.new
     assert_nil clear.block

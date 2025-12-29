@@ -120,118 +120,118 @@ For a deeper dive into the available application architectures (Manual vs Manage
 
 To see more complex layouts and widget usage, check out the `examples/` directory in the repository.
 
-### [Analytics](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/analytics.rb)
+### [Analytics](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/analytics/app.rb)
 Demonstrates the use of `Tabs` and `BarChart` widgets with a simple data-switching mechanism. Features custom highlight styles, base styles, and dividers for the tabs.
 
 ![Analytics Screenshot](./images/examples-analytics.rb.png)
 
-### [All Events](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/all_events.rb)
+### [All Events](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/all_events/app.rb)
 A comprehensive demonstration of every event type supported by **ratatui_ruby**: Key, Mouse, Resize, Paste, and Focus events.
 
 ![All Events Screenshot](./images/examples-all_events.rb.png)
 
-### [Block Padding](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/block_padding.rb)
+### [Block Padding](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/block_padding/app.rb)
 Demonstrates the `padding` property of the `Block` widget, supporting both uniform and directional padding.
 
 ![Block Padding Screenshot](./images/examples-block_padding.rb.png)
 
-### [Block Titles](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/block_titles.rb)
+### [Block Titles](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/block_titles/app.rb)
 Demonstrates the `Block` widget's ability to render multiple titles with individual alignment and positioning (top/bottom).
 
 ![Block Titles Screenshot](./images/examples-block_titles.rb.png)
 
 
-### [Box Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/box_demo.rb)
+### [Box Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/box_demo/app.rb)
 A simple demonstration of `Block` and `Paragraph` widgets, reacting to key presses to change colors, border styles, and title styling (`title_style`).
 
 ![Box Demo Screenshot](./images/examples-box_demo.rb.gif)
 
-### [Calendar Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/calendar_demo.rb)
+### [Calendar Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/calendar_demo/app.rb)
 A simple demo application for the `Calendar` widget.
 
 ![Calendar Screenshot](./images/examples-calendar_demo.rb.png)
 
-### [Chart Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/chart_demo.rb)
+### [Chart Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/chart_demo/app.rb)
 Demonstrates the `Chart` widget with both scatter and line datasets, including custom axes.
 
 ![Chart Screenshot](./images/examples-chart_demo.rb.png)
 
-### [Custom Widget (Escape Hatch)](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/custom_widget.rb)
+### [Custom Widget (Escape Hatch)](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/custom_widget/app.rb)
 Demonstrates how to define a custom widget in pure Ruby using the `render(area, buffer)` escape hatch for low-level drawing.
 
 ![Custom Widget Screenshot](./images/examples-custom_widget.rb.png)
 
-### [Dashboard](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/dashboard.rb)
+### [Dashboard](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/dashboard/app.rb)
 Uses `Layout`, `List`, and `Paragraph` to create a classic sidebar-and-content interface.
 
 ![Dashboard Screenshot](./images/examples-dashboard.rb.png)
 
-### [Flex Layout](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/flex_layout.rb)
+### [Flex Layout](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/flex_layout/app.rb)
 Demonstrates modern layout features including `Constraint.fill` and `Constraint.ratio` for proportional space distribution and `flex: :space_between` for evenly distributing fixed-size elements.
 
 ![Flex Layout Screenshot](./images/examples-flex_layout.rb.png)
 
-### [LineGauge Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/line_gauge_demo.rb)
+### [LineGauge Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/line_gauge_demo/app.rb)
 Demonstrates the `LineGauge` widget with customizable filled and unfilled symbols, independent styling, and interactive ratio cycling with arrow keys.
 
 ![LineGauge Screenshot](./images/examples-line_gauge_demo.rb.png)
 
-### [List Styles](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/list_styles.rb)
+### [List Styles](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/list_styles/app.rb)
 Showcases advanced styling options for the `List` widget, including selection highlighting and the `highlight_spacing` option (`:always`, `:when_selected`, `:never`). Press 'x' to toggle selection off and see the difference between spacing modes.
 
 ![List Styles Screenshot](./images/examples-list_styles.rb.png)
 
-### [Login Form](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/login_form.rb)
+### [Login Form](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/login_form/app.rb)
 Shows how to use `Overlay`, `Center`, and `Cursor` to build a modal login form with text input.
 
 ![Login Form Screenshot](./images/examples-login_form.rb.png)
 
-### [Map Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/map_demo.rb)
+### [Map Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/map_demo/app.rb)
 Exhibits the `Canvas` widget's power, rendering a world map along with animated circles and lines.
 
 ![Map Demo Screenshot](./images/examples-map_demo.rb.png)
 
-### [Mouse Events](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/mouse_events.rb)
+### [Mouse Events](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/mouse_events/app.rb)
 Detailed plumbing of mouse events, including clicks, drags, and movement tracking.
 
 ![Mouse Events Screenshot](./images/examples-mouse_events.rb.png)
 
-### [Popup Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/popup_demo.rb)
+### [Popup Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/popup_demo/app.rb)
 Demonstrates the `Clear` widget and how to prevent "style bleed" when rendering opaque popups over colored backgrounds.
 
 ![Popup Demo Screenshot](./images/examples-popup_demo.rb.gif)
 
-### [Rich Text](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/rich_text.rb)
+### [Rich Text](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/rich_text/app.rb)
 Demonstrates `Text::Span` and `Text::Line` for creating styled text with inline formatting, enabling word-level control over colors and text modifiers.
 
 ![Rich Text Screenshot](./images/examples-rich_text.rb.png)
 
-### [Scrollbar Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/scrollbar_demo.rb)
+### [Scrollbar Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/scrollbar_demo/app.rb)
 A demonstration of the `Scrollbar` widget, featuring mouse wheel scrolling and extensive customization of symbols and styles.
 
 ![Scrollbar Demo Screenshot](./images/examples-scrollbar_demo.rb.png)
 
-### [Scroll Text](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/scroll_text.rb)
+### [Scroll Text](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/scroll_text/app.rb)
 Demonstrates the `Paragraph` widget's scroll functionality, allowing navigation through long text content using arrow keys for both horizontal and vertical scrolling.
 
 ![Scroll Text Screenshot](./images/examples-scroll_text.rb.png)
 
-### [Stock Ticker](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/stock_ticker.rb)
+### [Stock Ticker](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/stock_ticker/app.rb)
 Utilizes `Sparkline` and `Chart` widgets to visualize real-time (simulated) data. Demonstrates the `direction: :right_to_left` option for new data appearing on the left.
 
 ![Stock Ticker Screenshot](./images/examples-stock_ticker.rb.png)
 
-### [System Monitor](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/system_monitor.rb)
+### [System Monitor](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/system_monitor/app.rb)
 Combines `Table` and `Gauge` widgets in a vertical layout to create a functional system overview. Demonstrates the new `percent` parameter for easy `Gauge` configuration.
 
 ![System Monitor Screenshot](./images/examples-system_monitor.rb.png)
 
-### [Table Select](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/table_select.rb)
+### [Table Select](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/table_select/app.rb)
 Demonstrates interactive row selection in the `Table` widget with keyboard navigation, highlighting selected rows with custom styles and symbols, applying a base style, and dynamically adjusting `column_spacing`.
 
 ![Table Select Screenshot](./images/examples-table_select.rb.png)
 
-### [Table Flex](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/table_flex.rb)
+### [Table Flex](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/table_flex/app.rb)
 Demonstrates different flex modes in the `Table` widget, such as `:space_between` and `:space_around`, allowing for modern, responsive table layouts.
 
 ![Table Flex Screenshot](./images/examples-table_flex.rb.png)

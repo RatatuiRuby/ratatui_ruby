@@ -1,0 +1,7 @@
+class MapDemoApp
+  # @public
+  def self.new: () -> MapDemoApp
+
+  # @public
+  def run: () -> void
+end

@@ -1,0 +1,7 @@
+class AllEventsApp
+  # @public
+  def self.new: () -> AllEventsApp
+
+  # @public
+  def run: () -> void
+end

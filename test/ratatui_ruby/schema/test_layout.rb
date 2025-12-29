@@ -6,6 +6,7 @@
 require "test_helper"
 
 class TestLayout < Minitest::Test
+    include RatatuiRuby::TestHelper
   def test_layout_creation
     p = RatatuiRuby::Paragraph.new(text: "Hello")
     l = RatatuiRuby::Layout.new(direction: :vertical, constraints: [RatatuiRuby::Constraint.percentage(100)], children: [p])

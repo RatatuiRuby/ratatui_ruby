@@ -6,6 +6,7 @@
 require "test_helper"
 
 class TestBuffer < Minitest::Test
+    include RatatuiRuby::TestHelper
   class CustomWidget
     def initialize(cell)
       @cell = cell

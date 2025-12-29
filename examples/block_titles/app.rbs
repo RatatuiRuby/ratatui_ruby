@@ -1,0 +1,7 @@
+class BlockTitlesApp
+  # @public
+  def self.new: () -> BlockTitlesApp
+
+  # @public
+  def run: () -> void
+end

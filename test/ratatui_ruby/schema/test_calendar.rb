@@ -7,6 +7,7 @@ require "test_helper"
 
 module RatatuiRuby
   class TestCalendar < Minitest::Test
+    include RatatuiRuby::TestHelper
     def test_calendar_rendering
       # December 2025
       with_test_terminal(22, 7) do

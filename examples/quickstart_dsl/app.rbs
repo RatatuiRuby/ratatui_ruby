@@ -1,0 +1,7 @@
+class QuickstartDslApp
+  # @public
+  def self.new: () -> QuickstartDslApp
+
+  # @public
+  def run: () -> void
+end

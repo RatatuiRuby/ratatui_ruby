@@ -6,6 +6,7 @@
 require "test_helper"
 
 class TestConstraint < Minitest::Test
+    include RatatuiRuby::TestHelper
   def test_constraint_creation
     c1 = RatatuiRuby::Constraint.length(10)
     assert_equal :length, c1.type

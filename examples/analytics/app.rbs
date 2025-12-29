@@ -1,0 +1,7 @@
+class AnalyticsApp
+  # @public
+  def self.new: () -> AnalyticsApp
+
+  # @public
+  def run: () -> void
+end

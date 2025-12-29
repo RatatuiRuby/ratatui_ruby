@@ -1,0 +1,7 @@
+class CustomWidgetApp
+  # @public
+  def self.new: () -> CustomWidgetApp
+
+  # @public
+  def run: () -> void
+end

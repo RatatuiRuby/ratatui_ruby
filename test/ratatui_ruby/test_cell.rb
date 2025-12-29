@@ -9,6 +9,7 @@ require "ratatui_ruby/test_helper"
 
 module RatatuiRuby
   class TestCell < Minitest::Test
+    include RatatuiRuby::TestHelper
     include TestHelper
 
     def test_cell_properties

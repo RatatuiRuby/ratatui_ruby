@@ -1,0 +1,7 @@
+class CalendarDemoApp
+  # @public
+  def self.new: () -> CalendarDemoApp
+
+  # @public
+  def run: () -> void
+end

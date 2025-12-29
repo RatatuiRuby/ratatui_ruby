@@ -1,0 +1,7 @@
+class QuickstartLifecycleApp
+  # @public
+  def self.new: () -> QuickstartLifecycleApp
+
+  # @public
+  def run: () -> void
+end

@@ -14,6 +14,7 @@ class CustomWidget
 end
 
 class TestEscapeHatch < Minitest::Test
+    include RatatuiRuby::TestHelper
   def test_custom_widget_render
     with_test_terminal(5, 5) do
       widget = CustomWidget.new

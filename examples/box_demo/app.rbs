@@ -1,0 +1,7 @@
+class BoxDemoApp
+  # @public
+  def self.new: () -> BoxDemoApp
+
+  # @public
+  def run: () -> void
+end

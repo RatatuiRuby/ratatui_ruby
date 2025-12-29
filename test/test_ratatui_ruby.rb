@@ -6,6 +6,7 @@
 require "test_helper"
 
 class TestRatatuiRuby < Minitest::Test
+    include RatatuiRuby::TestHelper
   def test_that_it_has_a_version_number
     refute_nil ::RatatuiRuby::VERSION
   end

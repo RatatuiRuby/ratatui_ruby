@@ -1,0 +1,7 @@
+class HitTestApp
+  # @public
+  def self.new: () -> HitTestApp
+
+  # @public
+  def run: () -> void
+end

@@ -1,0 +1,7 @@
+class LoginFormApp
+  # @public
+  def self.new: () -> LoginFormApp
+
+  # @public
+  def run: () -> void
+end

@@ -1,0 +1,7 @@
+class TableSelectApp
+  # @public
+  def self.new: () -> TableSelectApp
+
+  # @public
+  def run: () -> void
+end

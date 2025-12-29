@@ -6,6 +6,7 @@
 require "test_helper"
 
 class TestBarChart < Minitest::Test
+    include RatatuiRuby::TestHelper
   def test_bar_chart_creation
     data = { "a" => 1, "b" => 2 }
     chart = RatatuiRuby::BarChart.new(data:, bar_width: 5)

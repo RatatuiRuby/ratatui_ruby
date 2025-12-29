@@ -6,6 +6,7 @@
 require "test_helper"
 
 class TestParagraph < Minitest::Test
+    include RatatuiRuby::TestHelper
   def test_paragraph_creation
     p = RatatuiRuby::Paragraph.new(text: "Hello", fg: "red", bg: "black")
     assert_equal "Hello", p.text

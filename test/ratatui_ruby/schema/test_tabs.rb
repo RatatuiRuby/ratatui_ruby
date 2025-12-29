@@ -6,6 +6,7 @@
 require "test_helper"
 
 class TestTabs < Minitest::Test
+    include RatatuiRuby::TestHelper
   def test_tabs_creation
     titles = ["A", "B"]
     tabs = RatatuiRuby::Tabs.new(titles:, selected_index: 0)

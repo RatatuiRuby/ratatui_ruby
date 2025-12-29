@@ -1,0 +1,7 @@
+class RichTextApp
+  # @public
+  def self.new: () -> RichTextApp
+
+  # @public
+  def run: () -> void
+end

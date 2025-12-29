@@ -1,0 +1,7 @@
+class ScrollbarDemoApp
+  # @public
+  def self.new: () -> ScrollbarDemoApp
+
+  # @public
+  def run: () -> void
+end

@@ -1,0 +1,7 @@
+class DashboardApp
+  # @public
+  def self.new: () -> DashboardApp
+
+  # @public
+  def run: () -> void
+end

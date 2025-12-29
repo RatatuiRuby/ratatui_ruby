@@ -1,0 +1,7 @@
+class LineGaugeDemoApp
+  # @public
+  def self.new: () -> LineGaugeDemoApp
+
+  # @public
+  def run: () -> void
+end

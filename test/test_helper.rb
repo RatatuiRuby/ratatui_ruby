@@ -26,6 +26,3 @@ require "minitest/autorun"
 
 require "ratatui_ruby/test_helper"
 
-class Minitest::Test
-  include RatatuiRuby::TestHelper
-end

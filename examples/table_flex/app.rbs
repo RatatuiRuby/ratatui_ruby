@@ -1,0 +1,7 @@
+class TableFlexApp
+  # @public
+  def self.new: () -> TableFlexApp
+
+  # @public
+  def run: () -> void
+end

@@ -6,6 +6,7 @@
 require "test_helper"
 
 class TestOverlay < Minitest::Test
+    include RatatuiRuby::TestHelper
   def test_overlay_creation
     l1 = RatatuiRuby::Paragraph.new(text: "L1")
     l2 = RatatuiRuby::Paragraph.new(text: "L2")

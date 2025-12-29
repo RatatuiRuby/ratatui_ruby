@@ -6,6 +6,7 @@
 require "test_helper"
 
 class TestLineChart < Minitest::Test
+    include RatatuiRuby::TestHelper
   def test_line_chart_creation
     ds = RatatuiRuby::Dataset.new(name: "test", data: [[0.0, 0.0], [1.0, 1.0]], color: "red")
     chart = RatatuiRuby::LineChart.new(datasets: [ds], x_labels: ["0", "1"])

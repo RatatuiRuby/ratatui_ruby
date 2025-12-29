@@ -6,6 +6,7 @@
 require "test_helper"
 
 class TestSparkline < Minitest::Test
+    include RatatuiRuby::TestHelper
   def test_sparkline_creation
     data = [1, 2, 3]
     sparkline = RatatuiRuby::Sparkline.new(data:, max: 10)

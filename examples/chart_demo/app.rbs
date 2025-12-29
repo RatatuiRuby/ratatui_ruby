@@ -1,0 +1,7 @@
+class ChartDemoApp
+  # @public
+  def self.new: () -> ChartDemoApp
+
+  # @public
+  def run: () -> void
+end

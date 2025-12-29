@@ -1,0 +1,7 @@
+class SystemMonitorApp
+  # @public
+  def self.new: () -> SystemMonitorApp
+
+  # @public
+  def run: () -> void
+end
