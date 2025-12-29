@@ -34,6 +34,8 @@ class AnalyticsApp
     @direction = :vertical
     @label_style_index = 0
     @value_style_index = 0
+
+    @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
   end
 
   def run
@@ -67,10 +69,10 @@ class AnalyticsApp
 
     # Build the UI
     ui = RatatuiRuby::Layout.new(
-      direction: :horizontal,
+      direction: :vertical,
       constraints: [
-        RatatuiRuby::Constraint.new(type: :percentage, value: 70),
-        RatatuiRuby::Constraint.new(type: :percentage, value: 30),
+        RatatuiRuby::Constraint.fill(1),
+        RatatuiRuby::Constraint.length(6),
       ],
       children: [
         # Main Area
@@ -105,59 +107,47 @@ class AnalyticsApp
             ),
           ]
         ),
-        # Sidebar with separate blocks for each section
-        RatatuiRuby::Layout.new(
-          direction: :vertical,
-          constraints: [
-            RatatuiRuby::Constraint.length(6),  # General controls
-            RatatuiRuby::Constraint.length(7),  # Padding controls
-            RatatuiRuby::Constraint.fill(1)    # Style controls + spacing
-          ],
+        # Bottom control panel
+        RatatuiRuby::Block.new(
+          title: "Controls",
+          borders: [:all],
           children: [
-            # General Controls
-            RatatuiRuby::Block.new(
-              title: "General",
-              borders: [:all],
-              children: [
-                RatatuiRuby::Paragraph.new(
-                  text: [
-                    "q: Quit",
-                    "←→: Navigate",
-                    "v: Dir (#{@direction})"
-                  ]
-                )
-              ]
-            ),
-            # Padding Controls
-            RatatuiRuby::Block.new(
-              title: "Padding",
-              borders: [:all],
-              children: [
-                RatatuiRuby::Paragraph.new(
-                  text: [
-                    "h/l: Pad L (#{@padding_left})",
-                    "j/k: Pad R (#{@padding_right})",
-                    "",
-                    "d: Divider (#{@dividers[@divider_index]})"
-                  ]
-                )
-              ]
-            ),
-            # Style Controls
-            RatatuiRuby::Block.new(
-              title: "Styles",
-              borders: [:all],
-              children: [
-                RatatuiRuby::Paragraph.new(
-                  text: [
-                    "space: Highlight",
-                    "  #{@styles[@style_index][:name]}",
-                    "x: Label",
-                    "  #{@styles[@label_style_index][:name]}",
-                    "z: Value",
-                    "  #{@styles[@value_style_index][:name]}"
-                  ]
-                )
+            RatatuiRuby::Paragraph.new(
+              text: [
+                # Line 1: Navigation & General
+                RatatuiRuby::Text::Line.new(spans: [
+                  RatatuiRuby::Text::Span.new(content: "←/→", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Navigate Tab  "),
+                  RatatuiRuby::Text::Span.new(content: "v", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Direction (#{@direction})  "),
+                  RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Quit")
+                ]),
+                # Line 2: Padding & Divider
+                RatatuiRuby::Text::Line.new(spans: [
+                  RatatuiRuby::Text::Span.new(content: "h/l", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Pad Left (#{@padding_left})  "),
+                  RatatuiRuby::Text::Span.new(content: "j/k", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Pad Right (#{@padding_right})  "),
+                  RatatuiRuby::Text::Span.new(content: "d", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Divider (#{@dividers[@divider_index]})")
+                ]),
+                # Line 3: Styles
+                RatatuiRuby::Text::Line.new(spans: [
+                  RatatuiRuby::Text::Span.new(content: "space", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Highlight (#{@styles[@style_index][:name]})  "),
+                  RatatuiRuby::Text::Span.new(content: "x", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Label (#{@styles[@label_style_index][:name]})  "),
+                  RatatuiRuby::Text::Span.new(content: "space", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Highlight (#{@styles[@style_index][:name]})  "),
+                  RatatuiRuby::Text::Span.new(content: "x", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Label (#{@styles[@label_style_index][:name]})")
+                ]),
+                # Line 4: More Styles
+                RatatuiRuby::Text::Line.new(spans: [
+                  RatatuiRuby::Text::Span.new(content: "z", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Value (#{@styles[@value_style_index][:name]})")
+                ])
               ]
             )
           ]

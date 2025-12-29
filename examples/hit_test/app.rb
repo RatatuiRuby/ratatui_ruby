@@ -22,6 +22,7 @@ class HitTestApp
     @left_ratio = 50
     @message = "Click a panel or adjust ratio"
     @last_click = nil
+    @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
   end
 
   def run
@@ -41,13 +42,13 @@ class HitTestApp
     # Calculated once per frame, then reused by render() and handle_input().
     full_area = RatatuiRuby::Rect.new(x: 0, y: 0, width: 80, height: 24)
 
-    # First split: main content (70%) vs sidebar (30%).
-    @main_area, @sidebar_area = RatatuiRuby::Layout.split(
+    # First split: main content vs bottom controls.
+    @main_area, @control_area = RatatuiRuby::Layout.split(
       full_area,
-      direction: :horizontal,
+      direction: :vertical,
       constraints: [
-        RatatuiRuby::Constraint.percentage(70),
-        RatatuiRuby::Constraint.percentage(30),
+        RatatuiRuby::Constraint.fill(1),
+        RatatuiRuby::Constraint.length(7),
       ]
     )
 
@@ -76,39 +77,42 @@ class HitTestApp
       children: [left_panel, right_panel]
     )
 
-    # Sidebar
-    sidebar = RatatuiRuby::Block.new(
+    # Bottom control panel
+    control_panel = RatatuiRuby::Block.new(
       title: "Controls",
       borders: [:all],
       children: [
         RatatuiRuby::Paragraph.new(
           text: [
-            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "RATIO", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
-            "q: Quit",
-            "←: Decrease (#{@left_ratio}%)",
-            "→: Increase (#{@left_ratio}%)",
-            "",
-            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "HIT TESTING", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
-            "Click: Detect Panel",
-            "",
-            "Last Click:",
-            "#{@last_click || 'None'}",
-            "",
-            "Message:",
-            @message,
-          ].flatten
+            RatatuiRuby::Text::Line.new(spans: [
+              RatatuiRuby::Text::Span.new(content: "RATIO", style: RatatuiRuby::Style.new(modifiers: [:bold]))
+            ]),
+            RatatuiRuby::Text::Line.new(spans: [
+              RatatuiRuby::Text::Span.new(content: "←", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Decrease (#{@left_ratio}%)  "),
+              RatatuiRuby::Text::Span.new(content: "→", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Increase (#{@left_ratio}%)  "),
+              RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Quit")
+            ]),
+            RatatuiRuby::Text::Line.new(spans: [
+              RatatuiRuby::Text::Span.new(content: "HIT TESTING", style: RatatuiRuby::Style.new(modifiers: [:bold]))
+            ]),
+            "Click panels above to detect hits.",
+            "Last Click: #{@last_click || 'None'} - #{@message}"
+          ]
         )
       ]
     )
 
-    # Full layout with sidebar
+    # Full layout with bottom controls
     full_layout = RatatuiRuby::Layout.new(
-      direction: :horizontal,
+      direction: :vertical,
       constraints: [
-        RatatuiRuby::Constraint.new(type: :percentage, value: 70),
-        RatatuiRuby::Constraint.new(type: :percentage, value: 30),
+        RatatuiRuby::Constraint.fill(1),
+        RatatuiRuby::Constraint.length(7),
       ],
-      children: [layout, sidebar]
+      children: [layout, control_panel]
     )
 
     RatatuiRuby.draw(full_layout)
@@ -148,6 +152,7 @@ class HitTestApp
     in type: :mouse, kind: "down", x: click_x, y: click_y
       handle_click(click_x, click_y)
     else
+      @message = "Unhandled: #{event.class} #{event.inspect}"
       nil
     end
     nil

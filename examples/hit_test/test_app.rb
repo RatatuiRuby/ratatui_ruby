@@ -36,6 +36,8 @@ class TestHitTestExample < Minitest::Test
       @app.run
 
       content = buffer_content
+      # Check both status line and debug message
+      assert content.any? { |line| line.include?("Last Click: left") }
       assert content.any? { |line| line.include?("Left Panel clicked") }
     end
   end
@@ -49,6 +51,7 @@ class TestHitTestExample < Minitest::Test
       @app.run
 
       content = buffer_content
+      assert content.any? { |line| line.include?("Last Click: right") }
       assert content.any? { |line| line.include?("Right Panel clicked") }
     end
   end

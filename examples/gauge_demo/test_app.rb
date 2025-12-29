@@ -86,8 +86,7 @@ class TestGaugeDemo < Minitest::Test
 
       content = buffer_content.join("\n")
       # After toggling unicode, should still show gauge controls
-      assert_includes content, "Options"
-      assert_includes content, "off"
+      assert_includes content, "Off"
     end
   end
 
@@ -111,10 +110,11 @@ class TestGaugeDemo < Minitest::Test
 
       content = buffer_content.join("\n")
       # Verify all controls are visible
-      assert_includes content, "Ratio"
-      assert_includes content, "Gauge Color"
+      assert_includes content, "Adjust Ratio"
+      assert_includes content, "Color"
       assert_includes content, "Background"
-      assert_includes content, "Options"
+      assert_includes content, "Unicode"
+      assert_includes content, "Label"
     end
   end
 end

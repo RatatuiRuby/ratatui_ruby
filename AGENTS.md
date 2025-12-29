@@ -43,7 +43,18 @@ Every file must begin with an SPDX-compliant header. Use the following format:
 ### Ruby Standards
 
 -   **Version:** Tested against the latest releases of Ruby 3.2, 3.3, 3.4, and 4.0, and must work on all of them. Local development happens on the latest stable release.
--   **Linter:** Always use `bin/agent_rake` for testing, linting, and compilation. Never run `bundle exec rake test`, `bundle exec rake lint`, or `bundle exec rake compile` directly. The `bin/agent_rake` script silences noisy build output and runs the default task (test + lint + compile) by default, showing output only on failure. This is the canonical way to verify commit-readiness. You can pass arguments to it just like rake (e.g., `bin/agent_rake test:ruby`), but ensure you run the full suite before committing.
+-   **Linter & Testing (CRITICAL):**
+    -   **ALWAYS use `bin/agent_rake`** for running tests, linting, or checking compilation.
+    -   **NEVER** run `bundle exec rake` directly. **NEVER** run `bundle exec ruby -Ilib:test ...` directly.
+    -   **VIOLATION OF THIS RULE IS A CRITICAL ERROR.**
+    -   **Why?**
+        1.  **Noise Reduction:** Standard `rake` output includes massive amounts of Rust compilation noise that floods your context window, truncating the actual error message. `bin/agent_rake` captures this silently.
+        2.  **Atomic Dump:** Agents work best with a single "Atomic Dump" of the failure. `bin/agent_rake` provides this by swallowing successful output and only printing the failure log if something goes wrong.
+        3.  **Merged Output:** It correctly merges stdout (Minitest failures) and stderr (Rust warnings) so you see them in temporal order.
+    -   **Usage:**
+        -   Runs default task (compile + test + lint): `bin/agent_rake`
+        -   Runs specific task: `bin/agent_rake test:ruby` (for example)
+    -   **Interpretation:** If the User says "rake test fails" or "fix the build" or "bin/agent_rake fails", they IMPLICITLY mean "run `bin/agent_rake` and fix the reported errors". Do not ask for clarification; just use `bin/agent_rake`.
 -   **Style:**
     -   Use `Data.define` for all value objects (UI Nodes). (Prefer `class Foo < Data.define()` over `Foo = Data.define() do`).
     -   Prefer `frozen_string_literal: true`.

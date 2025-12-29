@@ -66,7 +66,10 @@ class SparklineDemoApp
     ]
     @absent_style_index = 0
 
+
+
     @counter = 0
+    @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
   end
 
   def run
@@ -93,10 +96,10 @@ class SparklineDemoApp
     current_data = data_set[:data]
 
     layout = RatatuiRuby::Layout.new(
-      direction: :horizontal,
+      direction: :vertical,
       constraints: [
-        RatatuiRuby::Constraint.new(type: :percentage, value: 70),
-        RatatuiRuby::Constraint.new(type: :percentage, value: 30)
+        RatatuiRuby::Constraint.fill(1),
+        RatatuiRuby::Constraint.length(4),
       ],
       children: [
         # Main content area with multiple sparkline examples
@@ -151,92 +154,38 @@ class SparklineDemoApp
             RatatuiRuby::Paragraph.new(text: "")
           ]
         ),
-        # Sidebar with controls
-        RatatuiRuby::Layout.new(
-          direction: :vertical,
-          constraints: [
-            RatatuiRuby::Constraint.length(5),
-            RatatuiRuby::Constraint.length(4),
-            RatatuiRuby::Constraint.length(5),
-            RatatuiRuby::Constraint.length(5),
-            RatatuiRuby::Constraint.length(4),
-            RatatuiRuby::Constraint.fill(1)
-          ],
+        # Bottom control panel
+        RatatuiRuby::Block.new(
+          title: "Controls",
+          borders: [:all],
           children: [
-            # Data set control
-            RatatuiRuby::Block.new(
-              title: "Data Set",
-              borders: [:all],
-              children: [
-                RatatuiRuby::Paragraph.new(
-                  text: [
-                    "↑↓: Cycle",
-                    "  #{@data_sets[@data_index][:name]}"
-                  ]
-                )
-              ]
-            ),
-            # Direction control
-            RatatuiRuby::Block.new(
-              title: "Direction",
-              borders: [:all],
-              children: [
-                RatatuiRuby::Paragraph.new(
-                  text: "d: #{@directions[@direction_index][:name]}"
-                )
-              ]
-            ),
-            # Style control
-            RatatuiRuby::Block.new(
-              title: "Color",
-              borders: [:all],
-              children: [
-                RatatuiRuby::Paragraph.new(
-                  text: [
-                    "c: Cycle",
-                    "  #{@styles[@style_index][:name]}"
-                  ]
-                )
-              ]
-            ),
-            # Absent value symbol control
-            RatatuiRuby::Block.new(
-              title: "Absent Marker",
-              borders: [:all],
-              children: [
-                RatatuiRuby::Paragraph.new(
-                  text: [
-                    "m: Cycle",
-                    "  #{@absent_symbols[@absent_symbol_index][:name]}"
-                  ]
-                )
-              ]
-            ),
-            # Absent value style control
-            RatatuiRuby::Block.new(
-              title: "Marker Style",
-              borders: [:all],
-              children: [
-                RatatuiRuby::Paragraph.new(
-                  text: [
-                    "s: Cycle",
-                    "  #{@absent_styles[@absent_style_index][:name]}"
-                  ]
-                )
-              ]
-            ),
-            # General
-            RatatuiRuby::Block.new(
-              title: "General",
-              borders: [:all],
-              children: [
-                RatatuiRuby::Paragraph.new(text: "q: Quit")
+            RatatuiRuby::Paragraph.new(
+              text: [
+                # Line 1: Data & View
+                RatatuiRuby::Text::Line.new(spans: [
+                  RatatuiRuby::Text::Span.new(content: "↑/↓", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Data (#{@data_sets[@data_index][:name]})  "),
+                  RatatuiRuby::Text::Span.new(content: "d", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Direction (#{@directions[@direction_index][:name]})  "),
+                  RatatuiRuby::Text::Span.new(content: "c", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Color (#{@styles[@style_index][:name]})")
+                ]),
+                # Line 2: Markers
+                RatatuiRuby::Text::Line.new(spans: [
+                  RatatuiRuby::Text::Span.new(content: "m", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Marker (#{@absent_symbols[@absent_symbol_index][:name]})  "),
+                  RatatuiRuby::Text::Span.new(content: "s", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": M. Style (#{@absent_styles[@absent_style_index][:name]})  "),
+                  RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Quit")
+                ])
               ]
             )
           ]
         )
       ]
     )
+
 
     RatatuiRuby.draw(layout)
   end

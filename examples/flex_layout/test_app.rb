@@ -17,7 +17,7 @@ class TestFlexLayout < Minitest::Test
   end
 
   def test_render_header
-    with_test_terminal(60, 20) do
+    with_test_terminal(80, 24) do
       # Queue quit
       inject_key(:q)
       
@@ -29,7 +29,7 @@ class TestFlexLayout < Minitest::Test
   end
 
   def test_fill_constraint_ratio
-    with_test_terminal(60, 20) do
+    with_test_terminal(80, 24) do
       # Queue quit
       inject_key(:q)
       
@@ -42,7 +42,7 @@ class TestFlexLayout < Minitest::Test
   end
 
   def test_space_between_blocks
-    with_test_terminal(60, 20) do
+    with_test_terminal(80, 24) do
       # Queue quit
       inject_key(:q)
 
@@ -56,7 +56,7 @@ class TestFlexLayout < Minitest::Test
   end
 
   def test_quit_on_q
-    with_test_terminal(60, 20) do
+    with_test_terminal(80, 24) do
       inject_key(:q)
       @app.run
       # Success if it returns

@@ -53,6 +53,7 @@ class LineGaugeDemoApp
       { name: "Italic Cyan", style: RatatuiRuby::Style.new(fg: :cyan, modifiers: [:italic]) }
     ]
     @base_style_index = 0
+    @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
   end
 
   def run
@@ -77,10 +78,10 @@ class LineGaugeDemoApp
     unfilled_style = unfilled_color ? RatatuiRuby::Style.new(fg: unfilled_color) : RatatuiRuby::Style.new(fg: :dark_gray)
 
     layout = RatatuiRuby::Layout.new(
-      direction: :horizontal,
+      direction: :vertical,
       constraints: [
-        RatatuiRuby::Constraint.new(type: :percentage, value: 70),
-        RatatuiRuby::Constraint.new(type: :percentage, value: 30)
+        RatatuiRuby::Constraint.fill(1),
+        RatatuiRuby::Constraint.length(5)
       ],
       children: [
         # Main content area
@@ -120,74 +121,43 @@ class LineGaugeDemoApp
             RatatuiRuby::Paragraph.new(text: "")
           ]
         ),
-        # Sidebar with controls
-        RatatuiRuby::Layout.new(
-          direction: :vertical,
-          constraints: [
-            RatatuiRuby::Constraint.length(7),
-            RatatuiRuby::Constraint.length(7),
-            RatatuiRuby::Constraint.length(6),
-            RatatuiRuby::Constraint.fill(1)
-          ],
+        # Bottom control panel
+        RatatuiRuby::Block.new(
+          title: "Controls",
+          borders: [:all],
           children: [
-            # Ratio & Base Style
-            RatatuiRuby::Block.new(
-              title: "Ratio & Style",
-              borders: [:all],
-              children: [
-                RatatuiRuby::Paragraph.new(
-                  text: [
-                    "←→: Ratio (#{(@ratio * 100).to_i}%)",
-                    "b: Base Style",
-                    "  #{@base_styles[@base_style_index][:name]}"
-                  ]
-                )
-              ]
-            ),
-            # Filled Symbols & Colors
-            RatatuiRuby::Block.new(
-              title: "Filled",
-              borders: [:all],
-              children: [
-                RatatuiRuby::Paragraph.new(
-                  text: [
-                    "f: Symbol",
-                    "  #{@filled_symbols[@filled_symbol_index][:name]}",
-                    "c: Color",
-                    "  #{@filled_colors[@filled_color_index][:name]}"
-                  ]
-                )
-              ]
-            ),
-            # Unfilled Symbols & Colors
-            RatatuiRuby::Block.new(
-              title: "Unfilled",
-              borders: [:all],
-              children: [
-                RatatuiRuby::Paragraph.new(
-                  text: [
-                    "u: Symbol",
-                    "  #{@unfilled_symbols[@unfilled_symbol_index][:name]}",
-                    "x: Color",
-                    "  #{@unfilled_colors[@unfilled_color_index][:name]}"
-                  ]
-                )
-              ]
-            ),
-            # General
-            RatatuiRuby::Block.new(
-              title: "General",
-              borders: [:all],
-              children: [
-                RatatuiRuby::Paragraph.new(
-                  text: "q: Quit"
-                )
+            RatatuiRuby::Paragraph.new(
+              text: [
+                # Line 1: General
+                RatatuiRuby::Text::Line.new(spans: [
+                  RatatuiRuby::Text::Span.new(content: "←/→", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Ratio (#{(@ratio * 100).to_i}%)  "),
+                  RatatuiRuby::Text::Span.new(content: "b", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Base Style (#{@base_styles[@base_style_index][:name]})  "),
+                  RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Quit")
+                ]),
+                # Line 2: Filled
+                RatatuiRuby::Text::Line.new(spans: [
+                  RatatuiRuby::Text::Span.new(content: "f", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Filled Symbol (#{@filled_symbols[@filled_symbol_index][:name]})  "),
+                  RatatuiRuby::Text::Span.new(content: "c", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Filled Color (#{@filled_colors[@filled_color_index][:name]})")
+                ]),
+                # Line 3: Unfilled
+                RatatuiRuby::Text::Line.new(spans: [
+                  RatatuiRuby::Text::Span.new(content: "u", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Unfilled Symbol (#{@unfilled_symbols[@unfilled_symbol_index][:name]})  "),
+                  RatatuiRuby::Text::Span.new(content: "x", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Unfilled Color (#{@unfilled_colors[@unfilled_color_index][:name]})")
+                ])
               ]
             )
           ]
         )
       ]
     )
+
 
     RatatuiRuby.draw(layout)
   end

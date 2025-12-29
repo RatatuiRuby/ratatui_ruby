@@ -63,7 +63,7 @@ class TestAllEvents < Minitest::Test
   end
 
   def test_resize_event_updates_panel
-    with_test_terminal(120, 40) do
+    with_test_terminal(80, 24) do
       inject_event(RatatuiRuby::Event::Resize.new(width: 120, height: 40))
       inject_key(:q)
       

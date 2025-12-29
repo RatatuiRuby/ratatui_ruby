@@ -17,7 +17,7 @@ class TestListStylesExample < Minitest::Test
   end
 
   def test_render_initial_state_no_selection
-    with_test_terminal(80, 20) do
+    with_test_terminal(80, 24) do
       inject_key(:q)
       @app.run
 
@@ -30,7 +30,7 @@ class TestListStylesExample < Minitest::Test
   end
 
   def test_toggle_selection_on
-    with_test_terminal(80, 20) do
+    with_test_terminal(80, 24) do
       # Press x to toggle on, then quit
       inject_keys(:x, :q)
       @app.run
@@ -41,7 +41,7 @@ class TestListStylesExample < Minitest::Test
   end
 
   def test_toggle_selection_off
-    with_test_terminal(80, 20) do
+    with_test_terminal(80, 24) do
       # Press x to toggle on, x again to toggle off, then quit
       inject_keys(:x, :x, :q)
       @app.run
@@ -52,7 +52,7 @@ class TestListStylesExample < Minitest::Test
   end
 
   def test_navigation_selects_and_moves
-    with_test_terminal(80, 20) do
+    with_test_terminal(80, 24) do
       inject_keys(:down, :q)
       @app.run
 
@@ -62,7 +62,7 @@ class TestListStylesExample < Minitest::Test
   end
 
   def test_navigation_down_twice
-    with_test_terminal(80, 20) do
+    with_test_terminal(80, 24) do
       inject_keys(:down, :down, :q)
       @app.run
 
@@ -72,14 +72,14 @@ class TestListStylesExample < Minitest::Test
   end
 
   def test_quit
-    with_test_terminal(50, 20) do
+    with_test_terminal(80, 24) do
       inject_key(:q)
       @app.run
     end
   end
 
   def test_toggle_highlight_spacing_to_always
-    with_test_terminal(80, 20) do
+    with_test_terminal(80, 24) do
       # 's' cycles: when_selected -> always -> never
       inject_keys(:s, :q)
       @app.run
@@ -90,7 +90,7 @@ class TestListStylesExample < Minitest::Test
   end
 
   def test_toggle_highlight_spacing_to_never
-    with_test_terminal(80, 20) do
+    with_test_terminal(80, 24) do
       inject_keys(:s, :s, :q)
       @app.run
 
@@ -100,7 +100,7 @@ class TestListStylesExample < Minitest::Test
   end
 
   def test_toggle_highlight_spacing_back_to_when_selected
-    with_test_terminal(80, 20) do
+    with_test_terminal(80, 24) do
       inject_keys(:s, :s, :s, :q)
       @app.run
 
@@ -110,7 +110,7 @@ class TestListStylesExample < Minitest::Test
   end
 
   def test_direction_cycling
-    with_test_terminal(80, 20) do
+    with_test_terminal(80, 24) do
       inject_keys(:d, :q)
       @app.run
 
@@ -120,7 +120,7 @@ class TestListStylesExample < Minitest::Test
   end
 
   def test_spacing_always_shows_column_without_selection
-    with_test_terminal(80, 20) do
+    with_test_terminal(80, 24) do
       # Set spacing to :always
       inject_keys(:s, :q)
       @app.run
@@ -132,7 +132,7 @@ class TestListStylesExample < Minitest::Test
   end
 
   def test_repeat_highlight_symbol_toggle
-    with_test_terminal(80, 20) do
+    with_test_terminal(80, 24) do
       # Press r to toggle repeat mode, then quit
       inject_keys(:r, :q)
       @app.run
@@ -144,7 +144,7 @@ class TestListStylesExample < Minitest::Test
   end
 
   def test_repeat_highlight_symbol_cycles_back
-    with_test_terminal(80, 20) do
+    with_test_terminal(80, 24) do
       # Press r twice to cycle back to Off
       inject_keys(:r, :r, :q)
       @app.run

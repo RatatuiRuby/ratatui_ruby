@@ -33,6 +33,8 @@ class ListStylesApp
       { name: "On", repeat: true }
     ]
     @repeat_index = 0
+
+    @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
   end
 
   def run
@@ -69,38 +71,44 @@ class ListStylesApp
       )
     )
 
-    # Sidebar
-    sidebar = RatatuiRuby::Block.new(
+    # Bottom control panel
+    control_panel = RatatuiRuby::Block.new(
       title: "Controls",
       borders: [:all],
       children: [
         RatatuiRuby::Paragraph.new(
           text: [
-            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "NAVIGATION", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
-            "q: Quit",
-            "↑/↓: Select (#{selection_label})",
-            "x: Toggle Selection",
-            "",
-            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "LIST", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
-            "d: Direction",
-            "  #{direction_config[:name]}",
-            "s: Spacing",
-            "  #{spacing_config[:name]}",
-            "r: Repeat Symbol",
-            "  #{repeat_config[:name]}",
-          ].flatten
+            RatatuiRuby::Text::Line.new(spans: [
+              RatatuiRuby::Text::Span.new(content: "↑/↓", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Select (#{selection_label})  "),
+              RatatuiRuby::Text::Span.new(content: "x", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Toggle Selection  "),
+              RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Quit")
+            ]),
+            RatatuiRuby::Text::Line.new(spans: [
+              RatatuiRuby::Text::Span.new(content: "d", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Direction (#{direction_config[:name]})  "),
+              RatatuiRuby::Text::Span.new(content: "s", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Spacing (#{spacing_config[:name]})")
+            ]),
+            RatatuiRuby::Text::Line.new(spans: [
+              RatatuiRuby::Text::Span.new(content: "r", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Repeat Symbol (#{repeat_config[:name]})")
+            ])
+          ]
         )
       ]
     )
 
-    # Layout
+    # Vertical Layout
     layout = RatatuiRuby::Layout.new(
-      direction: :horizontal,
+      direction: :vertical,
       constraints: [
-        RatatuiRuby::Constraint.new(type: :percentage, value: 70),
-        RatatuiRuby::Constraint.new(type: :percentage, value: 30),
+        RatatuiRuby::Constraint.fill(1),
+        RatatuiRuby::Constraint.length(5),
       ],
-      children: [main_list, sidebar]
+      children: [main_list, control_panel]
     )
 
     RatatuiRuby.draw(layout)

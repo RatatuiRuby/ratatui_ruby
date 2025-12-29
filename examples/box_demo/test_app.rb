@@ -17,7 +17,7 @@ class TestBoxDemo < Minitest::Test
   end
 
   def test_render_initial_state
-    with_test_terminal(80, 20) do
+    with_test_terminal(80, 24) do
       inject_key(:q)
       @app.run
 
@@ -28,7 +28,7 @@ class TestBoxDemo < Minitest::Test
   end
 
   def test_color_cycling_changes_color
-    with_test_terminal(80, 20) do
+    with_test_terminal(80, 24) do
       # Pressing up should cycle colors backwards
       inject_keys(:up, :q)
       @app.run
@@ -39,7 +39,7 @@ class TestBoxDemo < Minitest::Test
   end
 
   def test_border_type_cycling
-    with_test_terminal(80, 20) do
+    with_test_terminal(80, 24) do
       inject_keys(" ", :q)
       @app.run
 
@@ -48,7 +48,7 @@ class TestBoxDemo < Minitest::Test
   end
 
   def test_title_alignment_cycling
-    with_test_terminal(80, 20) do
+    with_test_terminal(80, 24) do
       inject_keys(:enter, :q)
       @app.run
 
@@ -57,7 +57,7 @@ class TestBoxDemo < Minitest::Test
   end
 
   def test_content_style_changes
-    with_test_terminal(80, 20) do
+    with_test_terminal(80, 24) do
       inject_keys(:s, :q)
       @app.run
 
@@ -67,7 +67,7 @@ class TestBoxDemo < Minitest::Test
   end
 
   def test_title_style_changes
-    with_test_terminal(80, 20) do
+    with_test_terminal(80, 24) do
       inject_keys(:t, :q)
       @app.run
 

@@ -17,7 +17,7 @@ class TestPopupDemo < Minitest::Test
   end
 
   def test_render_initial_state
-    with_test_terminal(60, 20) do
+    with_test_terminal(80, 24) do
       # Queue quit
       inject_key(:q)
 
@@ -33,7 +33,7 @@ class TestPopupDemo < Minitest::Test
   end
 
   def test_toggle_clear
-    with_test_terminal(60, 20) do
+    with_test_terminal(80, 24) do
       # Toggle Clear on then quit
       inject_keys(" ", :q)
 
@@ -45,7 +45,7 @@ class TestPopupDemo < Minitest::Test
   end
 
   def test_quit
-    with_test_terminal(60, 20) do
+    with_test_terminal(80, 24) do
       inject_key(:q)
       @app.run
       # Success

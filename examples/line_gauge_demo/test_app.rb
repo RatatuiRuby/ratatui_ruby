@@ -25,7 +25,7 @@ class TestLineGaugeDemo < Minitest::Test
       assert_includes content, "LineGauge Widget Demo"
       assert_includes content, "Interactive Gauge"
       assert_includes content, "Inverse"
-      assert_includes content, "←→: Ratio"
+      assert_includes content, "←/→: Ratio"
       assert_includes content, "50%"
     end
   end

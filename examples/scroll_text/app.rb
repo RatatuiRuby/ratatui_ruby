@@ -13,7 +13,9 @@ class ScrollTextDemo
   def initialize
     @scroll_x = 0
     @scroll_y = 0
+
     @lines = (1..100).map { |i| "Line #{i}: This is a long line of text that can be scrolled horizontally" }
+    @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
   end
 
   def run
@@ -61,32 +63,37 @@ class ScrollTextDemo
       )
     )
 
-    # Sidebar
-    sidebar = RatatuiRuby::Block.new(
+    # Bottom control panel
+    control_panel = RatatuiRuby::Block.new(
       title: "Controls",
       borders: [:all],
       children: [
         RatatuiRuby::Paragraph.new(
           text: [
-            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "NAVIGATION", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
-            "q: Quit",
-            "↑: Scroll Up (#{@scroll_y})",
-            "↓: Scroll Down",
-            "←: Scroll Left (#{@scroll_x})",
-            "→: Scroll Right",
-          ].flatten
+            RatatuiRuby::Text::Line.new(spans: [
+              RatatuiRuby::Text::Span.new(content: "NAVIGATION", style: RatatuiRuby::Style.new(modifiers: [:bold]))
+            ]),
+            RatatuiRuby::Text::Line.new(spans: [
+              RatatuiRuby::Text::Span.new(content: "↑/↓", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Vert Scroll (#{@scroll_y})  "),
+              RatatuiRuby::Text::Span.new(content: "←/→", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Horz Scroll (#{@scroll_x})  "),
+              RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Quit")
+            ])
+          ]
         )
       ]
     )
 
-    # Layout
+    # Vertical Layout
     layout = RatatuiRuby::Layout.new(
-      direction: :horizontal,
+      direction: :vertical,
       constraints: [
-        RatatuiRuby::Constraint.new(type: :percentage, value: 70),
-        RatatuiRuby::Constraint.new(type: :percentage, value: 30),
+        RatatuiRuby::Constraint.fill(1),
+        RatatuiRuby::Constraint.length(5),
       ],
-      children: [main_paragraph, sidebar]
+      children: [main_paragraph, control_panel]
     )
 
     RatatuiRuby.draw(layout)

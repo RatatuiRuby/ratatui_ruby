@@ -17,7 +17,7 @@ module CalendarDemo
 
 
     def test_demo_renders
-      with_test_terminal(40, 20) do
+      with_test_terminal(80, 24) do
         inject_keys(:down, :down, :q)
 
         CalendarDemo.run
@@ -39,7 +39,7 @@ module CalendarDemo
 
         # Rows 10..19 should be completely empty
         (10..19).each do |i|
-          assert_equal " " * 40, lines[i], "Row #{i} should be completely empty"
+          assert_equal " " * 80, lines[i], "Row #{i} should be completely empty"
         end
       end
     end

@@ -16,7 +16,7 @@ class TestMapDemo < Minitest::Test
   include RatatuiRuby::TestHelper
 
   def test_map_demo_renders
-    with_test_terminal(20, 10) do
+    with_test_terminal(80, 24) do
       # Queue quit event
       inject_key(:q)
 
@@ -28,16 +28,30 @@ class TestMapDemo < Minitest::Test
       # Verify the buffer content reflects the rendered map
       # radius should be 0.5 for the first frame
       expected_buffer = [
-        "┌World Map ['b' bac┐",
-        "│⡀⣀⣀⣤⣴⣶⣖⢲⡆⢠⣄⢤⣄⡤⣤⣠⣄⣀│",
-        "│⠹⠷⢫⡉⠿⣿⡟⠉⢳⡾⣟⣉⠉  ⢰⣺⠛│",
-        "│  ⠘⣦⣤⡏⠁ ⡼⠿⢿⣟⡀ ⢸⠿⠁ │",
-        "│ ⠁ ⠈⠻⡿⣄ ⢇⣄⠞⡟⠹⢹⣿⡆  │",
-        "│⠄    ⢧⢈⡇⠈⢹⢸⡅ ⠈⢻⢿⣟⣤│",
-        "│     ⣼⠞  ⠘⠚⠁  ⠸⠲⡇⣦│",
-        "│     ⢛⡇   ⢀⣀⣁⣀⣀⣀⣀⠁│",
-        "│⠤⠾⠍⠉⠉⠻⠷⠖⠋⠉⠉ ⠉   ⠸⠧│",
-        "└──────────────────┘",
+        "┌World Map ['b' background, 'm' marker: braille]───────────────────────────────┐",
+        "│                     ⣀⢀⣀⣀⡀   ⢀⣀⡀ ⡀                                            │",
+        "│            ⢠⣤⣰⣦⣶⣶⣿⣭⣿⣣⠶⠶⣿⣉⣉⠉⠉⠁  ⠁⠉⢽⠎⠁    ⠲⠶⠶⠖   ⠐⠛⢃⡀⣀⢤   ⢀⣐⣋⣷⠶⡤⣀    ⣀⡀⣀⡀      │",
+        "│⢖⡀⡀⣤⡖⠒⠒⠤⠤⠤⠤⠶⠿⠿⣿⣹⢿⣿⣿⢿⣭⣽⣿⡒⣦⣀⠘⣷⠄  ⢀⡀⢼⣏⢀      ⡠⠤⠒⠶⡤⢀⣄⡀⢻⠯⠤⢾⣻⡗⠛⠉    ⠈⠉⠈⠈⠙⠒⠚⠋ ⠒⠐⠦⠤⠤⠤⠶│",
+        "│⠉⠉⠻⣿⣃⣀⣤⡤⣄⣀⡀       ⢠⠒⠛⠳⡟⠳⣿⣏ ⠙⠦⠴⠋⠁ ⠈⠛⠋⠁⢀⡀ ⣖⡉⢰⢾⣥⡄⠙⠉⠁     ⠈              ⢀⣀⣀⡠⣤⣦⢤⠤⠛│",
+        "│   ⠒⠛⠉⠁   ⠿⣄⡀      ⠉⠓⢖⠎ ⢀⣘⣲⡄        ⠰⣾⣟⣄⠼⠛⠟⠚⠁                       ⠺⣶  ⢪⠜⠁   │",
+        "│           ⠈⡟          ⢸⠭⠿⠛⠛        ⢀⡤⣿⢀⣠⣴⣆⡀⢀⣴⣶⢆ ⡶⣆               ⢀⣀⡔⣽⡅       │",
+        "│            ⠳⣀       ⢀⣺⠉            ⠘⣧⢴⠧⠼⡿⠟⠻⣿⢭⣬⠉ ⠸⠿             ⢺⠟⣿⣠⣶⡟        │",
+        "│             ⠘⢿⣄  ⡔⠒⠒⣿⡄            ⢀⡼    ⠈⠙⠋⠉⠛⣿⡀ ⢶⣤⣄⣀⡀          ⢠⡇⠈⠋          │",
+        "│    ⠐⠦        ⠈⠉⢧⣘⢆⣴⡞⠛⣷⣤⣄          ⣯          ⣸⣷⡊⠉⣉⡽ ⠙⢲ ⢀⡴⠻⣄ ⢰⣶⠚⢙⡁            │",
+        "│                 ⠈⠉⠛⢯⣇⣠⣴⢤⣤⡀        ⢧⡀      ⡠⠔⠊ ⠙⠷⢮⠅   ⠈⣇⣏  ⠉⣷⢄⠵ ⣸⣷⡄           │",
+        "│                     ⢉⡇   ⠙⠲⡄       ⠙⠒⢒⣊⡲⡔⠉     ⣀⠎     ⠈⠋  ⠰⡿⡆⣠⠔⣗⣙⣣           │",
+        "│                     ⢼      ⠉⠓⠲⣄      ⠈⠁⠈⢢     ⡼⠁           ⠘⢽⣝⣒⣻⡯⡛⢻⣮⢒⣦⡶⣄⡀    │",
+        "│⡀                    ⠈⢢⡀      ⢰⠃         ⢸     ⢹⢀⣴             ⠉⠉⣙⣥⠖⣎⣽⡌⠃ ⠙⢀⡀ ⢀│",
+        "│⠁                      ⢸    ⢀⣀⠏          ⠸⡄   ⣲⠁⡝⡞             ⣤⠖⠋  ⠈⠁⠑⣆  ⠶⠁ ⠉│",
+        "│                       ⢸   ⢀⠞             ⢳  ⡰⠃ ⠉⠁             ⢹ ⢀⣀⣀⢀  ⢸⠆     │",
+        "│                       ⡎⢀⣠⠽⠉              ⠈⠉⠉                  ⠈⠉⠉ ⠈⠛⠦⣤⠎    ⣷⡄│",
+        "│                      ⢸⠇⢴⠁                           ⢀⡀               ⠛   ⠰⠾⠋ │",
+        "│                      ⠘⠶⠧⠐⠛                          ⠈⠁                       │",
+        "│                        ⢀⣠⡤                       ⣀⡀         ⡀ ⣀    ⡀         │",
+        "│         ⢀⣀⣀⣀⣀⣀⡀⢠⣤⣄⣀⣀⣀⣠⣴⡿⢳         ⣀⡤⠤⠤⠤⠔⠶⠖⠲⠤⠒⠒⠒⠋⠉⠁⠉⠉⠹⠶⠒⠋⠉⠉⠉⠉⠈⠉⠈⠉⠉⠉⠉⠉⠉⠉⠒⠒⠲⢤⣤  │",
+        "│   ⠰⠶⣶⣶⠏⠉⠉  ⠉ ⠈⠉⠉⠁    ⠶⢞⣩⣥⡄⣤⣶⣶⣀⣶⡶⠉⠉⠉                                     ⣠⣿   │",
+        "│⠉⠉⠉⠉⠒⠘⠙⠓⠃                 ⠉                                               ⠈⠁⠉⠉│",
+        "└──────────────────────────────────────────────────────────────────────────────┘",
       ]
 
       expected_buffer.each_with_index do |line, i|
@@ -51,7 +65,7 @@ class TestMapDemo < Minitest::Test
   end
 
   def test_background_default
-    with_test_terminal(20, 10, timeout: 5) do
+    with_test_terminal(80, 24, timeout: 5) do
       inject_keys("q")
       MapDemo.stub :sleep, nil do
         MapDemo.run
@@ -62,7 +76,7 @@ class TestMapDemo < Minitest::Test
   end
 
   def test_background_blue
-    with_test_terminal(20, 10, timeout: 5) do
+    with_test_terminal(80, 24, timeout: 5) do
       inject_keys("b", "q")
       MapDemo.stub :sleep, nil do
         MapDemo.run
@@ -72,7 +86,7 @@ class TestMapDemo < Minitest::Test
   end
 
   def test_background_white
-    with_test_terminal(20, 10, timeout: 5) do
+    with_test_terminal(80, 24, timeout: 5) do
       inject_keys("b", "b", "q")
       MapDemo.stub :sleep, nil do
         MapDemo.run
@@ -82,7 +96,7 @@ class TestMapDemo < Minitest::Test
   end
 
   def test_background_transparent
-    with_test_terminal(20, 10, timeout: 5) do
+    with_test_terminal(80, 24, timeout: 5) do
       inject_keys("b", "b", "b", "q")
       MapDemo.stub :sleep, nil do
         MapDemo.run

@@ -41,6 +41,7 @@ class TableSelectApp
     @current_style_index = 0
     @column_spacing = 1
     @highlight_spacing_index = 0
+    @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
   end
 
   def run
@@ -90,38 +91,44 @@ class TableSelectApp
       footer: ["Total: #{PROCESSES.length}", "Total CPU: #{PROCESSES.sum { |p| p[:cpu] }}%", ""]
     )
 
-    # Sidebar
-    sidebar = RatatuiRuby::Block.new(
+    # Bottom control panel
+    control_panel = RatatuiRuby::Block.new(
       title: "Controls",
       borders: [:all],
       children: [
         RatatuiRuby::Paragraph.new(
           text: [
-            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "NAVIGATION", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
-            "q: Quit",
-            "↑/k: Up",
-            "↓/j: Down",
-            "x: Toggle Sel (#{selection_label})",
-            "",
-            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "TABLE", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
-            "s: Style",
-            "  #{current_style_entry[:name]}",
-            "h: Spacing",
-            "  #{current_spacing_entry[:name]}",
-            "+/-: Col Space (#{@column_spacing})",
-          ].flatten
+            # Line 1: Navigation
+            RatatuiRuby::Text::Line.new(spans: [
+              RatatuiRuby::Text::Span.new(content: "↑/↓", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Navigate  "),
+              RatatuiRuby::Text::Span.new(content: "x", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Toggle Selection (#{selection_label})  "),
+              RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Quit")
+            ]),
+            # Line 2: Table Controls
+            RatatuiRuby::Text::Line.new(spans: [
+              RatatuiRuby::Text::Span.new(content: "s", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Style (#{current_style_entry[:name]})  "),
+              RatatuiRuby::Text::Span.new(content: "h", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Spacing (#{current_spacing_entry[:name]})  "),
+              RatatuiRuby::Text::Span.new(content: "+/-", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Col Space (#{@column_spacing})")
+            ])
+          ]
         )
       ]
     )
 
     # Layout
     layout = RatatuiRuby::Layout.new(
-      direction: :horizontal,
+      direction: :vertical,
       constraints: [
-        RatatuiRuby::Constraint.new(type: :percentage, value: 70),
-        RatatuiRuby::Constraint.new(type: :percentage, value: 30),
+        RatatuiRuby::Constraint.fill(1),
+        RatatuiRuby::Constraint.length(4),
       ],
-      children: [table, sidebar]
+      children: [table, control_panel]
     )
 
     # Draw the table

@@ -17,7 +17,7 @@ class TestSparklineDemoApp < Minitest::Test
   end
 
   def test_initial_render
-    with_test_terminal(120, 30) do
+    with_test_terminal(80, 24) do
       inject_key(:q)
       @app.run
 
@@ -29,7 +29,7 @@ class TestSparklineDemoApp < Minitest::Test
   end
 
   def test_cycle_data_set_up
-    with_test_terminal(120, 30) do
+    with_test_terminal(80, 24) do
       inject_keys(:up, :q)
       @app.run
 
@@ -40,7 +40,7 @@ class TestSparklineDemoApp < Minitest::Test
   end
 
   def test_cycle_data_set_down
-    with_test_terminal(120, 30) do
+    with_test_terminal(80, 24) do
       inject_keys(:down, :down, :q)
       @app.run
 
@@ -50,7 +50,7 @@ class TestSparklineDemoApp < Minitest::Test
   end
 
   def test_cycle_direction
-    with_test_terminal(120, 30) do
+    with_test_terminal(80, 24) do
       inject_keys(:d, :q)
       @app.run
 
@@ -60,7 +60,7 @@ class TestSparklineDemoApp < Minitest::Test
   end
 
   def test_cycle_color
-    with_test_terminal(120, 30) do
+    with_test_terminal(80, 24) do
       inject_keys(:c, :c, :q)
       @app.run
 
@@ -70,7 +70,7 @@ class TestSparklineDemoApp < Minitest::Test
   end
 
   def test_cycle_absent_marker
-    with_test_terminal(120, 30) do
+    with_test_terminal(80, 24) do
       inject_keys(:m, :m, :m, :q)
       @app.run
 
@@ -80,7 +80,7 @@ class TestSparklineDemoApp < Minitest::Test
   end
 
   def test_cycle_absent_style
-    with_test_terminal(120, 30) do
+    with_test_terminal(80, 24) do
       inject_keys(:s, :s, :q)
       @app.run
 

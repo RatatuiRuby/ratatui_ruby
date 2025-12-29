@@ -53,9 +53,8 @@ All interactive examples must fit within an **80×24 terminal** (standard VT100 
 - Tests can use a consistent `with_test_terminal(80, 24)` size
 - Examples remain discoverable and self-documenting through visible hotkey help
 
-**Layout patterns for 80×24:**
-- **Bottom control panel (recommended):** Allocate ~5-7 lines at bottom for a full-width control block with hotkey documentation. Style hotkeys with **bold and underline** to make them discoverable. Use double-space or pipe separators to compress multiple controls per line. This keeps all UI text at full readability while maximizing space for the main content area.
-- **Sidebar layout (alternative in case height needed for effective demo):** If using a sidebar, allocate at least 35% width (28+ chars) to avoid text wrapping. Keep sidebar height to ~20 lines max.
+**Layout pattern for 80×24:**
+- **Bottom control panel:** Allocate ~5-7 lines at bottom for a full-width control block with hotkey documentation. Style hotkeys with **bold and underline** to make them discoverable. Use double-space or pipe separators to compress multiple controls per line. This keeps all UI text at full readability while maximizing space for the main content area.
 
 **Best practices:**
 - Use descriptive names (e.g., "Yellow on Black" not "Yellow") so controls are self-documenting and discoverable.

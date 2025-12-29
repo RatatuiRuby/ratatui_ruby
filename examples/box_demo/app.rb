@@ -45,6 +45,7 @@ class BoxDemoApp
       { name: "Yellow Bold Underlined", style: { fg: "yellow", modifiers: [:bold, :underlined] } }
     ]
     @title_style_index = 0
+    @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
   end
 
   def run
@@ -88,39 +89,47 @@ class BoxDemoApp
       align: :center
     )
 
-    # Sidebar
-    sidebar = RatatuiRuby::Block.new(
+    # Bottom control panel
+    control_panel = RatatuiRuby::Block.new(
       title: "Controls",
       borders: [:all],
       children: [
         RatatuiRuby::Paragraph.new(
           text: [
-            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "MAIN", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
-            "q: Quit",
-            "↑↓←→: Color (#{color_config[:name]})",
-            "",
-            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "BORDER", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
-            "space: Type (#{border_config[:name]})",
-            "",
-            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "TITLE", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
-            "enter: Align (#{title_alignment_config[:name]})",
-            "t: Style (#{title_style_config[:name]})",
-            "",
-            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "CONTENT", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
-            "s: Style (#{style_config[:name]})",
-          ].flatten
+            # Line 1: Main Controls
+            RatatuiRuby::Text::Line.new(spans: [
+              RatatuiRuby::Text::Span.new(content: "↑↓←→", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Color (#{color_config[:name]})  "),
+              RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Quit")
+            ]),
+            # Line 2: Features
+            RatatuiRuby::Text::Line.new(spans: [
+              RatatuiRuby::Text::Span.new(content: "space", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Border Type (#{border_config[:name]})  "),
+              RatatuiRuby::Text::Span.new(content: "s", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Style (#{style_config[:name]})")
+            ]),
+            # Line 3: Title
+            RatatuiRuby::Text::Line.new(spans: [
+              RatatuiRuby::Text::Span.new(content: "enter", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Align Title (#{title_alignment_config[:name]})  "),
+              RatatuiRuby::Text::Span.new(content: "t", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Title Style (#{title_style_config[:name]})")
+            ])
+          ]
         )
       ]
     )
 
-    # Layout
+    # Vertical Layout
     layout = RatatuiRuby::Layout.new(
-      direction: :horizontal,
+      direction: :vertical,
       constraints: [
-        RatatuiRuby::Constraint.new(type: :percentage, value: 70),
-        RatatuiRuby::Constraint.new(type: :percentage, value: 30),
+        RatatuiRuby::Constraint.fill(1),
+        RatatuiRuby::Constraint.length(5),
       ],
-      children: [main_panel, sidebar]
+      children: [main_panel, control_panel]
     )
 
     # 2. Render

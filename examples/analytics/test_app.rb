@@ -17,7 +17,7 @@ class TestAnalytics < Minitest::Test
   end
 
   def test_render_initial_state
-    with_test_terminal(50, 20) do
+    with_test_terminal(80, 24) do
       # Queue quit
       inject_key(:q)
 
@@ -31,13 +31,14 @@ class TestAnalytics < Minitest::Test
       # Check initial selected tab content
       assert buffer_content.any? { |line| line.include?("Analytics: Revenue") }
 
-      # Check help text visibility
-      assert buffer_content.any? { |line| line.include?("q: Quit") }
+      # Check help text visibility (join to handle potential wrapping)
+      content_str = buffer_content.join("\n")
+      assert_includes content_str, "q: Quit"
     end
   end
 
   def test_navigation_right
-    with_test_terminal(50, 20) do
+    with_test_terminal(80, 24) do
       inject_keys(:right, :q)
 
       @app.run
@@ -47,7 +48,7 @@ class TestAnalytics < Minitest::Test
   end
 
   def test_navigation_left
-    with_test_terminal(50, 20) do
+    with_test_terminal(80, 24) do
       # Move right to Traffic
       inject_keys(:a, :b, :c)
       
@@ -61,7 +62,7 @@ class TestAnalytics < Minitest::Test
   end
 
   def test_quit
-    with_test_terminal(50, 20) do
+    with_test_terminal(80, 24) do
       inject_key(:q)
       @app.run
       # Success if returns
@@ -69,7 +70,7 @@ class TestAnalytics < Minitest::Test
   end
 
   def test_switch_divider
-    with_test_terminal(60, 10) do
+    with_test_terminal(80, 24) do
       # Switch divider (d) then quit (q)
       inject_keys(:d, :q)
       @app.run
@@ -80,7 +81,7 @@ class TestAnalytics < Minitest::Test
   end
 
   def test_switch_style
-    with_test_terminal(60, 10) do
+    with_test_terminal(80, 24) do
       # Switch style (space) then quit (q)
       inject_keys(:" ", :q)
       @app.run
@@ -92,35 +93,38 @@ class TestAnalytics < Minitest::Test
   end
 
   def test_padding_controls
-    with_test_terminal(80, 10) do
+    with_test_terminal(80, 24) do
       # Increase padding_left (l) and padding_right (k) then quit
       inject_keys(:l, :l, :k, :k, :k, :q)
       @app.run
 
       # Verify that padding values are shown in status with hotkeys
-      assert buffer_content.any? { |line| line.include?("h/l: Pad L (2)") }
-      assert buffer_content.any? { |line| line.include?("j/k: Pad R (3)") }
+      # Use join to match even if wrapped or if "Pad Left" logic changed
+      content_str = buffer_content.join("\n")
+      assert_includes content_str, "h/l: Pad Left (2)"
+      assert_includes content_str, "j/k: Pad Right (3)"
     end
   end
 
   def test_styling_controls
-    with_test_terminal(80, 30) do
+    with_test_terminal(80, 24) do
       # Cycle label style (x) and value style (z)
       inject_keys(:x, :z, :z, :q)
       @app.run
 
-      assert buffer_content.any? { |line| line.include?("Italic Blue on White") }
-      assert buffer_content.any? { |line| line.include?("Underlined Red") }
+      content_str = buffer_content.join("\n")
+      assert_includes content_str, "Italic Blue on White"
+      assert_includes content_str, "Underlined Red"
     end
   end
 
   def test_direction_toggle
-    with_test_terminal(80, 20) do
+    with_test_terminal(80, 24) do
       # Switch to horizontal (v) then quit
       inject_keys(:v, :q)
       @app.run
 
-      assert buffer_content.any? { |line| line.include?("v: Dir (horizontal)") }
+      assert buffer_content.any? { |line| line.include?("v: Direction (horizontal)") }
     end
   end
 end

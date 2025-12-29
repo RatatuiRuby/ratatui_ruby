@@ -64,10 +64,10 @@ class GaugeDemoApp
     label = label_template.call(@ratio)
 
     layout = RatatuiRuby::Layout.new(
-      direction: :horizontal,
+      direction: :vertical,
       constraints: [
-        RatatuiRuby::Constraint.new(type: :percentage, value: 70),
-        RatatuiRuby::Constraint.new(type: :percentage, value: 30)
+        RatatuiRuby::Constraint.fill(1),
+        RatatuiRuby::Constraint.length(6)
       ],
       children: [
         # Main content area with multiple gauge examples
@@ -75,14 +75,15 @@ class GaugeDemoApp
           direction: :vertical,
           constraints: [
             RatatuiRuby::Constraint.length(1),
-            RatatuiRuby::Constraint.length(3),
-            RatatuiRuby::Constraint.length(3),
-            RatatuiRuby::Constraint.length(3),
-            RatatuiRuby::Constraint.fill(1)
+            RatatuiRuby::Constraint.fill(1),
+            RatatuiRuby::Constraint.fill(1),
+            RatatuiRuby::Constraint.fill(1),
+            RatatuiRuby::Constraint.length(1)
           ],
           children: [
             RatatuiRuby::Paragraph.new(
-              text: "Gauge Widget Demo - Cycle attributes with hotkeys"
+              text: "Gauge Widget Demo",
+              style: RatatuiRuby::Style.new(modifiers: [:bold])
             ),
             # Gauge 1: Main interactive gauge
             RatatuiRuby::Gauge.new(
@@ -114,76 +115,34 @@ class GaugeDemoApp
             RatatuiRuby::Paragraph.new(text: "")
           ]
         ),
-        # Sidebar with controls
-        RatatuiRuby::Layout.new(
-          direction: :vertical,
-          constraints: [
-            RatatuiRuby::Constraint.length(6),
-            RatatuiRuby::Constraint.length(5),
-            RatatuiRuby::Constraint.length(5),
-            RatatuiRuby::Constraint.length(4),
-            RatatuiRuby::Constraint.fill(1)
-          ],
+        # Bottom controls panel
+        RatatuiRuby::Block.new(
+          title: "Controls",
+          borders: [:all],
           children: [
-            # Ratio control
-            RatatuiRuby::Block.new(
-              title: "Ratio",
-              borders: [:all],
-              children: [
-                RatatuiRuby::Paragraph.new(
-                  text: [
-                    "←→: Adjust",
-                    "  Current: #{format('%.2f', @ratio)}"
-                  ]
-                )
-              ]
-            ),
-            # Gauge color control
-            RatatuiRuby::Block.new(
-              title: "Gauge Color",
-              borders: [:all],
-              children: [
-                RatatuiRuby::Paragraph.new(
-                  text: [
-                    "g: Cycle",
-                    "  #{@gauge_colors[@gauge_color_index][:name]}"
-                  ]
-                )
-              ]
-            ),
-            # Background style control
-            RatatuiRuby::Block.new(
-              title: "Background",
-              borders: [:all],
-              children: [
-                RatatuiRuby::Paragraph.new(
-                  text: [
-                    "b: Cycle",
-                    "  #{@bg_styles[@bg_style_index][:name]}"
-                  ]
-                )
-              ]
-            ),
-            # Unicode and label mode
-            RatatuiRuby::Block.new(
-              title: "Options",
-              borders: [:all],
-              children: [
-                RatatuiRuby::Paragraph.new(
-                  text: [
-                    "u: Unicode (#{use_unicode ? 'on' : 'off'})",
-                    "l: Label",
-                    "  #{@label_modes[@label_mode_index][:name]}"
-                  ]
-                )
-              ]
-            ),
-            # General
-            RatatuiRuby::Block.new(
-              title: "General",
-              borders: [:all],
-              children: [
-                RatatuiRuby::Paragraph.new(text: "q: Quit")
+            RatatuiRuby::Paragraph.new(
+              text: [
+                # Navigation & General
+                RatatuiRuby::Text::Line.new(spans: [
+                  RatatuiRuby::Text::Span.new(content: "←/→", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
+                  RatatuiRuby::Text::Span.new(content: ": Adjust Ratio (#{format('%.2f', @ratio)})  "),
+                  RatatuiRuby::Text::Span.new(content: "q", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
+                  RatatuiRuby::Text::Span.new(content: ": Quit")
+                ]),
+                # Styling
+                RatatuiRuby::Text::Line.new(spans: [
+                  RatatuiRuby::Text::Span.new(content: "g", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
+                  RatatuiRuby::Text::Span.new(content: ": Color (#{@gauge_colors[@gauge_color_index][:name]})  "),
+                  RatatuiRuby::Text::Span.new(content: "b", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
+                  RatatuiRuby::Text::Span.new(content: ": Background (#{@bg_styles[@bg_style_index][:name]})")
+                ]),
+                # Options
+                RatatuiRuby::Text::Line.new(spans: [
+                  RatatuiRuby::Text::Span.new(content: "u", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
+                  RatatuiRuby::Text::Span.new(content: ": Unicode (#{use_unicode ? 'On' : 'Off'})  "),
+                  RatatuiRuby::Text::Span.new(content: "l", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
+                  RatatuiRuby::Text::Span.new(content: ": Label (#{@label_modes[@label_mode_index][:name]})")
+                ])
               ]
             )
           ]
@@ -213,6 +172,9 @@ class GaugeDemoApp
       @use_unicode_index = (@use_unicode_index + 1) % @use_unicode_options.length
     in type: :key, code: "l"
       @label_mode_index = (@label_mode_index + 1) % @label_modes.length
+    else
+      # Ignore other events
+      nil
     end
   end
 end

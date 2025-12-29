@@ -22,7 +22,7 @@ class TestScrollText < Minitest::Test
   end
 
   def test_initial_rendering
-    with_test_terminal(80, 10) do
+    with_test_terminal(80, 24) do
       # Queue quit
       inject_key(:q)
       
@@ -32,14 +32,14 @@ class TestScrollText < Minitest::Test
       
       # Should show Line 1 somewhere in the output
       assert content.any? { |line| line.include?("Line 1") }
-      # Should show controls sidebar
+      # Should show controls
       assert content.any? { |line| line.include?("Controls") }
-      assert content.any? { |line| line.include?("↑: Scroll Up (0)") }
+      assert content.any? { |line| line.include?("Vert Scroll (0)") }
     end
   end
 
   def test_scroll_down
-    with_test_terminal(80, 10) do
+    with_test_terminal(80, 24) do
       # Scroll down then quit
       inject_keys(:down, :q)
 
@@ -48,12 +48,12 @@ class TestScrollText < Minitest::Test
       content = buffer_content
       
       # Should show controls with updated Y position
-      assert content.any? { |line| line.include?("↓: Scroll Down") }
+      assert content.any? { |line| line.include?("Vert Scroll (1)") }
     end
   end
 
   def test_scroll_right
-    with_test_terminal(80, 10) do
+    with_test_terminal(80, 24) do
       # Scroll right then quit
       inject_keys(:right, :q)
 
@@ -67,7 +67,7 @@ class TestScrollText < Minitest::Test
   end
 
   def test_scroll_left_at_edge
-    with_test_terminal(80, 10) do
+    with_test_terminal(80, 24) do
       # Scroll left then quit (boundary test)
       inject_keys(:left, :q)
 
@@ -76,12 +76,12 @@ class TestScrollText < Minitest::Test
       content = buffer_content
       
       # Should still show the controls
-      assert content.any? { |line| line.include?("↑: Scroll Up") }
+      assert content.any? { |line| line.include?("Vert Scroll") }
     end
   end
 
   def test_scroll_up_at_top
-    with_test_terminal(80, 10) do
+    with_test_terminal(80, 24) do
       # Scroll up then quit (boundary test)
       inject_keys(:up, :q)
 
@@ -95,7 +95,7 @@ class TestScrollText < Minitest::Test
   end
 
   def test_multiple_scrolls
-    with_test_terminal(80, 10) do
+    with_test_terminal(80, 24) do
       # Scroll down and right multiple times
       inject_keys(:down, :down, :right, :right, :right, :q)
 
