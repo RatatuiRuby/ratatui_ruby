@@ -27,7 +27,7 @@ module RatatuiRuby
     #       Constraint.length(10)
     #     ]
     #   )
-    class Table < Data.define(:header, :rows, :widths, :highlight_style, :highlight_symbol, :selected_row, :block, :footer, :flex)
+    class Table < Data.define(:header, :rows, :widths, :highlight_style, :highlight_symbol, :selected_row, :block, :footer, :flex, :style)
       ##
       # :attr_reader: header
       # Header row content (Array of Strings).
@@ -64,6 +64,10 @@ module RatatuiRuby
       # :attr_reader: flex
       # Flex mode for column distribution.
 
+      ##
+      # :attr_reader: style
+      # Base style for the entire table.
+
       # Creates a new Table.
       #
       # [header] Array of strings/paragraphs.
@@ -75,7 +79,8 @@ module RatatuiRuby
       # [block] Block (optional).
       # [footer] Array of strings/paragraphs (optional).
       # [flex] Symbol (optional, default: <tt>:legacy</tt>).
-      def initialize(header: nil, rows: [], widths: [], highlight_style: nil, highlight_symbol: "> ", selected_row: nil, block: nil, footer: nil, flex: :legacy)
+      # [style] Style object or Hash (optional).
+      def initialize(header: nil, rows: [], widths: [], highlight_style: nil, highlight_symbol: "> ", selected_row: nil, block: nil, footer: nil, flex: :legacy, style: nil)
         super
       end
     end

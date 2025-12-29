@@ -9,7 +9,8 @@ module RatatuiRuby
     attr_reader block: Block?
     attr_reader footer: Array[String | Paragraph]?
     attr_reader flex: Symbol
+    attr_reader style: (Style | Hash[Symbol, untyped])?
 
-    def self.new: (?header: Array[String | Paragraph]?, ?rows: Array[Array[String | Paragraph | Style | _ToS]], ?widths: Array[Constraint], ?highlight_style: Style?, ?highlight_symbol: String, ?selected_row: Integer?, ?block: Block?, ?footer: Array[String | Paragraph]?, ?flex: Symbol) -> Table
+    def self.new: (?header: Array[String | Paragraph]?, ?rows: Array[Array[String | Paragraph | Style | _ToS]], ?widths: Array[Constraint], ?highlight_style: Style?, ?highlight_symbol: String, ?selected_row: Integer?, ?block: Block?, ?footer: Array[String | Paragraph]?, ?flex: Symbol, ?style: (Style | Hash[Symbol, untyped])?) -> Table
   end
 end

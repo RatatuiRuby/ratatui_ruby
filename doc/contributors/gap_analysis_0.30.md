@@ -80,7 +80,7 @@ Comparison of ratatui 0.30 features vs ratatui_ruby current implementation.
 | `header()` | `header:` | ✅ |
 | `footer()` | `footer:` | ✅ |
 | `block()` | `block:` | ✅ |
-| `style()` | — | ❌ **MISSING** |
+| `style()` | `style:` | ✅ |
 | `row_highlight_style()` | `highlight_style:` | ✅ |
 | `column_highlight_style()` | — | ❌ **MISSING** |
 | `cell_highlight_style()` | — | ❌ **MISSING** |

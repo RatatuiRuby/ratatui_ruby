@@ -19,12 +19,32 @@ PROCESSES = [
   { pid: 6789, name: "node", cpu: 18.9 }
 ].freeze
 
-selected_index = 0
+class TableApp
+  attr_reader :selected_index, :current_style_index
 
-RatatuiRuby.init_terminal
+  STYLES = [
+    { name: "Cyan", style: RatatuiRuby::Style.new(fg: :cyan) },
+    { name: "Red", style: RatatuiRuby::Style.new(fg: :red) },
+    { name: "Green", style: RatatuiRuby::Style.new(fg: :green) },
+    { name: "Blue on White", style: RatatuiRuby::Style.new(fg: :blue, bg: :white) },
+    { name: "Magenta", style: RatatuiRuby::Style.new(fg: :magenta, modifiers: [:bold]) }
+  ].freeze
 
-begin
-  loop do
+  def initialize
+    @selected_index = 0
+    @current_style_index = 0
+  end
+
+  def run
+    RatatuiRuby.run do
+      loop do
+        render
+        break if handle_input == :quit
+      end
+    end
+  end
+
+  def render
     # Create table rows from process data
     rows = PROCESSES.map { |p| [p[:pid].to_s, p[:name], "#{p[:cpu]}%"] }
 
@@ -38,36 +58,47 @@ begin
     # Create highlight style (yellow text)
     highlight_style = RatatuiRuby::Style.new(fg: :yellow)
 
-    # Create table with selection
+    current_style_entry = STYLES[@current_style_index]
+
+    # Create table with selection and base style
     table = RatatuiRuby::Table.new(
       header: ["PID", "Name", "CPU"],
       rows: rows,
       widths: widths,
-      selected_row: selected_index,
+      selected_row: @selected_index,
       highlight_style: highlight_style,
       highlight_symbol: "> ",
-      block: RatatuiRuby::Block.new(title: "Process Monitor (↑/↓ to select, q to quit)", borders: :all),
+      style: current_style_entry[:style],
+      block: RatatuiRuby::Block.new(
+        title: "Process Monitor (↑/↓ select, 's' style: #{current_style_entry[:name]}, q quit)",
+        borders: :all
+      ),
       footer: ["Total: #{PROCESSES.length}", "Total CPU: #{PROCESSES.sum { |p| p[:cpu] }}%", ""]
     )
 
     # Draw the table
     RatatuiRuby.draw(table)
+  end
 
-    # Handle events
+  def handle_input
     event = RatatuiRuby.poll_event
-    next unless event
+    return unless event
 
     case event
     in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
-      break
+      :quit
     in type: :key, code: "down" | "j"
-      selected_index = (selected_index + 1) % PROCESSES.length
+      @selected_index = (@selected_index + 1) % PROCESSES.length
     in type: :key, code: "up" | "k"
-      selected_index = (selected_index - 1) % PROCESSES.length
+      @selected_index = (@selected_index - 1) % PROCESSES.length
+    in type: :key, code: "s"
+      @current_style_index = (@current_style_index + 1) % STYLES.length
     else
       nil
     end
   end
-ensure
-  RatatuiRuby.restore_terminal
+end
+
+if __FILE__ == $0
+  TableApp.new.run
 end

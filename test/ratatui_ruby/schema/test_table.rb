@@ -14,6 +14,13 @@ class TestTable < Minitest::Test
     assert_equal header, t.header
     assert_equal rows, t.rows
     assert_equal widths, t.widths
+    assert_nil t.style
+  end
+
+  def test_table_creation_with_style
+    style = RatatuiRuby::Style.new(fg: :red)
+    t = RatatuiRuby::Table.new(rows: [], widths: [], style: style)
+    assert_equal style, t.style
   end
 
   def test_render

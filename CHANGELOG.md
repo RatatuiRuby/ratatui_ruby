@@ -21,6 +21,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Block Style**: Added `style` parameter to `Block` widget. **Note:** This inserts a new member into the `Block` Data object, which changes the positional order of members. Pattern matching or positional initialization of `Block` is affected.
 - **List Direction**: Added `direction` attribute (`:top_to_bottom` or `:bottom_to_top`) to `List` widget.
 - **Table Footer**: The `Table` widget now supports a `footer` parameter, allowing for summary rows at the bottom of the table.
+- **Table Style**: The `Table` widget now supports a `style` parameter, which applies a base style to the entire table area.
 - **Block Padding**: `Block` widget now supports correct padding via the `padding` parameter, accepting either a single integer for uniform padding or an array of 4 integers for directional padding (`[left, right, top, bottom]`).
 - **Block Title Alignment**: `Block` widget now supports `title_alignment` (`:left`, `:center`, `:right`) for positioning the title on the border.
 - **Constraint Ratio**: Added `Constraint.ratio(numerator, denominator)` to support proportional constraints where the ratio is explicit (e.g., 1/4 and 3/4).

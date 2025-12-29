@@ -163,6 +163,11 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         table = table.highlight_symbol(symbol);
     }
 
+    let style_val: Value = node.funcall("style", ())?;
+    if !style_val.is_nil() {
+        table = table.style(parse_style(style_val)?);
+    }
+
     let mut state = TableState::default();
     if !selected_row_val.is_nil() {
         let index: usize = selected_row_val.funcall("to_int", ())?;
