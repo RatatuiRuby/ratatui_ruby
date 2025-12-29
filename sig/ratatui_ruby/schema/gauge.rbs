@@ -8,6 +8,7 @@ module RatatuiRuby
     attr_reader style: Style
     attr_reader block: Block?
 
-    def self.new: (?ratio: Float, ?label: String?, ?style: Style, ?block: Block?) -> Gauge
+    attr_reader use_unicode: bool
+    def self.new: (?ratio: Float?, ?percent: Integer?, ?label: String?, ?style: Style, ?block: Block?, ?use_unicode: bool) -> Gauge
   end
 end

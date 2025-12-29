@@ -149,12 +149,12 @@ Orientation: Ruby supports `:vertical`/`:horizontal` but ratatui has 4 variants:
 | Ratatui Feature | ratatui_ruby | Status |
 |-----------------|--------------|--------|
 | `ratio()` | `ratio:` | ✅ |
-| `percent()` | — | ❌ **MISSING** (alternative to ratio) |
+| `percent()` | `percent:` | ✅ (alternative to ratio) |
 | `label()` | `label:` | ✅ |
 | `block()` | `block:` | ✅ |
 | `style()` | — | ❌ **MISSING** |
 | `gauge_style()` | `style:` | ✅ (mapped) |
-| `use_unicode()` | — | ❌ **MISSING** |
+| `use_unicode()` | `use_unicode:` | ✅ |
 
 ---
 
@@ -311,23 +311,13 @@ All modifiers are covered. ✅
 ## Priority Recommendations
 
 ### High Priority (Common Use Cases)
-1. **Flex::SpaceEvenly** - Simple addition to layout
-2. **Block::border_type** - Rounded, Double, Thick borders are common
-3. **Block::padding** - Essential for proper spacing
-4. **Tabs::divider** - Commonly customized
-5. **Tabs::highlight_style** - Essential for visual feedback
-6. **List::direction** - BottomToTop lists for chat UIs
+1. **Scrollbar orientation variants** - VerticalLeft, HorizontalTop
+2. **Scrollbar styling** - track_symbol, begin/end symbols
 
 ### Medium Priority
-7. **Constraint::Ratio** - Useful for precise layouts
-8. **Block::title_top/title_bottom** - Multiple titles per block
-9. **Table::footer** - Common in data tables
-10. **Table::flex** - Modern table layouts
-11. **Scrollbar orientation variants** - VerticalLeft, HorizontalTop
-12. **Scrollbar styling** - track_symbol, begin/end symbols
+3. **Chart::legend_position** - Nice to have
+4. **Sparkline::direction** - Niche use case
 
 ### Lower Priority
-13. **Chart::legend_position** - Nice to have
-14. **Sparkline::direction** - Niche use case
-15. **Canvas labels** - Advanced use case
-16. **BarChart grouped** - Advanced charting
+5. **Canvas labels** - Advanced use case
+6. **BarChart grouped** - Advanced charting

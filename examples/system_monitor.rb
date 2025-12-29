@@ -58,7 +58,7 @@ class SystemMonitorApp
     )
 
     gauge = RatatuiRuby::Gauge.new(
-      ratio: @percentage / 100.0,
+      percent: @percentage,
       label: "#{@percentage}%",
       style: RatatuiRuby::Style.new(fg: :green),
       block: RatatuiRuby::Block.new(title: "Memory Usage", borders: [:all])

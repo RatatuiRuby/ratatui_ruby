@@ -20,4 +20,17 @@ class TestGauge < Minitest::Test
       assert_equal "████████50%         ", buffer_content[0]
     end
   end
+
+  def test_gauge_percent
+    g = RatatuiRuby::Gauge.new(percent: 50)
+    assert_in_delta 0.5, g.ratio
+  end
+
+  def test_use_unicode_attributes
+    g_default = RatatuiRuby::Gauge.new(ratio: 0.5)
+    assert_equal true, g_default.use_unicode
+
+    g_false = RatatuiRuby::Gauge.new(ratio: 0.5, use_unicode: false)
+    assert_equal false, g_false.use_unicode
+  end
 end

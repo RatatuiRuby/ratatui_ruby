@@ -222,7 +222,7 @@ Utilizes `Sparkline` and `Chart` widgets to visualize real-time (simulated) data
 ![Stock Ticker Screenshot](./images/examples-stock_ticker.rb.png)
 
 ### [System Monitor](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/system_monitor.rb)
-Combines `Table` and `Gauge` widgets in a vertical layout to create a functional system overview.
+Combines `Table` and `Gauge` widgets in a vertical layout to create a functional system overview. Demonstrates the new `percent` parameter for easy `Gauge` configuration.
 
 ![System Monitor Screenshot](./images/examples-system_monitor.rb.png)
 

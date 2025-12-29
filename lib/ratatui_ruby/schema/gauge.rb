@@ -19,7 +19,7 @@ module RatatuiRuby
     #     label: "75%",
     #     style: Style.new(fg: :green)
     #   )
-    class Gauge < Data.define(:ratio, :label, :style, :block)
+    class Gauge < Data.define(:ratio, :label, :style, :block, :use_unicode)
       ##
       # :attr_reader: ratio
       # Progress ratio from 0.0 to 1.0.
@@ -39,14 +39,25 @@ module RatatuiRuby
       # :attr_reader: block
       # Optional wrapping block.
 
+      ##
+      # :attr_reader: use_unicode
+      # Whether to use Unicode block characters (true) or ASCII characters (false).
+      # Default is false (ASCII) to be conservative, though Ratatui defaults to true.
+
       # Creates a new Gauge.
       #
       # [ratio] Float (0.0 - 1.0).
+      # [percent] Integer (0 - 100), alternative to ratio.
       # [label] String (optional).
       # [style] Style object (default: Style.default).
       # [block] Block widget (optional).
-      def initialize(ratio: 0.0, label: nil, style: Style.default, block: nil)
-        super
+      # [use_unicode] Boolean (default: true).
+      def initialize(ratio: nil, percent: nil, label: nil, style: Style.default, block: nil, use_unicode: true)
+        if percent
+          ratio = percent.to_f / 100.0
+        end
+        ratio ||= 0.0
+        super(ratio:, label:, style:, block:, use_unicode:)
       end
     end
 end

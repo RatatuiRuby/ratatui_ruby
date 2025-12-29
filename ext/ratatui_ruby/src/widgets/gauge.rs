@@ -10,8 +10,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let label_val: Value = node.funcall("label", ())?;
     let style_val: Value = node.funcall("style", ())?;
     let block_val: Value = node.funcall("block", ())?;
-
-    let mut gauge = Gauge::default().ratio(ratio);
+    let use_unicode: bool = node.funcall("use_unicode", ())?;
+    let mut gauge = Gauge::default().ratio(ratio).use_unicode(use_unicode);
 
     if !label_val.is_nil() {
         let label_str: String = label_val.funcall("to_s", ())?;
