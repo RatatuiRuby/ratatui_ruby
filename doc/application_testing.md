@@ -82,13 +82,18 @@ assert_equal 2, pos[:y]
 
 Injects a mock event into the event queue. This is the preferred way to simulate user input instead of stubbing `poll_event`.
 
-```ruby
-# Simulate 'q' key press
-inject_event("key", { code: "q" })
+> [!IMPORTANT]
+> You must call `inject_event` inside a `with_test_terminal` block. Calling it outside leads to race conditions where events are flushed before the application starts.
 
-# Now poll_event will return the 'q' key event
-event = RatatuiRuby.poll_event
-assert_equal "q", event.code
+```ruby
+with_test_terminal do
+  # Simulate 'q' key press
+  inject_event("key", { code: "q" })
+
+  # Now poll_event will return the 'q' key event
+  event = RatatuiRuby.poll_event
+  assert_equal "q", event.code
+end
 ```
 
 ## Example

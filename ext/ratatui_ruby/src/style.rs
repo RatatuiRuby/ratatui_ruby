@@ -13,6 +13,29 @@ pub fn parse_color(color_str: &str) -> Option<Color> {
     color_str.parse::<Color>().ok()
 }
 
+pub fn parse_color_value(val: Value) -> Result<Option<Color>, Error> {
+    if val.is_nil() {
+        return Ok(None);
+    }
+    let s: String = val.funcall("to_s", ())?;
+    Ok(parse_color(&s))
+}
+
+pub fn parse_modifier_str(s: &str) -> Option<Modifier> {
+    match s {
+        "bold" => Some(Modifier::BOLD),
+        "italic" => Some(Modifier::ITALIC),
+        "dim" => Some(Modifier::DIM),
+        "reversed" => Some(Modifier::REVERSED),
+        "underlined" => Some(Modifier::UNDERLINED),
+        "slow_blink" => Some(Modifier::SLOW_BLINK),
+        "rapid_blink" => Some(Modifier::RAPID_BLINK),
+        "crossed_out" => Some(Modifier::CROSSED_OUT),
+        "hidden" => Some(Modifier::HIDDEN),
+        _ => None,
+    }
+}
+
 pub fn parse_style(style_val: Value) -> Result<Style, Error> {
     let ruby = magnus::Ruby::get().unwrap();
     if style_val.is_nil() {

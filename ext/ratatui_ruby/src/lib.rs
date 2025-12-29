@@ -54,6 +54,7 @@ fn init() -> Result<(), Error> {
     let buffer_class = m.define_class("Buffer", ruby.class_object())?;
     buffer_class.undef_default_alloc_func();
     buffer_class.define_method("set_string", magnus::method!(buffer::BufferWrapper::set_string, 4))?;
+    buffer_class.define_method("set_cell", magnus::method!(buffer::BufferWrapper::set_cell, 3))?;
     buffer_class.define_method("area", magnus::method!(buffer::BufferWrapper::area, 0))?;
 
     m.define_module_function("_init_terminal", function!(init_terminal, 2))?;

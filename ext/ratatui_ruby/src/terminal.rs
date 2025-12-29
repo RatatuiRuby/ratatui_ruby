@@ -155,9 +155,10 @@ pub fn get_cell_at(x: u16, y: u16) -> Result<magnus::RHash, Error> {
         let buffer = terminal.backend().buffer();
         if let Some(cell) = buffer.cell((x, y)) {
             let hash = ruby.hash_new();
-            hash.aset("symbol", cell.symbol())?;
+            hash.aset("char", cell.symbol())?;
             hash.aset("fg", color_to_value(cell.fg))?;
             hash.aset("bg", color_to_value(cell.bg))?;
+            hash.aset("modifiers", modifiers_to_value(cell.modifier))?;
             Ok(hash)
         } else {
             Err(Error::new(
@@ -198,4 +199,39 @@ fn color_to_value(color: ratatui::style::Color) -> Value {
             .as_value(),
         ratatui::style::Color::Indexed(i) => ruby.to_symbol(&format!("indexed_{}", i)).as_value(),
     }
+}
+
+fn modifiers_to_value(modifier: ratatui::style::Modifier) -> Value {
+    let ruby = magnus::Ruby::get().unwrap();
+    let ary = ruby.ary_new();
+    
+    if modifier.contains(ratatui::style::Modifier::BOLD) {
+        ary.push(ruby.str_new("bold")).unwrap();
+    }
+    if modifier.contains(ratatui::style::Modifier::ITALIC) {
+        ary.push(ruby.str_new("italic")).unwrap();
+    }
+    if modifier.contains(ratatui::style::Modifier::DIM) {
+        ary.push(ruby.str_new("dim")).unwrap();
+    }
+    if modifier.contains(ratatui::style::Modifier::UNDERLINED) {
+        ary.push(ruby.str_new("underlined")).unwrap();
+    }
+    if modifier.contains(ratatui::style::Modifier::REVERSED) {
+        ary.push(ruby.str_new("reversed")).unwrap();
+    }
+    if modifier.contains(ratatui::style::Modifier::HIDDEN) {
+        ary.push(ruby.str_new("hidden")).unwrap();
+    }
+    if modifier.contains(ratatui::style::Modifier::CROSSED_OUT) {
+        ary.push(ruby.str_new("crossed_out")).unwrap();
+    }
+    if modifier.contains(ratatui::style::Modifier::SLOW_BLINK) {
+        ary.push(ruby.str_new("slow_blink")).unwrap();
+    }
+    if modifier.contains(ratatui::style::Modifier::RAPID_BLINK) {
+        ary.push(ruby.str_new("rapid_blink")).unwrap();
+    }
+    
+    ary.as_value()
 }

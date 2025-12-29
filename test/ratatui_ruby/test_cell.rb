@@ -12,9 +12,9 @@ module RatatuiRuby
     include TestHelper
 
     def test_cell_properties
-      cell = Cell.new(symbol: "X", fg: :red, bg: :blue, modifiers: ["bold", "italic"])
+      cell = Cell.new(char: "X", fg: :red, bg: :blue, modifiers: ["bold", "italic"])
 
-      assert_equal "X", cell.symbol
+      assert_equal "X", cell.char
       assert_equal :red, cell.fg
       assert_equal :blue, cell.bg
       assert_equal ["bold", "italic"], cell.modifiers
@@ -26,7 +26,7 @@ module RatatuiRuby
 
     def test_cell_empty
       cell = Cell.empty
-      assert_equal " ", cell.symbol
+      assert_equal " ", cell.char
       assert_nil cell.fg
       assert_nil cell.bg
       assert_empty cell.modifiers
@@ -39,49 +39,55 @@ module RatatuiRuby
 
     def test_cell_char
       cell = Cell.char("Z")
-      assert_equal "Z", cell.symbol
+      assert_equal "Z", cell.char
       assert_nil cell.fg
       assert_nil cell.bg
       assert_empty cell.modifiers
     end
 
     def test_equality
-      c1 = Cell.new(symbol: "A", fg: :green)
-      c2 = Cell.new(symbol: "A", fg: :green)
-      c3 = Cell.new(symbol: "B", fg: :green)
+      c1 = Cell.new(char: "A", fg: :green)
+      c2 = Cell.new(char: "A", fg: :green)
+      c3 = Cell.new(char: "B", fg: :green)
 
       assert_equal c1, c2
       refute_equal c1, c3
     end
 
     def test_inspect
-      c1 = Cell.new(symbol: "X", fg: :red, modifiers: ["bold"])
-      assert_equal '#<RatatuiRuby::Cell symbol="X" fg=:red modifiers=["bold"]>', c1.inspect
+      c1 = Cell.new(char: "X", fg: :red, modifiers: ["bold"])
+      assert_equal '#<RatatuiRuby::Cell char="X" fg=:red modifiers=["bold"]>', c1.inspect
 
       c2 = Cell.empty
-      assert_equal '#<RatatuiRuby::Cell symbol=" ">', c2.inspect
+      assert_equal '#<RatatuiRuby::Cell char=" ">', c2.inspect
+    end
+
+    def test_to_s
+      c = Cell.new(char: "X", fg: :red)
+      assert_equal "X", c.to_s
+      assert_equal " ", Cell.empty.to_s
     end
 
     def test_pattern_matching
-      cell = Cell.new(symbol: "X", fg: :red)
+      cell = Cell.new(char: "X", fg: :red)
       
       matched = case cell
-      in { symbol: "X", fg: :red }
+      in { char: "X", fg: :red }
         true
       else
         false
       end
       
-      assert matched, "Cell should match pattern { symbol: 'X', fg: :red }"
+      assert matched, "Cell should match pattern { char: 'X', fg: :red }"
 
       matched_partial = case cell
-      in { symbol: "X" }
+      in { char: "X" }
         true
       else
         false
       end
 
-      assert matched_partial, "Cell should match partial pattern { symbol: 'X' }"
+      assert matched_partial, "Cell should match partial pattern { char: 'X' }"
     end
 
     def test_get_cell_at_integration
@@ -93,10 +99,10 @@ module RatatuiRuby
         # Title at (1, 0): "H"
         cell = RatatuiRuby.get_cell_at(1, 0)
         assert_instance_of Cell, cell
-        assert_equal "H", cell.symbol
+        assert_equal "H", cell.char
         
         # Checking underlying helper usage too
-        assert_cell_style(1, 0, symbol: "H")
+        assert_cell_style(1, 0, char: "H")
       end
     end
   end

@@ -185,7 +185,7 @@ module RatatuiRuby
   def self.get_cell_at(x, y)
     raw = _get_cell_at(x, y)
     Cell.new(
-      symbol: raw["symbol"],
+      char: raw["char"],
       fg: raw["fg"],
       bg: raw["bg"],
       modifiers: raw["modifiers"] || []

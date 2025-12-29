@@ -43,10 +43,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Scrollbar Orientation**: Added support for all `ratatui` scrollbar orientations: `:vertical_left`, `:vertical_right`, `:horizontal_top`, and `:horizontal_bottom`. Existing `:vertical` and `:horizontal` options remain as aliases.
 - **Gauge Enhancements**: Added `percent` initialization parameter as a convenience alternative to `ratio`, and explicitly exposed `use_unicode` attribute to toggle between unicode blocks and ASCII rendering (defaults to `true`).
 - **TestHelper Improvements**: Added `inject_keys` helper for concise event injection and a default `timeout` (2s) to `with_test_terminal` to prevent hanging tests. Also implemented value equality (`==`) for `Event` objects to simplify assertions.
-- **Test Color Inspection**: Added `RatatuiRuby::TestHelper#get_cell` and `#assert_cell_style` for testing terminal cell attributes (colors, symbols).
+- **Test Color Inspection**: Added `RatatuiRuby::TestHelper#get_cell` and `#assert_cell_style` for testing terminal cell attributes (colors, characters).
+- **Test Safegaurds**: `RatatuiRuby::TestHelper#inject_event` (and `inject_keys`) now raises a helpful error if called outside of `with_test_terminal`, preventing test hangs caused by race conditions.
+- **Cell Example**: Added `examples/cell_demo.rb` showcasing how to mix `Cell` objects with Strings in tables and custom widgets, demonstrating advanced styling and layout composition.
 
 ### Changed
 
+- **Cell Refactor (Breaking)**: Renamed `RatatuiRuby::Cell#symbol` to `#char` to avoid confusion with Ruby's `Symbol` class. This affects initialization (`Cell.new(char: "X")`) and property access (`cell.char`).
 - **Event API (Breaking)**: `RatatuiRuby.poll_event` now returns typed `Event` objects instead of raw Hashes. Code that previously used `event[:type]`, `event[:code]`, etc. must be updated to use `event.key?`, `event.code`, and similar methods. See `doc/event_handling.md` for migration guidance.
 - **Ratatui Upgraded to 0.30.0**: Upgraded the underlying `ratatui` library from 0.29 to 0.30.0, bringing significant improvements including modularized crates, `no_std` support for embedded targets, and major widget and layout enhancements. Layout cache is now explicitly enabled to maintain performance.
 - **RatatuiRuby.run**: Added `RatatuiRuby.run` as a lifecycle context manager that initializes the terminal, yields a session, and ensures the terminal is restored, allowing users to define their own application loops. `RatatuiRuby.main_loop` has been removed in favor of this more explicit API.
@@ -56,6 +59,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Fixed
 
 - **Alpine Linux Support**: Fixed gem installation failures on Alpine Linux (musl targets) by properly configuring `crate-type` to support static linking where dynamic linking is unsupported.
+- **Rust Compilation**: Resolved a deprecation warning for `ratatui::buffer::Buffer::get_mut` by upgrading to `cell_mut`, ensuring clean builds with `cargo check` and `bundle exec rake`.
 
 ## [0.3.1] - 2025-12-28
 

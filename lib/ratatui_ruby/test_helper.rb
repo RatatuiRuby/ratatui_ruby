@@ -2,6 +2,7 @@
 require "timeout"
 
 
+
 # SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -50,12 +51,17 @@ module RatatuiRuby
 
       RatatuiRuby.stub :init_terminal, nil do
         RatatuiRuby.stub :restore_terminal, nil do
-          if timeout
-            Timeout.timeout(timeout) do
+          begin
+            @_ratatui_test_terminal_active = true
+            if timeout
+              Timeout.timeout(timeout) do
+                yield
+              end
+            else
               yield
             end
-          else
-            yield
+          ensure
+            @_ratatui_test_terminal_active = false
           end
         end
       end
@@ -89,25 +95,35 @@ module RatatuiRuby
     # Pass any RatatuiRuby::Event object. The event will be returned by
     # the next call to RatatuiRuby.poll_event.
     #
+    # Raises a +RuntimeError+ if called outside of a +with_test_terminal+ block.
+    #
     # == Examples
     #
-    #   # Key events
-    #   inject_event(RatatuiRuby::Event::Key.new(code: "q"))
-    #   inject_event(RatatuiRuby::Event::Key.new(code: "s", modifiers: ["ctrl"]))
+    #   with_test_terminal do
+    #     # Key events
+    #     inject_event(RatatuiRuby::Event::Key.new(code: "q"))
+    #     inject_event(RatatuiRuby::Event::Key.new(code: "s", modifiers: ["ctrl"]))
     #
-    #   # Mouse events
-    #   inject_event(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 10, y: 5))
+    #     # Mouse events
+    #     inject_event(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 10, y: 5))
     #
-    #   # Resize events
-    #   inject_event(RatatuiRuby::Event::Resize.new(width: 120, height: 40))
+    #     # Resize events
+    #     inject_event(RatatuiRuby::Event::Resize.new(width: 120, height: 40))
     #
-    #   # Paste events
-    #   inject_event(RatatuiRuby::Event::Paste.new(content: "Hello"))
+    #     # Paste events
+    #     inject_event(RatatuiRuby::Event::Paste.new(content: "Hello"))
     #
-    #   # Focus events
-    #   inject_event(RatatuiRuby::Event::FocusGained.new)
-    #   inject_event(RatatuiRuby::Event::FocusLost.new)
+    #     # Focus events
+    #     inject_event(RatatuiRuby::Event::FocusGained.new)
+    #     inject_event(RatatuiRuby::Event::FocusLost.new)
+    #   end
     def inject_event(event)
+      unless @_ratatui_test_terminal_active
+        raise "Events must be injected inside a `with_test_terminal` block. " \
+              "Calling this method outside the block causes a race condition where the event " \
+              "is flushed before the application starts."
+      end
+
       case event
       when RatatuiRuby::Event::Key
         RatatuiRuby.inject_test_event("key", { code: event.code, modifiers: event.modifiers })
@@ -144,10 +160,12 @@ module RatatuiRuby
     #
     # == Examples
     #
-    #   inject_keys("a", "b", "c")
-    #   inject_keys(:enter, :esc)
-    #   inject_keys(:ctrl_c, :alt_shift_left)
-    #   inject_keys("j", { code: "k", modifiers: ["ctrl"] })
+    #   with_test_terminal do
+    #     inject_keys("a", "b", "c")
+    #     inject_keys(:enter, :esc)
+    #     inject_keys(:ctrl_c, :alt_shift_left)
+    #     inject_keys("j", { code: "k", modifiers: ["ctrl"] })
+    #   end
     def inject_keys(*args)
       args.each do |arg|
         event = case arg
@@ -182,7 +200,7 @@ module RatatuiRuby
     ##
     # Asserts that the cell at the given coordinates has the expected attributes.
     #
-    #   assert_cell_style(0, 0, symbol: "H", fg: :red)
+    #   assert_cell_style(0, 0, char: "H", fg: :red)
     def assert_cell_style(x, y, **expected_attributes)
       cell = get_cell(x, y)
       expected_attributes.each do |key, value|

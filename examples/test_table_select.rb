@@ -49,27 +49,15 @@ class TestTableSelect < Minitest::Test
   end
 
   def test_row_selection
-    # We can check internal state or rendered output.
-    # Since render uses state, we can verify rendered output if selection is visible.
-    # Render highlights selected row.
-    # We can also check state @app.selected_index if accessible (attr_reader).
-    
+    # Verify proper row selection logic, including wrapping.
     with_test_terminal(100, 20) do
-      # Move down, then up, then quit
-
-      # We need to run, check state/buffer?
-      # If we run once, it processes all events.
-      # To check intermediate state, we'd need to mock/hook.
-      # Or just check final state after sequence.
-      
-      # Let's check finalizing state after a sequence.
+      # Perform a sequence of moves:
       # Down (1), Down (2), Up (1), Up (0), Up (Wrap -> Last)
-      
       inject_keys(:j, :j, :k, :k, :up, :q)
       
       @app.run
       
-      # Should be at last item
+      # Verify final state matches expected index (last item due to wrapping)
       assert_equal PROCESSES.length - 1, @app.selected_index
     end
   end
@@ -97,8 +85,7 @@ class TestTableSelect < Minitest::Test
 
   def test_highlight_spacing_change
     with_test_terminal(100, 20) do
-      # Initial is :when_selected. Press 'h' -> :never -> :always -> :when_selected
-      # Let's switch to :never
+      # Toggle through modes: :when_selected -> :never
       inject_keys(:h, :q)
       
       @app.run

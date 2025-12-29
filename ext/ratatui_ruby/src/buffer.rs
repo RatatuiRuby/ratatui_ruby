@@ -25,6 +25,57 @@ impl BufferWrapper {
         Ok(())
     }
 
+    pub fn set_cell(&self, x: u16, y: u16, cell_val: Value) -> Result<(), Error> {
+        let buffer = unsafe { &mut *self.ptr };
+        let area = buffer.area;
+
+        if x >= area.x + area.width || y >= area.y + area.height {
+             return Ok(());
+        }
+
+        let symbol: String = cell_val.funcall("char", ())?;
+        let fg_val: Value = cell_val.funcall("fg", ())?;
+        let bg_val: Value = cell_val.funcall("bg", ())?;
+        let modifiers_val: Value = cell_val.funcall("modifiers", ())?;
+
+        // Construct a temporary Style to reuse parse_style logic if possible, 
+        // or just parse manually since Cell structure in Ruby assumes separate fields.
+        // Actually, we can reuse `parse_style` if we construct a hash, but that's expensive.
+        // Let's just create a default style and apply overrides.
+        
+        // Better: The user passed a RatatuiRuby::Cell. 
+        // We should probably rely on helper to extract Style from it?
+        // Or just map fields.
+
+        let mut style = ratatui::style::Style::default();
+        
+        if !fg_val.is_nil() {
+             if let Some(color) = crate::style::parse_color_value(fg_val)? {
+                 style = style.fg(color);
+             }
+        }
+        if !bg_val.is_nil() {
+             if let Some(color) = crate::style::parse_color_value(bg_val)? {
+                 style = style.bg(color);
+             }
+        }
+        
+        if let Some(mods_array) = magnus::RArray::from_value(modifiers_val) {
+             for i in 0..mods_array.len() {
+                 let mod_str: String = mods_array.entry::<String>(i as isize)?;
+                 if let Some(modifier) = crate::style::parse_modifier_str(&mod_str) {
+                     style = style.add_modifier(modifier);
+                 }
+             }
+        }
+
+        if let Some(cell) = buffer.cell_mut((x, y)) {
+            cell.set_symbol(&symbol).set_style(style);
+        }
+
+        Ok(())
+    }
+
     pub fn area(&self) -> Value {
         let ruby = Ruby::get().unwrap();
         let module = ruby.define_module("RatatuiRuby").unwrap();

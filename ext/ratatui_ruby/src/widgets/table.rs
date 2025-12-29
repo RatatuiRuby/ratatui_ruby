@@ -45,6 +45,33 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
                 cells.push(Cell::from(text).style(cell_style));
             } else if class_name.as_ref() == "RatatuiRuby::Style" {
                 cells.push(Cell::from("").style(parse_style(cell_val)?));
+            } else if class_name.as_ref() == "RatatuiRuby::Cell" {
+                // Handle RatatuiRuby::Cell -> ratatui::widgets::Cell
+                let symbol: String = cell_val.funcall("char", ())?;
+                let fg_val: Value = cell_val.funcall("fg", ())?;
+                let bg_val: Value = cell_val.funcall("bg", ())?;
+                let modifiers_val: Value = cell_val.funcall("modifiers", ())?;
+
+                let mut style = ratatui::style::Style::default();
+                if !fg_val.is_nil() {
+                    if let Some(color) = crate::style::parse_color_value(fg_val)? {
+                        style = style.fg(color);
+                    }
+                }
+                if !bg_val.is_nil() {
+                    if let Some(color) = crate::style::parse_color_value(bg_val)? {
+                        style = style.bg(color);
+                    }
+                }
+                if let Some(mods_array) = magnus::RArray::from_value(modifiers_val) {
+                    for i in 0..mods_array.len() {
+                        let mod_str: String = mods_array.entry::<String>(i as isize)?;
+                        if let Some(modifier) = crate::style::parse_modifier_str(&mod_str) {
+                            style = style.add_modifier(modifier);
+                        }
+                    }
+                }
+                cells.push(Cell::from(symbol).style(style));
             } else {
                 let cell_str: String = cell_val.funcall("to_s", ())?;
                 cells.push(Cell::from(cell_str));
@@ -127,6 +154,32 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
                 let style_val: Value = cell_val.funcall("style", ())?;
                 let cell_style = parse_style(style_val)?;
                 header_cells.push(Cell::from(text).style(cell_style));
+            } else if class_name.as_ref() == "RatatuiRuby::Cell" {
+                let symbol: String = cell_val.funcall("char", ())?;
+                let fg_val: Value = cell_val.funcall("fg", ())?;
+                let bg_val: Value = cell_val.funcall("bg", ())?;
+                let modifiers_val: Value = cell_val.funcall("modifiers", ())?;
+
+                let mut style = ratatui::style::Style::default();
+                if !fg_val.is_nil() {
+                    if let Some(color) = crate::style::parse_color_value(fg_val)? {
+                        style = style.fg(color);
+                    }
+                }
+                if !bg_val.is_nil() {
+                    if let Some(color) = crate::style::parse_color_value(bg_val)? {
+                        style = style.bg(color);
+                    }
+                }
+                if let Some(mods_array) = magnus::RArray::from_value(modifiers_val) {
+                    for i in 0..mods_array.len() {
+                        let mod_str: String = mods_array.entry::<String>(i as isize)?;
+                        if let Some(modifier) = crate::style::parse_modifier_str(&mod_str) {
+                            style = style.add_modifier(modifier);
+                        }
+                    }
+                }
+                header_cells.push(Cell::from(symbol).style(style));
             } else {
                 let cell_str: String = cell_val.funcall("to_s", ())?;
                 header_cells.push(Cell::from(cell_str));
@@ -150,6 +203,32 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
                 let style_val: Value = cell_val.funcall("style", ())?;
                 let cell_style = parse_style(style_val)?;
                 footer_cells.push(Cell::from(text).style(cell_style));
+            } else if class_name.as_ref() == "RatatuiRuby::Cell" {
+                 let symbol: String = cell_val.funcall("char", ())?;
+                 let fg_val: Value = cell_val.funcall("fg", ())?;
+                 let bg_val: Value = cell_val.funcall("bg", ())?;
+                 let modifiers_val: Value = cell_val.funcall("modifiers", ())?;
+ 
+                 let mut style = ratatui::style::Style::default();
+                 if !fg_val.is_nil() {
+                     if let Some(color) = crate::style::parse_color_value(fg_val)? {
+                         style = style.fg(color);
+                     }
+                 }
+                 if !bg_val.is_nil() {
+                     if let Some(color) = crate::style::parse_color_value(bg_val)? {
+                         style = style.bg(color);
+                     }
+                 }
+                 if let Some(mods_array) = magnus::RArray::from_value(modifiers_val) {
+                     for i in 0..mods_array.len() {
+                         let mod_str: String = mods_array.entry::<String>(i as isize)?;
+                         if let Some(modifier) = crate::style::parse_modifier_str(&mod_str) {
+                             style = style.add_modifier(modifier);
+                         }
+                     }
+                 }
+                 footer_cells.push(Cell::from(symbol).style(style));
             } else {
                 let cell_str: String = cell_val.funcall("to_s", ())?;
                 footer_cells.push(Cell::from(cell_str));

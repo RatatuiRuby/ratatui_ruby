@@ -283,4 +283,60 @@ class TestTable < Minitest::Test
       assert_equal ["> A  "], buffer_content
     end
   end
+  def test_mixed_cell_content
+    # Verify we can mix Strings and Cells in the same row
+    cell = RatatuiRuby::Cell.new(char: "X", fg: :red)
+    rows = [["A", cell]]
+    widths = [RatatuiRuby::Constraint.length(1), RatatuiRuby::Constraint.length(1)]
+
+    table = RatatuiRuby::Table.new(rows:, widths:)
+
+    with_test_terminal(5, 1) do
+      RatatuiRuby.draw(table)
+      
+      # Check content
+      assert_equal "A", RatatuiRuby.get_cell_at(0, 0).char
+      
+      rendered_cell = RatatuiRuby.get_cell_at(1, 0) # Spacing? default column_spacing is 1
+      # A (0) + space (1) + X (2)
+      
+      rendered_cell = RatatuiRuby.get_cell_at(2, 0)
+      assert_equal "X", rendered_cell.char
+      assert_equal :red, rendered_cell.fg
+    end
+  end
+
+  def test_header_footer_cells
+    header_cell = RatatuiRuby::Cell.new(char: "H", fg: :blue)
+    footer_cell = RatatuiRuby::Cell.new(char: "F", fg: :green)
+    
+    table = RatatuiRuby::Table.new(
+      rows: [],
+      widths: [RatatuiRuby::Constraint.length(1)],
+      header: [header_cell],
+      footer: [footer_cell]
+    )
+
+    with_test_terminal(5, 3) do
+      RatatuiRuby.draw(table)
+      # Check header (row 0)
+      h = RatatuiRuby.get_cell_at(0, 0)
+      assert_equal "H", h.char
+      assert_equal :blue, h.fg
+
+      # Check footer (row 1 or 2 depending on render height. with 0 rows and 3 height...
+      # Usually header take 1, body takes rest, footer takes 1.
+      # Let's search for "F"
+      
+      found_f = false
+      3.times do |y|
+        c = RatatuiRuby.get_cell_at(0, y)
+        if c.char == "F"
+          assert_equal :green, c.fg
+          found_f = true
+        end
+      end
+      assert found_f, "Footer cell not found"
+    end
+  end
 end
