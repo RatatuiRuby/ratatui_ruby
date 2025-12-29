@@ -19,7 +19,7 @@ module RatatuiRuby
     #     data: [1, 4, 3, 8, 2, 9, 3, 2],
     #     style: Style.new(fg: :yellow)
     #   )
-    class Sparkline < Data.define(:data, :max, :style, :block, :direction)
+    class Sparkline < Data.define(:data, :max, :style, :block, :direction, :absent_value_symbol, :absent_value_style)
       ##
       # :attr_reader: data
       # Array of integer values to plot.
@@ -45,14 +45,26 @@ module RatatuiRuby
       # Accepts +:left_to_right+ (default) or +:right_to_left+.
       # Use +:right_to_left+ when new data should appear on the left.
 
+      ##
+      # :attr_reader: absent_value_symbol
+      # Character to render for absent (nil) values (optional).
+      #
+      # If nil, absent values are rendered with a space.
+
+      ##
+      # :attr_reader: absent_value_style
+      # Style for absent (nil) values (optional).
+
       # Creates a new Sparkline widget.
       #
-      # [data] Array of Integers.
+      # [data] Array of Integers or nil. nil marks an absent value (distinct from 0).
       # [max] Max value (optional).
       # [style] Style (optional).
       # [block] Block (optional).
       # [direction] +:left_to_right+ or +:right_to_left+ (default: +:left_to_right+).
-      def initialize(data:, max: nil, style: nil, block: nil, direction: :left_to_right)
+      # [absent_value_symbol] Character for absent (nil) values (optional).
+      # [absent_value_style] Style for absent (nil) values (optional).
+      def initialize(data:, max: nil, style: nil, block: nil, direction: :left_to_right, absent_value_symbol: nil, absent_value_style: nil)
         super
       end
     end

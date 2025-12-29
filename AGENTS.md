@@ -43,7 +43,7 @@ Every file must begin with an SPDX-compliant header. Use the following format:
 ### Ruby Standards
 
 -   **Version:** Tested against the latest releases of Ruby 3.2, 3.3, 3.4, and 4.0, and must work on all of them. Local development happens on the latest stable release.
--   **Linter:** Run via `bundle exec rake lint`. You are not done until all linting passes.
+-   **Linter:** Always use `bin/agent_rake` for testing, linting, and compilation. Never run `bundle exec rake test`, `bundle exec rake lint`, or `bundle exec rake compile` directly. The `bin/agent_rake` script silences noisy build output and runs the complete default task (test + lint + compile), showing output only on failure. This is the canonical way to verify commit-readiness. Note: `bin/agent_rake` does not accept arguments; it always runs the full default task.
 -   **Style:**
     -   Use `Data.define` for all value objects (UI Nodes). (Prefer `class Foo < Data.define()` over `Foo = Data.define() do`).
     -   Prefer `frozen_string_literal: true`.
@@ -101,7 +101,7 @@ The project follows a standard Gem layout with an `ext/` directory for Rust code
 ### Development Environment
 
 -   **Setup:** `bin/setup` must handle both Bundler and Cargo dependencies.
--   **Pre-commit:** Use `bin/agent_rake` to ensure commit-readiness.
+-   **Pre-commit:** Use `bin/agent_rake` to ensure commit-readiness. See Ruby Standards for detailed instructions.
 
 ### Documentation
 
@@ -185,5 +185,20 @@ Before considering a task complete and returning control to the user, you **MUST
 
 1.  **Default Rake Task Passes:** Run `bin/agent_rake` to execute **ALL** tests and linting. Do not rely on partial test runs, or `rake test`, or `rake lint` alone. Confirm it passes with no new errors **or warnings**.
 2.  **Documentation Updated:** If public APIs or observable behavior changed, update relevant `doc/` files, `README.md`, and/or `ratatui_ruby-wiki` files,.
-3.  **Changelog Updated:** If public APIs, observable behavior, or gemspec dependencies changed, update [CHANGELOG.md](CHANGELOG.md)'s **Unreleased** section according to the [Semantic Versioning](https://semver.org/) and [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) specifications. Changelogs should be useful to human users of the library, not simple restatements of diffs or commit messages. **Do not add entries for internal tooling, CI, or build configuration changes that do not affect the distributed gem.**
+3.  **Changelog Updated:** If public APIs, observable behavior, or gemspec dependencies changed, update [CHANGELOG.md](CHANGELOG.md)'s **Unreleased** section according to the [Semantic Versioning](https://semver.org/) and [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) specifications. 
+    - **What belongs in CHANGELOG:** Only changes that affect **application developers** or **library developers** who use or depend on ratatui_ruby:
+      - New public APIs or widget parameters
+      - Observable behavior changes (rendering, styling, layout)
+      - Deprecations and removals
+      - Breaking changes
+      - New public examples (if they demonstrate significant features)
+      - Performance improvements that affect applications
+    - **What does NOT belong in CHANGELOG:** Internal changes that don't affect downstream users:
+      - Test additions or improvements
+      - Documentation updates, RDoc fixes, markdown clarifications
+      - Refactors of internal code
+      - New or modified example code (unless the example itself is a major feature)
+      - Internal tooling, CI/CD, or build configuration changes
+      - Code style, linting, or type signature changes
+    - Changelogs should be useful to downstream developers (both app and library developers), not simple restatements of diffs or commit messages.
 4.  **Commit Message Suggested:** You **MUST** ensure the final message to the user includes a suggested commit message block. This is NOT optional.

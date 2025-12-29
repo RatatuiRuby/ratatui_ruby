@@ -11,11 +11,18 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let style_val: Value = node.funcall("style", ())?;
     let block_val: Value = node.funcall("block", ())?;
     let direction_val: Value = node.funcall("direction", ())?;
+    let absent_value_symbol_val: Value = node.funcall("absent_value_symbol", ())?;
+    let absent_value_style_val: Value = node.funcall("absent_value_style", ())?;
 
     let mut data_vec = Vec::new();
     for i in 0..data_val.len() {
-        let val: u64 = data_val.entry(i as isize)?;
-        data_vec.push(val);
+        let val: Value = data_val.entry(i as isize)?;
+        if val.is_nil() {
+            data_vec.push(None);
+        } else {
+            let num: u64 = u64::try_convert(val)?;
+            data_vec.push(Some(num));
+        }
     }
 
     let mut sparkline = Sparkline::default().data(&data_vec);
@@ -43,6 +50,18 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         sparkline = sparkline.direction(direction);
     }
 
+    if !absent_value_symbol_val.is_nil() {
+        let symbol_str: String = String::try_convert(absent_value_symbol_val)?;
+        // Only use the first character if multiple are provided
+        if let Some(first_char) = symbol_str.chars().next() {
+            sparkline = sparkline.absent_value_symbol(first_char);
+        }
+    }
+
+    if !absent_value_style_val.is_nil() {
+        sparkline = sparkline.absent_value_style(parse_style(absent_value_style_val)?);
+    }
+
     frame.render_widget(sparkline, area);
     Ok(())
 }
@@ -66,5 +85,30 @@ mod tests {
         // At least we know it should have rendered 4 bars for 4 data points.
         let bars = buf.content().iter().filter(|c| c.symbol() != " ").count();
         assert_eq!(bars, 4);
+    }
+
+    #[test]
+    fn test_sparkline_absent_value_symbol() {
+        // Data with absent (None) and present values: [Some(5), None, Some(8), None]
+        let data = vec![Some(5), None, Some(8), None];
+        let sparkline = Sparkline::default()
+            .data(&data)
+            .absent_value_symbol("-");
+        let mut buf = Buffer::empty(Rect::new(0, 0, 4, 1));
+        sparkline.render(Rect::new(0, 0, 4, 1), &mut buf);
+        
+        // Collect all rendered symbols
+        let symbols: Vec<&str> = buf.content().iter().map(|c| c.symbol()).collect();
+        
+        // Check that we have 4 cells rendered
+        assert_eq!(symbols.len(), 4, "Should have 4 cells rendered for 4 data points");
+        
+        // Absent values (None) should render as "-"
+        assert_eq!(symbols[1], "-", "Second value (None) should render as dash");
+        assert_eq!(symbols[3], "-", "Fourth value (None) should render as dash");
+        
+        // Present values should not be dashes
+        assert_ne!(symbols[0], "-", "First value (Some(5)) should not be dash");
+        assert_ne!(symbols[2], "-", "Third value (Some(8)) should not be dash");
     }
 }

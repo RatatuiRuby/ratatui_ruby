@@ -1,7 +1,0 @@
-class StockTickerApp
-  # @public
-  def self.new: () -> StockTickerApp
-
-  # @public
-  def run: () -> void
-end

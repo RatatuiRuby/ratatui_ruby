@@ -216,10 +216,10 @@ Demonstrates the `Paragraph` widget's scroll functionality, allowing navigation 
 
 ![Scroll Text Screenshot](./images/examples-scroll_text.rb.png)
 
-### [Stock Ticker](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/stock_ticker/app.rb)
-Utilizes `Sparkline` and `Chart` widgets to visualize real-time (simulated) data. Demonstrates the `direction: :right_to_left` option for new data appearing on the left.
+### [Sparkline Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/sparkline_demo/app.rb)
+Demonstrates the `Sparkline` widget with interactive attribute cycling. Features multiple data sets with different patterns (steady growth, gaps, random, sawtooth, peaks), and explores all `Sparkline` options including direction, color, and the new `absent_value_symbol` and `absent_value_style` parameters for distinguishing zero/absent values from low data.
 
-![Stock Ticker Screenshot](./images/examples-stock_ticker.rb.png)
+![Sparkline Demo Screenshot](./images/examples-sparkline_demo.rb.png)
 
 ### [Gauge Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/gauge_demo/app.rb)
 Demonstrates the `Gauge` widget with interactive attribute cycling. Features multiple gauge instances with customizable ratio, gauge color, background style, Unicode toggle, and label modes. The sidebar provides hotkey documentation for exploring all Gauge options, including the distinction between `style` (background) and `gauge_style` (filled bar).
