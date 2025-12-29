@@ -11,6 +11,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **Gauge Style and GaugeStyle (Breaking)**: Added separate `style` and `gauge_style` parameters to the `Gauge` widget. The `style` parameter applies a base style to the entire gauge background, while `gauge_style` applies specifically to the filled bar portion. This matches Ratatui 0.30's widget API distinction. **Breaking:** The `style` parameter no longer defaults to `Style.default` and is now optional. Existing code that passes `style:` expecting bar coloring should change to `gauge_style:` instead.
+- **Gauge Demo Example**: New `gauge_demo` example demonstrates the `Gauge` widget comprehensively with interactive attribute cycling (ratio, gauge color, background style, Unicode mode, label format). Follows the developing_examples.md pattern with a sidebar for hotkey documentation.
+
+### Added (continued)
+
 - **LineGauge Style**: Added `style` parameter to `LineGauge` widget, allowing a base style to be applied to the entire gauge area. This complements the existing `filled_style` and `unfilled_style` parameters.
 
 - **Cached Layout Pattern**: Documented in `doc/interactive_design.md`, a canonical design for immediate-mode UI. Solve the layout duplication problem by calculating geometry once per frame (before rendering and event handling), then reusing the cached `Rect` objects everywhere. Three-phase lifecycle: `calculate_layout`, `render`, `handle_input`. Forms the foundation for Component architecture in Gem 1.5 where layout caching is automated.

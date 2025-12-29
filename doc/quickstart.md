@@ -221,10 +221,10 @@ Utilizes `Sparkline` and `Chart` widgets to visualize real-time (simulated) data
 
 ![Stock Ticker Screenshot](./images/examples-stock_ticker.rb.png)
 
-### [System Monitor](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/system_monitor/app.rb)
-Combines `Table` and `Gauge` widgets in a vertical layout to create a functional system overview. Demonstrates the new `percent` parameter for easy `Gauge` configuration.
+### [Gauge Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/gauge_demo/app.rb)
+Demonstrates the `Gauge` widget with interactive attribute cycling. Features multiple gauge instances with customizable ratio, gauge color, background style, Unicode toggle, and label modes. The sidebar provides hotkey documentation for exploring all Gauge options, including the distinction between `style` (background) and `gauge_style` (filled bar).
 
-![System Monitor Screenshot](./images/examples-system_monitor.rb.png)
+![Gauge Demo Screenshot](./images/examples-gauge_demo.rb.png)
 
 ### [Table Select](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/table_select/app.rb)
 Demonstrates interactive row selection in the `Table` widget with keyboard navigation, highlighting selected rows with custom styles and symbols, applying a base style, and dynamically adjusting `column_spacing`.

@@ -17,9 +17,9 @@ module RatatuiRuby
     #   Gauge.new(
     #     ratio: 0.75,
     #     label: "75%",
-    #     style: Style.new(fg: :green)
+    #     gauge_style: Style.new(fg: :green)
     #   )
-    class Gauge < Data.define(:ratio, :label, :style, :block, :use_unicode)
+    class Gauge < Data.define(:ratio, :label, :style, :gauge_style, :block, :use_unicode)
       ##
       # :attr_reader: ratio
       # Progress ratio from 0.0 to 1.0.
@@ -33,7 +33,11 @@ module RatatuiRuby
 
       ##
       # :attr_reader: style
-      # Style of the bar.
+      # Base style applied to the entire gauge background (optional).
+
+      ##
+      # :attr_reader: gauge_style
+      # Style applied specifically to the filled bar portion (optional).
 
       ##
       # :attr_reader: block
@@ -49,15 +53,16 @@ module RatatuiRuby
       # [ratio] Float (0.0 - 1.0).
       # [percent] Integer (0 - 100), alternative to ratio.
       # [label] String (optional).
-      # [style] Style object (default: Style.default).
+      # [style] Style object for the background (optional).
+      # [gauge_style] Style object for the filled bar (optional).
       # [block] Block widget (optional).
       # [use_unicode] Boolean (default: true).
-      def initialize(ratio: nil, percent: nil, label: nil, style: Style.default, block: nil, use_unicode: true)
+      def initialize(ratio: nil, percent: nil, label: nil, style: nil, gauge_style: nil, block: nil, use_unicode: true)
         if percent
           ratio = percent.to_f / 100.0
         end
         ratio ||= 0.0
-        super(ratio:, label:, style:, block:, use_unicode:)
+        super(ratio:, label:, style:, gauge_style:, block:, use_unicode:)
       end
     end
 end

@@ -9,6 +9,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let ratio: f64 = node.funcall("ratio", ())?;
     let label_val: Value = node.funcall("label", ())?;
     let style_val: Value = node.funcall("style", ())?;
+    let gauge_style_val: Value = node.funcall("gauge_style", ())?;
     let block_val: Value = node.funcall("block", ())?;
     let use_unicode: bool = node.funcall("use_unicode", ())?;
     let mut gauge = Gauge::default().ratio(ratio).use_unicode(use_unicode);
@@ -19,7 +20,11 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     if !style_val.is_nil() {
-        gauge = gauge.gauge_style(parse_style(style_val)?);
+        gauge = gauge.style(parse_style(style_val)?);
+    }
+
+    if !gauge_style_val.is_nil() {
+        gauge = gauge.gauge_style(parse_style(gauge_style_val)?);
     }
 
     if !block_val.is_nil() {
