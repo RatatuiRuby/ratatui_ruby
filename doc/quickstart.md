@@ -132,6 +132,12 @@ Demonstrates the `padding` property of the `Block` widget, supporting both unifo
 
 ![Block Padding Screenshot](./images/examples-block_padding.rb.png)
 
+### [Block Titles](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/block_titles.rb)
+Demonstrates the `Block` widget's ability to render multiple titles with individual alignment and positioning (top/bottom).
+
+![Block Titles Screenshot](./images/examples-block_titles.rb.png)
+
+
 ### [Box Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/box_demo.rb)
 A simple demonstration of `Block` and `Paragraph` widgets, reacting to key presses to change colors border styles.
 

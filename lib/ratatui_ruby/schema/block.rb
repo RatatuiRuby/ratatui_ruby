@@ -15,16 +15,19 @@ module RatatuiRuby
   #               [:plain, :rounded, :double, :thick, :quadrant_inside, :quadrant_outside]
   # [padding] The padding inside the block. Can be an Integer (uniform) or
   #           an Array of 4 Integers [left, right, top, bottom].
-  class Block < Data.define(:title, :title_alignment, :borders, :border_color, :border_type, :padding)
+  # [titles] An array of titles. Each title can be a String or a Hash/Object
+  #          with keys: content, alignment, position.
+  class Block < Data.define(:title, :titles, :title_alignment, :borders, :border_color, :border_type, :padding)
     # Creates a new Block.
     #
     # [title] The title string to display on the border.
+    # [titles] An array of titles.
     # [title_alignment] The alignment of the title.
     # [borders] An array of symbols representing which borders to display.
     # [border_color] The color of the border.
     # [border_type] The type of border to display.
     # [padding] The padding inside the block.
-    def initialize(title: nil, title_alignment: nil, borders: [:all], border_color: nil, border_type: nil, padding: 0)
+    def initialize(title: nil, titles: [], title_alignment: nil, borders: [:all], border_color: nil, border_type: nil, padding: 0)
       super
     end
   end

@@ -96,6 +96,60 @@ pub fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
         }
     }
 
+    let titles_val: Value = block_val.funcall("titles", ())?;
+    if !titles_val.is_nil() {
+        if let Some(titles_array) = magnus::RArray::from_value(titles_val) {
+            for i in 0..titles_array.len() {
+                let title_item: Value = titles_array.entry(i as isize)?;
+                
+                // Defaults
+                let mut content = String::new();
+                let mut alignment = Alignment::Left;
+                let mut position = "top"; // "top" or "bottom"
+
+                if let Some(hash) = magnus::RHash::from_value(title_item) {
+                     let ruby = magnus::Ruby::get().unwrap();
+                     let content_sym = ruby.to_symbol("content");
+                     let align_sym_key = ruby.to_symbol("alignment");
+                     let pos_sym_key = ruby.to_symbol("position");
+
+                     let content_val: Value = hash.lookup(content_sym).unwrap_or(ruby.qnil().as_value());
+                     if !content_val.is_nil() {
+                        content = content_val.funcall("to_s", ())?;
+                     }
+
+                     let align_val: Value = hash.lookup(align_sym_key).unwrap_or(ruby.qnil().as_value());
+                     if let Some(align_sym) = Symbol::from_value(align_val) {
+                        match align_sym.to_string().as_str() {
+                            "left" => alignment = Alignment::Left,
+                            "center" => alignment = Alignment::Center,
+                            "right" => alignment = Alignment::Right,
+                            _ => {}
+                        }
+                     }
+
+                     let pos_val: Value = hash.lookup(pos_sym_key).unwrap_or(ruby.qnil().as_value());
+                     if let Some(pos_sym) = Symbol::from_value(pos_val) {
+                         if pos_sym.to_string().as_str() == "bottom" {
+                             position = "bottom";
+                         }
+                     }
+                } else {
+                    // Assume it's a string
+                    content = title_item.funcall("to_s", ())?;
+                }
+
+                let line = Line::from(content).alignment(alignment);
+                
+                if position == "bottom" {
+                    block = block.title_bottom(line);
+                } else {
+                    block = block.title_top(line);
+                }
+            }
+        }
+    }
+
     if !borders_val.is_nil() {
         let mut ratatui_borders = Borders::NONE;
         if let Some(sym) = Symbol::from_value(borders_val) {
