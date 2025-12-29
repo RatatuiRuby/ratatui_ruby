@@ -176,10 +176,10 @@ Demonstrates the `LineGauge` widget with customizable filled and unfilled symbol
 
 ![LineGauge Screenshot](./images/examples-line_gauge_demo.rb.png)
 
-### [List Styles](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/list_styles/app.rb)
-Showcases advanced styling options for the `List` widget, including selection highlighting and the `highlight_spacing` option (`:always`, `:when_selected`, `:never`). Press 'x' to toggle selection off and see the difference between spacing modes.
+### [List Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/list_demo/app.rb)
+Demonstrates the `List` widget with interactive attribute cycling. Features multiple item sets to browse, customizable highlight styles and symbols, and exploration of all List options including direction, highlight spacing, repeat symbol mode, and base styling. The sidebar provides hotkey documentation for discovering all List features.
 
-![List Styles Screenshot](./images/examples-list_styles.rb.png)
+![List Demo Screenshot](./images/examples-list_demo.rb.png)
 
 ### [Login Form](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/login_form/app.rb)
 Shows how to use `Overlay`, `Center`, and `Cursor` to build a modal login form with text input.

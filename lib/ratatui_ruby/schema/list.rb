@@ -25,7 +25,7 @@ module RatatuiRuby
     #     highlight_style: Style.new(bg: :blue),
     #     highlight_symbol: ">> "
     #   )
-    class List < Data.define(:items, :selected_index, :style, :highlight_style, :highlight_symbol, :highlight_spacing, :direction, :block)
+    class List < Data.define(:items, :selected_index, :style, :highlight_style, :highlight_symbol, :repeat_highlight_symbol, :highlight_spacing, :direction, :block)
       ##
       # :attr_reader: items
       # The items to display (Array of Strings).
@@ -45,6 +45,10 @@ module RatatuiRuby
       ##
       # :attr_reader: highlight_symbol
       # Symbol drawn before the selected item.
+
+      ##
+      # :attr_reader: repeat_highlight_symbol
+      # Whether to repeat the highlight symbol for each line of the selected item.
 
       ##
       # :attr_reader: highlight_spacing
@@ -69,10 +73,11 @@ module RatatuiRuby
       # [style] Style object.
       # [highlight_style] Style object.
       # [highlight_symbol] String (default: <tt>"> "</tt>).
+      # [repeat_highlight_symbol] Boolean (default: <tt>false</tt>).
       # [highlight_spacing] Symbol (default: <tt>:when_selected</tt>).
       # [direction] Symbol (default: <tt>:top_to_bottom</tt>).
       # [block] Block (optional).
-      def initialize(items: [], selected_index: nil, style: nil, highlight_style: nil, highlight_symbol: "> ", highlight_spacing: :when_selected, direction: :top_to_bottom, block: nil)
+      def initialize(items: [], selected_index: nil, style: nil, highlight_style: nil, highlight_symbol: "> ", repeat_highlight_symbol: false, highlight_spacing: :when_selected, direction: :top_to_bottom, block: nil)
         super
       end
     end

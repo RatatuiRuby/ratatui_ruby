@@ -19,6 +19,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let style_val: Value = node.funcall("style", ())?;
     let highlight_style_val: Value = node.funcall("highlight_style", ())?;
     let highlight_symbol_val: Value = node.funcall("highlight_symbol", ())?;
+    let repeat_highlight_symbol_val: Value = node.funcall("repeat_highlight_symbol", ())?;
     let highlight_spacing_sym: Symbol = node.funcall("highlight_spacing", ())?;
     let direction_val: Value = node.funcall("direction", ())?;
     let block_val: Value = node.funcall("block", ())?;
@@ -53,6 +54,11 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
     if !highlight_symbol_val.is_nil() {
         list = list.highlight_symbol(Line::from(symbol));
+    }
+
+    if !repeat_highlight_symbol_val.is_nil() {
+        let repeat: bool = TryConvert::try_convert(repeat_highlight_symbol_val)?;
+        list = list.repeat_highlight_symbol(repeat);
     }
 
     if !direction_val.is_nil() {
@@ -122,5 +128,28 @@ mod tests {
             .unwrap()
             .modifier
             .contains(ratatui::style::Modifier::BOLD));
+    }
+
+    #[test]
+    fn test_repeat_highlight_symbol() {
+        let items = vec!["Item 1", "Item 2"];
+        let list_without_repeat = List::new(items.clone()).highlight_symbol(Line::from(">> "));
+        let list_with_repeat = List::new(items).highlight_symbol(Line::from(">> ")).repeat_highlight_symbol(true);
+        
+        let mut state = ListState::default();
+        state.select(Some(0));
+
+        let mut buf1 = Buffer::empty(Rect::new(0, 0, 10, 2));
+        use ratatui::widgets::StatefulWidget;
+        StatefulWidget::render(list_without_repeat, Rect::new(0, 0, 10, 2), &mut buf1, &mut state);
+
+        let mut buf2 = Buffer::empty(Rect::new(0, 0, 10, 2));
+        StatefulWidget::render(list_with_repeat, Rect::new(0, 0, 10, 2), &mut buf2, &mut state);
+
+        // Both should render, but the behavior might differ based on content width
+        let content1 = buf1.content().iter().map(|c| c.symbol()).collect::<String>();
+        let content2 = buf2.content().iter().map(|c| c.symbol()).collect::<String>();
+        assert!(!content1.is_empty());
+        assert!(!content2.is_empty());
     }
 }

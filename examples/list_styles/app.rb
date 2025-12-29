@@ -27,6 +27,12 @@ class ListStylesApp
       { name: "Never", spacing: :never }
     ]
     @highlight_spacing_index = 0
+
+    @repeat_modes = [
+      { name: "Off", repeat: false },
+      { name: "On", repeat: true }
+    ]
+    @repeat_index = 0
   end
 
   def run
@@ -45,6 +51,7 @@ class ListStylesApp
     selection_label = @selected_index.nil? ? "none" : @selected_index.to_s
     direction_config = @directions[@direction_index]
     spacing_config = @highlight_spacings[@highlight_spacing_index]
+    repeat_config = @repeat_modes[@repeat_index]
 
     # Main content
     main_list = RatatuiRuby::List.new(
@@ -53,6 +60,7 @@ class ListStylesApp
       style: RatatuiRuby::Style.new(fg: :white, bg: :black),
       highlight_style: RatatuiRuby::Style.new(fg: :blue, bg: :white, modifiers: [:bold]),
       highlight_symbol: ">> ",
+      repeat_highlight_symbol: repeat_config[:repeat],
       highlight_spacing: spacing_config[:spacing],
       direction: direction_config[:direction],
       block: RatatuiRuby::Block.new(
@@ -78,6 +86,8 @@ class ListStylesApp
             "  #{direction_config[:name]}",
             "s: Spacing",
             "  #{spacing_config[:name]}",
+            "r: Repeat Symbol",
+            "  #{repeat_config[:name]}",
           ].flatten
         )
       ]
@@ -109,6 +119,8 @@ class ListStylesApp
       @direction_index = (@direction_index + 1) % @directions.size
     in type: :key, code: "s"
       @highlight_spacing_index = (@highlight_spacing_index + 1) % @highlight_spacings.size
+    in type: :key, code: "r"
+      @repeat_index = (@repeat_index + 1) % @repeat_modes.size
     in type: :key, code: "x"
       @selected_index = @selected_index.nil? ? 0 : nil
     else

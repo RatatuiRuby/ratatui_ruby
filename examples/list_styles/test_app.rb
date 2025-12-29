@@ -130,4 +130,28 @@ class TestListStylesExample < Minitest::Test
       assert content.any? { |line| line.include?("   Item 1") }
     end
   end
+
+  def test_repeat_highlight_symbol_toggle
+    with_test_terminal(80, 20) do
+      # Press r to toggle repeat mode, then quit
+      inject_keys(:r, :q)
+      @app.run
+
+      content = buffer_content
+      assert content.any? { |line| line.include?("Repeat Symbol") }
+      assert content.any? { |line| line.include?("On") }
+    end
+  end
+
+  def test_repeat_highlight_symbol_cycles_back
+    with_test_terminal(80, 20) do
+      # Press r twice to cycle back to Off
+      inject_keys(:r, :r, :q)
+      @app.run
+
+      content = buffer_content
+      assert content.any? { |line| line.include?("Repeat Symbol") }
+      assert content.any? { |line| line.include?("Off") }
+    end
+  end
 end
