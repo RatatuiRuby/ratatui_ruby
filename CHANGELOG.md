@@ -11,6 +11,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Added
 
 - **Block:** Added support for multiple titles with individual alignment and positioning (top/bottom) via `titles` array. (#issue_id)
+- **Block:** Added `style` parameter to `Block` widget. **Note:** This inserts a new member into the `Block` Data object, which changes the positional order of members. Pattern matching or positional initialization of `Block` is affected.
 - `List`: Added `direction` attribute (`:top_to_bottom` or `:bottom_to_top`).
 - **Table Footer**: The `Table` widget now supports a `footer` parameter, allowing for summary rows at the bottom of the table.
 - **Block Padding**: `Block` widget now supports correct padding via the `padding` parameter, accepting either a single integer for uniform padding or an array of 4 integers for directional padding (`[left, right, top, bottom]`).

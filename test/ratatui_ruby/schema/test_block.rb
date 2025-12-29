@@ -13,6 +13,24 @@ class TestBlock < Minitest::Test
     assert_equal "red", b.border_color
   end
 
+  def test_block_creation_with_style
+    b = RatatuiRuby::Block.new(style: { fg: "blue" })
+    assert_equal({ fg: "blue" }, b.style)
+  end
+
+  def test_render_with_style_hash
+    with_test_terminal(20, 3) do
+      # Should not raise NoMethodError
+      b = RatatuiRuby::Block.new(borders: [:all], style: { fg: "blue" })
+      RatatuiRuby.draw(b)
+      # Content check is tricky without color inspection support in test helper,
+      # but successful execution confirms the fix.
+      assert_equal "┌──────────────────┐", buffer_content[0]
+      assert_equal "│                  │", buffer_content[1]
+      assert_equal "└──────────────────┘", buffer_content[2]
+    end
+  end
+
   def test_block_creation_with_title_alignment
     b = RatatuiRuby::Block.new(title: "Title", title_alignment: :center)
     assert_equal :center, b.title_alignment
@@ -29,6 +47,7 @@ class TestBlock < Minitest::Test
     assert_equal [:all], b.borders
     assert_nil b.border_color
     assert_nil b.border_type
+    assert_nil b.style
   end
 
   def test_render

@@ -50,7 +50,7 @@ Comparison of ratatui 0.30 features vs ratatui_ruby current implementation.
 | `border_style()` | `border_color:` | ⚠️ Partial (color only, not full style) |
 | `border_type()` | `border_type:` | ✅ |
 | `border_set()` | — | ❌ **MISSING** (custom border chars) |
-| `style()` | — | ❌ **MISSING** (base block style) |
+| `style()` | `style:` | ✅ |
 | `padding()` | `padding:` | ✅ |
 
 ---

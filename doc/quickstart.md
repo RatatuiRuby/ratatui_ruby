@@ -48,7 +48,8 @@ begin
         title: "My Ruby TUI App",
         title_alignment: :center,
         borders: [:all],
-        border_color: "cyan"
+        border_color: "cyan",
+        style: { fg: "white" }
       )
     )
  
@@ -95,7 +96,8 @@ RatatuiRuby.run do |tui|
         title: "My Ruby TUI App",
         title_alignment: :center,
         borders: [:all],
-        border_color: "cyan"
+        border_color: "cyan",
+        style: { fg: "white" }
       )
     )
 

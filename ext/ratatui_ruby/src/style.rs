@@ -21,7 +21,24 @@ pub fn parse_style(style_val: Value) -> Result<Style, Error> {
 
     let mut style = Style::default();
 
-    let fg: Value = style_val.funcall("fg", ())?;
+    let fg: Value;
+    let bg: Value;
+    let modifiers_val: Value;
+
+    if let Some(hash) = magnus::RHash::from_value(style_val) {
+        let fg_sym = ruby.to_symbol("fg");
+        let bg_sym = ruby.to_symbol("bg");
+        let mod_sym = ruby.to_symbol("modifiers");
+
+        fg = hash.lookup(fg_sym).unwrap_or(ruby.qnil().as_value());
+        bg = hash.lookup(bg_sym).unwrap_or(ruby.qnil().as_value());
+        modifiers_val = hash.lookup(mod_sym).unwrap_or(ruby.qnil().as_value());
+    } else {
+        fg = style_val.funcall("fg", ())?;
+        bg = style_val.funcall("bg", ())?;
+        modifiers_val = style_val.funcall("modifiers", ())?;
+    }
+
     if !fg.is_nil() {
         let fg_str: String = fg.funcall("to_s", ())?;
         if let Some(color) = parse_color(&fg_str) {
@@ -29,7 +46,6 @@ pub fn parse_style(style_val: Value) -> Result<Style, Error> {
         }
     }
 
-    let bg: Value = style_val.funcall("bg", ())?;
     if !bg.is_nil() {
         let bg_str: String = bg.funcall("to_s", ())?;
         if let Some(color) = parse_color(&bg_str) {
@@ -37,7 +53,6 @@ pub fn parse_style(style_val: Value) -> Result<Style, Error> {
         }
     }
 
-    let modifiers_val: Value = style_val.funcall("modifiers", ())?;
     if !modifiers_val.is_nil() {
         let modifiers_array = magnus::RArray::from_value(modifiers_val).ok_or_else(|| {
             Error::new(
@@ -76,9 +91,14 @@ pub fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
     let borders_val: Value = block_val.funcall("borders", ())?;
     let border_color: Value = block_val.funcall("border_color", ())?;
     let border_type_val: Value = block_val.funcall("border_type", ())?;
+    let style_val: Value = block_val.funcall("style", ())?;
     let padding_val: Value = block_val.funcall("padding", ())?;
 
     let mut block = Block::default();
+
+    if !style_val.is_nil() {
+        block = block.style(crate::style::parse_style(style_val)?);
+    }
 
     if !title.is_nil() {
         let title_str: String = title.funcall("to_s", ())?;

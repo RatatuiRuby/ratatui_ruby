@@ -10,8 +10,9 @@ class BoxDemoApp
   def initialize
     @color = "green"
     @border_type = :plain
-    @text = "Press Arrow Keys (q to quit)\nSpace to switch border type\nEnter to cycle Title Alignment"
+    @text = "Press Arrow Keys (q to quit)\nSpace: border type | Enter: title align | 's': style"
     @title_alignment = :left
+    @style = nil
   end
 
   def run
@@ -28,19 +29,26 @@ class BoxDemoApp
 
   def render
     # 1. State/View
+    effective_border_color = @style ? nil : @color
+
     block = RatatuiRuby::Block.new(
       title: "Box Demo - #{@border_type}",
       title_alignment: @title_alignment,
       borders: [:all],
-      border_color: @color,
-      border_type: @border_type
+      border_color: effective_border_color,
+      border_type: @border_type,
+      style: @style
     )
 
-    view_tree = RatatuiRuby::Paragraph.new(
-      text: @text,
-      fg: @color,
-      block:
-    )
+    # Paragraph supports style param, so we can pass the hash directly if present
+    paragraph_params = { text: @text, block: block }
+    if @style
+      paragraph_params[:style] = @style
+    else
+      paragraph_params[:fg] = @color
+    end
+
+    view_tree = RatatuiRuby::Paragraph.new(**paragraph_params)
 
     # 2. Render
     RatatuiRuby.draw(view_tree)
@@ -56,6 +64,10 @@ class BoxDemoApp
     alignments = [:left, :center, :right]
     current_index = alignments.index(@title_alignment) || 0
     @title_alignment = alignments[(current_index + 1) % alignments.length]
+  end
+
+  def toggle_style
+    @style = @style ? nil : { fg: "blue", bg: "white", modifiers: [:bold] }
   end
 
   def handle_input
@@ -85,6 +97,9 @@ class BoxDemoApp
       when "enter"
         next_title_alignment
         @text = "Aligned #{@title_alignment}"
+      when "s"
+        toggle_style
+        @text = "Style: #{@style ? 'Blue on White' : 'Default'}"
       end
     end
   end
