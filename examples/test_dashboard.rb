@@ -27,7 +27,7 @@ class TestDashboard < Minitest::Test
   end
 
   def test_navigation
-    inject_event("key", { code: "down" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "down"))
     @app.handle_input
 
     with_test_terminal(60, 20) do

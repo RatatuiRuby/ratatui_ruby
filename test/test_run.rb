@@ -8,7 +8,7 @@ class TestRun < Minitest::Test
     # We divert init_terminal to init_test_terminal (headless backend).
     if ENV["CI"] || !$stdout.tty?
       RatatuiRuby.define_singleton_method(:original_init_terminal, RatatuiRuby.method(:init_terminal))
-      RatatuiRuby.define_singleton_method(:init_terminal) do
+      RatatuiRuby.define_singleton_method(:init_terminal) do |**_opts|
         init_test_terminal(80, 24)
       end
     end

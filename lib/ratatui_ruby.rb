@@ -49,13 +49,16 @@ module RatatuiRuby
   class Error < StandardError; end
 
   ##
-  # :method: init_terminal
-  # :call-seq: init_terminal() -> nil
-  #
   # Initializes the terminal for TUI mode.
   # Enters alternate screen and enables raw mode.
   #
-  # (Native method implemented in Rust)
+  # [focus_events] whether to enable focus gain/loss events (default: true).
+  # [bracketed_paste] whether to enable bracketed paste mode (default: true).
+  def self.init_terminal(focus_events: true, bracketed_paste: true)
+    _init_terminal(focus_events, bracketed_paste)
+  end
+
+  # (Native method _init_terminal implemented in Rust)
 
   ##
   # :method: restore_terminal
@@ -144,13 +147,13 @@ module RatatuiRuby
   #
   # === Example
   #
-  #   RatatuiRuby.run do |tui|
+  #   RatatuiRuby.run(focus_events: false) do |tui|
   #     tui.draw(tui.paragraph(text: "Hi"))
   #     sleep 1
   #   end
-  def self.run
+  def self.run(focus_events: true, bracketed_paste: true)
     require_relative "ratatui_ruby/session"
-    init_terminal
+    init_terminal(focus_events: focus_events, bracketed_paste: bracketed_paste)
     yield Session.new
   ensure
     restore_terminal

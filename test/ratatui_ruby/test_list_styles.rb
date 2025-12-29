@@ -4,9 +4,12 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 require "test_helper"
+require "ratatui_ruby/test_helper"
 require_relative "../../examples/list_styles"
 
 class TestListStyles < Minitest::Test
+  include RatatuiRuby::TestHelper
+
   def setup
     @app = ListStylesApp.new
   end
@@ -24,7 +27,7 @@ class TestListStyles < Minitest::Test
   def test_toggle_direction
     with_test_terminal(80, 10) do
       # Toggle to bottom_to_top
-      RatatuiRuby.inject_test_event("key", { code: "d" })
+      inject_event(RatatuiRuby::Event::Key.new(code: "d"))
       @app.handle_input
       
       @app.render

@@ -16,6 +16,13 @@ Architecture:
 -   **Frontend (Ruby):** Pure `Data` objects (Ruby 3.2+) defining the View Tree. Immediate mode.
 -   **Backend (Rust):** A generic renderer using `ratatui` and `magnus` that traverses the Ruby `Data` tree and renders to the terminal buffer.
 
+## Stability & Compatibility
+
+-   **Project Status:** Pre-1.0. 
+-   **User Base:** 0 users (internal/experimental).
+-   **Breaking Changes:** Backward compatibility is **NOT** a priority at this stage. Since there are no external users, you are encouraged to refactor APIs for better ergonomics and performance even if it breaks existing code.
+-   **Requirement:** All breaking changes **MUST** be explicitly documented in the [CHANGELOG.md](CHANGELOG.md)'s **Unreleased** section to ensure transparency as the project evolves toward 1.0.
+
 ## 1. File & Coding Standards
 
 ### Licensing & Copyright (Strict)

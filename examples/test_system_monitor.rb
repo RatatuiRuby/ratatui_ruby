@@ -29,7 +29,7 @@ class TestSystemMonitor < Minitest::Test
 
   def test_interaction
     # Increase percentage
-    inject_event("key", { code: "up" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "up"))
     @app.handle_input
 
     with_test_terminal(60, 20) do

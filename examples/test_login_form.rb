@@ -30,7 +30,7 @@ class TestLoginForm < Minitest::Test
 
   def test_input_handling
     # Type 'a'
-    inject_event("key", { code: "a" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "a"))
     @app.handle_input
 
     with_test_terminal(60, 20) do
@@ -42,12 +42,12 @@ class TestLoginForm < Minitest::Test
   def test_popup_flow
     # Enter username 'user'
     %w[u s e r].each do |char|
-      inject_event("key", { code: char })
+      inject_event(RatatuiRuby::Event::Key.new(code: char))
       @app.handle_input
     end
 
     # Press Enter
-    inject_event("key", { code: "enter" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "enter"))
     @app.handle_input
 
     with_test_terminal(60, 20) do
@@ -56,7 +56,7 @@ class TestLoginForm < Minitest::Test
     end
 
     # Press 'q' to quit popup/app
-    inject_event("key", { code: "q" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "q"))
     status = @app.handle_input
     assert_equal :quit, status
   end

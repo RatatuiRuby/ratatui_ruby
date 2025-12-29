@@ -42,7 +42,7 @@ class TestMapDemo < Minitest::Test
     # We need to use with_test_terminal because MapDemo.run calls init_terminal and draw
     with_test_terminal(80, 24) do
       # Inject 'q' event
-      inject_event("key", { code: "q" })
+      inject_event(RatatuiRuby::Event::Key.new(code: "q"))
 
       # MapDemo.run should exit immediately after polling the 'q' event
       # We use Timeout to prevent hanging if it's not quittable
@@ -77,9 +77,9 @@ class TestMapDemo < Minitest::Test
           # 1st loop: radius becomes 0.5, draws, polls 'up', sleeps
           # 2nd loop: radius becomes 1.0, draws, polls 'up', sleeps
           # 3rd loop: radius becomes 1.5, draws, polls 'q', breaks
-          inject_event("key", { code: "up" })
-          inject_event("key", { code: "up" })
-          inject_event("key", { code: "q" })
+          inject_event(RatatuiRuby::Event::Key.new(code: "up"))
+          inject_event(RatatuiRuby::Event::Key.new(code: "up"))
+          inject_event(RatatuiRuby::Event::Key.new(code: "q"))
 
           MapDemo.run
         end

@@ -35,7 +35,7 @@ class TestScrollText < Minitest::Test
   end
 
   def test_scroll_down
-    inject_event("key", { code: "down" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "down"))
     @demo.handle_input
     
     with_test_terminal(60, 10) do
@@ -52,7 +52,7 @@ class TestScrollText < Minitest::Test
   end
 
   def test_scroll_right
-    inject_event("key", { code: "right" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "right"))
     @demo.handle_input
     
     with_test_terminal(60, 10) do
@@ -69,7 +69,7 @@ class TestScrollText < Minitest::Test
 
   def test_scroll_left_at_edge
     # Try to scroll left when already at x=0
-    inject_event("key", { code: "left" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "left"))
     @demo.handle_input
     
     with_test_terminal(60, 10) do
@@ -85,7 +85,7 @@ class TestScrollText < Minitest::Test
 
   def test_scroll_up_at_top
     # Try to scroll up when already at top (should stay at 0)
-    inject_event("key", { code: "up" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "up"))
     @demo.handle_input
     
     with_test_terminal(60, 10) do
@@ -102,11 +102,11 @@ class TestScrollText < Minitest::Test
   def test_scroll_both_axes
     # Scroll down 2 times and right 3 times
     2.times do
-      inject_event("key", { code: "down" })
+      inject_event(RatatuiRuby::Event::Key.new(code: "down"))
       @demo.handle_input
     end
     3.times do
-      inject_event("key", { code: "right" })
+      inject_event(RatatuiRuby::Event::Key.new(code: "right"))
       @demo.handle_input
     end
     
@@ -123,7 +123,7 @@ class TestScrollText < Minitest::Test
   end
 
   def test_quit
-    inject_event("key", { code: "q" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "q"))
     status = @demo.handle_input
     assert_equal :quit, status
   end

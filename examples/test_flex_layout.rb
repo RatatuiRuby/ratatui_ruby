@@ -47,7 +47,7 @@ class TestFlexLayout < Minitest::Test
   end
 
   def test_quit_on_q
-    inject_event("key", { code: "q" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "q"))
     assert_equal :quit, @app.handle_input
   end
 end

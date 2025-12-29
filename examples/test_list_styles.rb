@@ -28,7 +28,7 @@ class TestListStyles < Minitest::Test
   end
 
   def test_navigation_down
-    inject_event("key", { code: "down" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "down"))
     @app.handle_input
 
     with_test_terminal(50, 20) do
@@ -40,11 +40,11 @@ class TestListStyles < Minitest::Test
 
   def test_navigation_up
     # Move down to Item 2
-    inject_event("key", { code: "down" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "down"))
     @app.handle_input
 
     # Move up back to Item 1
-    inject_event("key", { code: "up" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "up"))
     @app.handle_input
 
     with_test_terminal(50, 20) do
@@ -54,7 +54,7 @@ class TestListStyles < Minitest::Test
   end
 
   def test_quit
-    inject_event("key", { code: "q" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "q"))
     status = @app.handle_input
     assert_equal :quit, status
   end

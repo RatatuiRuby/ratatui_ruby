@@ -38,7 +38,7 @@ class TestPopupDemo < Minitest::Test
       assert buffer_content.any? { |line| line.include?("Clear is DISABLED") }
 
       # Toggle Clear on
-      inject_event("key", { code: " " })
+      inject_event(RatatuiRuby::Event::Key.new(code: " "))
       @app.handle_input
 
       @app.render
@@ -46,7 +46,7 @@ class TestPopupDemo < Minitest::Test
       assert buffer_content.any? { |line| line.include?("Resets background to default") }
 
       # Toggle Clear off
-      inject_event("key", { code: " " })
+      inject_event(RatatuiRuby::Event::Key.new(code: " "))
       @app.handle_input
 
       @app.render
@@ -55,7 +55,7 @@ class TestPopupDemo < Minitest::Test
   end
 
   def test_quit
-    inject_event("key", { code: "q" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "q"))
     status = @app.handle_input
     assert_equal :quit, status
   end

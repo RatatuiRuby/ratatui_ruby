@@ -36,7 +36,7 @@ class TestAnalyticsApp < Minitest::Test
       assert_includes content[1], "|"
 
       # Press 'd': " • "
-      inject_event("key", { code: "d" })
+      inject_event(RatatuiRuby::Event::Key.new(code: "d"))
       @app.handle_input
       @app.render
       
@@ -46,7 +46,7 @@ class TestAnalyticsApp < Minitest::Test
       refute_includes tabs_line, "|"
 
       # Press 'd' again: " > "
-      inject_event("key", { code: "d" })
+      inject_event(RatatuiRuby::Event::Key.new(code: "d"))
       @app.handle_input
       @app.render
       
@@ -59,7 +59,7 @@ class TestAnalyticsApp < Minitest::Test
   def test_switch_style
     with_test_terminal(60, 10) do
       # Press 'Space' to toggle style
-      inject_event("key", { code: " " })
+      inject_event(RatatuiRuby::Event::Key.new(code: " "))
       @app.handle_input
       @app.render
       

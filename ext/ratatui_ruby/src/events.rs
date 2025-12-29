@@ -114,6 +114,38 @@ pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), 
                 modifiers,
             })
         }
+        "resize" => {
+            let width_val: Value = data.get(ruby.to_symbol("width")).ok_or_else(|| {
+                Error::new(
+                    ruby.exception_arg_error(),
+                    "Missing 'width' in resize event",
+                )
+            })?;
+            let width: u16 = u16::try_convert(width_val)?;
+
+            let height_val: Value = data.get(ruby.to_symbol("height")).ok_or_else(|| {
+                Error::new(
+                    ruby.exception_arg_error(),
+                    "Missing 'height' in resize event",
+                )
+            })?;
+            let height: u16 = u16::try_convert(height_val)?;
+
+            ratatui::crossterm::event::Event::Resize(width, height)
+        }
+        "paste" => {
+            let content_val: Value = data.get(ruby.to_symbol("content")).ok_or_else(|| {
+                Error::new(
+                    ruby.exception_arg_error(),
+                    "Missing 'content' in paste event",
+                )
+            })?;
+            let content: String = String::try_convert(content_val)?;
+
+            ratatui::crossterm::event::Event::Paste(content)
+        }
+        "focus_gained" => ratatui::crossterm::event::Event::FocusGained,
+        "focus_lost" => ratatui::crossterm::event::Event::FocusLost,
         _ => {
             return Err(Error::new(
                 ruby.exception_arg_error(),

@@ -125,6 +125,11 @@ Demonstrates the use of `Tabs` and `BarChart` widgets with a simple data-switchi
 
 ![Analytics Screenshot](./images/examples-analytics.rb.png)
 
+### [All Events](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/all_events.rb)
+A comprehensive demonstration of every event type supported by **ratatui_ruby**: Key, Mouse, Resize, Paste, and Focus events.
+
+![All Events Screenshot](./images/examples-all_events.rb.png)
+
 ### [Block Padding](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/block_padding.rb)
 Demonstrates the `padding` property of the `Block` widget, supporting both uniform and directional padding.
 

@@ -18,7 +18,7 @@ lazy_static::lazy_static! {
     pub static ref TERMINAL: Mutex<Option<TerminalWrapper>> = Mutex::new(None);
 }
 
-pub fn init_terminal() -> Result<(), Error> {
+pub fn init_terminal(focus_events: bool, bracketed_paste: bool) -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let mut term_lock = TERMINAL.lock().unwrap();
     if term_lock.is_none() {
@@ -31,6 +31,16 @@ pub fn init_terminal() -> Result<(), Error> {
             ratatui::crossterm::event::EnableMouseCapture
         )
         .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
+
+        if focus_events {
+            ratatui::crossterm::execute!(stdout, ratatui::crossterm::event::EnableFocusChange)
+                .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
+        }
+        if bracketed_paste {
+            ratatui::crossterm::execute!(stdout, ratatui::crossterm::event::EnableBracketedPaste)
+                .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
+        }
+
         let backend = CrosstermBackend::new(stdout);
         let terminal = Terminal::new(backend)
             .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
@@ -56,7 +66,9 @@ pub fn restore_terminal() -> Result<(), Error> {
         let _ = ratatui::crossterm::execute!(
             terminal.backend_mut(),
             ratatui::crossterm::terminal::LeaveAlternateScreen,
-            ratatui::crossterm::event::DisableMouseCapture
+            ratatui::crossterm::event::DisableMouseCapture,
+            ratatui::crossterm::event::DisableFocusChange,
+            ratatui::crossterm::event::DisableBracketedPaste
         );
     }
     Ok(())

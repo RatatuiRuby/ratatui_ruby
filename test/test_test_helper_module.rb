@@ -43,7 +43,7 @@ class TestTestHelperModule < Minitest::Test
 
   def test_inject_event
     with_test_terminal do
-      inject_event("key", { code: "a", modifiers: ["ctrl"] })
+      inject_event(RatatuiRuby::Event::Key.new(code: "a", modifiers: ["ctrl"]))
       event = RatatuiRuby.poll_event
       assert_kind_of RatatuiRuby::Event::Key, event
       assert_equal "a", event.code

@@ -8,7 +8,7 @@ module RatatuiRuby
   # Helpers for testing RatatuiRuby applications.
   #
   # This module provides methods to set up a test terminal, capture buffer content,
-  # and check cursor position, making it easier to write unit tests for your TUI apps.
+  # and inject events, making it easier to write unit tests for your TUI apps.
   #
   # == Usage
   #
@@ -18,10 +18,16 @@ module RatatuiRuby
   #     include RatatuiRuby::TestHelper
   #
   #     def test_rendering
-  #       with_test_terminal(width: 80, height: 24) do
+  #       with_test_terminal(80, 24) do
   #         # ... render your app ...
   #         assert_includes buffer_content, "Hello World"
   #       end
+  #     end
+  #
+  #     def test_key_handling
+  #       inject_event(RatatuiRuby::Event::Key.new(code: "q"))
+  #       result = @app.handle_input
+  #       assert_equal :quit, result
   #     end
   #   end
   module TestHelper
@@ -61,15 +67,53 @@ module RatatuiRuby
     end
 
     ##
-    # Injects a mock event into the event queue for testing purposes.
+    # Injects an event into the event queue for testing.
     #
-    # +event_type+:: "key" or "mouse"
-    # +data+:: a Hash containing event data
+    # Pass any RatatuiRuby::Event object. The event will be returned by
+    # the next call to RatatuiRuby.poll_event.
     #
-    #   inject_event("key", { code: "a" })
-    #   inject_event("mouse", { kind: "down", x: 0, y: 0 })
-    def inject_event(event_type, data)
-      RatatuiRuby.inject_test_event(event_type, data)
+    # == Examples
+    #
+    #   # Key events
+    #   inject_event(RatatuiRuby::Event::Key.new(code: "q"))
+    #   inject_event(RatatuiRuby::Event::Key.new(code: "s", modifiers: ["ctrl"]))
+    #
+    #   # Mouse events
+    #   inject_event(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 10, y: 5))
+    #
+    #   # Resize events
+    #   inject_event(RatatuiRuby::Event::Resize.new(width: 120, height: 40))
+    #
+    #   # Paste events
+    #   inject_event(RatatuiRuby::Event::Paste.new(content: "Hello"))
+    #
+    #   # Focus events
+    #   inject_event(RatatuiRuby::Event::FocusGained.new)
+    #   inject_event(RatatuiRuby::Event::FocusLost.new)
+    def inject_event(event)
+      case event
+      when RatatuiRuby::Event::Key
+        RatatuiRuby.inject_test_event("key", { code: event.code, modifiers: event.modifiers })
+      when RatatuiRuby::Event::Mouse
+        RatatuiRuby.inject_test_event("mouse", {
+          kind: event.kind,
+          button: event.button,
+          x: event.x,
+          y: event.y,
+          modifiers: event.modifiers
+        })
+      when RatatuiRuby::Event::Resize
+        RatatuiRuby.inject_test_event("resize", { width: event.width, height: event.height })
+      when RatatuiRuby::Event::Paste
+        RatatuiRuby.inject_test_event("paste", { content: event.content })
+      when RatatuiRuby::Event::FocusGained
+        RatatuiRuby.inject_test_event("focus_gained", {})
+      when RatatuiRuby::Event::FocusLost
+        RatatuiRuby.inject_test_event("focus_lost", {})
+      else
+        raise ArgumentError, "Unknown event type: #{event.class}"
+      end
     end
   end
 end
+

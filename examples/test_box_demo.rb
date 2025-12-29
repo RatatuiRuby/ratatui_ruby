@@ -27,7 +27,7 @@ class TestBoxDemo < Minitest::Test
   end
 
   def test_interaction
-    inject_event("key", { code: "up" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "up"))
     @app.handle_input
 
     with_test_terminal(40, 10) do
@@ -47,7 +47,7 @@ class TestBoxDemo < Minitest::Test
     end
     
     # 2. Switch to Center
-    inject_event("key", { code: "enter" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "enter"))
     @app.handle_input
 
     with_test_terminal(40, 10) do
@@ -66,7 +66,7 @@ class TestBoxDemo < Minitest::Test
     end
 
     # 3. Switch to Right
-    inject_event("key", { code: "enter" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "enter"))
     @app.handle_input
 
     with_test_terminal(40, 10) do
@@ -82,7 +82,7 @@ class TestBoxDemo < Minitest::Test
     end
 
     # 4. Switch back to Left
-    inject_event("key", { code: "enter" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "enter"))
     @app.handle_input
 
     with_test_terminal(40, 10) do
@@ -95,7 +95,7 @@ class TestBoxDemo < Minitest::Test
   def test_border_type_cycle
     # Initial state is :plain.
     # Press Space to switch to :rounded
-    inject_event("key", { code: " " })
+    inject_event(RatatuiRuby::Event::Key.new(code: " "))
     @app.handle_input
 
     with_test_terminal(40, 10) do
@@ -112,7 +112,7 @@ class TestBoxDemo < Minitest::Test
     end
 
     # Press Space again to switch to :double
-    inject_event("key", { code: " " })
+    inject_event(RatatuiRuby::Event::Key.new(code: " "))
     @app.handle_input
 
     with_test_terminal(40, 10) do

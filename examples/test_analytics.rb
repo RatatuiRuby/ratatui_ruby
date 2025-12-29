@@ -33,7 +33,7 @@ class TestAnalytics < Minitest::Test
   end
 
   def test_navigation_right
-    inject_event("key", { code: "right" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "right"))
     @app.handle_input
 
     with_test_terminal(50, 20) do
@@ -44,11 +44,11 @@ class TestAnalytics < Minitest::Test
 
   def test_navigation_left
     # Move right to Traffic
-    inject_event("key", { code: "right" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "right"))
     @app.handle_input
 
     # Move left back to Revenue
-    inject_event("key", { code: "left" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "left"))
     @app.handle_input
 
     with_test_terminal(50, 20) do
@@ -58,7 +58,7 @@ class TestAnalytics < Minitest::Test
   end
 
   def test_quit
-    inject_event("key", { code: "q" })
+    inject_event(RatatuiRuby::Event::Key.new(code: "q"))
     status = @app.handle_input
     assert_equal :quit, status
   end
