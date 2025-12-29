@@ -92,4 +92,15 @@ class TestAnalytics < Minitest::Test
       # but this ensures the event handling works.
     end
   end
+
+  def test_padding_controls
+    with_test_terminal(80, 10) do
+      # Increase padding_left twice (l l), then quit
+      inject_keys(:l, :l, :q)
+      @app.run
+
+      # Verify that padding values are shown in title
+      assert buffer_content.any? { |line| line.include?("pad L:2 R:0") }
+    end
+  end
 end

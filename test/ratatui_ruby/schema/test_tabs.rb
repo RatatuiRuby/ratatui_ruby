@@ -63,4 +63,20 @@ class TestTabs < Minitest::Test
     assert_equal :red, tabs.style.fg
     assert_equal :blue, tabs.style.bg
   end
+
+  def test_tabs_padding
+    with_test_terminal(20, 1) do
+      tabs = RatatuiRuby::Tabs.new(
+        titles: ["A", "B"],
+        padding_left: 3,
+        padding_right: 2
+      )
+      RatatuiRuby.draw(tabs)
+      # Expected: 3 spaces + " A │ B " + 2 spaces + remaining
+      line = buffer_content[0]
+      assert_match(/^   /, line, "Expected 3 leading spaces for padding_left")
+      assert_includes line, "A"
+      assert_includes line, "B"
+    end
+  end
 end

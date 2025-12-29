@@ -12,6 +12,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let block_val: Value = node.funcall("block", ())?;
     let divider_val: Value = node.funcall("divider", ())?;
     let highlight_style_val: Value = node.funcall("highlight_style", ())?;
+    let padding_left: usize = node.funcall("padding_left", ())?;
+    let padding_right: usize = node.funcall("padding_right", ())?;
 
     let titles_array = magnus::RArray::from_value(titles_val)
         .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for titles"))?;
@@ -41,6 +43,12 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
     if !block_val.is_nil() {
         tabs = tabs.block(parse_block(block_val)?);
+    }
+
+    if padding_left > 0 || padding_right > 0 {
+        let left_str = " ".repeat(padding_left);
+        let right_str = " ".repeat(padding_right);
+        tabs = tabs.padding(left_str, right_str);
     }
 
     frame.render_widget(tabs, area);

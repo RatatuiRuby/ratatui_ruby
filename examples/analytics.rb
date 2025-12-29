@@ -29,6 +29,8 @@ class AnalyticsApp
       RatatuiRuby::Style.new(fg: :white, bg: :blue),
       RatatuiRuby::Style.new(modifiers: [:italic])
     ]
+    @padding_left = 0
+    @padding_right = 0
   end
 
   def run
@@ -73,15 +75,17 @@ class AnalyticsApp
           titles: @tabs,
           selected_index: @selected_tab,
           block: RatatuiRuby::Block.new(
-            title: "Views (q: Quit)",
+            title: "Views (q: Quit) [pad L:#{@padding_left} R:#{@padding_right}]",
             titles: [
-              { content: " Space:Highlight Style | s:Style | d:Divider ", position: :bottom, alignment: :center }
+              { content: " Space:Highlight | s:Style | d:Divider | h/l:PadL | H/L:PadR ", position: :bottom, alignment: :center }
             ],
             borders: [:all]
           ),
           divider: @dividers[@divider_index],
           highlight_style: @styles[@style_index],
-          style: @base_styles[@base_style_index]
+          style: @base_styles[@base_style_index],
+          padding_left: @padding_left,
+          padding_right: @padding_right
         ),
         RatatuiRuby::BarChart.new(
           data:,
@@ -109,6 +113,14 @@ class AnalyticsApp
       @divider_index = (@divider_index + 1) % @dividers.size
     in type: :key, code: "s"
       @base_style_index = (@base_style_index + 1) % @base_styles.size
+    in type: :key, code: "h"
+      @padding_left = [@padding_left - 1, 0].max
+    in type: :key, code: "l"
+      @padding_left += 1
+    in type: :key, code: "H", modifiers: ["shift"]
+      @padding_right = [@padding_right - 1, 0].max
+    in type: :key, code: "L", modifiers: ["shift"]
+      @padding_right += 1
     else
       # Ignore other events
     end

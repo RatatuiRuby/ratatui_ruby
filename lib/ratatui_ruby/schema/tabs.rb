@@ -20,7 +20,7 @@ module RatatuiRuby
     #     highlight_style: Style.new(fg: :yellow),
     #     divider: "|"
     #   )
-    class Tabs < Data.define(:titles, :selected_index, :block, :divider, :highlight_style, :style)
+    class Tabs < Data.define(:titles, :selected_index, :block, :divider, :highlight_style, :style, :padding_left, :padding_right)
       ##
       # :attr_reader: titles
       # Tab titles (Array of Strings).
@@ -45,6 +45,14 @@ module RatatuiRuby
       # :attr_reader: style
       # Base style for the tabs area.
 
+      ##
+      # :attr_reader: padding_left
+      # Left padding for the tabs area (Integer, default: 0).
+
+      ##
+      # :attr_reader: padding_right
+      # Right padding for the tabs area (Integer, default: 0).
+
       # Creates a new Tabs widget.
       #
       # [titles] Array of Strings/Lines.
@@ -53,7 +61,9 @@ module RatatuiRuby
       # [divider] String (optional).
       # [highlight_style] Style (optional).
       # [style] Style (optional).
-      def initialize(titles: [], selected_index: 0, block: nil, divider: nil, highlight_style: nil, style: nil)
+      # [padding_left] Integer (default: 0).
+      # [padding_right] Integer (default: 0).
+      def initialize(titles: [], selected_index: 0, block: nil, divider: nil, highlight_style: nil, style: nil, padding_left: 0, padding_right: 0)
         super
       end
     end

@@ -8,7 +8,8 @@ module RatatuiRuby
     attr_reader block: Block?
     attr_reader divider: String?
     attr_reader highlight_style: Style
-    attr_reader style: Style?
-    def self.new: (?titles: Array[String | _ToS], ?selected_index: Integer, ?block: Block?, ?divider: String?, ?highlight_style: Style?, ?style: Style?) -> Tabs
+    attr_reader padding_left: Integer
+    attr_reader padding_right: Integer
+    def self.new: (?titles: Array[String | _ToS], ?selected_index: Integer, ?block: Block?, ?divider: String?, ?highlight_style: Style?, ?style: Style?, ?padding_left: Integer, ?padding_right: Integer) -> Tabs
   end
 end
