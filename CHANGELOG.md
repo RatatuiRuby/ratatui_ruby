@@ -11,6 +11,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **LineGauge Style**: Added `style` parameter to `LineGauge` widget, allowing a base style to be applied to the entire gauge area. This complements the existing `filled_style` and `unfilled_style` parameters.
+
 - **Cached Layout Pattern**: Documented in `doc/interactive_design.md`, a canonical design for immediate-mode UI. Solve the layout duplication problem by calculating geometry once per frame (before rendering and event handling), then reusing the cached `Rect` objects everywhere. Three-phase lifecycle: `calculate_layout`, `render`, `handle_input`. Forms the foundation for Component architecture in Gem 1.5 where layout caching is automated.
 - **Example Sidebars**: Refactored interactive examples (`box_demo`, `list_styles`, `table_select`, `hit_test`, `stock_ticker`, `system_monitor`, `scroll_text`, `dashboard`) to display hotkey controls and current settings in a sidebar, following the pattern introduced in the `analytics` example. This provides consistent, discoverable documentation of interactive features within each example.
 - **Block Children**: Added `children` parameter to `Block` widget, enabling declarative composition of child widgets within the block's area. This allows nested UI structures like `Block.new(children: [Paragraph.new(...)])` for more ergonomic view composition.

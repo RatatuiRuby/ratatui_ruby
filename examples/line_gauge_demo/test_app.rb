@@ -20,26 +20,110 @@ class TestLineGaugeDemo < Minitest::Test
     with_test_terminal(80, 24) do
       inject_key(:q)
       @app.run
-      
+
       content = buffer_content.join("\n")
       assert_includes content, "LineGauge Widget Demo"
-      assert_includes content, "20%"
+      assert_includes content, "Interactive Gauge"
+      assert_includes content, "Inverse"
+      assert_includes content, "←→: Ratio"
       assert_includes content, "50%"
-      assert_includes content, "80%"
-      # Initial interactive gauge (20%)
-      assert_includes content, "Current ratio: 1/3"
     end
   end
 
-  def test_ratio_cycling
+  def test_ratio_cycling_right
     with_test_terminal(80, 24) do
-      # Cycle right twice
       inject_keys(:right, :right, :q)
       @app.run
-      
+
       content = buffer_content.join("\n")
+      # After 2 right presses: index 2 -> 3 -> 4 (80%)
       assert_includes content, "80%"
-      assert_includes content, "Current ratio: 3/3"
+    end
+  end
+
+  def test_ratio_cycling_left
+    with_test_terminal(80, 24) do
+      inject_keys(:left, :q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      # After 1 left press: index 2 -> 1 (35%)
+      assert_includes content, "35%"
+    end
+  end
+
+  def test_filled_symbol_cycling
+    with_test_terminal(80, 24) do
+      inject_keys(:f, :q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      # Default filled_symbol_index is 0 (█), after press becomes 1 (▓)
+      assert_includes content, "Dark Shade"
+    end
+  end
+
+  def test_filled_color_cycling
+    with_test_terminal(80, 24) do
+      inject_keys(:c, :c, :q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      # Default is index 2 (Green), after 2 presses -> 4 (Blue)
+      assert_includes content, "Blue"
+    end
+  end
+
+  def test_unfilled_symbol_cycling
+    with_test_terminal(80, 24) do
+      inject_keys(:u, :q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      # Default is index 0 (Light Shade), after press becomes 1 (Dot)
+      assert_includes content, "Dot"
+    end
+  end
+
+  def test_unfilled_color_cycling
+    with_test_terminal(80, 24) do
+      inject_keys(:x, :q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      # Default is index 1 (Dark Gray), after press becomes 2 (Gray)
+      assert_includes content, "Gray"
+    end
+  end
+
+  def test_base_style_cycling
+    with_test_terminal(80, 24) do
+      inject_keys(:b, :q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      # Default is index 0 (None), after press becomes 1 (Bold White)
+      assert_includes content, "Bold White"
+    end
+  end
+
+  def test_quit_with_ctrl_c
+    with_test_terminal(80, 24) do
+      inject_key(:ctrl_c)
+      @app.run
+      # Success if returns without hanging
+    end
+  end
+
+  def test_multiple_attribute_changes
+    with_test_terminal(80, 24) do
+      inject_keys(:right, :f, :c, :b, :q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      # Verify some of the changes took effect
+      assert_includes content, "65%"  # ratio changed
+      assert_includes content, "Dark Shade"  # filled_symbol changed
     end
   end
 end

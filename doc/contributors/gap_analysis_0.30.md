@@ -169,7 +169,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `unfilled_symbol()` | `unfilled_symbol:` | ✅ |
 | `filled_style()` | `filled_style:` | ✅ |
 | `unfilled_style()` | `unfilled_style:` | ✅ |
-| `style()` | — | ❌ **MISSING** |
+| `style()` | `style:` | ✅ |
 | `gauge_style()` | — | ❌ **MISSING** |
 | `line_set()` | — | ❌ **MISSING** (deprecated) |
 

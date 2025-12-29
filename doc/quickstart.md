@@ -172,7 +172,7 @@ Demonstrates modern layout features including `Constraint.fill` and `Constraint.
 ![Flex Layout Screenshot](./images/examples-flex_layout.rb.png)
 
 ### [LineGauge Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/line_gauge_demo/app.rb)
-Demonstrates the `LineGauge` widget with customizable filled and unfilled symbols, independent styling, and interactive ratio cycling with arrow keys.
+Demonstrates the `LineGauge` widget with customizable filled and unfilled symbols, base style support via the `style` parameter, independent styling for filled/unfilled portions, and interactive ratio cycling with arrow keys.
 
 ![LineGauge Screenshot](./images/examples-line_gauge_demo.rb.png)
 

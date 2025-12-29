@@ -19,46 +19,51 @@ module RatatuiRuby
     #     filled_style: Style.new(fg: :blue),
     #     unfilled_symbol: "-"
     #   )
-    class LineGauge < Data.define(:ratio, :label, :filled_style, :unfilled_style, :block, :filled_symbol, :unfilled_symbol)
-      ##
-      # :attr_reader: ratio
-      # Progress ratio from 0.0 to 1.0.
+    class LineGauge < Data.define(:ratio, :label, :style, :filled_style, :unfilled_style, :block, :filled_symbol, :unfilled_symbol)
+       ##
+       # :attr_reader: ratio
+       # Progress ratio from 0.0 to 1.0.
 
-      ##
-      # :attr_reader: label
-      # Optional label.
+       ##
+       # :attr_reader: label
+       # Optional label.
 
-      ##
-      # :attr_reader: filled_style
-      # Style for the completed portion.
+       ##
+       # :attr_reader: style
+       # Base style applied to the entire gauge.
 
-      ##
-      # :attr_reader: unfilled_style
-      # Style for the remainder.
+       ##
+       # :attr_reader: filled_style
+       # Style for the completed portion.
 
-      ##
-      # :attr_reader: block
-      # Optional wrapping block.
+       ##
+       # :attr_reader: unfilled_style
+       # Style for the remainder.
 
-      ##
-      # :attr_reader: filled_symbol
-      # Character for filled segments.
+       ##
+       # :attr_reader: block
+       # Optional wrapping block.
 
-      ##
-      # :attr_reader: unfilled_symbol
-      # Character for empty segments.
+       ##
+       # :attr_reader: filled_symbol
+       # Character for filled segments.
 
-      # Creates a new LineGauge.
-      #
-      # [ratio] Float (0.0 - 1.0).
-      # [label] String (optional).
-      # [filled_style] Style.
-      # [unfilled_style] Style.
-      # [block] Block.
-      # [filled_symbol] String (default: <tt>"█"</tt>).
-      # [unfilled_symbol] String (default: <tt>"░"</tt>).
-      def initialize(ratio: 0.0, label: nil, filled_style: nil, unfilled_style: nil, block: nil, filled_symbol: "█", unfilled_symbol: "░")
-        super
-      end
+       ##
+       # :attr_reader: unfilled_symbol
+       # Character for empty segments.
+
+       # Creates a new LineGauge.
+       #
+       # [ratio] Float (0.0 - 1.0).
+       # [label] String (optional).
+       # [style] Style (optional, base style for the gauge).
+       # [filled_style] Style.
+       # [unfilled_style] Style.
+       # [block] Block.
+       # [filled_symbol] String (default: <tt>"█"</tt>).
+       # [unfilled_symbol] String (default: <tt>"░"</tt>).
+       def initialize(ratio: 0.0, label: nil, style: nil, filled_style: nil, unfilled_style: nil, block: nil, filled_symbol: "█", unfilled_symbol: "░")
+         super
+       end
     end
 end

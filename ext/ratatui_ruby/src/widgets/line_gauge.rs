@@ -8,6 +8,7 @@ use ratatui::{layout::Rect, widgets::LineGauge, Frame};
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let ratio: f64 = node.funcall("ratio", ())?;
     let label_val: Value = node.funcall("label", ())?;
+    let style_val: Value = node.funcall("style", ())?;
     let filled_style_val: Value = node.funcall("filled_style", ())?;
     let unfilled_style_val: Value = node.funcall("unfilled_style", ())?;
     let block_val: Value = node.funcall("block", ())?;
@@ -22,6 +23,10 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     if !label_val.is_nil() {
         let label_str: String = label_val.funcall("to_s", ())?;
         gauge = gauge.label(label_str);
+    }
+
+    if !style_val.is_nil() {
+        gauge = gauge.style(parse_style(style_val)?);
     }
 
     if !filled_style_val.is_nil() {
