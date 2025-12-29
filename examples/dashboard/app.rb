@@ -41,13 +41,38 @@ class DashboardApp
       block: Block.new(title: "Content", borders: [:all])
     )
 
-    layout = Layout.new(
+    main_layout = Layout.new(
       direction: :horizontal,
       constraints: [
         Constraint.percentage(30),
         Constraint.min(0),
       ],
       children: [sidebar, main_content]
+    )
+
+    # Controls sidebar
+    controls = Block.new(
+      title: "Controls",
+      borders: [:all],
+      children: [
+        Paragraph.new(
+          text: [
+            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "NAVIGATION", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
+            "q/esc: Quit",
+            "↑/↓: Navigate",
+          ].flatten
+        )
+      ]
+    )
+
+    # Full layout with controls
+    layout = Layout.new(
+      direction: :horizontal,
+      constraints: [
+        Constraint.new(type: :percentage, value: 70),
+        Constraint.new(type: :percentage, value: 30),
+      ],
+      children: [main_layout, controls]
     )
 
     RatatuiRuby.draw(layout)

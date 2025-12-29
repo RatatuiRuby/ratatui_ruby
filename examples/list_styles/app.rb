@@ -11,13 +11,22 @@ require "ratatui_ruby"
 class ListStylesApp
   attr_reader :selected_index, :highlight_spacing
 
-  HIGHLIGHT_SPACING_MODES = %i[when_selected always never].freeze
-
   def initialize
     @items = ["Item 1", "Item 2", "Item 3"]
     @selected_index = nil
-    @direction = :top_to_bottom
-    @highlight_spacing = :when_selected
+
+    @directions = [
+      { name: "Top to Bottom", direction: :top_to_bottom },
+      { name: "Bottom to Top", direction: :bottom_to_top }
+    ]
+    @direction_index = 0
+
+    @highlight_spacings = [
+      { name: "When Selected", spacing: :when_selected },
+      { name: "Always", spacing: :always },
+      { name: "Never", spacing: :never }
+    ]
+    @highlight_spacing_index = 0
   end
 
   def run
@@ -34,21 +43,57 @@ class ListStylesApp
 
   def render
     selection_label = @selected_index.nil? ? "none" : @selected_index.to_s
-    RatatuiRuby.draw(
-      RatatuiRuby::List.new(
-        items: @items,
-        selected_index: @selected_index,
-        style: RatatuiRuby::Style.new(fg: :white, bg: :black),
-        highlight_style: RatatuiRuby::Style.new(fg: :blue, bg: :white, modifiers: [:bold]),
-        highlight_symbol: ">> ",
-        highlight_spacing: @highlight_spacing,
-        direction: @direction,
-        block: RatatuiRuby::Block.new(
-          title: "(S)pacing: #{@highlight_spacing} | sel: #{selection_label} | (X) toggle | Q quit",
-          borders: [:all]
-        )
+    direction_config = @directions[@direction_index]
+    spacing_config = @highlight_spacings[@highlight_spacing_index]
+
+    # Main content
+    main_list = RatatuiRuby::List.new(
+      items: @items,
+      selected_index: @selected_index,
+      style: RatatuiRuby::Style.new(fg: :white, bg: :black),
+      highlight_style: RatatuiRuby::Style.new(fg: :blue, bg: :white, modifiers: [:bold]),
+      highlight_symbol: ">> ",
+      highlight_spacing: spacing_config[:spacing],
+      direction: direction_config[:direction],
+      block: RatatuiRuby::Block.new(
+        title: "Items",
+        borders: [:all]
       )
     )
+
+    # Sidebar
+    sidebar = RatatuiRuby::Block.new(
+      title: "Controls",
+      borders: [:all],
+      children: [
+        RatatuiRuby::Paragraph.new(
+          text: [
+            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "NAVIGATION", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
+            "q: Quit",
+            "↑/↓: Select (#{selection_label})",
+            "x: Toggle Selection",
+            "",
+            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "LIST", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
+            "d: Direction",
+            "  #{direction_config[:name]}",
+            "s: Spacing",
+            "  #{spacing_config[:name]}",
+          ].flatten
+        )
+      ]
+    )
+
+    # Layout
+    layout = RatatuiRuby::Layout.new(
+      direction: :horizontal,
+      constraints: [
+        RatatuiRuby::Constraint.new(type: :percentage, value: 70),
+        RatatuiRuby::Constraint.new(type: :percentage, value: 30),
+      ],
+      children: [main_list, sidebar]
+    )
+
+    RatatuiRuby.draw(layout)
   end
 
   def handle_input
@@ -61,10 +106,9 @@ class ListStylesApp
     in type: :key, code: "down"
       @selected_index = ((@selected_index || -1) + 1) % @items.size
     in type: :key, code: "d"
-      @direction = (@direction == :top_to_bottom) ? :bottom_to_top : :top_to_bottom
+      @direction_index = (@direction_index + 1) % @directions.size
     in type: :key, code: "s"
-      current_idx = HIGHLIGHT_SPACING_MODES.index(@highlight_spacing)
-      @highlight_spacing = HIGHLIGHT_SPACING_MODES[(current_idx + 1) % HIGHLIGHT_SPACING_MODES.size]
+      @highlight_spacing_index = (@highlight_spacing_index + 1) % @highlight_spacings.size
     in type: :key, code: "x"
       @selected_index = @selected_index.nil? ? 0 : nil
     else

@@ -66,10 +66,95 @@ end
 2. **Use `RatatuiRuby.run` for terminal management.** Never call `init_terminal` or `restore_terminal` directly. The `run` block handles terminal setup/teardown automatically and safely, even if an exception occurs.
 
 3. **Use keyboard keys to cycle through widget attributes.** Users should be able to interactively explore all widget options. Common patterns:
-   - Arrow keys: Navigate or adjust values
-   - Letter keys: Cycle through styles, modes, or variants. Prefer all lowercase keys to avoid confusion and simplify the UI description.
-   - Space: Toggle or select
-   - `q` or Ctrl+C: Quit
+    - Arrow keys: Navigate or adjust values
+    - Letter keys: Cycle through styles, modes, or variants. Prefer all lowercase keys to avoid confusion and simplify the UI description.
+    - Space: Toggle or select
+    - `q` or Ctrl+C: Quit
+
+    ## Control Sidebar Pattern
+
+    For examples with multiple interactive controls, display a **sidebar (30% width)** on the right side of the screen showing:
+    - Current values of all settings
+    - Hotkey documentation organized by feature area
+    - Bold section headers for clarity
+
+    This pattern provides discoverable, self-documenting examples.
+
+    ### Sidebar Layout Structure
+
+    ```ruby
+    # 70% main content on left
+    main_content = RatatuiRuby::Paragraph.new(...)
+
+    # 30% sidebar on right with controls
+    sidebar = RatatuiRuby::Block.new(
+    title: "Controls",
+    borders: [:all],
+    children: [
+    RatatuiRuby::Paragraph.new(
+     text: [
+       RatatuiRuby::Text::Line.new(spans: [
+         RatatuiRuby::Text::Span.new(
+           content: "SECTION NAME",
+           style: RatatuiRuby::Style.new(modifiers: [:bold])
+         )
+       ]),
+       "key: Description (#{current_value})",
+       "another: Something else",
+       "",
+       RatatuiRuby::Text::Line.new(spans: [...]),
+       # ... more sections ...
+     ].flatten
+    )
+    ]
+    )
+
+    # Combine in horizontal layout
+    layout = RatatuiRuby::Layout.new(
+    direction: :horizontal,
+    constraints: [
+    RatatuiRuby::Constraint.new(type: :percentage, value: 70),
+    RatatuiRuby::Constraint.new(type: :percentage, value: 30),
+    ],
+    children: [main_content, sidebar]
+    )
+    ```
+
+    ### Storing Styled Options with Names
+
+    For cycling through options (styles, dividers, modes), structure state as arrays of hashes with a `name` field:
+
+    ```ruby
+    def initialize
+    @styles = [
+    { name: "Yellow Bold", style: RatatuiRuby::Style.new(fg: :yellow, modifiers: [:bold]) },
+    { name: "Italic Blue on White", style: RatatuiRuby::Style.new(fg: :blue, bg: :white, modifiers: [:italic]) },
+    ]
+    @style_index = 0
+
+    @dividers = [
+    { name: " | ", divider: " | " },
+    { name: " • ", divider: " • " },
+    ]
+    @divider_index = 0
+    end
+
+    def render
+    current_style = @styles[@style_index]
+    current_divider = @dividers[@divider_index]
+
+    # Use in sidebar:
+    "s: Style",
+    "  #{current_style[:name]}",
+    "d: Divider (#{current_divider[:name]})",
+    end
+    ```
+
+    This approach keeps the display name and the actual value together, making it easy to show both in the UI.
+
+    ### Hit Testing with the Cached Layout Pattern
+
+    Examples with mouse interaction should implement the **Cached Layout Pattern** documented in `doc/interactive_design.md`. The `hit_test` example demonstrates this pattern.
 
 ## Testing Examples
 

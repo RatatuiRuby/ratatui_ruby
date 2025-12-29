@@ -6,10 +6,12 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
-# Demonstrates hit testing using Layout.split.
+# Demonstrates hit testing using Layout.split with the Cached Layout Pattern.
 #
-# This example shows how to calculate layout regions BEFORE drawing
-# and use those regions to determine which panel was clicked.
+# This example shows how to calculate layout regions *once per frame* and reuse
+# those regions for both rendering and hit testing. This is essential for
+# immediate-mode UI development where the same layout is used by multiple
+# subsystems (render, event handling, etc.).
 #
 # Controls:
 #   - Left/Right arrows: Adjust split ratio
@@ -18,34 +20,50 @@ require "ratatui_ruby"
 class HitTestApp
   def initialize
     @left_ratio = 50
-    @message = "Click a panel or adjust ratio with ←/→"
+    @message = "Click a panel or adjust ratio"
     @last_click = nil
   end
 
   def run
     RatatuiRuby.run do
       loop do
-        render
-        break if handle_input == :quit
+        calculate_layout  # Phase 1: Layout calculation (once per frame)
+        render            # Phase 2: Draw to terminal
+        break if handle_input == :quit  # Phase 3: Consume input using cached rects
       end
     end
   end
 
   private
 
-  def render
-    # Calculate layout BEFORE drawing
-    main_area = RatatuiRuby::Rect.new(x: 0, y: 0, width: 80, height: 24)
+  def calculate_layout
+    # Single source of truth for layout geometry.
+    # Calculated once per frame, then reused by render() and handle_input().
+    full_area = RatatuiRuby::Rect.new(x: 0, y: 0, width: 80, height: 24)
+
+    # First split: main content (70%) vs sidebar (30%).
+    @main_area, @sidebar_area = RatatuiRuby::Layout.split(
+      full_area,
+      direction: :horizontal,
+      constraints: [
+        RatatuiRuby::Constraint.percentage(70),
+        RatatuiRuby::Constraint.percentage(30),
+      ]
+    )
+
+    # Second split: within main content, left vs right panels.
     @left_rect, @right_rect = RatatuiRuby::Layout.split(
-      main_area,
+      @main_area,
       direction: :horizontal,
       constraints: [
         RatatuiRuby::Constraint.percentage(@left_ratio),
         RatatuiRuby::Constraint.percentage(100 - @left_ratio)
       ]
     )
+  end
 
-    # Build UI with the calculated regions
+  def render
+    # Build UI with the pre-calculated regions
     left_panel = build_panel("Left Panel", @left_rect, @last_click == :left)
     right_panel = build_panel("Right Panel", @right_rect, @last_click == :right)
 
@@ -58,14 +76,48 @@ class HitTestApp
       children: [left_panel, right_panel]
     )
 
-    RatatuiRuby.draw(layout)
+    # Sidebar
+    sidebar = RatatuiRuby::Block.new(
+      title: "Controls",
+      borders: [:all],
+      children: [
+        RatatuiRuby::Paragraph.new(
+          text: [
+            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "RATIO", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
+            "q: Quit",
+            "←: Decrease (#{@left_ratio}%)",
+            "→: Increase (#{@left_ratio}%)",
+            "",
+            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "HIT TESTING", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
+            "Click: Detect Panel",
+            "",
+            "Last Click:",
+            "#{@last_click || 'None'}",
+            "",
+            "Message:",
+            @message,
+          ].flatten
+        )
+      ]
+    )
+
+    # Full layout with sidebar
+    full_layout = RatatuiRuby::Layout.new(
+      direction: :horizontal,
+      constraints: [
+        RatatuiRuby::Constraint.new(type: :percentage, value: 70),
+        RatatuiRuby::Constraint.new(type: :percentage, value: 30),
+      ],
+      children: [layout, sidebar]
+    )
+
+    RatatuiRuby.draw(full_layout)
   end
 
   def build_panel(title, rect, active)
     content = "#{title}\n\n" \
               "Width: #{rect.width}, Height: #{rect.height}\n" \
-              "Position: (#{rect.x}, #{rect.y})\n\n" \
-              "#{@message}"
+              "Position: (#{rect.x}, #{rect.y})"
 
     RatatuiRuby::Paragraph.new(
       text: content,

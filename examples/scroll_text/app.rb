@@ -51,16 +51,45 @@ class ScrollTextDemo
   def draw
     text = @lines.join("\n")
     
-    paragraph = RatatuiRuby::Paragraph.new(
+    # Main content
+    main_paragraph = RatatuiRuby::Paragraph.new(
       text: text,
       scroll: [@scroll_y, @scroll_x],
       block: RatatuiRuby::Block.new(
-        title: "Scrollable Text (X: #{@scroll_x}, Y: #{@scroll_y}) - Arrow keys to scroll, 'q' to quit",
+        title: "Scrollable Text",
         borders: [:all]
       )
     )
 
-    RatatuiRuby.draw(paragraph)
+    # Sidebar
+    sidebar = RatatuiRuby::Block.new(
+      title: "Controls",
+      borders: [:all],
+      children: [
+        RatatuiRuby::Paragraph.new(
+          text: [
+            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "NAVIGATION", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
+            "q: Quit",
+            "↑: Scroll Up (#{@scroll_y})",
+            "↓: Scroll Down",
+            "←: Scroll Left (#{@scroll_x})",
+            "→: Scroll Right",
+          ].flatten
+        )
+      ]
+    )
+
+    # Layout
+    layout = RatatuiRuby::Layout.new(
+      direction: :horizontal,
+      constraints: [
+        RatatuiRuby::Constraint.new(type: :percentage, value: 70),
+        RatatuiRuby::Constraint.new(type: :percentage, value: 30),
+      ],
+      children: [main_paragraph, sidebar]
+    )
+
+    RatatuiRuby.draw(layout)
   end
 end
 

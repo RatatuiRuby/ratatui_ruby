@@ -79,38 +79,48 @@ class TestListStylesExample < Minitest::Test
   end
 
   def test_toggle_highlight_spacing_to_always
-    with_test_terminal(80, 10) do
+    with_test_terminal(80, 20) do
       # 's' cycles: when_selected -> always -> never
       inject_keys(:s, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "(S)pacing: always"
+      content = buffer_content
+      assert content.any? { |line| line.include?("Always") }
     end
   end
 
   def test_toggle_highlight_spacing_to_never
-    with_test_terminal(80, 10) do
+    with_test_terminal(80, 20) do
       inject_keys(:s, :s, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "(S)pacing: never"
+      content = buffer_content
+      assert content.any? { |line| line.include?("Never") }
     end
   end
 
   def test_toggle_highlight_spacing_back_to_when_selected
-    with_test_terminal(80, 10) do
+    with_test_terminal(80, 20) do
       inject_keys(:s, :s, :s, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "(S)pacing: when_selected"
+      content = buffer_content
+      assert content.any? { |line| line.include?("When Selected") }
+    end
+  end
+
+  def test_direction_cycling
+    with_test_terminal(80, 20) do
+      inject_keys(:d, :q)
+      @app.run
+
+      content = buffer_content
+      assert content.any? { |line| line.include?("Bottom to Top") }
     end
   end
 
   def test_spacing_always_shows_column_without_selection
-    with_test_terminal(80, 10) do
+    with_test_terminal(80, 20) do
       # Set spacing to :always
       inject_keys(:s, :q)
       @app.run

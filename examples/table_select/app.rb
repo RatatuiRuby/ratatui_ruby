@@ -30,11 +30,17 @@ class TableSelectApp
     { name: "Magenta", style: RatatuiRuby::Style.new(fg: :magenta, modifiers: [:bold]) }
   ].freeze
 
+  HIGHLIGHT_SPACINGS = [
+    { name: "When Selected", spacing: :when_selected },
+    { name: "Always", spacing: :always },
+    { name: "Never", spacing: :never }
+  ].freeze
+
   def initialize
     @selected_index = nil
     @current_style_index = 0
     @column_spacing = 1
-    @highlight_spacing = :when_selected
+    @highlight_spacing_index = 0
   end
 
   def run
@@ -63,9 +69,10 @@ class TableSelectApp
     highlight_style = RatatuiRuby::Style.new(fg: :yellow)
 
     current_style_entry = STYLES[@current_style_index]
+    current_spacing_entry = HIGHLIGHT_SPACINGS[@highlight_spacing_index]
     selection_label = @selected_index.nil? ? "none" : @selected_index.to_s
 
-    # Create table with selection and base style
+    # Main table
     table = RatatuiRuby::Table.new(
       header: ["PID", "Name", "CPU"],
       rows: rows,
@@ -73,21 +80,52 @@ class TableSelectApp
       selected_row: @selected_index,
       highlight_style: highlight_style,
       highlight_symbol: "> ",
-      highlight_spacing: @highlight_spacing,
+      highlight_spacing: current_spacing_entry[:spacing],
       style: current_style_entry[:style],
       column_spacing: @column_spacing,
       block: RatatuiRuby::Block.new(
-        titles: [
-          { content: "Style: #{current_style_entry[:name]} | Sel: #{selection_label} | Spacing: #{@highlight_spacing}" },
-          { content: "↑/↓ nav | 's' style | 'h' highlight | 'x' toggle sel | 'q' quit", position: :bottom, alignment: :center }
-        ],
+        title: "Processes",
         borders: :all
       ),
       footer: ["Total: #{PROCESSES.length}", "Total CPU: #{PROCESSES.sum { |p| p[:cpu] }}%", ""]
     )
 
+    # Sidebar
+    sidebar = RatatuiRuby::Block.new(
+      title: "Controls",
+      borders: [:all],
+      children: [
+        RatatuiRuby::Paragraph.new(
+          text: [
+            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "NAVIGATION", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
+            "q: Quit",
+            "↑/k: Up",
+            "↓/j: Down",
+            "x: Toggle Sel (#{selection_label})",
+            "",
+            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "TABLE", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
+            "s: Style",
+            "  #{current_style_entry[:name]}",
+            "h: Spacing",
+            "  #{current_spacing_entry[:name]}",
+            "+/-: Col Space (#{@column_spacing})",
+          ].flatten
+        )
+      ]
+    )
+
+    # Layout
+    layout = RatatuiRuby::Layout.new(
+      direction: :horizontal,
+      constraints: [
+        RatatuiRuby::Constraint.new(type: :percentage, value: 70),
+        RatatuiRuby::Constraint.new(type: :percentage, value: 30),
+      ],
+      children: [table, sidebar]
+    )
+
     # Draw the table
-    RatatuiRuby.draw(table)
+    RatatuiRuby.draw(layout)
   end
 
   def handle_input
@@ -109,9 +147,7 @@ class TableSelectApp
     in type: :key, code: "-"
       @column_spacing = [@column_spacing - 1, 0].max
     in type: :key, code: "h"
-      modes = [:always, :when_selected, :never]
-      current_idx = modes.index(@highlight_spacing)
-      @highlight_spacing = modes[(current_idx + 1) % modes.length]
+      @highlight_spacing_index = (@highlight_spacing_index + 1) % HIGHLIGHT_SPACINGS.length
     in type: :key, code: "x"
       @selected_index = @selected_index.nil? ? 0 : nil
     else
@@ -121,6 +157,5 @@ class TableSelectApp
 end
 
 if __FILE__ == $0
-  TableApp.new.run
+  TableSelectApp.new.run
 end
-

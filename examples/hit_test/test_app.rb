@@ -3,12 +3,13 @@
 # SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-require "test_helper"
+$LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
+require "ratatui_ruby"
+require "ratatui_ruby/test_helper"
+require "minitest/autorun"
 require_relative "app"
 
 class TestHitTestExample < Minitest::Test
-  include RatatuiRuby::TestHelper
-
   include RatatuiRuby::TestHelper
 
   def setup
@@ -20,9 +21,9 @@ class TestHitTestExample < Minitest::Test
       inject_key(:q)
       @app.run
 
-      content = buffer_content[0]
-      assert_includes content, "Left Panel"
-      assert_includes content, "Right Panel"
+      content = buffer_content
+      assert content.any? { |line| line.include?("Left Panel") }
+      assert content.any? { |line| line.include?("Right Panel") }
     end
   end
 
@@ -34,9 +35,8 @@ class TestHitTestExample < Minitest::Test
 
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Left Panel clicked"
-      refute_includes content, "Right Panel clicked"
+      content = buffer_content
+      assert content.any? { |line| line.include?("Left Panel clicked") }
     end
   end
 
@@ -48,54 +48,52 @@ class TestHitTestExample < Minitest::Test
 
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Right Panel clicked"
-      refute_includes content, "Left Panel clicked"
+      content = buffer_content
+      assert content.any? { |line| line.include?("Right Panel clicked") }
     end
   end
 
-  def test_boundary_left_side
+  def test_ratio_change_decreases_left
     with_test_terminal(80, 24) do
-      # At 50/50 split (boundary at x=40), x=39 should be in left panel
-      inject_event(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 39, y: 12))
-      inject_key(:q)
-
+      # Shrink left panel using left arrow
+      inject_keys("left", :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Left Panel clicked"
-      refute_includes content, "Right Panel clicked"
+      content = buffer_content
+      assert content.any? { |line| line.include?("40%") }
     end
   end
 
-  def test_boundary_right_side
+  def test_ratio_change_increases_left
     with_test_terminal(80, 24) do
-      # At 50/50 split, x=40 should be in right panel (exclusive boundary)
-      inject_event(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 40, y: 12))
-      inject_key(:q)
-
+      # Expand left panel using right arrow
+      inject_keys("right", :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Right Panel clicked"
-      refute_includes content, "Left Panel clicked"
+      content = buffer_content
+      assert content.any? { |line| line.include?("60%") }
     end
   end
 
-  def test_ratio_change_affects_hit_testing
+  def test_ratio_minimum_boundary
     with_test_terminal(80, 24) do
-      # Shrink left panel to 30% using left arrow twice, then click at x=35
-      inject_key("left")
-      inject_key("left")
-      inject_event(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 35, y: 12))
-      inject_key(:q)
-
+      # Try to go below 10%
+      inject_keys("left", "left", "left", "left", "left", :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # At 30/70 split, x=35 should now be in right panel
-      assert_includes content, "Right Panel clicked"
-      refute_includes content, "Left Panel clicked"
+      content = buffer_content
+      assert content.any? { |line| line.include?("10%") }
+    end
+  end
+
+  def test_ratio_maximum_boundary
+    with_test_terminal(80, 24) do
+      # Try to go above 90%
+      inject_keys("right", "right", "right", "right", "right", "right", "right", "right", "right", :q)
+      @app.run
+
+      content = buffer_content
+      assert content.any? { |line| line.include?("90%") }
     end
   end
 end

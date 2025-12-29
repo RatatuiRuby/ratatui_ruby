@@ -8,12 +8,43 @@ require "ratatui_ruby"
 
 class BoxDemoApp
   def initialize
-    @color = "green"
-    @border_type = :plain
-    @text = "Press Arrow Keys (q to quit)\nSpace: border type | Enter: title align | 's': style | 't': title style"
-    @title_alignment = :left
-    @style = nil
-    @title_style = nil
+    @border_types = [
+      { name: "Plain", type: :plain },
+      { name: "Rounded", type: :rounded },
+      { name: "Double", type: :double },
+      { name: "Thick", type: :thick },
+      { name: "Quadrant Inside", type: :quadrant_inside },
+      { name: "Quadrant Outside", type: :quadrant_outside }
+    ]
+    @border_index = 0
+
+    @colors = [
+      { name: "Green", color: "green" },
+      { name: "Red", color: "red" },
+      { name: "Blue", color: "blue" },
+      { name: "Yellow", color: "yellow" },
+      { name: "Magenta", color: "magenta" }
+    ]
+    @color_index = 0
+
+    @title_alignments = [
+      { name: "Left", alignment: :left },
+      { name: "Center", alignment: :center },
+      { name: "Right", alignment: :right }
+    ]
+    @title_alignment_index = 0
+
+    @styles = [
+      { name: "Default", style: nil },
+      { name: "Blue on White", style: { fg: "blue", bg: "white", modifiers: [:bold] } }
+    ]
+    @style_index = 0
+
+    @title_styles = [
+      { name: "Default", style: nil },
+      { name: "Yellow Bold Underlined", style: { fg: "yellow", modifiers: [:bold, :underlined] } }
+    ]
+    @title_style_index = 0
   end
 
   def run
@@ -28,54 +59,72 @@ class BoxDemoApp
   private
 
   def render
+    # Get current values
+    border_config = @border_types[@border_index]
+    color_config = @colors[@color_index]
+    title_alignment_config = @title_alignments[@title_alignment_index]
+    style_config = @styles[@style_index]
+    title_style_config = @title_styles[@title_style_index]
+
     # 1. State/View
-    effective_border_color = @style ? nil : @color
+    effective_border_color = style_config[:style] ? nil : color_config[:color]
 
     block = RatatuiRuby::Block.new(
-      title: "Box Demo - #{@border_type}",
-      titles: [
-        { content: " (Press T to style titles) ", alignment: :right, position: :bottom, style: { fg: :cyan, modifiers: [:italic] } }
-      ],
-      title_alignment: @title_alignment,
-      title_style: @title_style,
+      title: "Box Demo",
+      title_alignment: title_alignment_config[:alignment],
+      title_style: title_style_config[:style],
       borders: [:all],
       border_color: effective_border_color,
-      border_type: @border_type,
-      style: @style
+      border_type: border_config[:type],
+      style: style_config[:style]
     )
 
-    # Paragraph supports style param, so we can pass the hash directly if present
-    paragraph_params = { text: @text, block: block }
-    if @style
-      paragraph_params[:style] = @style
-    else
-      paragraph_params[:fg] = @color
-    end
+    # Main content
+    main_panel = RatatuiRuby::Paragraph.new(
+      text: "Arrow Keys: Change Color\n\nCurrent Color: #{color_config[:name]}",
+      block: block,
+      fg: style_config[:style] ? nil : color_config[:color],
+      style: style_config[:style],
+      align: :center
+    )
 
-    view_tree = RatatuiRuby::Paragraph.new(**paragraph_params)
+    # Sidebar
+    sidebar = RatatuiRuby::Block.new(
+      title: "Controls",
+      borders: [:all],
+      children: [
+        RatatuiRuby::Paragraph.new(
+          text: [
+            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "MAIN", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
+            "q: Quit",
+            "↑↓←→: Color (#{color_config[:name]})",
+            "",
+            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "BORDER", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
+            "space: Type (#{border_config[:name]})",
+            "",
+            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "TITLE", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
+            "enter: Align (#{title_alignment_config[:name]})",
+            "t: Style (#{title_style_config[:name]})",
+            "",
+            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "CONTENT", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
+            "s: Style (#{style_config[:name]})",
+          ].flatten
+        )
+      ]
+    )
+
+    # Layout
+    layout = RatatuiRuby::Layout.new(
+      direction: :horizontal,
+      constraints: [
+        RatatuiRuby::Constraint.new(type: :percentage, value: 70),
+        RatatuiRuby::Constraint.new(type: :percentage, value: 30),
+      ],
+      children: [main_panel, sidebar]
+    )
 
     # 2. Render
-    RatatuiRuby.draw(view_tree)
-  end
-
-  def next_border_type
-    types = [:plain, :rounded, :double, :thick, :quadrant_inside, :quadrant_outside]
-    current_index = types.index(@border_type) || 0
-    @border_type = types[(current_index + 1) % types.length]
-  end
-
-  def next_title_alignment
-    alignments = [:left, :center, :right]
-    current_index = alignments.index(@title_alignment) || 0
-    @title_alignment = alignments[(current_index + 1) % alignments.length]
-  end
-
-  def toggle_style
-    @style = @style ? nil : { fg: "blue", bg: "white", modifiers: [:bold] }
-  end
-
-  def toggle_title_style
-    @title_style = @title_style ? nil : { fg: "yellow", modifiers: [:bold, :underlined] }
+    RatatuiRuby.draw(layout)
   end
 
   def handle_input
@@ -84,29 +133,21 @@ class BoxDemoApp
     in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
       :quit
     in type: :key, code: "up"
-      @color = "red"
-      @text = "Up Pressed!"
+      @color_index = (@color_index - 1) % @colors.size
     in type: :key, code: "down"
-      @color = "blue"
-      @text = "Down Pressed!"
+      @color_index = (@color_index + 1) % @colors.size
     in type: :key, code: "left"
-      @color = "yellow"
-      @text = "Left Pressed!"
+      @color_index = (@color_index - 1) % @colors.size
     in type: :key, code: "right"
-      @color = "magenta"
-      @text = "Right Pressed!"
+      @color_index = (@color_index + 1) % @colors.size
     in type: :key, code: " "
-      next_border_type
-      @text = "Switched to #{@border_type}"
+      @border_index = (@border_index + 1) % @border_types.size
     in type: :key, code: "enter"
-      next_title_alignment
-      @text = "Aligned #{@title_alignment}"
+      @title_alignment_index = (@title_alignment_index + 1) % @title_alignments.size
     in type: :key, code: "s"
-      toggle_style
-      @text = "Style: #{@style ? 'Blue on White' : 'Default'}"
+      @style_index = (@style_index + 1) % @styles.size
     in type: :key, code: "t"
-      toggle_title_style
-      @text = "Title Style: #{@title_style ? 'Yellow Bold Underlined' : 'Default'}"
+      @title_style_index = (@title_style_index + 1) % @title_styles.size
     else
       nil
     end

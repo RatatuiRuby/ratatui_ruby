@@ -49,27 +49,54 @@ class SystemMonitorApp
       RatatuiRuby::Constraint.length(10),
     ]
 
-    table = RatatuiRuby::Table.new(
-      header:,
-      rows:,
-      widths:,
-      block: RatatuiRuby::Block.new(title: "Processes", borders: [:all])
-    )
-
-    gauge = RatatuiRuby::Gauge.new(
-      percent: @percentage,
-      label: "#{@percentage}%",
-      style: RatatuiRuby::Style.new(fg: :green),
-      block: RatatuiRuby::Block.new(title: "Memory Usage", borders: [:all])
-    )
-
-    layout = RatatuiRuby::Layout.new(
+    main_layout = RatatuiRuby::Layout.new(
       direction: :vertical,
-      children: [table, gauge],
+      children: [
+        RatatuiRuby::Table.new(
+          header:,
+          rows:,
+          widths:,
+          block: RatatuiRuby::Block.new(title: "Processes", borders: [:all])
+        ),
+        RatatuiRuby::Gauge.new(
+          percent: @percentage,
+          label: "#{@percentage}%",
+          style: RatatuiRuby::Style.new(fg: :green),
+          block: RatatuiRuby::Block.new(title: "Memory Usage", borders: [:all])
+        ),
+      ],
       constraints: [
         RatatuiRuby::Constraint.percentage(50),
         RatatuiRuby::Constraint.percentage(50),
       ]
+    )
+
+    # Sidebar
+    sidebar = RatatuiRuby::Block.new(
+      title: "Controls",
+      borders: [:all],
+      children: [
+        RatatuiRuby::Paragraph.new(
+          text: [
+            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "GENERAL", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
+            "q: Quit",
+            "",
+            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "GAUGE", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
+            "↑: Increase (#{@percentage}%)",
+            "↓: Decrease",
+          ].flatten
+        )
+      ]
+    )
+
+    # Full layout with sidebar
+    layout = RatatuiRuby::Layout.new(
+      direction: :horizontal,
+      constraints: [
+        RatatuiRuby::Constraint.new(type: :percentage, value: 70),
+        RatatuiRuby::Constraint.new(type: :percentage, value: 30),
+      ],
+      children: [main_layout, sidebar]
     )
 
     RatatuiRuby.draw(layout)

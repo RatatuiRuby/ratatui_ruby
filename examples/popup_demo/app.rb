@@ -48,7 +48,7 @@ class PopupDemo
       text: popup_text,
       align: :center,
       block: RatatuiRuby::Block.new(
-        title: "Popup Demo (Press 'q' to quit)",
+        title: "Popup Demo (q to quit, space to toggle)",
         borders: [:all]
       )
     )
@@ -90,7 +90,7 @@ class PopupDemo
 
   def handle_input
     case RatatuiRuby.poll_event
-    in type: :key, code: "q" | "c", modifiers: [] | ["ctrl"]
+    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
       :quit
     in type: :key, code: " "
       @clear_enabled = !@clear_enabled

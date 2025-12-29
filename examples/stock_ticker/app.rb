@@ -50,8 +50,8 @@ class StockTickerApp
 
     direction = DIRECTIONS[@direction_index]
 
-    # Define UI
-    ui = RatatuiRuby::Layout.new(
+    # Main content area
+    main_layout = RatatuiRuby::Layout.new(
       direction: :vertical,
       constraints: [
         RatatuiRuby::Constraint.new(type: :percentage, value: 20),
@@ -63,7 +63,7 @@ class StockTickerApp
           direction:,
           style: RatatuiRuby::Style.new(fg: :cyan),
           block: RatatuiRuby::Block.new(
-            title: "Network Activity (d: #{direction})",
+            title: "Network Activity",
             borders: :all
           )
         ),
@@ -87,7 +87,35 @@ class StockTickerApp
       ]
     )
 
-    RatatuiRuby.draw(ui)
+    # Sidebar
+    sidebar = RatatuiRuby::Block.new(
+      title: "Controls",
+      borders: [:all],
+      children: [
+        RatatuiRuby::Paragraph.new(
+          text: [
+            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "GENERAL", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
+            "q: Quit",
+            "",
+            RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "SPARKLINE", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
+            "d: Direction",
+            "  #{direction}",
+          ].flatten
+        )
+      ]
+    )
+
+    # Full layout with sidebar
+    layout = RatatuiRuby::Layout.new(
+      direction: :horizontal,
+      constraints: [
+        RatatuiRuby::Constraint.new(type: :percentage, value: 70),
+        RatatuiRuby::Constraint.new(type: :percentage, value: 30),
+      ],
+      children: [main_layout, sidebar]
+    )
+
+    RatatuiRuby.draw(layout)
   end
 
   def handle_input

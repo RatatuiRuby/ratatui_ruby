@@ -5,8 +5,9 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
-$LOAD_PATH.unshift File.expand_path("../test", __dir__)
-require "test_helper"
+require "ratatui_ruby"
+require "ratatui_ruby/test_helper"
+require "minitest/autorun"
 require_relative "app"
 
 # Tests for the table_select example
@@ -22,10 +23,10 @@ class TestTableSelectApp < Minitest::Test
       inject_key(:q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Sel: none"
-      assert_includes content, "Style: Cyan"
-      assert_includes content, "PID"
+      content = buffer_content
+      assert content.any? { |line| line.include?("none") }
+      assert content.any? { |line| line.include?("Cyan") }
+      assert content.any? { |line| line.include?("PID") }
     end
   end
 
@@ -36,8 +37,8 @@ class TestTableSelectApp < Minitest::Test
       inject_keys(:s, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Style: #{second_style_name}"
+      content = buffer_content
+      assert content.any? { |line| line.include?(second_style_name) }
     end
   end
 
@@ -48,8 +49,8 @@ class TestTableSelectApp < Minitest::Test
       @app.run
 
       content = buffer_content.join("\n")
-      assert_includes content, "Sel: 0"
-      refute_includes content, "Sel: none"
+      assert_includes content, "Sel (0)"
+      refute_includes content, "Sel (none)"
     end
   end
 
@@ -60,7 +61,7 @@ class TestTableSelectApp < Minitest::Test
       @app.run
 
       content = buffer_content.join("\n")
-      assert_includes content, "Sel: none"
+      assert_includes content, "Sel (none)"
     end
   end
 
@@ -70,7 +71,7 @@ class TestTableSelectApp < Minitest::Test
       @app.run
 
       content = buffer_content.join("\n")
-      assert_includes content, "Sel: 0"
+      assert_includes content, "Sel (0)"
     end
   end
 
@@ -82,7 +83,7 @@ class TestTableSelectApp < Minitest::Test
 
       content = buffer_content.join("\n")
       last_index = PROCESSES.length - 1
-      assert_includes content, "Sel: #{last_index}"
+      assert_includes content, "Sel (#{last_index})"
     end
   end
 
@@ -93,37 +94,57 @@ class TestTableSelectApp < Minitest::Test
     end
   end
 
-  def test_highlight_spacing_cycles_to_never
+  def test_highlight_spacing_cycles_to_next
     with_test_terminal(100, 20) do
-      # Mode order: [:always, :when_selected, :never], starting at :when_selected
-      # 'h' goes to :never
+      # Mode order: [:when_selected, :always, :never]
+      # 'h' goes to :always
       inject_keys(:h, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Spacing: never"
+      content = buffer_content
+      assert content.any? { |line| line.include?("Always") }
     end
   end
 
-  def test_highlight_spacing_cycles_to_always
+  def test_highlight_spacing_cycles_to_never
     with_test_terminal(100, 20) do
-      # 'h' goes: when_selected -> never -> always
+      # 'h' goes: when_selected -> always -> never
       inject_keys(:h, :h, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Spacing: always"
+      content = buffer_content
+      assert content.any? { |line| line.include?("Never") }
     end
   end
 
   def test_highlight_spacing_cycles_back_to_when_selected
     with_test_terminal(100, 20) do
-      # 'h' goes: when_selected -> never -> always -> when_selected
+      # 'h' goes: when_selected -> always -> never -> when_selected
       inject_keys(:h, :h, :h, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Spacing: when_selected"
+      content = buffer_content
+      assert content.any? { |line| line.include?("When Selected") }
+    end
+  end
+
+  def test_column_spacing_increases
+    with_test_terminal(100, 20) do
+      inject_keys("+", :q)
+      @app.run
+
+      content = buffer_content
+      assert content.any? { |line| line.include?("Col Space (2)") }
+    end
+  end
+
+  def test_column_spacing_decreases
+    with_test_terminal(100, 20) do
+      inject_keys("+", "-", :q)
+      @app.run
+
+      content = buffer_content
+      assert content.any? { |line| line.include?("Col Space (1)") }
     end
   end
 end
