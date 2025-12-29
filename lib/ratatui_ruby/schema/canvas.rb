@@ -158,7 +158,7 @@ module RatatuiRuby
       # :attr_reader: marker
       # The marker type used for drawing.
       #
-      # <tt>:braille</tt> (high res), <tt>:dot</tt>, <tt>:block</tt>, <tt>:bar</tt>.
+      # <tt>:braille</tt> (high res), <tt>:half_block</tt>, <tt>:dot</tt>, <tt>:block</tt>, <tt>:bar</tt>.
 
       ##
       # :attr_reader: block

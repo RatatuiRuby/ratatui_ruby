@@ -11,12 +11,14 @@ module MapDemo
   include RatatuiRuby
 
   COLORS = [:black, :blue, :white, nil].freeze
+  MARKERS = [:braille, :half_block, :dot, :block, :bar, :quadrant, :sextant, :octant].freeze
 
   # Returns a Canvas view for the map demo with the given circle radius.
   #
   # +radius+:: The radius of the animated circle.
+  # +marker+:: The marker type.
   # +background_color+:: The background color of the canvas.
-  def self.view(radius, background_color = nil)
+  def self.view(radius, marker = :braille, background_color = nil)
     Canvas.new(
       shapes: [
         Shape::Map.new(color: :green, resolution: :high),
@@ -25,8 +27,8 @@ module MapDemo
       ],
       x_bounds: [-180.0, 180.0],
       y_bounds: [-90.0, 90.0],
-      marker: :braille,
-      block: Block.new(title: "World Map Canvas [Press 'b' to cycle background]", borders: :all),
+      marker: marker,
+      block: Block.new(title: "World Map ['b' background, 'm' marker: #{marker}]", borders: :all),
       background_color: background_color
     )
   end
@@ -37,6 +39,7 @@ module MapDemo
     radius = 0.0
     direction = 1
     bg_index = 0
+    marker_index = 0
 
     loop do
       # Animate the circle radius
@@ -46,7 +49,7 @@ module MapDemo
       end
 
       # Define the view
-      view = view(radius, COLORS[bg_index])
+      view = view(radius, MARKERS[marker_index], COLORS[bg_index])
 
       RatatuiRuby.draw(view)
 
@@ -55,6 +58,8 @@ module MapDemo
 
       if event == "b"
         bg_index = (bg_index + 1) % COLORS.size
+      elsif event == "m"
+        marker_index = (marker_index + 1) % MARKERS.size
       end
 
       sleep 0.05

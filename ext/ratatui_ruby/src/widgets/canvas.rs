@@ -24,6 +24,7 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
         "block" => Marker::Block,
         "bar" => Marker::Bar,
         "braille" => Marker::Braille,
+        "half_block" => Marker::HalfBlock,
         "quadrant" => Marker::Quadrant,
         "sextant" => Marker::Sextant,
         "octant" => Marker::Octant,

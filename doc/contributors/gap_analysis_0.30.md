@@ -274,7 +274,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `Marker::Block` | `:block` | ✅ |
 | `Marker::Bar` | `:bar` | ✅ |
 | `Marker::Braille` | `:braille` | ✅ |
-| `Marker::HalfBlock` | — | ❌ **MISSING** |
+| `Marker::HalfBlock` | `:half_block` | ✅ |
 | `Marker::Quadrant` | `:quadrant` | ✅ |
 | `Marker::Sextant` | `:sextant` | ✅ |
 | `Marker::Octant` | `:octant` | ✅ |

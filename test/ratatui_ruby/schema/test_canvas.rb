@@ -74,4 +74,9 @@ class TestCanvas < Minitest::Test
     assert_equal :braille, c.marker
     assert_nil c.block
   end
+
+  def test_canvas_half_block_marker
+    c = RatatuiRuby::Canvas.new(marker: :half_block)
+    assert_equal :half_block, c.marker
+  end
 end

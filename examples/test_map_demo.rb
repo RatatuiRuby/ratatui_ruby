@@ -26,7 +26,7 @@ class TestMapDemo < Minitest::Test
       # Verify the buffer content reflects the rendered map
       # radius should be 0.5 for the first frame
       expected_buffer = [
-        "┌World Map Canvas [┐",
+        "┌World Map ['b' bac┐",
         "│⡀⣀⣀⣤⣴⣶⣖⢲⡆⢠⣄⢤⣄⡤⣤⣠⣄⣀│",
         "│⠹⠷⢫⡉⠿⣿⡟⠉⢳⡾⣟⣉⠉  ⢰⣺⠛│",
         "│  ⠘⣦⣤⡏⠁ ⡼⠿⢿⣟⡀ ⢸⠿⠁ │",
@@ -43,7 +43,7 @@ class TestMapDemo < Minitest::Test
       end
 
       # Verify the background color is set on the view (Unit test of the view method)
-      view = MapDemo.view(0.0)
+      view = MapDemo.view(0.0, :braille, nil)
       assert_nil view.background_color
     end
   end
