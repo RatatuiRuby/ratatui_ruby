@@ -14,13 +14,15 @@ class TestTable < Minitest::Test
     assert_equal header, t.header
     assert_equal rows, t.rows
     assert_equal widths, t.widths
+    assert_equal :when_selected, t.highlight_spacing
     assert_nil t.style
   end
 
   def test_table_creation_with_style
     style = RatatuiRuby::Style.new(fg: :red)
-    t = RatatuiRuby::Table.new(rows: [], widths: [], style: style)
+    t = RatatuiRuby::Table.new(rows: [], widths: [], style: style, highlight_spacing: :always)
     assert_equal style, t.style
+    assert_equal :always, t.highlight_spacing
   end
 
   def test_render
@@ -203,6 +205,82 @@ class TestTable < Minitest::Test
       line = buffer_content.first
       # "A     B" (5 spaces)
       assert_match(/A\s{5}B/, line)
+    end
+  end
+  def test_highlight_spacing_always
+    rows = [["A"]]
+    widths = [RatatuiRuby::Constraint.length(1)]
+
+    # :always means we should see the spacing even if not selected
+    table = RatatuiRuby::Table.new(
+      rows: rows,
+      widths: widths,
+      highlight_spacing: :always,
+      highlight_symbol: "> "
+    )
+
+    with_test_terminal(5, 1) do
+      RatatuiRuby.draw(table)
+      # "  " (2 spaces) + "A" (1 char) + "  " (padding to 5?)
+      # Content: "  A  "
+      assert_equal ["  A  "], buffer_content
+    end
+  end
+
+  def test_highlight_spacing_never
+    rows = [["A"]]
+    widths = [RatatuiRuby::Constraint.length(1)]
+
+    # :never means no reserved space. "A" starts at col 0.
+    table = RatatuiRuby::Table.new(
+      rows: rows,
+      widths: widths,
+      highlight_spacing: :never,
+      highlight_symbol: "> "
+    )
+
+    with_test_terminal(5, 1) do
+      RatatuiRuby.draw(table)
+      # "A    "
+      assert_equal ["A    "], buffer_content
+    end
+  end
+
+  def test_highlight_spacing_when_selected_unselected
+    rows = [["A"]]
+    widths = [RatatuiRuby::Constraint.length(1)]
+
+    # :when_selected (default) + Not selected -> No spacing (like :never)
+    table = RatatuiRuby::Table.new(
+      rows: rows,
+      widths: widths,
+      highlight_spacing: :when_selected,
+      highlight_symbol: "> "
+    )
+
+    with_test_terminal(5, 1) do
+      RatatuiRuby.draw(table)
+      assert_equal ["A    "], buffer_content
+    end
+  end
+
+  def test_highlight_spacing_when_selected_selected
+    rows = [["A"]]
+    widths = [RatatuiRuby::Constraint.length(1)]
+
+    # :when_selected (default) + Selected -> Spacing (like :always) + Symbol
+    table = RatatuiRuby::Table.new(
+      rows: rows,
+      widths: widths,
+      highlight_spacing: :when_selected,
+      highlight_symbol: "> ",
+      selected_row: 0
+    )
+
+    with_test_terminal(5, 1) do
+      RatatuiRuby.draw(table)
+      # "> A  "
+      assert_equal ["> A  "], buffer_content
     end
   end
 end

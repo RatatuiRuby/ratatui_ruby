@@ -28,7 +28,7 @@ class TestTableSelect < Minitest::Test
 
       content = buffer_content.join("\n")
       assert_includes content, "Process Monitor"
-      assert_includes content, "style: Cyan"
+      assert_includes content, "Style: Cyan"
       assert_includes content, "PID"
     end
   end
@@ -44,7 +44,7 @@ class TestTableSelect < Minitest::Test
       @app.run
       
       content = buffer_content.join("\n")
-      assert_includes content, "style: #{second_style_name}"
+      assert_includes content, "Style: #{second_style_name}"
     end
   end
 
@@ -90,8 +90,22 @@ class TestTableSelect < Minitest::Test
       @app.run
       
       content = buffer_content.join("\n")
-      assert_includes content, "spacing: 2"
+      assert_includes content, "Spacing: 2"
       assert_equal 2, @app.column_spacing
+    end
+  end
+
+  def test_highlight_spacing_change
+    with_test_terminal(100, 20) do
+      # Initial is :when_selected. Press 'h' -> :never -> :always -> :when_selected
+      # Let's switch to :never
+      inject_keys(:h, :q)
+      
+      @app.run
+      
+      content = buffer_content.join("\n")
+      assert_includes content, "Highlight: never"
+      assert_equal :never, @app.highlight_spacing
     end
   end
 end

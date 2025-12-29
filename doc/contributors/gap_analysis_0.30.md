@@ -85,7 +85,7 @@ Comparison of ratatui 0.30 features vs ratatui_ruby current implementation.
 | `column_highlight_style()` | — | ❌ **MISSING** |
 | `cell_highlight_style()` | — | ❌ **MISSING** |
 | `highlight_symbol()` | `highlight_symbol:` | ✅ |
-| `highlight_spacing()` | — | ❌ **MISSING** |
+| `highlight_spacing()` | `highlight_spacing:` | ✅ |
 | `highlight_spacing()` | — | ❌ **MISSING** |
 | `column_spacing()` | `column_spacing:` | ✅ |
 | `flex()` | `flex:` | ✅ |
