@@ -25,7 +25,7 @@ module RatatuiRuby
     #     highlight_style: Style.new(bg: :blue),
     #     highlight_symbol: ">> "
     #   )
-    class List < Data.define(:items, :selected_index, :style, :highlight_style, :highlight_symbol, :repeat_highlight_symbol, :highlight_spacing, :direction, :block)
+    class List < Data.define(:items, :selected_index, :style, :highlight_style, :highlight_symbol, :repeat_highlight_symbol, :highlight_spacing, :direction, :scroll_padding, :block)
       ##
       # :attr_reader: items
       # The items to display (Array of Strings).
@@ -63,6 +63,10 @@ module RatatuiRuby
       # <tt>:top_to_bottom</tt> or <tt>:bottom_to_top</tt>.
 
       ##
+      # :attr_reader: scroll_padding
+      # Number of items to keep visible above/below the selected item when scrolling (Integer or nil).
+
+      ##
       # :attr_reader: block
       # Optional wrapping block.
 
@@ -76,8 +80,9 @@ module RatatuiRuby
       # [repeat_highlight_symbol] Boolean (default: <tt>false</tt>).
       # [highlight_spacing] Symbol (default: <tt>:when_selected</tt>).
       # [direction] Symbol (default: <tt>:top_to_bottom</tt>).
+      # [scroll_padding] Integer (nullable, default: <tt>nil</tt>).
       # [block] Block (optional).
-      def initialize(items: [], selected_index: nil, style: nil, highlight_style: nil, highlight_symbol: "> ", repeat_highlight_symbol: false, highlight_spacing: :when_selected, direction: :top_to_bottom, block: nil)
+      def initialize(items: [], selected_index: nil, style: nil, highlight_style: nil, highlight_symbol: "> ", repeat_highlight_symbol: false, highlight_spacing: :when_selected, direction: :top_to_bottom, scroll_padding: nil, block: nil)
         super
       end
     end

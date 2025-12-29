@@ -46,6 +46,22 @@ end
 MyExampleApp.new.run if __FILE__ == $PROGRAM_NAME
 ```
 
+### Terminal Size Constraint
+
+All interactive examples must fit within an **80×24 terminal** (standard VT100 dimensions). This ensures:
+- Examples work on minimal terminal configurations
+- Tests can use a consistent `with_test_terminal(80, 24)` size
+- Examples remain discoverable and self-documenting through visible hotkey help
+
+**Layout patterns for 80×24:**
+- **Bottom control panel (recommended):** Allocate ~5-7 lines at bottom for a full-width control block with hotkey documentation. Style hotkeys with **bold and underline** to make them discoverable. Use double-space or pipe separators to compress multiple controls per line. This keeps all UI text at full readability while maximizing space for the main content area.
+- **Sidebar layout (alternative in case height needed for effective demo):** If using a sidebar, allocate at least 35% width (28+ chars) to avoid text wrapping. Keep sidebar height to ~20 lines max.
+
+**Best practices:**
+- Use descriptive names (e.g., "Yellow on Black" not "Yellow") so controls are self-documenting and discoverable.
+- **Style hotkeys visually:** Use `modifiers: [:bold, :underlined]` on hotkey letters to make them stand out from descriptions. Example: `i` (bold, underlined) followed by `Items`.
+- Test early by running the example at 80×24 and verifying all content is visible without wrapping, scrolling, or clipping.
+
 Every example must also have an RBS file documenting its public methods:
 
 `examples/my_example/app.rbs`:
@@ -71,90 +87,31 @@ end
     - Space: Toggle or select
     - `q` or Ctrl+C: Quit
 
-    ## Control Sidebar Pattern
+### Naming Conventions for Controls
 
-    For examples with multiple interactive controls, display a **sidebar (30% width)** on the right side of the screen showing:
-    - Current values of all settings
-    - Hotkey documentation organized by feature area
-    - Bold section headers for clarity
+When documenting hotkeys and cycling options in the UI, use consistent naming:
 
-    This pattern provides discoverable, self-documenting examples.
-
-    ### Sidebar Layout Structure
-
-    ```ruby
-    # 70% main content on left
-    main_content = RatatuiRuby::Paragraph.new(...)
-
-    # 30% sidebar on right with controls
-    sidebar = RatatuiRuby::Block.new(
-    title: "Controls",
-    borders: [:all],
-    children: [
-    RatatuiRuby::Paragraph.new(
-     text: [
-       RatatuiRuby::Text::Line.new(spans: [
-         RatatuiRuby::Text::Span.new(
-           content: "SECTION NAME",
-           style: RatatuiRuby::Style.new(modifiers: [:bold])
-         )
-       ]),
-       "key: Description (#{current_value})",
-       "another: Something else",
-       "",
-       RatatuiRuby::Text::Line.new(spans: [...]),
-       # ... more sections ...
-     ].flatten
-    )
-    ]
-    )
-
-    # Combine in horizontal layout
-    layout = RatatuiRuby::Layout.new(
-    direction: :horizontal,
-    constraints: [
-    RatatuiRuby::Constraint.new(type: :percentage, value: 70),
-    RatatuiRuby::Constraint.new(type: :percentage, value: 30),
-    ],
-    children: [main_content, sidebar]
-    )
-    ```
-
-    ### Storing Styled Options with Names
-
-    For cycling through options (styles, dividers, modes), structure state as arrays of hashes with a `name` field:
-
-    ```ruby
-    def initialize
-    @styles = [
+- **Parameter names:** Always match the actual Ruby parameter name. For example:
+  - Use "Scroll Padding" (not "Scroll Pad") for the `scroll_padding:` parameter
+  - Use "Highlight Style" (not "Highlight") for the `highlight_style:` parameter
+  - Use "Repeat Symbol" (not "Repeat") for the `repeat_highlight_symbol:` parameter
+  
+- **Display names for cycled values:** Create a `name` field in your options hash to keep display names paired with values:
+  ```ruby
+  @styles = [
     { name: "Yellow Bold", style: RatatuiRuby::Style.new(fg: :yellow, modifiers: [:bold]) },
-    { name: "Italic Blue on White", style: RatatuiRuby::Style.new(fg: :blue, bg: :white, modifiers: [:italic]) },
-    ]
-    @style_index = 0
+    { name: "Blue on White", style: RatatuiRuby::Style.new(fg: :blue, bg: :white) }
+  ]
+  
+  # In controls: "h: Highlight Style (#{@styles[@style_index][:name]})"
+  # Outputs: "h: Highlight Style (Yellow Bold)"
+  ```
 
-    @dividers = [
-    { name: " | ", divider: " | " },
-    { name: " • ", divider: " • " },
-    ]
-    @divider_index = 0
-    end
+This keeps the UI self-documenting and users can see exact parameter names when they read the hotkey help.
 
-    def render
-    current_style = @styles[@style_index]
-    current_divider = @dividers[@divider_index]
+### Hit Testing with the Cached Layout Pattern
 
-    # Use in sidebar:
-    "s: Style",
-    "  #{current_style[:name]}",
-    "d: Divider (#{current_divider[:name]})",
-    end
-    ```
-
-    This approach keeps the display name and the actual value together, making it easy to show both in the UI.
-
-    ### Hit Testing with the Cached Layout Pattern
-
-    Examples with mouse interaction should implement the **Cached Layout Pattern** documented in `doc/interactive_design.md`. The `hit_test` example demonstrates this pattern.
+Examples with mouse interaction should implement the **Cached Layout Pattern** documented in `doc/interactive_design.md`. The `hit_test` example demonstrates this pattern.
 
 ## Testing Examples
 

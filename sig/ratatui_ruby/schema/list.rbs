@@ -8,9 +8,11 @@ module RatatuiRuby
     attr_reader style: Style?
     attr_reader highlight_style: Style?
     attr_reader highlight_symbol: String?
+    attr_reader repeat_highlight_symbol: bool
     attr_reader highlight_spacing: Symbol
     attr_reader direction: Symbol
+    attr_reader scroll_padding: Integer?
     attr_reader block: Block?
-    def self.new: (?items: Array[String], ?selected_index: Integer?, ?style: Style?, ?highlight_style: Style?, ?highlight_symbol: String?, ?highlight_spacing: Symbol, ?direction: Symbol, ?block: Block?) -> List
+    def self.new: (?items: Array[String], ?selected_index: Integer?, ?style: Style?, ?highlight_style: Style?, ?highlight_symbol: String?, ?repeat_highlight_symbol: bool, ?highlight_spacing: Symbol, ?direction: Symbol, ?scroll_padding: Integer?, ?block: Block?) -> List
   end
 end

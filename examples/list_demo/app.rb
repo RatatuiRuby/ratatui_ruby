@@ -12,10 +12,45 @@ class ListDemoApp
     @selected_index = nil
 
     @item_sets = [
-      { name: "Colors", items: ["Red", "Yellow", "Green", "Cyan", "Blue", "Magenta"] },
-      { name: "Fruits", items: ["Apple", "Banana", "Orange", "Grape", "Strawberry"] },
-      { name: "Programming", items: ["Ruby", "Rust", "Python", "JavaScript", "Go", "C++"] },
-      { name: "Numbers", items: ["One", "Two", "Three", "Four", "Five", "Six", "Seven"] }
+      {
+        name: "Large List",
+        items: (1..200).map { |i| "Item #{i}" }
+      },
+      {
+        name: "Colors",
+        items: [
+          "Red", "Orange", "Yellow", "Green", "Cyan", "Blue", "Indigo", "Violet",
+          "Scarlet", "Crimson", "Maroon", "Brown", "Tan", "Beige", "Khaki",
+          "Gold", "Silver", "White", "Gray", "Black", "Pink", "Magenta",
+          "Turquoise", "Teal", "Coral", "Salmon", "Peach", "Lavender", "Lilac",
+          "Olive", "Lime", "Navy", "Charcoal", "Ivory", "Azure"
+        ]
+      },
+      {
+        name: "Fruits",
+        items: [
+          "Apple", "Apricot", "Avocado", "Banana", "Blueberry", "Blackberry",
+          "Cherry", "Cranberry", "Cucumber", "Date", "Dragonfruit", "Elderberry",
+          "Fig", "Grape", "Grapefruit", "Guava", "Honeydew", "Huckleberry",
+          "Jackfruit", "Kiwi", "Kumquat", "Lemon", "Lime", "Lychee",
+          "Mango", "Melon", "Mulberry", "Nectarine", "Olive", "Orange",
+          "Papaya", "Passion Fruit", "Peach", "Pear", "Persimmon", "Pineapple",
+          "Plum", "Pomegranate", "Prune", "Rambutan", "Raspberry", "Starfruit",
+          "Strawberry", "Tangerine", "Watermelon", "Ugli Fruit"
+        ]
+      },
+      {
+        name: "Programming",
+        items: [
+          "Ruby", "Rust", "Python", "JavaScript", "Go", "C++", "C#", "Java",
+          "Kotlin", "Swift", "Objective-C", "PHP", "TypeScript", "Perl", "Lua",
+          "R", "Scala", "Haskell", "Elixir", "Clojure", "Groovy", "Closure",
+          "VB.NET", "F#", "Erlang", "Lisp", "Scheme", "Prolog", "Fortran",
+          "COBOL", "Pascal", "Delphi", "Ada", "Bash", "Sh", "Tcl",
+          "Awk", "sed", "Vim Script", "PowerShell", "Batch", "Assembly",
+          "Wasm", "WebAssembly", "Julia", "Matlab", "Octave", "BASIC"
+        ]
+      }
     ]
     @item_set_index = 0
 
@@ -62,6 +97,13 @@ class ListDemoApp
       { name: "White on Black", style: RatatuiRuby::Style.new(fg: :white, bg: :black) }
     ]
     @base_style_index = 0
+
+    @scroll_paddings = [
+      { name: "None", padding: nil },
+      { name: "1 item", padding: 1 },
+      { name: "2 items", padding: 2 }
+    ]
+    @scroll_padding_index = 0
   end
 
   def run
@@ -85,20 +127,19 @@ class ListDemoApp
     highlight_style_config = @highlight_styles[@highlight_style_index]
     highlight_symbol_config = @highlight_symbols[@highlight_symbol_index]
     base_style_config = @base_styles[@base_style_index]
+    scroll_padding_config = @scroll_paddings[@scroll_padding_index]
 
-    # Main content area with multiple list examples
+    # Main list area
     main_content = RatatuiRuby::Layout.new(
       direction: :vertical,
       constraints: [
         RatatuiRuby::Constraint.length(1),
-        RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.length(4)
+        RatatuiRuby::Constraint.fill(1)
       ],
       children: [
         RatatuiRuby::Paragraph.new(
-          text: "List Widget Demo - Cycle attributes with hotkeys"
+          text: "List Widget Demo - Interactive Attribute Cycling"
         ),
-        # Main interactive list
         RatatuiRuby::List.new(
           items:,
           selected_index: @selected_index,
@@ -108,136 +149,66 @@ class ListDemoApp
           repeat_highlight_symbol: repeat_config[:repeat],
           highlight_spacing: spacing_config[:spacing],
           direction: direction_config[:direction],
+          scroll_padding: scroll_padding_config[:padding],
           block: RatatuiRuby::Block.new(
-            title: "Interactive List",
+            title: "#{@item_sets[@item_set_index][:name]} (Selection: #{selection_label})",
             borders: [:all]
           )
-        ),
-        # Info display
-        RatatuiRuby::Block.new(
-          title: "Current State",
-          borders: [:all],
-          children: [
-            RatatuiRuby::Paragraph.new(
-              text: [
-                "Item Set: #{@item_sets[@item_set_index][:name]}",
-                "Selection: #{selection_label}",
-                "Direction: #{direction_config[:name]}",
-                "Spacing: #{spacing_config[:name]}"
-              ]
-            )
+        )
+      ]
+    )
+
+    # Bottom control panel with full width
+    hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
+    control_panel = RatatuiRuby::Block.new(
+      title: "Controls",
+      borders: [:all],
+      children: [
+        RatatuiRuby::Paragraph.new(
+          text: [
+            RatatuiRuby::Text::Line.new(spans: [
+              RatatuiRuby::Text::Span.new(content: "i", style: hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Items  "),
+              RatatuiRuby::Text::Span.new(content: "↑/↓", style: hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Navigate  "),
+              RatatuiRuby::Text::Span.new(content: "x", style: hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Select  "),
+              RatatuiRuby::Text::Span.new(content: "h", style: hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Highlight (#{highlight_style_config[:name]})")
+            ]),
+            RatatuiRuby::Text::Line.new(spans: [
+              RatatuiRuby::Text::Span.new(content: "y", style: hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Symbol (#{highlight_symbol_config[:name]})  "),
+              RatatuiRuby::Text::Span.new(content: "d", style: hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Direction (#{direction_config[:name]})")
+            ]),
+            RatatuiRuby::Text::Line.new(spans: [
+              RatatuiRuby::Text::Span.new(content: "s", style: hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Spacing (#{spacing_config[:name]})  "),
+              RatatuiRuby::Text::Span.new(content: "p", style: hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Scroll Padding (#{scroll_padding_config[:name]})")
+            ]),
+            RatatuiRuby::Text::Line.new(spans: [
+              RatatuiRuby::Text::Span.new(content: "b", style: hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Base (#{base_style_config[:name]})  "),
+              RatatuiRuby::Text::Span.new(content: "r", style: hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Repeat (#{repeat_config[:name]})  "),
+              RatatuiRuby::Text::Span.new(content: "q", style: hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Quit")
+            ])
           ]
         )
       ]
     )
 
-    # Sidebar with controls
-    sidebar = RatatuiRuby::Layout.new(
+    # Combine layouts vertically
+    layout = RatatuiRuby::Layout.new(
       direction: :vertical,
       constraints: [
-        RatatuiRuby::Constraint.length(7),
-        RatatuiRuby::Constraint.length(7),
-        RatatuiRuby::Constraint.length(6),
-        RatatuiRuby::Constraint.length(5),
-        RatatuiRuby::Constraint.length(5),
-        RatatuiRuby::Constraint.fill(1)
+        RatatuiRuby::Constraint.fill(1),
+        RatatuiRuby::Constraint.length(7)
       ],
-      children: [
-        # Item set control
-        RatatuiRuby::Block.new(
-          title: "Item Set",
-          borders: [:all],
-          children: [
-            RatatuiRuby::Paragraph.new(
-              text: [
-                "i: Cycle",
-                "  #{@item_sets[@item_set_index][:name]}"
-              ]
-            )
-          ]
-        ),
-        # Selection control
-        RatatuiRuby::Block.new(
-          title: "Selection",
-          borders: [:all],
-          children: [
-            RatatuiRuby::Paragraph.new(
-              text: [
-                "↑/↓: Navigate",
-                "x: Toggle (#{selection_label})"
-              ]
-            )
-          ]
-        ),
-        # Highlight style control
-        RatatuiRuby::Block.new(
-          title: "Highlight Style",
-          borders: [:all],
-          children: [
-            RatatuiRuby::Paragraph.new(
-              text: [
-                "h: Cycle",
-                "  #{highlight_style_config[:name]}"
-              ]
-            )
-          ]
-        ),
-        # Highlight symbol control
-        RatatuiRuby::Block.new(
-          title: "Symbol",
-          borders: [:all],
-          children: [
-            RatatuiRuby::Paragraph.new(
-              text: [
-                "y: Cycle",
-                "  #{highlight_symbol_config[:name]}"
-              ]
-            )
-          ]
-        ),
-        # Layout options
-        RatatuiRuby::Block.new(
-          title: "Layout",
-          borders: [:all],
-          children: [
-            RatatuiRuby::Paragraph.new(
-              text: [
-                "d: Direction",
-                "  #{direction_config[:name]}",
-                "s: Spacing",
-                "  #{spacing_config[:name]}"
-              ]
-            )
-          ]
-        ),
-        # Display options
-        RatatuiRuby::Block.new(
-          title: "Options",
-          borders: [:all],
-          children: [
-            RatatuiRuby::Paragraph.new(
-              text: [
-                "b: Base Style",
-                "  #{base_style_config[:name]}",
-                "r: Repeat Symbol",
-                "  #{repeat_config[:name]}",
-                "",
-                "q: Quit"
-              ]
-            )
-          ]
-        )
-      ]
-    )
-
-    # Combine layouts
-    layout = RatatuiRuby::Layout.new(
-      direction: :horizontal,
-      constraints: [
-        RatatuiRuby::Constraint.new(type: :percentage, value: 70),
-        RatatuiRuby::Constraint.new(type: :percentage, value: 30)
-      ],
-      children: [main_content, sidebar]
+      children: [main_content, control_panel]
     )
 
     RatatuiRuby.draw(layout)
@@ -271,6 +242,8 @@ class ListDemoApp
       @base_style_index = (@base_style_index + 1) % @base_styles.size
     in type: :key, code: "r"
       @repeat_index = (@repeat_index + 1) % @repeat_modes.size
+    in type: :key, code: "p"
+      @scroll_padding_index = (@scroll_padding_index + 1) % @scroll_paddings.size
     else
       nil
     end

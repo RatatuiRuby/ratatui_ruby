@@ -22,6 +22,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let repeat_highlight_symbol_val: Value = node.funcall("repeat_highlight_symbol", ())?;
     let highlight_spacing_sym: Symbol = node.funcall("highlight_spacing", ())?;
     let direction_val: Value = node.funcall("direction", ())?;
+    let scroll_padding_val: Value = node.funcall("scroll_padding", ())?;
     let block_val: Value = node.funcall("block", ())?;
 
     let mut items = Vec::new();
@@ -74,6 +75,11 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
                 ))
             }
         }
+    }
+
+    if !scroll_padding_val.is_nil() {
+        let padding: usize = TryConvert::try_convert(scroll_padding_val)?;
+        list = list.scroll_padding(padding);
     }
 
     if !style_val.is_nil() {
@@ -151,5 +157,23 @@ mod tests {
         let content2 = buf2.content().iter().map(|c| c.symbol()).collect::<String>();
         assert!(!content1.is_empty());
         assert!(!content2.is_empty());
+    }
+
+    #[test]
+    fn test_scroll_padding() {
+        let items = vec!["Item 1", "Item 2", "Item 3", "Item 4"];
+        let list = List::new(items).scroll_padding(1).highlight_symbol(Line::from(">> "));
+        
+        let mut state = ListState::default();
+        state.select(Some(1));
+
+        let mut buf = Buffer::empty(Rect::new(0, 0, 15, 4));
+        use ratatui::widgets::StatefulWidget;
+        StatefulWidget::render(list, Rect::new(0, 0, 15, 4), &mut buf, &mut state);
+
+        let content = buf.content().iter().map(|c| c.symbol()).collect::<String>();
+        // With scroll padding, it should render but the exact behavior is handled by ratatui
+        assert!(!content.is_empty());
+        assert!(content.contains("Item"));
     }
 }

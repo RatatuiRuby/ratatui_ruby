@@ -22,9 +22,9 @@ class TestListDemoApp < Minitest::Test
       @app.run
 
       content = buffer_content
-      assert content.any? { |line| line.include?("Interactive List") }
-      assert content.any? { |line| line.include?("Colors") }
-      assert content.any? { |line| line.include?("Red") }
+      assert content.any? { |line| line.include?("List Widget Demo") }
+      assert content.any? { |line| line.include?("Large List") }
+      assert content.any? { |line| line.include?("Item 1") }
     end
   end
 
@@ -34,7 +34,8 @@ class TestListDemoApp < Minitest::Test
       @app.run
 
       content = buffer_content
-      assert content.any? { |line| line.include?(">> Red") }
+      # Initial large list, down selects first item (Item 1)
+      assert content.any? { |line| line.include?(">> Item 1") }
     end
   end
 
@@ -44,8 +45,8 @@ class TestListDemoApp < Minitest::Test
       @app.run
 
       content = buffer_content
-      # Should wrap to last item (Magenta in Colors set)
-      assert content.any? { |line| line.include?(">> Magenta") }
+      # Should wrap to last item of Large List (Item 200)
+      assert content.any? { |line| line.include?(">> Item 200") }
     end
   end
 
@@ -55,7 +56,8 @@ class TestListDemoApp < Minitest::Test
       @app.run
 
       content = buffer_content
-      assert content.any? { |line| line.include?(">> Red") }
+      # Selects index 0 (Item 1)
+      assert content.any? { |line| line.include?(">> Item 1") }
       assert content.any? { |line| line.include?("Selection: 0") }
     end
   end
@@ -66,7 +68,7 @@ class TestListDemoApp < Minitest::Test
       @app.run
 
       content = buffer_content
-      refute content.any? { |line| line.include?(">> ") && line.include?("Red") }
+      refute content.any? { |line| line.include?(">> ") && line.include?("Item 1") }
       assert content.any? { |line| line.include?("Selection: none") }
     end
   end
@@ -77,19 +79,21 @@ class TestListDemoApp < Minitest::Test
       @app.run
 
       content = buffer_content
-      assert content.any? { |line| line.include?("Fruits") }
-      assert content.any? { |line| line.include?("Apple") }
+      # Cycles to next set: Colors
+      assert content.any? { |line| line.include?("Colors") }
+      assert content.any? { |line| line.include?("Red") }
     end
   end
 
   def test_cycle_item_set_multiple_times
     with_test_terminal(100, 30) do
+      # 0=Large, 1=Colors, 2=Fruits, 3=Programming
       inject_keys(:i, :i, :i, :q)
       @app.run
 
       content = buffer_content
-      assert content.any? { |line| line.include?("Numbers") }
-      assert content.any? { |line| line.include?("One") }
+      assert content.any? { |line| line.include?("Programming") }
+      assert content.any? { |line| line.include?("Ruby") }
     end
   end
 
@@ -129,19 +133,19 @@ class TestListDemoApp < Minitest::Test
       @app.run
 
       content = buffer_content
-      # Spacing cycling should work, just verify list is still rendered
-      assert content.any? { |line| line.include?("Interactive List") }
+      assert content.any? { |line| line.include?("List Widget Demo") }
     end
   end
 
   def test_spacing_always_shows_column
     with_test_terminal(100, 30) do
+      # Need to enable always spacing (:s) on Item list
       inject_keys(:s, :q)
       @app.run
 
       content = buffer_content
-      # With :always spacing and no selection, still shows spacing column
-      assert content.any? { |line| line.include?("   Red") }
+      # With :always spacing, unselected items are indented
+      assert content.any? { |line| line.include?("   Item 1") }
     end
   end
 
@@ -151,8 +155,7 @@ class TestListDemoApp < Minitest::Test
       @app.run
 
       content = buffer_content
-      # Base style cycling should work, just verify list is still rendered
-      assert content.any? { |line| line.include?("Interactive List") }
+      assert content.any? { |line| line.include?("List Widget Demo") }
     end
   end
 
@@ -162,8 +165,7 @@ class TestListDemoApp < Minitest::Test
       @app.run
 
       content = buffer_content
-      # Repeat symbol toggling should work, just verify list is still rendered
-      assert content.any? { |line| line.include?("Interactive List") }
+      assert content.any? { |line| line.include?("List Widget Demo") }
     end
   end
 
@@ -173,7 +175,7 @@ class TestListDemoApp < Minitest::Test
       @app.run
 
       content = buffer_content
-      # After changing item set, selection should reset to none
+      # After changing item set to Colors, selection should reset
       assert content.any? { |line| line.include?("Selection: none") }
     end
   end
@@ -184,7 +186,7 @@ class TestListDemoApp < Minitest::Test
       @app.run
 
       content = buffer_content
-      assert content.any? { |line| line.include?("Interactive List") }
+      assert content.any? { |line| line.include?("List Widget Demo") }
     end
   end
 
@@ -198,14 +200,38 @@ class TestListDemoApp < Minitest::Test
     end
   end
 
+  def test_cycle_scroll_padding
+    with_test_terminal(100, 30) do
+      inject_keys(:p, :q)
+      @app.run
+
+      content = buffer_content
+      # 0=None, 1=1 item
+      assert content.any? { |line| line.include?("Scroll Padding (1 item)") }
+    end
+  end
+
+  def test_scroll_padding_changes_display
+    with_test_terminal(100, 30) do
+      # Switch to Colors (i), Toggle select (x), scroll down, toggle padding (p)
+      inject_keys(:i, :x, :down, :p, :q)
+      @app.run
+
+      content = buffer_content
+      assert content.any? { |line| line.include?("Colors") }
+      # Selected index 1 (Orange) of Colors
+      assert content.any? { |line| line.include?(">> Orange") }
+    end
+  end
+
   def test_multiple_navigation_and_options
     with_test_terminal(100, 30) do
+      # Interactive usage smoke test
       inject_keys(:down, :h, :down, :y, :up, :b, :q)
       @app.run
 
       content = buffer_content
-      # Should have navigated and cycled options
-      assert content.any? { |line| line.include?("Interactive List") }
+      assert content.any? { |line| line.include?("List Widget Demo") }
     end
   end
 end
