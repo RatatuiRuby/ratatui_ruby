@@ -38,4 +38,26 @@ class TestBarChart < Minitest::Test
       assert_equal " A   B              ", buffer_content[4]
     end
   end
+
+  def test_render_horizontal
+    with_test_terminal(20, 5) do
+      # 20x5 area, horizontal bars
+      chart = RatatuiRuby::BarChart.new(
+        data: { "A" => 1, "B" => 2 },
+        bar_width: 1,
+        direction: :horizontal
+      )
+      RatatuiRuby.draw(chart)
+
+      # In horizontal mode, bars grow from left to right.
+      # Labels and values are on the left of the bar.
+      # Width is 20. Bar A (val 1), Bar B (val 2). Max is 2.
+      # Bar A should be half width of Bar B.
+      assert_equal "A 1████████         ", buffer_content[0]
+      assert_equal "                    ", buffer_content[1]
+      assert_equal "B 2█████████████████", buffer_content[2]
+      assert_equal "                    ", buffer_content[3]
+      assert_equal "                    ", buffer_content[4]
+    end
+  end
 end

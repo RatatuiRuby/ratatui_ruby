@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::{parse_block, parse_style};
-use magnus::{prelude::*, Error, Value};
-use ratatui::{layout::Rect, widgets::BarChart, Frame};
+use magnus::{prelude::*, Error, Symbol, Value};
+use ratatui::{layout::{Direction, Rect}, widgets::BarChart, Frame};
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let data_val: magnus::RHash = node.funcall("data", ())?;
@@ -12,6 +12,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let max_val: Value = node.funcall("max", ())?;
     let style_val: Value = node.funcall("style", ())?;
     let block_val: Value = node.funcall("block", ())?;
+    let direction_sym: Symbol = node.funcall("direction", ())?;
 
     let keys: magnus::RArray = data_val.funcall("keys", ())?;
     let mut labels = Vec::new();
@@ -31,10 +32,17 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         .map(|(l, v)| (l.as_str(), *v))
         .collect();
 
+    let direction = if direction_sym.to_string() == "horizontal" {
+        Direction::Horizontal
+    } else {
+        Direction::Vertical
+    };
+
     let mut bar_chart = BarChart::default()
         .data(&chart_data)
         .bar_width(bar_width)
-        .bar_gap(bar_gap);
+        .bar_gap(bar_gap)
+        .direction(direction);
 
     if !max_val.is_nil() {
         let max: u64 = u64::try_convert(max_val)?;

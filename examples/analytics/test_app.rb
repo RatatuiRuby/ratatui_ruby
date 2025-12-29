@@ -101,4 +101,14 @@ class TestAnalytics < Minitest::Test
       assert buffer_content.any? { |line| line.include?("pad L:2 R:0") }
     end
   end
+
+  def test_direction_toggle
+    with_test_terminal(80, 20) do
+      # Switch to horizontal (v) then quit
+      inject_keys(:v, :q)
+      @app.run
+
+      assert buffer_content.any? { |line| line.include?("[dir:horizontal]") }
+    end
+  end
 end

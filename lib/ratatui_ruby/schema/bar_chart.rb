@@ -19,7 +19,7 @@ module RatatuiRuby
     #     bar_width: 5,
     #     style: Style.new(fg: :green)
     #   )
-    class BarChart < Data.define(:data, :bar_width, :bar_gap, :max, :style, :block)
+    class BarChart < Data.define(:data, :bar_width, :bar_gap, :max, :style, :block, :direction)
       ##
       # :attr_reader: data
       # The dataset relative to category labels.
@@ -48,6 +48,10 @@ module RatatuiRuby
       # :attr_reader: block
       # Optional wrapping block.
 
+      ##
+      # :attr_reader: direction
+      # The direction of the bars (:vertical or :horizontal).
+
       # Creates a new BarChart widget.
       #
       # [data]
@@ -62,7 +66,9 @@ module RatatuiRuby
       #   Style object (optional).
       # [block]
       #   Block wrapper (optional).
-      def initialize(data:, bar_width: 3, bar_gap: 1, max: nil, style: nil, block: nil)
+      # [direction]
+      #   Direction of the bars (:vertical or :horizontal, default: :vertical).
+      def initialize(data:, bar_width: 3, bar_gap: 1, max: nil, style: nil, block: nil, direction: :vertical)
         super
       end
     end

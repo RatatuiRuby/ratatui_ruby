@@ -31,6 +31,7 @@ class AnalyticsApp
     ]
     @padding_left = 0
     @padding_right = 0
+    @direction = :vertical
   end
 
   def run
@@ -74,7 +75,7 @@ class AnalyticsApp
           titles: @tabs,
           selected_index: @selected_tab,
           block: RatatuiRuby::Block.new(
-            title: "Views (q: Quit) [pad L:#{@padding_left} R:#{@padding_right}]",
+            title: "Views (q: Quit) [pad L:#{@padding_left} R:#{@padding_right}] [dir:#{@direction}]",
             titles: [
               { content: " Space:Highlight | s:Style | d:Divider | h/l:PadL | H/L:PadR ", position: :bottom, alignment: :center }
             ],
@@ -88,9 +89,14 @@ class AnalyticsApp
         ),
         RatatuiRuby::BarChart.new(
           data:,
-          bar_width: 10,
+          bar_width: @direction == :vertical ? 10 : 1,
           style: bar_style,
-          block: RatatuiRuby::Block.new(title: "Analytics: #{@tabs[@selected_tab]}", borders: [:all])
+          direction: @direction,
+          block: RatatuiRuby::Block.new(
+            title: "Analytics: #{@tabs[@selected_tab]}",
+            titles: [{ content: " v:Toggle Direction ", position: :bottom, alignment: :center }],
+            borders: [:all]
+          )
         ),
       ]
     )
@@ -120,6 +126,8 @@ class AnalyticsApp
       @padding_right = [@padding_right - 1, 0].max
     in type: :key, code: "L", modifiers: ["shift"]
       @padding_right += 1
+    in type: :key, code: "v"
+      @direction = @direction == :vertical ? :horizontal : :vertical
     else
       # Ignore other events
     end
