@@ -13,25 +13,27 @@ class AnalyticsApp
   def initialize
     @selected_tab = 0
     @tabs = ["Revenue", "Traffic", "Errors"]
-    @style_index = 0
     @styles = [
-      RatatuiRuby::Style.new(fg: :yellow, modifiers: [:bold]),
-      RatatuiRuby::Style.new(fg: :blue, bg: :white, modifiers: [:italic]),
-      RatatuiRuby::Style.new(fg: :red, modifiers: [:underlined]),
-      RatatuiRuby::Style.new(modifiers: [:reversed])
+      { name: "Yellow Bold", style: RatatuiRuby::Style.new(fg: :yellow, modifiers: [:bold]) },
+      { name: "Italic Blue on White", style: RatatuiRuby::Style.new(fg: :blue, bg: :white, modifiers: [:italic]) },
+      { name: "Underlined Red", style: RatatuiRuby::Style.new(fg: :red, modifiers: [:underlined]) },
+      { name: "Reversed", style: RatatuiRuby::Style.new(modifiers: [:reversed]) }
     ]
+    @style_index = 0
     @divider_index = 0
     @dividers = [" | ", " • ", " > ", " / "]
-    @base_style_index = 0
     @base_styles = [
-      nil, # Default
-      RatatuiRuby::Style.new(fg: :white, bg: :dark_gray),
-      RatatuiRuby::Style.new(fg: :white, bg: :blue),
-      RatatuiRuby::Style.new(modifiers: [:italic])
+      { name: "Default", style: nil },
+      { name: "White on Gray", style: RatatuiRuby::Style.new(fg: :white, bg: :dark_gray) },
+      { name: "White on Blue", style: RatatuiRuby::Style.new(fg: :white, bg: :blue) },
+      { name: "Italic", style: RatatuiRuby::Style.new(modifiers: [:italic]) }
     ]
+    @base_style_index = 0
     @padding_left = 0
     @padding_right = 0
     @direction = :vertical
+    @label_style_index = 0
+    @value_style_index = 0
   end
 
   def run
@@ -65,39 +67,74 @@ class AnalyticsApp
 
     # Build the UI
     ui = RatatuiRuby::Layout.new(
-      direction: :vertical,
+      direction: :horizontal,
       constraints: [
-        RatatuiRuby::Constraint.new(type: :length, value: 3),
-        RatatuiRuby::Constraint.new(type: :min, value: 0),
+        RatatuiRuby::Constraint.new(type: :percentage, value: 70),
+        RatatuiRuby::Constraint.new(type: :percentage, value: 30),
       ],
       children: [
-        RatatuiRuby::Tabs.new(
-          titles: @tabs,
-          selected_index: @selected_tab,
-          block: RatatuiRuby::Block.new(
-            title: "Views (q: Quit) [pad L:#{@padding_left} R:#{@padding_right}] [dir:#{@direction}]",
-            titles: [
-              { content: " Space:Highlight | s:Style | d:Divider | h/l:PadL | H/L:PadR ", position: :bottom, alignment: :center }
-            ],
-            borders: [:all]
-          ),
-          divider: @dividers[@divider_index],
-          highlight_style: @styles[@style_index],
-          style: @base_styles[@base_style_index],
-          padding_left: @padding_left,
-          padding_right: @padding_right
+        # Main Area
+        RatatuiRuby::Layout.new(
+          direction: :vertical,
+          constraints: [
+            RatatuiRuby::Constraint.new(type: :length, value: 3),
+            RatatuiRuby::Constraint.new(type: :min, value: 0),
+          ],
+          children: [
+            RatatuiRuby::Tabs.new(
+              titles: @tabs,
+              selected_index: @selected_tab,
+              block: RatatuiRuby::Block.new(title: "Views", borders: [:all]),
+              divider: @dividers[@divider_index],
+              highlight_style: @styles[@style_index][:style],
+              style: @base_styles[@base_style_index][:style],
+              padding_left: @padding_left,
+              padding_right: @padding_right
+            ),
+            RatatuiRuby::BarChart.new(
+              data:,
+              bar_width: @direction == :vertical ? 8 : 1,
+              style: bar_style,
+              direction: @direction,
+              label_style: @styles[@label_style_index][:style],
+              value_style: @styles[@value_style_index][:style],
+              block: RatatuiRuby::Block.new(
+                title: "Analytics: #{@tabs[@selected_tab]}",
+                borders: [:all]
+              )
+            ),
+          ]
         ),
-        RatatuiRuby::BarChart.new(
-          data:,
-          bar_width: @direction == :vertical ? 10 : 1,
-          style: bar_style,
-          direction: @direction,
-          block: RatatuiRuby::Block.new(
-            title: "Analytics: #{@tabs[@selected_tab]}",
-            titles: [{ content: " v:Toggle Direction ", position: :bottom, alignment: :center }],
-            borders: [:all]
-          )
-        ),
+        # Sidebar
+        RatatuiRuby::Block.new(
+          title: "Status & Controls",
+          borders: [:all],
+          children: [
+            RatatuiRuby::Paragraph.new(
+              text: [
+                RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "GENERAL", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
+                "q: Quit",
+                "arrows: Navigate",
+                "v: Dir (#{@direction})",
+                "",
+                RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "TABS", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
+                "space: Highlight Style",
+                "  #{@styles[@style_index][:name]}",
+                "s: Base Style",
+                "  #{@base_styles[@base_style_index][:name]}",
+                "d: Divider (#{@dividers[@divider_index]})",
+                "h/l: Pad L (#{@padding_left})",
+                "j/k: Pad R (#{@padding_right})",
+                "",
+                RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "BAR CHART", style: RatatuiRuby::Style.new(modifiers: [:bold]))]),
+                "x: Label Style",
+                "  #{@styles[@label_style_index][:name]}",
+                "z: Value Style",
+                "  #{@styles[@value_style_index][:name]}",
+              ].flatten
+            )
+          ]
+        )
       ]
     )
 
@@ -122,12 +159,16 @@ class AnalyticsApp
       @padding_left = [@padding_left - 1, 0].max
     in type: :key, code: "l"
       @padding_left += 1
-    in type: :key, code: "H", modifiers: ["shift"]
-      @padding_right = [@padding_right - 1, 0].max
-    in type: :key, code: "L", modifiers: ["shift"]
-      @padding_right += 1
     in type: :key, code: "v"
       @direction = @direction == :vertical ? :horizontal : :vertical
+    in type: :key, code: "j"
+      @padding_right = [@padding_right - 1, 0].max
+    in type: :key, code: "k"
+      @padding_right += 1
+    in type: :key, code: "x"
+      @label_style_index = (@label_style_index + 1) % @styles.size
+    in type: :key, code: "z"
+      @value_style_index = (@value_style_index + 1) % @styles.size
     else
       # Ignore other events
     end

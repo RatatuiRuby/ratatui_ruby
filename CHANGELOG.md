@@ -18,6 +18,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Canvas**: Added `background_color` property to `Canvas` widget ([#gap-analysis](https://github.com/kerricklong/ratatui_ruby/issues/21)).
 - **Tabs Style**: Added `style` parameter to `Tabs` widget, allowing a base style to be applied to the entire tabs area.
 - **BarChart Direction**: Added `direction` parameter to `BarChart` widget, accepting `:vertical` (default) or `:horizontal`.
+- **BarChart Styling**: Added `label_style` and `value_style` support to `BarChart`, matching Ratatui 0.30's improved chart styling capabilities.
 - **Tabs Padding**: Added `padding_left` and `padding_right` parameters to `Tabs` widget, enabling horizontal padding around the tab titles.
 - **Sparkline Direction**: Added `direction` parameter to `Sparkline` widget, accepting `:left_to_right` (default) or `:right_to_left`.
 - **Resize Events**: The event system now exposes terminal resize events via `Event::Resize`, which includes `width` and `height` attributes for building responsive layouts.

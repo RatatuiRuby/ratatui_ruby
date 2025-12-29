@@ -10,6 +10,8 @@ module RatatuiRuby
     attr_reader style: Style?
     attr_reader block: Block?
     attr_reader direction: :vertical | :horizontal
-    def self.new: (data: Hash[String | Symbol | _ToS, Integer], ?bar_width: Integer, ?bar_gap: Integer, ?max: Integer?, ?style: Style?, ?block: Block?, ?direction: :vertical | :horizontal) -> BarChart
+    attr_reader label_style: Style?
+    attr_reader value_style: Style?
+    def self.new: (data: Hash[String | Symbol | _ToS, Integer], ?bar_width: Integer, ?bar_gap: Integer, ?max: Integer?, ?style: Style?, ?block: Block?, ?direction: :vertical | :horizontal, ?label_style: Style?, ?value_style: Style?) -> BarChart
   end
 end

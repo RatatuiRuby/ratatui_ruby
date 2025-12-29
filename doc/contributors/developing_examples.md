@@ -67,7 +67,7 @@ end
 
 3. **Use keyboard keys to cycle through widget attributes.** Users should be able to interactively explore all widget options. Common patterns:
    - Arrow keys: Navigate or adjust values
-   - Letter keys: Cycle through styles, modes, or variants
+   - Letter keys: Cycle through styles, modes, or variants. Prefer all lowercase keys to avoid confusion and simplify the UI description.
    - Space: Toggle or select
    - `q` or Ctrl+C: Quit
 

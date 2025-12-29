@@ -93,12 +93,24 @@ class TestAnalytics < Minitest::Test
 
   def test_padding_controls
     with_test_terminal(80, 10) do
-      # Increase padding_left twice (l l), then quit
-      inject_keys(:l, :l, :q)
+      # Increase padding_left (l) and padding_right (k) then quit
+      inject_keys(:l, :l, :k, :k, :k, :q)
       @app.run
 
-      # Verify that padding values are shown in title
-      assert buffer_content.any? { |line| line.include?("pad L:2 R:0") }
+      # Verify that padding values are shown in status
+      assert buffer_content.any? { |line| line.include?("Pad L (2)") }
+      assert buffer_content.any? { |line| line.include?("Pad R (3)") }
+    end
+  end
+
+  def test_styling_controls
+    with_test_terminal(80, 20) do
+      # Cycle label style (x) and value style (z)
+      inject_keys(:x, :z, :z, :q)
+      @app.run
+
+      assert buffer_content.any? { |line| line.include?("Italic Blue on White") }
+      assert buffer_content.any? { |line| line.include?("Underlined Red") }
     end
   end
 
@@ -108,7 +120,7 @@ class TestAnalytics < Minitest::Test
       inject_keys(:v, :q)
       @app.run
 
-      assert buffer_content.any? { |line| line.include?("[dir:horizontal]") }
+      assert buffer_content.any? { |line| line.include?("v: Dir (horizontal)") }
     end
   end
 end

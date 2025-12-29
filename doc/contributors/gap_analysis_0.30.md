@@ -200,8 +200,8 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `max()` | `max:` | ✅ |
 | `block()` | `block:` | ✅ |
 | `bar_style()` | `style:` | ✅ (mapped) |
-| `value_style()` | — | ❌ **MISSING** |
-| `label_style()` | — | ❌ **MISSING** |
+| `value_style()` | `value_style:` | ✅ |
+| `label_style()` | `label_style:` | ✅ |
 | `bar_set()` | — | ❌ **MISSING** |
 | `group_gap()` | — | ❌ **MISSING** |
 | `direction()` | `direction:` | ✅ |

@@ -13,6 +13,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let style_val: Value = node.funcall("style", ())?;
     let block_val: Value = node.funcall("block", ())?;
     let direction_sym: Symbol = node.funcall("direction", ())?;
+    let label_style_val: Value = node.funcall("label_style", ())?;
+    let value_style_val: Value = node.funcall("value_style", ())?;
 
     let keys: magnus::RArray = data_val.funcall("keys", ())?;
     let mut labels = Vec::new();
@@ -55,6 +57,14 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
     if !block_val.is_nil() {
         bar_chart = bar_chart.block(parse_block(block_val)?);
+    }
+
+    if !label_style_val.is_nil() {
+        bar_chart = bar_chart.label_style(parse_style(label_style_val)?);
+    }
+
+    if !value_style_val.is_nil() {
+        bar_chart = bar_chart.value_style(parse_style(value_style_val)?);
     }
 
     frame.render_widget(bar_chart, area);

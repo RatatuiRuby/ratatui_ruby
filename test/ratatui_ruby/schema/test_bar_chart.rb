@@ -23,6 +23,16 @@ class TestBarChart < Minitest::Test
     assert_nil chart.max
     assert_nil chart.style
     assert_nil chart.block
+    assert_nil chart.label_style
+    assert_nil chart.value_style
+  end
+
+  def test_bar_chart_with_styles
+    label_style = RatatuiRuby::Style.new(fg: :red)
+    value_style = RatatuiRuby::Style.new(fg: :blue)
+    chart = RatatuiRuby::BarChart.new(data: { "a" => 1 }, label_style:, value_style:)
+    assert_equal label_style, chart.label_style
+    assert_equal value_style, chart.value_style
   end
 
   def test_render
