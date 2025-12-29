@@ -14,7 +14,7 @@ class TestScrollbarDemo < Minitest::Test
   end
 
   def test_initial_render
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Queue quit event to exit loop immediately
       inject_key(:q)
 
@@ -33,7 +33,7 @@ class TestScrollbarDemo < Minitest::Test
   end
 
   def test_scroll_down
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Queue scroll down + quit
       inject_event(RatatuiRuby::Event::Mouse.new(kind: "scroll_down", x: 0, y: 0, button: "none"))
       inject_key(:q)
@@ -49,7 +49,7 @@ class TestScrollbarDemo < Minitest::Test
   end
 
   def test_scroll_up
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Queue scroll down + scroll up + quit
       inject_event(RatatuiRuby::Event::Mouse.new(kind: "scroll_down", x: 0, y: 0, button: "none"))
       inject_event(RatatuiRuby::Event::Mouse.new(kind: "scroll_up", x: 0, y: 0, button: "none"))
@@ -64,7 +64,7 @@ class TestScrollbarDemo < Minitest::Test
   end
 
   def test_theme_cycling
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Queue 's' + quit
       inject_keys(:s, :q)
 

@@ -17,7 +17,7 @@ module CalendarDemo
 
 
     def test_demo_renders
-      with_test_terminal(80, 24) do
+      with_test_terminal do
         inject_keys(:down, :down, :q)
 
         CalendarDemo.run

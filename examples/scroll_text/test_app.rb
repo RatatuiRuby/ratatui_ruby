@@ -22,7 +22,7 @@ class TestScrollText < Minitest::Test
   end
 
   def test_initial_rendering
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Queue quit
       inject_key(:q)
       
@@ -39,7 +39,7 @@ class TestScrollText < Minitest::Test
   end
 
   def test_scroll_down
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Scroll down then quit
       inject_keys(:down, :q)
 
@@ -53,7 +53,7 @@ class TestScrollText < Minitest::Test
   end
 
   def test_scroll_right
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Scroll right then quit
       inject_keys(:right, :q)
 
@@ -67,7 +67,7 @@ class TestScrollText < Minitest::Test
   end
 
   def test_scroll_left_at_edge
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Scroll left then quit (boundary test)
       inject_keys(:left, :q)
 
@@ -81,7 +81,7 @@ class TestScrollText < Minitest::Test
   end
 
   def test_scroll_up_at_top
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Scroll up then quit (boundary test)
       inject_keys(:up, :q)
 
@@ -95,7 +95,7 @@ class TestScrollText < Minitest::Test
   end
 
   def test_multiple_scrolls
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Scroll down and right multiple times
       inject_keys(:down, :down, :right, :right, :right, :q)
 

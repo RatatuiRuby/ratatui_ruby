@@ -39,13 +39,13 @@ module RatatuiRuby
     # Initializes a test terminal context with specified dimensions.
     # Restores the original terminal state after the block executes.
     #
-    # +width+:: width of the test terminal (default: 20)
-    # +height+:: height of the test terminal (default: 10)
+    # +width+:: width of the test terminal (default: 80)
+    # +height+:: height of the test terminal (default: 24)
     #
     # +timeout+:: maximum execution time in seconds (default: 2). Pass nil to disable.
     #
     # If a block is given, it is executed within the test terminal context.
-    def with_test_terminal(width = 20, height = 10, timeout: 2)
+    def with_test_terminal(width = 80, height = 24, timeout: 2)
       RatatuiRuby.init_test_terminal(width, height)
       # Flush any lingering events from previous tests
       while RatatuiRuby.poll_event; end

@@ -17,7 +17,7 @@ class TestTableFlexApp < Minitest::Test
   end
 
   def test_render
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Queue quit
       inject_key(:q)
 

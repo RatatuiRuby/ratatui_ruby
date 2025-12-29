@@ -16,7 +16,7 @@ class TestMapDemo < Minitest::Test
   include RatatuiRuby::TestHelper
 
   def test_map_demo_renders
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Queue quit event
       inject_key(:q)
 
@@ -65,7 +65,7 @@ class TestMapDemo < Minitest::Test
   end
 
   def test_background_default
-    with_test_terminal(80, 24, timeout: 5) do
+    with_test_terminal(timeout: 5) do
       inject_keys("q")
       MapDemo.stub :sleep, nil do
         MapDemo.run
@@ -76,7 +76,7 @@ class TestMapDemo < Minitest::Test
   end
 
   def test_background_blue
-    with_test_terminal(80, 24, timeout: 5) do
+    with_test_terminal(timeout: 5) do
       inject_keys("b", "q")
       MapDemo.stub :sleep, nil do
         MapDemo.run
@@ -86,7 +86,7 @@ class TestMapDemo < Minitest::Test
   end
 
   def test_background_white
-    with_test_terminal(80, 24, timeout: 5) do
+    with_test_terminal(timeout: 5) do
       inject_keys("b", "b", "q")
       MapDemo.stub :sleep, nil do
         MapDemo.run
@@ -96,7 +96,7 @@ class TestMapDemo < Minitest::Test
   end
 
   def test_background_transparent
-    with_test_terminal(80, 24, timeout: 5) do
+    with_test_terminal(timeout: 5) do
       inject_keys("b", "b", "b", "q")
       MapDemo.stub :sleep, nil do
         MapDemo.run
@@ -107,7 +107,7 @@ class TestMapDemo < Minitest::Test
   end
 
   def test_quit
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:q)
       
       MapDemo.stub :sleep, nil do

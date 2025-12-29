@@ -79,6 +79,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Event::Mouse Initialization**: `Event::Mouse.new` now allows `nil` for the `button` parameter, which is treated as `"none"`. This simplifies creation of mouse events where a specific button isn't relevant, such as scrolling.
 - **Session**: The `DSL` class previously yielded by `main_loop` has been renamed to `Session` to better reflect its purpose as a managed terminal session with convenience methods.
 - **Improved Event Defaults**: `RatatuiRuby.run` and `RatatuiRuby.init_terminal` now enable Focus and Bracketed Paste events by default. This provides a fuller TUI experience out of the box. Users can explicitly disable them by passing `focus_events: false` or `bracketed_paste: false`.
+- **TestHelper Terminal Size (Breaking)**: `with_test_terminal` now defaults to 80×24 (standard VT100 dimensions) instead of 20×10. Tests that relied on the old defaults must now explicitly specify `with_test_terminal(20, 10)`.
 
 ### Fixed
 

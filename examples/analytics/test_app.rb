@@ -17,7 +17,7 @@ class TestAnalytics < Minitest::Test
   end
 
   def test_render_initial_state
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Queue quit
       inject_key(:q)
 
@@ -38,7 +38,7 @@ class TestAnalytics < Minitest::Test
   end
 
   def test_navigation_right
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:right, :q)
 
       @app.run
@@ -48,7 +48,7 @@ class TestAnalytics < Minitest::Test
   end
 
   def test_navigation_left
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Move right to Traffic
       inject_keys(:a, :b, :c)
       
@@ -62,7 +62,7 @@ class TestAnalytics < Minitest::Test
   end
 
   def test_quit
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:q)
       @app.run
       # Success if returns
@@ -70,7 +70,7 @@ class TestAnalytics < Minitest::Test
   end
 
   def test_switch_divider
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Switch divider (d) then quit (q)
       inject_keys(:d, :q)
       @app.run
@@ -81,7 +81,7 @@ class TestAnalytics < Minitest::Test
   end
 
   def test_switch_style
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Switch style (space) then quit (q)
       inject_keys(:" ", :q)
       @app.run
@@ -93,7 +93,7 @@ class TestAnalytics < Minitest::Test
   end
 
   def test_padding_controls
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Increase padding_left (l) and padding_right (k) then quit
       inject_keys(:l, :l, :k, :k, :k, :q)
       @app.run
@@ -107,7 +107,7 @@ class TestAnalytics < Minitest::Test
   end
 
   def test_styling_controls
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Cycle label style (x) and value style (z)
       inject_keys(:x, :z, :z, :q)
       @app.run
@@ -119,7 +119,7 @@ class TestAnalytics < Minitest::Test
   end
 
   def test_direction_toggle
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Switch to horizontal (v) then quit
       inject_keys(:v, :q)
       @app.run

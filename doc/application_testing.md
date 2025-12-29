@@ -44,8 +44,8 @@ Wrap your test assertions in `with_test_terminal`. This sets up a temporary, in-
 
 ```ruby
 def test_rendering
-  # Create a 80x24 terminal
-  with_test_terminal(80, 24) do
+  # Uses default 80x24 terminal
+  with_test_terminal do
     # 1. Instantiate your app/component
     widget = RatatuiRuby::Paragraph.new(text: "Hello World")
     

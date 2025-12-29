@@ -17,7 +17,7 @@ class TestListDemoApp < Minitest::Test
   end
 
   def test_render_initial_state
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:q)
       @app.run
 
@@ -29,7 +29,7 @@ class TestListDemoApp < Minitest::Test
   end
 
   def test_navigate_down
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:down, :q)
       @app.run
 
@@ -40,7 +40,7 @@ class TestListDemoApp < Minitest::Test
   end
 
   def test_navigate_up_wraps
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:up, :q)
       @app.run
 
@@ -51,7 +51,7 @@ class TestListDemoApp < Minitest::Test
   end
 
   def test_toggle_selection_on
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:x, :q)
       @app.run
 
@@ -63,7 +63,7 @@ class TestListDemoApp < Minitest::Test
   end
 
   def test_toggle_selection_off
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:x, :x, :q)
       @app.run
 
@@ -74,7 +74,7 @@ class TestListDemoApp < Minitest::Test
   end
 
   def test_cycle_item_set
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:i, :q)
       @app.run
 
@@ -86,7 +86,7 @@ class TestListDemoApp < Minitest::Test
   end
 
   def test_cycle_item_set_multiple_times
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # 0=Large, 1=Colors, 2=Fruits, 3=Programming
       inject_keys(:i, :i, :i, :q)
       @app.run
@@ -98,7 +98,7 @@ class TestListDemoApp < Minitest::Test
   end
 
   def test_cycle_highlight_style
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:h, :q)
       @app.run
 
@@ -108,7 +108,7 @@ class TestListDemoApp < Minitest::Test
   end
 
   def test_cycle_highlight_symbol
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:x, :y, :q)
       @app.run
 
@@ -118,7 +118,7 @@ class TestListDemoApp < Minitest::Test
   end
 
   def test_cycle_direction
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:d, :q)
       @app.run
 
@@ -128,7 +128,7 @@ class TestListDemoApp < Minitest::Test
   end
 
   def test_cycle_spacing
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:s, :q)
       @app.run
 
@@ -138,7 +138,7 @@ class TestListDemoApp < Minitest::Test
   end
 
   def test_spacing_always_shows_column
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Need to enable always spacing (:s) on Item list
       inject_keys(:s, :q)
       @app.run
@@ -150,7 +150,7 @@ class TestListDemoApp < Minitest::Test
   end
 
   def test_cycle_base_style
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:b, :q)
       @app.run
 
@@ -160,7 +160,7 @@ class TestListDemoApp < Minitest::Test
   end
 
   def test_cycle_repeat_symbol
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:r, :q)
       @app.run
 
@@ -170,7 +170,7 @@ class TestListDemoApp < Minitest::Test
   end
 
   def test_selection_resets_on_item_set_change
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:x, :down, :i, :q)
       @app.run
 
@@ -181,7 +181,7 @@ class TestListDemoApp < Minitest::Test
   end
 
   def test_quit_with_ctrl_c
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys("c", :q)
       @app.run
 
@@ -191,7 +191,7 @@ class TestListDemoApp < Minitest::Test
   end
 
   def test_demo_title_always_visible
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:i, :h, :y, :d, :s, :b, :r, :q)
       @app.run
 
@@ -201,7 +201,7 @@ class TestListDemoApp < Minitest::Test
   end
 
   def test_cycle_scroll_padding
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:p, :q)
       @app.run
 
@@ -212,7 +212,7 @@ class TestListDemoApp < Minitest::Test
   end
 
   def test_scroll_padding_changes_display
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Switch to Colors (i), Toggle select (x), scroll down, toggle padding (p)
       inject_keys(:i, :x, :down, :p, :q)
       @app.run
@@ -225,7 +225,7 @@ class TestListDemoApp < Minitest::Test
   end
 
   def test_multiple_navigation_and_options
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Interactive usage smoke test
       inject_keys(:down, :h, :down, :y, :up, :b, :q)
       @app.run

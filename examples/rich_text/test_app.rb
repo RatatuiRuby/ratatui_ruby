@@ -103,7 +103,7 @@ class TestRichTextApp < Minitest::Test
   end
 
   def test_paragraph_renders_with_rich_text
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Test that a paragraph with rich text can be rendered without error
       line = RatatuiRuby::Text::Line.new(
         spans: [
@@ -122,7 +122,7 @@ class TestRichTextApp < Minitest::Test
   end
 
   def test_paragraph_renders_multiple_rich_lines
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       lines = [
         RatatuiRuby::Text::Line.new(
           spans: [
@@ -152,7 +152,7 @@ class TestRichTextApp < Minitest::Test
   include RatatuiRuby::TestHelper
 
   def test_app_runs
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:q)
       RichTextApp.new.run
       

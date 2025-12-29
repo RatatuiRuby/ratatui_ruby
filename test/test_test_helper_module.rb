@@ -32,7 +32,7 @@ class TestTestHelperModule < Minitest::Test
   end
 
   def test_cursor_position_default
-    with_test_terminal do
+    with_test_terminal(20, 10) do
       pos = cursor_position
       assert_kind_of Integer, pos[:x]
       assert_kind_of Integer, pos[:y]
@@ -42,7 +42,7 @@ class TestTestHelperModule < Minitest::Test
   end
 
   def test_inject_event
-    with_test_terminal do
+    with_test_terminal(20, 10) do
       inject_event(RatatuiRuby::Event::Key.new(code: "a", modifiers: ["ctrl"]))
       event = RatatuiRuby.poll_event
       assert_kind_of RatatuiRuby::Event::Key, event
@@ -71,7 +71,7 @@ class TestTestHelperModule < Minitest::Test
   end
 
   def test_inject_keys_string
-    with_test_terminal do
+    with_test_terminal(20, 10) do
       inject_keys("a", "b")
       
       event1 = RatatuiRuby.poll_event
@@ -85,7 +85,7 @@ class TestTestHelperModule < Minitest::Test
   end
 
   def test_inject_keys_symbol
-    with_test_terminal do
+    with_test_terminal(20, 10) do
       inject_keys(:enter, :ctrl_c, :alt_shift_left)
       
       event1 = RatatuiRuby.poll_event
@@ -103,7 +103,7 @@ class TestTestHelperModule < Minitest::Test
   end
 
   def test_inject_keys_hash
-    with_test_terminal do
+    with_test_terminal(20, 10) do
       inject_keys({ code: "x", modifiers: ["alt"] })
       
       event = RatatuiRuby.poll_event
@@ -113,7 +113,7 @@ class TestTestHelperModule < Minitest::Test
   end
 
   def test_inject_keys_object
-    with_test_terminal do
+    with_test_terminal(20, 10) do
       key = RatatuiRuby::Event::Key.new(code: "y")
       inject_keys(key)
       

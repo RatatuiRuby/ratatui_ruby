@@ -17,7 +17,7 @@ class TestAllEvents < Minitest::Test
   end
 
   def test_initial_state
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Queue quit event
       inject_key(:q)
       
@@ -32,7 +32,7 @@ class TestAllEvents < Minitest::Test
   end
 
   def test_key_event_updates_panel
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:a, :q)
       
       @app.run
@@ -42,7 +42,7 @@ class TestAllEvents < Minitest::Test
   end
 
   def test_key_event_with_modifiers
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:ctrl_s, :q)
       
       @app.run
@@ -52,7 +52,7 @@ class TestAllEvents < Minitest::Test
   end
 
   def test_mouse_event_updates_panel
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_event(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 10, y: 5))
       inject_key(:q)
       
@@ -63,7 +63,7 @@ class TestAllEvents < Minitest::Test
   end
 
   def test_resize_event_updates_panel
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_event(RatatuiRuby::Event::Resize.new(width: 120, height: 40))
       inject_key(:q)
       
@@ -74,7 +74,7 @@ class TestAllEvents < Minitest::Test
   end
 
   def test_paste_event_updates_panel
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_event(RatatuiRuby::Event::Paste.new(content: "Hello, World!"))
       inject_key(:q)
       
@@ -85,7 +85,7 @@ class TestAllEvents < Minitest::Test
   end
 
   def test_paste_event_truncates_long_content
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_event(RatatuiRuby::Event::Paste.new(content: "This is a very long string that should be truncated"))
       inject_key(:q)
       
@@ -98,7 +98,7 @@ class TestAllEvents < Minitest::Test
   end
 
   def test_focus_gained_updates_panel
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Initial state is focused, so we lose then gain
       @app.instance_variable_set(:@focused, false)
       inject_event(RatatuiRuby::Event::FocusGained.new)
@@ -111,7 +111,7 @@ class TestAllEvents < Minitest::Test
   end
 
   def test_focus_lost_updates_panel
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_event(RatatuiRuby::Event::FocusLost.new)
       inject_key(:q)
       
@@ -122,7 +122,7 @@ class TestAllEvents < Minitest::Test
   end
 
   def test_quit_on_q
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:q)
       # Wait... run should just return normally
       @app.run
@@ -131,7 +131,7 @@ class TestAllEvents < Minitest::Test
   end
 
   def test_quit_on_ctrl_c
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:ctrl_c)
       @app.run
     end

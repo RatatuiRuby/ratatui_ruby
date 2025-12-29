@@ -19,7 +19,7 @@ class TestTableSelectApp < Minitest::Test
   end
 
   def test_initial_render_no_selection
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:q)
       @app.run
 
@@ -33,7 +33,7 @@ class TestTableSelectApp < Minitest::Test
   def test_style_switching
     second_style_name = TableSelectApp::STYLES[1][:name]
 
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:s, :q)
       @app.run
 
@@ -43,7 +43,7 @@ class TestTableSelectApp < Minitest::Test
   end
 
   def test_toggle_selection_on
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Press x to toggle on, then quit
       inject_keys(:x, :q)
       @app.run
@@ -55,7 +55,7 @@ class TestTableSelectApp < Minitest::Test
   end
 
   def test_toggle_selection_off
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Press x to toggle on, x again to toggle off, then quit
       inject_keys(:x, :x, :q)
       @app.run
@@ -66,7 +66,7 @@ class TestTableSelectApp < Minitest::Test
   end
 
   def test_navigation_selects_and_moves
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:down, :q)
       @app.run
 
@@ -76,7 +76,7 @@ class TestTableSelectApp < Minitest::Test
   end
 
   def test_navigation_wrapping
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Start nil, down->0, up->wraps to last
       inject_keys(:down, :up, :q)
       @app.run
@@ -88,14 +88,14 @@ class TestTableSelectApp < Minitest::Test
   end
 
   def test_quit
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:q)
       @app.run
     end
   end
 
   def test_highlight_spacing_cycles_to_next
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Mode order: [:when_selected, :always, :never]
       # 'h' goes to :always
       inject_keys(:h, :q)
@@ -107,7 +107,7 @@ class TestTableSelectApp < Minitest::Test
   end
 
   def test_highlight_spacing_cycles_to_never
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # 'h' goes: when_selected -> always -> never
       inject_keys(:h, :h, :q)
       @app.run
@@ -118,7 +118,7 @@ class TestTableSelectApp < Minitest::Test
   end
 
   def test_highlight_spacing_cycles_back_to_when_selected
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # 'h' goes: when_selected -> always -> never -> when_selected
       inject_keys(:h, :h, :h, :q)
       @app.run
@@ -129,7 +129,7 @@ class TestTableSelectApp < Minitest::Test
   end
 
   def test_column_spacing_increases
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys("+", :q)
       @app.run
 
@@ -139,7 +139,7 @@ class TestTableSelectApp < Minitest::Test
   end
 
   def test_column_spacing_decreases
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys("+", "-", :q)
       @app.run
 

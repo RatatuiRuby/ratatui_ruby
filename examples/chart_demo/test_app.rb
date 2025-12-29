@@ -18,7 +18,7 @@ class TestChartDemo < Minitest::Test
 
   def test_render
     # Set a timeout since chart_demo has a sleep 0.1 in its loop
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:q)
       @app.run
       

@@ -17,7 +17,7 @@ class TestLineGaugeDemo < Minitest::Test
   end
 
   def test_initial_render
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:q)
       @app.run
 
@@ -31,7 +31,7 @@ class TestLineGaugeDemo < Minitest::Test
   end
 
   def test_ratio_cycling_right
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:right, :right, :q)
       @app.run
 
@@ -42,7 +42,7 @@ class TestLineGaugeDemo < Minitest::Test
   end
 
   def test_ratio_cycling_left
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:left, :q)
       @app.run
 
@@ -53,7 +53,7 @@ class TestLineGaugeDemo < Minitest::Test
   end
 
   def test_filled_symbol_cycling
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:f, :q)
       @app.run
 
@@ -64,7 +64,7 @@ class TestLineGaugeDemo < Minitest::Test
   end
 
   def test_filled_color_cycling
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:c, :c, :q)
       @app.run
 
@@ -75,7 +75,7 @@ class TestLineGaugeDemo < Minitest::Test
   end
 
   def test_unfilled_symbol_cycling
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:u, :q)
       @app.run
 
@@ -86,7 +86,7 @@ class TestLineGaugeDemo < Minitest::Test
   end
 
   def test_unfilled_color_cycling
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:x, :q)
       @app.run
 
@@ -97,7 +97,7 @@ class TestLineGaugeDemo < Minitest::Test
   end
 
   def test_base_style_cycling
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:b, :q)
       @app.run
 
@@ -108,7 +108,7 @@ class TestLineGaugeDemo < Minitest::Test
   end
 
   def test_quit_with_ctrl_c
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:ctrl_c)
       @app.run
       # Success if returns without hanging
@@ -116,7 +116,7 @@ class TestLineGaugeDemo < Minitest::Test
   end
 
   def test_multiple_attribute_changes
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:right, :f, :c, :b, :q)
       @app.run
 

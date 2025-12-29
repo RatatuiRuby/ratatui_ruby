@@ -17,7 +17,7 @@ class TestMouseEvents < Minitest::Test
   end
 
   def test_initial_render
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:q)
       @app.run
       
@@ -28,7 +28,7 @@ class TestMouseEvents < Minitest::Test
   end
 
   def test_mouse_click
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Click left button at 10, 5
       inject_event(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 10, y: 5))
       inject_key(:q)
@@ -40,7 +40,7 @@ class TestMouseEvents < Minitest::Test
   end
 
   def test_mouse_scroll
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_event(RatatuiRuby::Event::Mouse.new(kind: "scroll_down", button: "none", x: 20, y: 15))
       inject_key(:q)
       @app.run

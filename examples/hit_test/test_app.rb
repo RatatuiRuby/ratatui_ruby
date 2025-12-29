@@ -17,7 +17,7 @@ class TestHitTestExample < Minitest::Test
   end
 
   def test_initial_render_shows_both_panels
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:q)
       @app.run
 
@@ -28,7 +28,7 @@ class TestHitTestExample < Minitest::Test
   end
 
   def test_left_panel_click
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Click in left half at x=10, then quit
       inject_event(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 10, y: 12))
       inject_key(:q)
@@ -43,7 +43,7 @@ class TestHitTestExample < Minitest::Test
   end
 
   def test_right_panel_click
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Click in right half at x=50, then quit
       inject_event(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 50, y: 12))
       inject_key(:q)
@@ -57,7 +57,7 @@ class TestHitTestExample < Minitest::Test
   end
 
   def test_ratio_change_decreases_left
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Shrink left panel using left arrow
       inject_keys("left", :q)
       @app.run
@@ -68,7 +68,7 @@ class TestHitTestExample < Minitest::Test
   end
 
   def test_ratio_change_increases_left
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Expand left panel using right arrow
       inject_keys("right", :q)
       @app.run
@@ -79,7 +79,7 @@ class TestHitTestExample < Minitest::Test
   end
 
   def test_ratio_minimum_boundary
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Try to go below 10%
       inject_keys("left", "left", "left", "left", "left", :q)
       @app.run
@@ -90,7 +90,7 @@ class TestHitTestExample < Minitest::Test
   end
 
   def test_ratio_maximum_boundary
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       # Try to go above 90%
       inject_keys("right", "right", "right", "right", "right", "right", "right", "right", "right", :q)
       @app.run

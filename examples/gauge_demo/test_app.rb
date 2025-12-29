@@ -17,7 +17,7 @@ class TestGaugeDemo < Minitest::Test
   end
 
   def test_initial_render
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:q)
       @app.run
 
@@ -29,7 +29,7 @@ class TestGaugeDemo < Minitest::Test
   end
 
   def test_ratio_increment
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:right)
       inject_key(:q)
       @app.run
@@ -41,7 +41,7 @@ class TestGaugeDemo < Minitest::Test
   end
 
   def test_ratio_decrement
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:left)
       inject_key(:q)
       @app.run
@@ -53,7 +53,7 @@ class TestGaugeDemo < Minitest::Test
   end
 
   def test_gauge_color_cycling
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:g)
       inject_key(:q)
       @app.run
@@ -66,7 +66,7 @@ class TestGaugeDemo < Minitest::Test
   end
 
   def test_background_style_cycling
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:b)
       inject_key(:q)
       @app.run
@@ -79,7 +79,7 @@ class TestGaugeDemo < Minitest::Test
   end
 
   def test_unicode_toggle
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:u)
       inject_key(:q)
       @app.run
@@ -91,7 +91,7 @@ class TestGaugeDemo < Minitest::Test
   end
 
   def test_label_mode_cycling
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:l)
       inject_key(:q)
       @app.run
@@ -104,7 +104,7 @@ class TestGaugeDemo < Minitest::Test
   end
 
   def test_multiple_interactions
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_keys(:right, :g, :b, :u, :l, :q)
       @app.run
 

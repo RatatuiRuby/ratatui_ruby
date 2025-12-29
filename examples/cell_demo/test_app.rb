@@ -11,7 +11,7 @@ class TestCellDemoApp < Minitest::Test
   def test_cell_demo_output
     # Run the demo in a test terminal
     # We'll inject a 'q' key to exit the loop immediately after the first draw
-    with_test_terminal(80, 24, timeout: 5) do
+    with_test_terminal(timeout: 5) do
       inject_key("q")
       CellDemoApp.new.main
 

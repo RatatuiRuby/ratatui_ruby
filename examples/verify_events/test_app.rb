@@ -19,7 +19,7 @@ class TestVerifyEvents < Minitest::Test
   def test_run_and_quit
     # This example prints to stdout using puts, which is tricky to capture in these tests
     # but we can at least verify it runs and quits correctly.
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:q)
       @app.run
       # Success if it returns

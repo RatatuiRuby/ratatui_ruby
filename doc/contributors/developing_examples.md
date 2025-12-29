@@ -50,7 +50,7 @@ MyExampleApp.new.run if __FILE__ == $PROGRAM_NAME
 
 All interactive examples must fit within an **80×24 terminal** (standard VT100 dimensions). This ensures:
 - Examples work on minimal terminal configurations
-- Tests can use a consistent `with_test_terminal(80, 24)` size
+- Tests can use the default `with_test_terminal` size (80x24)
 - Examples remain discoverable and self-documenting through visible hotkey help
 
 **Layout pattern for 80×24:**
@@ -134,7 +134,7 @@ class TestMyExampleApp < Minitest::Test
   end
 
   def test_initial_render
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key(:q)  # Queue quit event
       @app.run        # Run the app loop
       
@@ -144,7 +144,7 @@ class TestMyExampleApp < Minitest::Test
   end
 
   def test_keyboard_interaction
-    with_test_terminal(80, 24) do
+    with_test_terminal do
       inject_key("s")  # Press 's' to cycle something
       inject_key(:q)   # Then quit
       @app.run
