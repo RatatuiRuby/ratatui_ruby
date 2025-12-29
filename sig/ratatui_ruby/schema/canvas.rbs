@@ -59,6 +59,8 @@ module RatatuiRuby
     attr_reader marker: Symbol
     attr_reader block: Block?
 
-    def self.new: (?shapes: Array[Shape::Line | Shape::Rectangle | Shape::Circle | Shape::Map], ?x_bounds: Array[Float], ?y_bounds: Array[Float], ?marker: Symbol, ?block: Block?) -> Canvas
+    attr_reader background_color: String | Symbol | nil
+
+    def self.new: (?shapes: Array[Shape::Line | Shape::Rectangle | Shape::Circle | Shape::Map], ?x_bounds: Array[Float], ?y_bounds: Array[Float], ?marker: Symbol, ?block: Block?, ?background_color: String | Symbol | nil) -> Canvas
   end
 end

@@ -169,6 +169,31 @@ module RatatuiRuby
       end
     end
     alias inject_key inject_keys
+
+    ##
+    # Returns the cell attributes at the given coordinates.
+    #
+    #   get_cell(0, 0)
+    #   # => { "symbol" => "H", "fg" => :red, "bg" => nil }
+    def get_cell(x, y)
+      RatatuiRuby.get_cell_at(x, y)
+    end
+
+    ##
+    # Asserts that the cell at the given coordinates has the expected attributes.
+    #
+    #   assert_cell_style(0, 0, symbol: "H", fg: :red)
+    def assert_cell_style(x, y, **expected_attributes)
+      cell = get_cell(x, y)
+      expected_attributes.each do |key, value|
+        actual_value = cell.public_send(key)
+        if value.nil?
+          assert_nil actual_value, "Expected cell at (#{x}, #{y}) to have #{key}=nil, but got #{actual_value.inspect}"
+        else
+          assert_equal value, actual_value, "Expected cell at (#{x}, #{y}) to have #{key}=#{value.inspect}, but got #{actual_value.inspect}"
+        end
+      end
+    end
   end
 end
 

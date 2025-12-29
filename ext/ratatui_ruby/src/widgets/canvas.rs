@@ -39,6 +39,13 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
         canvas = canvas.block(parse_block(block_val)?);
     }
 
+    let background_color_val: Value = node.funcall("background_color", ())?;
+    if !background_color_val.is_nil() {
+        let background_color =
+            parse_color(&background_color_val.to_string()).unwrap_or(ratatui::style::Color::Reset);
+        canvas = canvas.background_color(background_color);
+    }
+
     let canvas = canvas.paint(|ctx| {
         for shape_val in shapes_val {
             let class = shape_val.class();

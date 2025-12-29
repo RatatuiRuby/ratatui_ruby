@@ -263,7 +263,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `x_bounds` / `y_bounds` | ✅ | ✅ |
 | `marker()` | `marker:` | ✅ |
 | `block()` | `block:` | ✅ |
-| `background_color()` | — | ❌ **MISSING** |
+| `background_color()` | `background_color:` | ✅ |
 | Labels (ctx.print) | — | ❌ **MISSING** |
 
 ### Markers

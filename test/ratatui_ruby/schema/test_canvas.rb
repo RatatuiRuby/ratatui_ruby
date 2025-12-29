@@ -58,6 +58,12 @@ class TestCanvas < Minitest::Test
     assert_equal [-1.0, 1.0], c.x_bounds
     assert_equal [-1.0, 1.0], c.y_bounds
     assert_equal :dot, c.marker
+    assert_nil c.background_color
+  end
+
+  def test_canvas_creation_with_background
+    c = RatatuiRuby::Canvas.new(background_color: :blue)
+    assert_equal :blue, c.background_color
   end
 
   def test_canvas_defaults

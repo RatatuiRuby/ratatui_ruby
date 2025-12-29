@@ -29,6 +29,7 @@ require_relative "ratatui_ruby/schema/canvas"
 require_relative "ratatui_ruby/schema/calendar"
 require_relative "ratatui_ruby/schema/text"
 require_relative "ratatui_ruby/event"
+require_relative "ratatui_ruby/cell"
 
 begin
   require "ratatui_ruby/ratatui_ruby"
@@ -59,6 +60,7 @@ module RatatuiRuby
   end
 
   # (Native method _init_terminal implemented in Rust)
+  private_class_method :_init_terminal
 
   ##
   # :method: restore_terminal
@@ -122,6 +124,7 @@ module RatatuiRuby
   end
 
   # (Native method _poll_event implemented in Rust)
+  private_class_method :_poll_event
 
   ##
   # :method: inject_test_event
@@ -158,5 +161,38 @@ module RatatuiRuby
   ensure
     restore_terminal
   end
+
+  ##
+  # :method: get_cell_at
+  # :call-seq: get_cell_at(x, y) -> Cell
+  #
+  # Inspects the terminal buffer at specific coordinates.
+  #
+  # When writing tests, you need to verify that your widget drew the correct characters and styles.
+  # This method provides deep inspection of the cell's state (symbol, colors, modifiers).
+  #
+  # Returns a {Cell} object.
+  #
+  # Values depend on what the backend has rendered. If nothing has been rendered to a cell, it may contain defaults (empty symbol, nil colors).
+  #
+  # === Example
+  #
+  #   cell = RatatuiRuby.get_cell_at(10, 5)
+  #   expect(cell.symbol).to eq("X")
+  #   expect(cell.fg).to eq(:red)
+  #   expect(cell).to be_bold
+  #
+  def self.get_cell_at(x, y)
+    raw = _get_cell_at(x, y)
+    Cell.new(
+      symbol: raw["symbol"],
+      fg: raw["fg"],
+      bg: raw["bg"],
+      modifiers: raw["modifiers"] || []
+    )
+  end
+
+  # (Native method _get_cell_at implemented in Rust)
+  private_class_method :_get_cell_at
 
 end

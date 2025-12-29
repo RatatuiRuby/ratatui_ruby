@@ -76,6 +76,10 @@ fn init() -> Result<(), Error> {
         "get_cursor_position",
         function!(terminal::get_cursor_position, 0),
     )?;
+    m.define_module_function(
+        "_get_cell_at",
+        function!(terminal::get_cell_at, 2),
+    )?;
     m.define_module_function("resize_terminal", function!(terminal::resize_terminal, 2))?;
 
     Ok(())

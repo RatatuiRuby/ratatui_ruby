@@ -137,7 +137,9 @@ module RatatuiRuby
     #       Shape::Circle.new(x: 0, y: 0, radius: 10, color: :red)
     #     ]
     #   )
-    class Canvas < Data.define(:shapes, :x_bounds, :y_bounds, :marker, :block)
+    #     ]
+    #   )
+    class Canvas < Data.define(:shapes, :x_bounds, :y_bounds, :marker, :block, :background_color)
       ##
       # :attr_reader: shapes
       # Array of shapes to render.
@@ -162,6 +164,10 @@ module RatatuiRuby
       # :attr_reader: block
       # Optional wrapping block.
 
+      ##
+      # :attr_reader: background_color
+      # The background color of the canvas.
+
       # Creates a new Canvas.
       #
       # [shapes] Array of Shapes.
@@ -169,7 +175,8 @@ module RatatuiRuby
       # [y_bounds] Array of [min, max].
       # [marker] Symbol (default: <tt>:braille</tt>).
       # [block] Block (optional).
-      def initialize(shapes: [], x_bounds: [0.0, 100.0], y_bounds: [0.0, 100.0], marker: :braille, block: nil)
+      # [background_color] Color (optional).
+      def initialize(shapes: [], x_bounds: [0.0, 100.0], y_bounds: [0.0, 100.0], marker: :braille, block: nil, background_color: nil)
         super
       end
     end

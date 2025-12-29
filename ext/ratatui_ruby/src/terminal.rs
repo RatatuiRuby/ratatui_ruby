@@ -144,3 +144,58 @@ pub fn resize_terminal(width: u16, height: u16) -> Result<(), Error> {
     }
     Ok(())
 }
+
+use magnus::Value;
+use magnus::value::ReprValue;
+
+pub fn get_cell_at(x: u16, y: u16) -> Result<magnus::RHash, Error> {
+    let ruby = magnus::Ruby::get().unwrap();
+    let term_lock = TERMINAL.lock().unwrap();
+    if let Some(TerminalWrapper::Test(terminal)) = term_lock.as_ref() {
+        let buffer = terminal.backend().buffer();
+        if let Some(cell) = buffer.cell((x, y)) {
+            let hash = ruby.hash_new();
+            hash.aset("symbol", cell.symbol())?;
+            hash.aset("fg", color_to_value(cell.fg))?;
+            hash.aset("bg", color_to_value(cell.bg))?;
+            Ok(hash)
+        } else {
+            Err(Error::new(
+                ruby.exception_runtime_error(),
+                format!("Coordinates ({}, {}) out of bounds", x, y),
+            ))
+        }
+    } else {
+        Err(Error::new(
+            ruby.exception_runtime_error(),
+            "Terminal is not initialized as TestBackend",
+        ))
+    }
+}
+
+fn color_to_value(color: ratatui::style::Color) -> Value {
+    let ruby = magnus::Ruby::get().unwrap();
+    match color {
+        ratatui::style::Color::Reset => ruby.qnil().as_value(),
+        ratatui::style::Color::Black => ruby.to_symbol("black").as_value(),
+        ratatui::style::Color::Red => ruby.to_symbol("red").as_value(),
+        ratatui::style::Color::Green => ruby.to_symbol("green").as_value(),
+        ratatui::style::Color::Yellow => ruby.to_symbol("yellow").as_value(),
+        ratatui::style::Color::Blue => ruby.to_symbol("blue").as_value(),
+        ratatui::style::Color::Magenta => ruby.to_symbol("magenta").as_value(),
+        ratatui::style::Color::Cyan => ruby.to_symbol("cyan").as_value(),
+        ratatui::style::Color::Gray => ruby.to_symbol("gray").as_value(),
+        ratatui::style::Color::DarkGray => ruby.to_symbol("dark_gray").as_value(),
+        ratatui::style::Color::LightRed => ruby.to_symbol("light_red").as_value(),
+        ratatui::style::Color::LightGreen => ruby.to_symbol("light_green").as_value(),
+        ratatui::style::Color::LightYellow => ruby.to_symbol("light_yellow").as_value(),
+        ratatui::style::Color::LightBlue => ruby.to_symbol("light_blue").as_value(),
+        ratatui::style::Color::LightMagenta => ruby.to_symbol("light_magenta").as_value(),
+        ratatui::style::Color::LightCyan => ruby.to_symbol("light_cyan").as_value(),
+        ratatui::style::Color::White => ruby.to_symbol("white").as_value(),
+        ratatui::style::Color::Rgb(r, g, b) => ruby
+            .str_new(&format!("#{:02x}{:02x}{:02x}", r, g, b))
+            .as_value(),
+        ratatui::style::Color::Indexed(i) => ruby.to_symbol(&format!("indexed_{}", i)).as_value(),
+    }
+}

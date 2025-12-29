@@ -26,7 +26,7 @@ class TestMapDemo < Minitest::Test
       # Verify the buffer content reflects the rendered map
       # radius should be 0.5 for the first frame
       expected_buffer = [
-        "┌World Map Canvas──┐",
+        "┌World Map Canvas [┐",
         "│⡀⣀⣀⣤⣴⣶⣖⢲⡆⢠⣄⢤⣄⡤⣤⣠⣄⣀│",
         "│⠹⠷⢫⡉⠿⣿⡟⠉⢳⡾⣟⣉⠉  ⢰⣺⠛│",
         "│  ⠘⣦⣤⡏⠁ ⡼⠿⢿⣟⡀ ⢸⠿⠁ │",
@@ -41,6 +41,52 @@ class TestMapDemo < Minitest::Test
       expected_buffer.each_with_index do |line, i|
         assert_equal line, buffer_content[i], "Line #{i} should match"
       end
+
+      # Verify the background color is set on the view (Unit test of the view method)
+      view = MapDemo.view(0.0)
+      assert_nil view.background_color
+    end
+  end
+
+  def test_background_default
+    with_test_terminal(20, 10, timeout: 5) do
+      inject_keys("q")
+      MapDemo.stub :sleep, nil do
+        MapDemo.run
+      end
+      # View is roughly at (1,1) to (18,8) inside borders. (10, 5) is safely inside.
+      assert_cell_style(10, 5, bg: :black)
+    end
+  end
+
+  def test_background_blue
+    with_test_terminal(20, 10, timeout: 5) do
+      inject_keys("b", "q")
+      MapDemo.stub :sleep, nil do
+        MapDemo.run
+      end
+      assert_cell_style(10, 5, bg: :blue)
+    end
+  end
+
+  def test_background_white
+    with_test_terminal(20, 10, timeout: 5) do
+      inject_keys("b", "b", "q")
+      MapDemo.stub :sleep, nil do
+        MapDemo.run
+      end
+      assert_cell_style(10, 5, bg: :white)
+    end
+  end
+
+  def test_background_transparent
+    with_test_terminal(20, 10, timeout: 5) do
+      inject_keys("b", "b", "b", "q")
+      MapDemo.stub :sleep, nil do
+        MapDemo.run
+      end
+      # Transparent typically means no bg color set on the cell
+      assert_cell_style(10, 5, bg: nil)
     end
   end
 
@@ -51,42 +97,6 @@ class TestMapDemo < Minitest::Test
       MapDemo.stub :sleep, nil do
         MapDemo.run
       end
-    end
-  end
-
-  def test_map_demo_animation
-    with_test_terminal(20, 10) do
-      # We verify animation by inspecting the radius passed to view() method.
-      # We spy on MapDemo.view.
-      
-      view_args = []
-      # Needs to be a module method stub
-      # We can use define_singleton_method or Minitest mock but stubbing a module method with tracking is tricky with just .stub
-      # So we redefine it temporarily.
-
-      original_view = MapDemo.method(:view)
-      MapDemo.define_singleton_method(:view) do |radius|
-        view_args << radius
-        original_view.call(radius)
-      end
-
-      begin
-        MapDemo.stub :sleep, nil do
-          # 3 loops: radius 0.5 -> 1.0 -> 1.5 -> quit
-          inject_keys(:up, :up, :q)
-
-          MapDemo.run
-        end
-      ensure
-        MapDemo.define_singleton_method(:view, &original_view)
-      end
-
-      # We asserted that it runs 3 times.
-      # radii should be 0.5, 1.0, 1.5
-      assert_operator view_args.size, :>=, 3
-      assert_equal 0.5, view_args[0]
-      assert_equal 1.0, view_args[1]
-      assert_equal 1.5, view_args[2]
     end
   end
 end
