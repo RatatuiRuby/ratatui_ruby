@@ -7,7 +7,7 @@ $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
 # An example of the Canvas widget showing a world map and animated shapes.
-module MapDemo
+class MapDemoApp
   include RatatuiRuby
 
   COLORS = [:black, :blue, :white, nil].freeze
@@ -18,7 +18,7 @@ module MapDemo
   # +radius+:: The radius of the animated circle.
   # +marker+:: The marker type.
   # +background_color+:: The background color of the canvas.
-  def self.view(radius, marker = :braille, background_color = nil)
+  def view(radius, marker = :braille, background_color = nil)
     Canvas.new(
       shapes: [
         Shape::Map.new(color: :green, resolution: :high),
@@ -34,7 +34,7 @@ module MapDemo
   end
 
   # Runs the map demo loop.
-  def self.run
+  def run
     RatatuiRuby.run do
       radius = 0.0
       direction = 1
@@ -49,9 +49,9 @@ module MapDemo
         end
 
         # Define the view
-        view = view(radius, MARKERS[marker_index], COLORS[bg_index])
+        v = view(radius, MARKERS[marker_index], COLORS[bg_index])
 
-        RatatuiRuby.draw(view)
+        RatatuiRuby.draw(v)
 
         event = RatatuiRuby.poll_event
         break if event == "q" || event == :ctrl_c
@@ -68,4 +68,4 @@ module MapDemo
   end
 end
 
-MapDemo.run if __FILE__ == $PROGRAM_NAME
+MapDemoApp.new.run if __FILE__ == $PROGRAM_NAME

@@ -6,11 +6,11 @@
 require "test_helper"
 require_relative "app"
 
-class TestScrollbarDemo < Minitest::Test
+class TestScrollbarDemoApp < Minitest::Test
   include RatatuiRuby::TestHelper
 
   def setup
-    @demo = ScrollbarDemo.new
+    @app = ScrollbarDemoApp.new
   end
 
   def test_initial_render
@@ -19,7 +19,7 @@ class TestScrollbarDemo < Minitest::Test
       inject_key(:q)
 
       # Stub init_terminal/restore_terminal to use test terminal
-      @demo.run
+      @app.run
 
       content = buffer_content
 
@@ -38,7 +38,7 @@ class TestScrollbarDemo < Minitest::Test
       inject_event(RatatuiRuby::Event::Mouse.new(kind: "scroll_down", x: 0, y: 0, button: "none"))
       inject_key(:q)
 
-      @demo.run
+      @app.run
 
       content = buffer_content
 
@@ -55,7 +55,7 @@ class TestScrollbarDemo < Minitest::Test
       inject_event(RatatuiRuby::Event::Mouse.new(kind: "scroll_up", x: 0, y: 0, button: "none"))
       inject_key(:q)
 
-      @demo.run
+      @app.run
 
       content = buffer_content
 
@@ -68,7 +68,7 @@ class TestScrollbarDemo < Minitest::Test
       # Queue 's' + quit
       inject_keys(:s, :q)
 
-      @demo.run
+      @app.run
 
       content = buffer_content
       assert_match(/Theme: Rounded/, content[0])

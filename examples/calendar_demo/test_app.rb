@@ -9,38 +9,37 @@ require "ratatui_ruby"
 require "ratatui_ruby/test_helper"
 require_relative "app"
 
-module CalendarDemo
-  class TestCalendarDemo < Minitest::Test
+class TestCalendarDemoApp < Minitest::Test
   include RatatuiRuby::TestHelper
 
-    include RatatuiRuby::TestHelper
+  def setup
+    @app = CalendarDemoApp.new
+  end
 
+  def test_demo_renders
+    with_test_terminal do
+      inject_keys(:down, :down, :q)
 
-    def test_demo_renders
-      with_test_terminal do
-        inject_keys(:down, :down, :q)
+      @app.run
 
-        CalendarDemo.run
+      content = buffer_content
+      rendered_text = content.join("\n")
 
-        content = buffer_content
-        rendered_text = content.join("\n")
+      assert_match(/Calendar \(q = quit\)/, rendered_text)
+      assert_match(/#{Time.now.year}/, rendered_text)
 
-        assert_match(/Calendar \(q = quit\)/, rendered_text)
-        assert_match(/#{Time.now.year}/, rendered_text)
+      # Verify the size constraint: the terminal is 80x24
+      # But the layout should be constrained to 24x10.
+      lines = content
 
-        # Verify the size constraint: the terminal is 40x20
-        # But the layout should be constrained to 24x10.
-        lines = content
+      # First 10 rows: first 24 chars can have content, 24..79 should be empty
+      10.times do |i|
+        assert_equal " " * 56, lines[i][24..79], "Row #{i} should be empty after column 24"
+      end
 
-        # First 10 rows: first 24 chars can have content, 24..39 should be empty
-        10.times do |i|
-          assert_equal " " * 16, lines[i][24..39], "Row #{i} should be empty after column 24"
-        end
-
-        # Rows 10..19 should be completely empty
-        (10..19).each do |i|
-          assert_equal " " * 80, lines[i], "Row #{i} should be completely empty"
-        end
+      # Rows 10..23 should be completely empty
+      (10..23).each do |i|
+        assert_equal " " * 80, lines[i], "Row #{i} should be completely empty"
       end
     end
   end

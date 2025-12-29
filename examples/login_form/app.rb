@@ -89,6 +89,7 @@ class LoginFormApp
         return :quit if event == "q" || event == :ctrl_c
       else
         # Login Form Input
+        return :quit if event == :ctrl_c
         case event.code
         when "enter"
           @show_popup = true

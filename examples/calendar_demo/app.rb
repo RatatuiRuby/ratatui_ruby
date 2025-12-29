@@ -7,8 +7,8 @@ $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
 # A demo application for the Calendar widget.
-module CalendarDemo
-  def self.run
+class CalendarDemoApp
+  def run
     RatatuiRuby.run do
       loop do
         now = Time.now
@@ -50,4 +50,4 @@ module CalendarDemo
   end
 end
 
-CalendarDemo.run if __FILE__ == $PROGRAM_NAME
+CalendarDemoApp.new.run if __FILE__ == $PROGRAM_NAME

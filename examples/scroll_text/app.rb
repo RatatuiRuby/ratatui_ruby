@@ -9,7 +9,7 @@ require "ratatui_ruby"
 
 # Demo: Scrollable Paragraph
 # Shows how to scroll through long text content using arrow keys
-class ScrollTextDemo
+class ScrollTextApp
   def initialize
     @scroll_x = 0
     @scroll_y = 0
@@ -100,4 +100,4 @@ class ScrollTextDemo
   end
 end
 
-ScrollTextDemo.new.run if __FILE__ == $PROGRAM_NAME
+ScrollTextApp.new.run if __FILE__ == $PROGRAM_NAME

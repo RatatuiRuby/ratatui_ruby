@@ -7,7 +7,7 @@ $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
 # Simple Scrollbar Demo
-class ScrollbarDemo
+class ScrollbarDemoApp
   def initialize
     @scroll_position = 0
     @content_length = 50
@@ -140,4 +140,4 @@ class ScrollbarDemo
   end
 end
 
-ScrollbarDemo.new.run if __FILE__ == $PROGRAM_NAME
+ScrollbarDemoApp.new.run if __FILE__ == $PROGRAM_NAME

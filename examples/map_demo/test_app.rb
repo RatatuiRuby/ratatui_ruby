@@ -10,10 +10,12 @@ require "minitest/autorun"
 require "minitest/mock"
 require_relative "app"
 
-class TestMapDemo < Minitest::Test
+class TestMapDemoApp < Minitest::Test
   include RatatuiRuby::TestHelper
 
-  include RatatuiRuby::TestHelper
+  def setup
+    @app = MapDemoApp.new
+  end
 
   def test_map_demo_renders
     with_test_terminal do
@@ -21,8 +23,8 @@ class TestMapDemo < Minitest::Test
       inject_key(:q)
 
       # Stub sleep to speed up test
-      MapDemo.stub :sleep, nil do
-        MapDemo.run
+      @app.stub :sleep, nil do
+        @app.run
       end
 
       # Verify the buffer content reflects the rendered map
@@ -59,7 +61,7 @@ class TestMapDemo < Minitest::Test
       end
 
       # Verify the background color is set on the view (Unit test of the view method)
-      view = MapDemo.view(0.0, :braille, nil)
+      view = @app.view(0.0, :braille, nil)
       assert_nil view.background_color
     end
   end
@@ -67,8 +69,8 @@ class TestMapDemo < Minitest::Test
   def test_background_default
     with_test_terminal(timeout: 5) do
       inject_keys("q")
-      MapDemo.stub :sleep, nil do
-        MapDemo.run
+      @app.stub :sleep, nil do
+        @app.run
       end
       # View is roughly at (1,1) to (18,8) inside borders. (10, 5) is safely inside.
       assert_cell_style(10, 5, bg: :black)
@@ -78,8 +80,8 @@ class TestMapDemo < Minitest::Test
   def test_background_blue
     with_test_terminal(timeout: 5) do
       inject_keys("b", "q")
-      MapDemo.stub :sleep, nil do
-        MapDemo.run
+      @app.stub :sleep, nil do
+        @app.run
       end
       assert_cell_style(10, 5, bg: :blue)
     end
@@ -88,8 +90,8 @@ class TestMapDemo < Minitest::Test
   def test_background_white
     with_test_terminal(timeout: 5) do
       inject_keys("b", "b", "q")
-      MapDemo.stub :sleep, nil do
-        MapDemo.run
+      @app.stub :sleep, nil do
+        @app.run
       end
       assert_cell_style(10, 5, bg: :white)
     end
@@ -98,8 +100,8 @@ class TestMapDemo < Minitest::Test
   def test_background_transparent
     with_test_terminal(timeout: 5) do
       inject_keys("b", "b", "b", "q")
-      MapDemo.stub :sleep, nil do
-        MapDemo.run
+      @app.stub :sleep, nil do
+        @app.run
       end
       # Transparent typically means no bg color set on the cell
       assert_cell_style(10, 5, bg: nil)
@@ -110,8 +112,8 @@ class TestMapDemo < Minitest::Test
     with_test_terminal do
       inject_key(:q)
       
-      MapDemo.stub :sleep, nil do
-        MapDemo.run
+      @app.stub :sleep, nil do
+        @app.run
       end
     end
   end

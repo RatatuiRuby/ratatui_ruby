@@ -9,7 +9,7 @@ require "ratatui_ruby"
 # Popup Demo Example
 # Demonstrates the Clear widget for creating opaque popups.
 
-class PopupDemo
+class PopupDemoApp
   def initialize
     @clear_enabled = false
   end
@@ -100,4 +100,4 @@ class PopupDemo
   end
 end
 
-PopupDemo.new.run if __FILE__ == $0
+PopupDemoApp.new.run if __FILE__ == $0

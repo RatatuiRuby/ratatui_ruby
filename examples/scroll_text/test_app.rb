@@ -10,15 +10,15 @@ require "ratatui_ruby/test_helper"
 
 require_relative "app"
 
-class TestScrollText < Minitest::Test
+class TestScrollTextApp < Minitest::Test
   include RatatuiRuby::TestHelper
 
   def setup
-    @demo = ScrollTextDemo.new
+    @app = ScrollTextApp.new
   end
 
   def test_demo_initialization
-    assert_instance_of ScrollTextDemo, @demo
+    assert_instance_of ScrollTextApp, @app
   end
 
   def test_initial_rendering
@@ -26,7 +26,7 @@ class TestScrollText < Minitest::Test
       # Queue quit
       inject_key(:q)
       
-      @demo.run
+      @app.run
 
       content = buffer_content
       
@@ -43,7 +43,7 @@ class TestScrollText < Minitest::Test
       # Scroll down then quit
       inject_keys(:down, :q)
 
-      @demo.run
+      @app.run
 
       content = buffer_content
       
@@ -57,7 +57,7 @@ class TestScrollText < Minitest::Test
       # Scroll right then quit
       inject_keys(:right, :q)
 
-      @demo.run
+      @app.run
 
       content = buffer_content
       
@@ -71,7 +71,7 @@ class TestScrollText < Minitest::Test
       # Scroll left then quit (boundary test)
       inject_keys(:left, :q)
 
-      @demo.run
+      @app.run
 
       content = buffer_content
       
@@ -85,7 +85,7 @@ class TestScrollText < Minitest::Test
       # Scroll up then quit (boundary test)
       inject_keys(:up, :q)
 
-      @demo.run
+      @app.run
 
       content = buffer_content
       
@@ -99,7 +99,7 @@ class TestScrollText < Minitest::Test
       # Scroll down and right multiple times
       inject_keys(:down, :down, :right, :right, :right, :q)
 
-      @demo.run
+      @app.run
 
       content = buffer_content
       

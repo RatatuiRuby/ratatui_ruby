@@ -46,6 +46,16 @@ end
 MyExampleApp.new.run if __FILE__ == $PROGRAM_NAME
 ```
 
+### Naming Convention (Required)
+
+Example classes **must** follow the naming convention:
+- **Directory:** `examples/my_example/` (snake_case)
+- **Class:** `MyExampleApp` (PascalCase with `App` suffix)
+
+The class name is derived from the directory name: `my_example` → `MyExampleApp`.
+
+This convention enables the `terminal_preview:update` rake task to automatically capture terminal output for all examples without maintaining a manual registry.
+
 ### Terminal Size Constraint
 
 All interactive examples must fit within an **80×24 terminal** (standard VT100 dimensions). This ensures:

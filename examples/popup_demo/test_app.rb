@@ -9,11 +9,11 @@ require "ratatui_ruby/test_helper"
 require "minitest/autorun"
 require_relative "app"
 
-class TestPopupDemo < Minitest::Test
+class TestPopupDemoApp < Minitest::Test
   include RatatuiRuby::TestHelper
 
   def setup
-    @app = PopupDemo.new
+    @app = PopupDemoApp.new
   end
 
   def test_render_initial_state
