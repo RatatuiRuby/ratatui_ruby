@@ -21,6 +21,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added (continued)
 
+- **Axis Labels Alignment**: Added `labels_alignment` parameter to the `Axis` widget used in `Chart`. This parameter controls the horizontal alignment of axis labels (`:left`, `:center`, `:right`), allowing for precise control over label positioning on charts. The `chart_demo` example now demonstrates this feature with centered X-axis labels and right-aligned Y-axis labels.
 - **LineGauge Style**: Added `style` parameter to `LineGauge` widget, allowing a base style to be applied to the entire gauge area. This complements the existing `filled_style` and `unfilled_style` parameters.
 
 - **Cached Layout Pattern**: Documented in `doc/interactive_design.md`, a canonical design for immediate-mode UI. Solve the layout duplication problem by calculating geometry once per frame (before rendering and event handling), then reusing the cached `Rect` objects everywhere. Three-phase lifecycle: `calculate_layout`, `render`, `handle_input`. Forms the foundation for Component architecture in Gem 1.5 where layout caching is automated.

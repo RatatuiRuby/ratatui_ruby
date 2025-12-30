@@ -7,7 +7,8 @@ module RatatuiRuby
     attr_reader bounds: [Float, Float]
     attr_reader labels: Array[String]
     attr_reader style: Style?
-    def self.new: (?title: String, ?bounds: [Float, Float], ?labels: Array[String], ?style: Style?) -> Axis
+    attr_reader labels_alignment: Symbol?
+    def self.new: (?title: String, ?bounds: [Float, Float], ?labels: Array[String], ?style: Style?, ?labels_alignment: Symbol?) -> Axis
   end
 
   class Dataset < Data

@@ -45,6 +45,44 @@ module RatatuiRuby
       assert_includes buffer, "10"
     end
 
+    def test_axis_labels_alignment
+      datasets = [
+        Dataset.new(
+          name: "TestDS",
+          data: [[0.0, 0.0], [10.0, 10.0]],
+          color: "green",
+          marker: :dot,
+        ),
+      ]
+
+      # Test with centered X-axis labels and right-aligned Y-axis labels
+      chart = Chart.new(
+        datasets:,
+        x_axis: Axis.new(
+          title: "Time",
+          bounds: [0.0, 10.0],
+          labels: %w[0 5 10],
+          labels_alignment: :center,
+        ),
+        y_axis: Axis.new(
+          title: "Value",
+          bounds: [0.0, 10.0],
+          labels: %w[0 5 10],
+          labels_alignment: :right,
+        ),
+        block: Block.new(title: "Aligned Chart"),
+      )
+
+      RatatuiRuby.draw(chart)
+      buffer = RatatuiRuby.get_buffer_content
+
+      # Verify the chart renders with alignment settings
+      assert_includes buffer, "Time"
+      assert_includes buffer, "Value"
+      assert_includes buffer, "Aligned Chart"
+      assert_includes buffer, "TestDS"
+    end
+
     def test_line_chart_backward_compatibility
       datasets = [
         Dataset.new(

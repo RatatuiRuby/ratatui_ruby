@@ -55,12 +55,14 @@ class ChartDemoApp
         bounds: [0.0, 10.0],
         labels: %w[0 5 10],
         style: RatatuiRuby::Style.new(fg: :yellow),
+        labels_alignment: :center,
       ),
       y_axis: RatatuiRuby::Axis.new(
         title: "Amplitude",
         bounds: [-1.0, 1.0],
         labels: %w[-1 0 1],
         style: RatatuiRuby::Style.new(fg: :cyan),
+        labels_alignment: :right,
       ),
       block: RatatuiRuby::Block.new(
         title: "Chart Demo (Q to quit)",

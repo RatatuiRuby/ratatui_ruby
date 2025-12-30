@@ -230,7 +230,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `bounds()` | `bounds:` | ✅ |
 | `labels()` | `labels:` | ✅ |
 | `style()` | `style:` | ✅ |
-| `labels_alignment()` | — | ❌ **MISSING** |
+| `labels_alignment()` | `labels_alignment:` | ✅ |
 
 ### Dataset
 

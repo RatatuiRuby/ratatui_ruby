@@ -107,6 +107,7 @@ fn parse_axis(axis_val: Value) -> Result<Axis<'static>, Error> {
     let bounds_val: magnus::RArray = axis_val.funcall("bounds", ())?;
     let labels_val: magnus::RArray = axis_val.funcall("labels", ())?;
     let style_val: Value = axis_val.funcall("style", ())?;
+    let labels_alignment_val: Value = axis_val.funcall("labels_alignment", ())?;
 
     let bounds: [f64; 2] = [bounds_val.entry(0)?, bounds_val.entry(1)?];
 
@@ -120,6 +121,17 @@ fn parse_axis(axis_val: Value) -> Result<Axis<'static>, Error> {
 
     if !style_val.is_nil() {
         axis = axis.style(parse_style(style_val)?);
+    }
+
+    if !labels_alignment_val.is_nil() {
+        let alignment_sym: Symbol = labels_alignment_val.funcall("to_sym", ())?;
+        let alignment = match alignment_sym.to_string().as_str() {
+            "left" => ratatui::layout::HorizontalAlignment::Left,
+            "center" => ratatui::layout::HorizontalAlignment::Center,
+            "right" => ratatui::layout::HorizontalAlignment::Right,
+            _ => ratatui::layout::HorizontalAlignment::Center,
+        };
+        axis = axis.labels_alignment(alignment);
     }
 
     Ok(axis)

@@ -9,7 +9,8 @@ module RatatuiRuby
   # [bounds] Array<Float> [min, max]
   # [labels] Array<String>
   # [style] Style
-    class Axis < Data.define(:title, :bounds, :labels, :style)
+  # [labels_alignment] Symbol (<tt>:left</tt>, <tt>:center</tt>, <tt>:right</tt>)
+    class Axis < Data.define(:title, :bounds, :labels, :style, :labels_alignment)
       ##
       # :attr_reader: title
       # Label for the axis (String).
@@ -26,13 +27,18 @@ module RatatuiRuby
       # :attr_reader: style
       # Style for axis lines/text.
 
+      ##
+      # :attr_reader: labels_alignment
+      # Alignment of axis labels (:left, :center, :right).
+
       # Creates a new Axis.
       #
       # [title] String.
       # [bounds] Array [min, max].
       # [labels] Array of Strings.
       # [style] Style.
-      def initialize(title: "", bounds: [0.0, 10.0], labels: [], style: nil)
+      # [labels_alignment] Symbol (:left, :center, :right).
+      def initialize(title: "", bounds: [0.0, 10.0], labels: [], style: nil, labels_alignment: nil)
         super
       end
     end
