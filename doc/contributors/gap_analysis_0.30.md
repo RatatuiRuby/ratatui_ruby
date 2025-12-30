@@ -185,7 +185,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `max()` | `max:` | ✅ |
 | `block()` | `block:` | ✅ |
 | `style()` | `style:` | ✅ |
-| `bar_set()` | — | ❌ **MISSING** |
+| `bar_set()` | `bar_set:` | ✅ |
 | `direction()` | `direction:` | ✅ |
 | `absent_value_style()` | `absent_value_style:` | ✅ |
 | `absent_value_symbol()` | `absent_value_symbol:` | ✅ |
@@ -315,15 +315,12 @@ All modifiers are covered. ✅
 ## Remaining Gaps & Priority Recommendations
 
 ### High Priority (Common Use Cases)
-1. **Table::cell_highlight_style** - Useful for cell-based selection
+1. **BarChart::Grouped bars** - Multi-value bars per label (moved from Medium)
 
 ### Medium Priority
-3. **BarChart::bar_set** - Custom bar characters (like block::border_set)
-4. **BarChart::group_gap** - Control spacing in grouped bar charts
-5. **BarChart::Grouped bars** - Multi-value bars per label
+2. **BarChart::group_gap** - Control spacing in grouped bar charts
 
 ### Lower Priority (Niche/Advanced)
-6. **Sparkline::bar_set** - Custom bar characters
-7. **Canvas labels** - Text printing on canvas (advanced use case)
-8. **Paragraph::line_count / line_width** - Read-only properties (minimal value)
-9. **Chart::Dataset::style** - Full Style object (currently color-only)
+3. **Canvas labels** - Text printing on canvas (advanced use case)
+4. **Paragraph::line_count / line_width** - Read-only properties (minimal value)
+5. **Chart::Dataset::style** - Full Style object (currently color-only)

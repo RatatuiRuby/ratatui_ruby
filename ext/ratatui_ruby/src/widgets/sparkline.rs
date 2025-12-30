@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use crate::style::{parse_block, parse_style};
+use crate::style::{parse_block, parse_style, parse_bar_set};
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, RString, Value};
 use ratatui::{layout::Rect, widgets::Sparkline, widgets::RenderDirection, Frame};
@@ -16,6 +16,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let direction_val: Value = node.funcall("direction", ())?;
     let absent_value_symbol_val: Value = node.funcall("absent_value_symbol", ())?;
     let absent_value_style_val: Value = node.funcall("absent_value_style", ())?;
+    let bar_set_val: Value = node.funcall("bar_set", ())?;
 
     let mut data_vec = Vec::new();
     for i in 0..data_val.len() {
@@ -64,6 +65,10 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
     if !absent_value_style_val.is_nil() {
         sparkline = sparkline.absent_value_style(parse_style(absent_value_style_val)?);
+    }
+
+    if !bar_set_val.is_nil() {
+        sparkline = sparkline.bar_set(parse_bar_set(bar_set_val, &bump)?);
     }
 
     frame.render_widget(sparkline, area);

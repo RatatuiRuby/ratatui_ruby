@@ -66,6 +66,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - `absent_value_symbol` and `absent_value_style`: Customize rendering of `nil` values (distinct from `0`).
 - `direction`: Rendering direction (`:left_to_right` or `:right_to_left`).
+- `bar_set`: Customize bar characters.
 
 #### Table Widget
 

@@ -66,7 +66,14 @@ class SparklineDemoApp
     ]
     @absent_style_index = 0
 
-
+    @bar_sets = [
+      { name: "Default (Block)", set: nil },
+      { name: "Numbers (0-8)", set: {
+        0 => "0", 1 => "1", 2 => "2", 3 => "3", 4 => "4", 5 => "5", 6 => "6", 7 => "7", 8 => "8"
+      }},
+      { name: "ASCII (Heights)", set: [" ", "_", ".", "-", "=", "+", "*", "#", "@"] }
+    ]
+    @bar_set_index = 0
 
     @counter = 0
     @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
@@ -91,6 +98,7 @@ class SparklineDemoApp
     style = @styles[@style_index][:style]
     absent_symbol = @absent_symbols[@absent_symbol_index][:symbol]
     absent_value_style = @absent_styles[@absent_style_index][:style]
+    bar_set = @bar_sets[@bar_set_index][:set]
 
     # Use static data for clarity when cycling options
     current_data = data_set[:data]
@@ -99,7 +107,7 @@ class SparklineDemoApp
       direction: :vertical,
       constraints: [
         RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.length(4),
+        RatatuiRuby::Constraint.length(6),
       ],
       children: [
         # Main content area with multiple sparkline examples
@@ -124,6 +132,7 @@ class SparklineDemoApp
               style:,
               absent_value_symbol: absent_symbol,
               absent_value_style:,
+              bar_set:,
               block: RatatuiRuby::Block.new(title: "Interactive Sparkline")
             ),
             # Sparkline 2: Same data, opposite direction
@@ -133,6 +142,7 @@ class SparklineDemoApp
               style:,
               absent_value_symbol: absent_symbol,
               absent_value_style:,
+              bar_set:,
               block: RatatuiRuby::Block.new(title: "Reversed Data")
             ),
             # Sparkline 3: Without absent value symbol (for comparison)
@@ -140,6 +150,7 @@ class SparklineDemoApp
               data: current_data,
               direction:,
               style:,
+              bar_set:,
               block: RatatuiRuby::Block.new(title: "Without Absent Marker")
             ),
             # Sparkline 4: Gap pattern responsive to absent marker controls
@@ -149,6 +160,7 @@ class SparklineDemoApp
               style: RatatuiRuby::Style.new(fg: :blue),
               absent_value_symbol: absent_symbol,
               absent_value_style:,
+              bar_set:,
               block: RatatuiRuby::Block.new(title: "Gap Pattern (Responsive)")
             ),
             RatatuiRuby::Paragraph.new(text: "")
@@ -161,21 +173,29 @@ class SparklineDemoApp
           children: [
             RatatuiRuby::Paragraph.new(
               text: [
-                # Line 1: Data & View
+                # Line 1: Data
                 RatatuiRuby::Text::Line.new(spans: [
                   RatatuiRuby::Text::Span.new(content: "↑/↓", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Data (#{@data_sets[@data_index][:name]})  "),
+                  RatatuiRuby::Text::Span.new(content: ": Data (#{@data_sets[@data_index][:name]})")
+                ]),
+                # Line 2: View
+                RatatuiRuby::Text::Line.new(spans: [
                   RatatuiRuby::Text::Span.new(content: "d", style: @hotkey_style),
                   RatatuiRuby::Text::Span.new(content: ": Direction (#{@directions[@direction_index][:name]})  "),
                   RatatuiRuby::Text::Span.new(content: "c", style: @hotkey_style),
                   RatatuiRuby::Text::Span.new(content: ": Color (#{@styles[@style_index][:name]})")
                 ]),
-                # Line 2: Markers
+                # Line 3: Markers
                 RatatuiRuby::Text::Line.new(spans: [
                   RatatuiRuby::Text::Span.new(content: "m", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Marker (#{@absent_symbols[@absent_symbol_index][:name]})  "),
+                  RatatuiRuby::Text::Span.new(content: ": Absent Value Symbol (#{@absent_symbols[@absent_symbol_index][:name]})  "),
                   RatatuiRuby::Text::Span.new(content: "s", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": M. Style (#{@absent_styles[@absent_style_index][:name]})  "),
+                  RatatuiRuby::Text::Span.new(content: ": Absent Value Style (#{@absent_styles[@absent_style_index][:name]})")
+                ]),
+                # Line 4: General
+                RatatuiRuby::Text::Line.new(spans: [
+                  RatatuiRuby::Text::Span.new(content: "b", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Bar Set (#{@bar_sets[@bar_set_index][:name]})  "),
                   RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
                   RatatuiRuby::Text::Span.new(content: ": Quit")
                 ])
@@ -209,6 +229,8 @@ class SparklineDemoApp
       @absent_symbol_index = (@absent_symbol_index + 1) % @absent_symbols.length
     in type: :key, code: "s"
       @absent_style_index = (@absent_style_index + 1) % @absent_styles.length
+    in type: :key, code: "b"
+      @bar_set_index = (@bar_set_index + 1) % @bar_sets.length
     else
       nil
     end

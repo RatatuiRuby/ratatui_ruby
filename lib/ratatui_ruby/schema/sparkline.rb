@@ -19,7 +19,7 @@ module RatatuiRuby
     #     data: [1, 4, 3, 8, 2, 9, 3, 2],
     #     style: Style.new(fg: :yellow)
     #   )
-    class Sparkline < Data.define(:data, :max, :style, :block, :direction, :absent_value_symbol, :absent_value_style)
+    class Sparkline < Data.define(:data, :max, :style, :block, :direction, :absent_value_symbol, :absent_value_style, :bar_set)
       ##
       # :attr_reader: data
       # Array of integer values to plot.
@@ -55,6 +55,41 @@ module RatatuiRuby
       # :attr_reader: absent_value_style
       # Style for absent (nil) values (optional).
 
+      ##
+      # :attr_reader: bar_set
+      # Custom characters for the bars (optional).
+      #
+      # A Hash with keys defining the characters for the bars.
+      # Keys: <tt>:empty</tt>, <tt>:one_eighth</tt>, <tt>:one_quarter</tt>, <tt>:three_eighths</tt>, <tt>:half</tt>, <tt>:five_eighths</tt>, <tt>:three_quarters</tt>, <tt>:seven_eighths</tt>, <tt>:full</tt>.
+      #
+      # You can also use integers (0-8) as keys, where 0 is empty, 4 is half, and 8 is full.
+      #
+      # Alternatively, you can pass an Array of 9 strings, where index 0 is empty and index 8 is full.
+      #
+      # === Examples
+      #
+      #   bar_set: {
+      #     empty: " ",
+      #     one_eighth: " ",
+      #     one_quarter: "▂",
+      #     three_eighths: "▃",
+      #     half: "▄",
+      #     five_eighths: "▅",
+      #     three_quarters: "▆",
+      #     seven_eighths: "▇",
+      #     full: "█"
+      #   }
+      #
+      #   # Numeric keys (0-8)
+      #   bar_set: {
+      #     0 => " ", 1 => " ", 2 => "▂", 3 => "▃", 4 => "▄", 5 => "▅", 6 => "▆", 7 => "▇", 8 => "█"
+      #   }
+      #
+      #   # Array (9 items)
+      #   bar_set: [" ", " ", "▂", "▃", "▄", "▅", "▆", "▇", "█"]
+
+      BAR_KEYS = %i[empty one_eighth one_quarter three_eighths half five_eighths three_quarters seven_eighths full].freeze
+
       # Creates a new Sparkline widget.
       #
       # [data] Array of Integers or nil. nil marks an absent value (distinct from 0).
@@ -64,8 +99,23 @@ module RatatuiRuby
       # [direction] +:left_to_right+ or +:right_to_left+ (default: +:left_to_right+).
       # [absent_value_symbol] Character for absent (nil) values (optional).
       # [absent_value_style] Style for absent (nil) values (optional).
-      def initialize(data:, max: nil, style: nil, block: nil, direction: :left_to_right, absent_value_symbol: nil, absent_value_style: nil)
-        super
+      # [bar_set] Hash or Array of custom characters (optional).
+      def initialize(data:, max: nil, style: nil, block: nil, direction: :left_to_right, absent_value_symbol: nil, absent_value_style: nil, bar_set: nil)
+        if bar_set
+          if bar_set.is_a?(Array) && bar_set.size == 9
+            # Convert Array to Hash using BAR_KEYS order
+            bar_set = BAR_KEYS.zip(bar_set).to_h
+          else
+            bar_set = bar_set.dup
+            # Normalize numeric keys (0-8) to symbolic keys
+            BAR_KEYS.each_with_index do |key, i|
+              if val = bar_set.delete(i) || bar_set.delete(i.to_s)
+                bar_set[key] = val
+              end
+            end
+          end
+        end
+        super(data: data, max: max, style: style, block: block, direction: direction, absent_value_symbol: absent_value_symbol, absent_value_style: absent_value_style, bar_set: bar_set)
       end
     end
 end

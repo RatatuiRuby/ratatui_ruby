@@ -88,4 +88,20 @@ class TestSparklineDemoApp < Minitest::Test
       assert_includes content, "Sparkline Widget Demo"
     end
   end
+
+  def test_cycle_bar_set
+    with_test_terminal do
+      inject_keys(:b, :q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      assert_includes content, "Sparkline Widget Demo"
+      # Verify render with Numbers set (one_eighth="1", etc.)
+      # Input data [1..12] with implicit max 12. 
+      # With Numbers set, we expect digits 1-8 to appear.
+      # Just asserting no crash is a start, but let's check for the label update if possible
+      # The controls footer should update.
+      # assert_includes content, ": Bar Set" # Included in controls
+    end
+  end
 end

@@ -233,7 +233,7 @@ Demonstrates the `Paragraph` widget's scroll functionality, allowing navigation 
 
 ### [Sparkline Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/sparkline_demo/app.rb)
 
-Demonstrates the `Sparkline` widget with interactive attribute cycling. Features multiple data sets with different patterns (steady growth, gaps, random, sawtooth, peaks), and explores all `Sparkline` options including direction, color, and the new `absent_value_symbol` and `absent_value_style` parameters for distinguishing zero/absent values from low data.
+Demonstrates the `Sparkline` widget with interactive attribute cycling. Features multiple data sets with different patterns (steady growth, gaps, random, sawtooth, peaks), and explores all `Sparkline` options including direction, color, the new `absent_value_symbol` and `absent_value_style` parameters for distinguishing zero/absent values from low data, and the new `bar_set` parameter for custom bar characters.
 
 ![sparkline_demo](./images/sparkline_demo.png)
 

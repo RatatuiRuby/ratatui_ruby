@@ -38,7 +38,7 @@ class AnalyticsApp
       { name: "Default", set: nil },
       { name: "Numbers (Short)", set: { 8 => "8", 7 => "7", 6 => "6", 5 => "5", 4 => "4", 3 => "3", 2 => "2", 1 => "1", 0 => "0" } },
       { name: "Letters (Long)", set: { full: "H", seven_eighths: "G", three_quarters: "F", five_eighths: "E", half: "D", three_eighths: "C", one_quarter: "B", one_eighth: "A", empty: " " } },
-      { name: "ASCII (Array)", set: [" ", ".", ":", "-", "+", "*", "#", "%", "@"] }
+      { name: "ASCII (Heights)", set: [" ", "_", ".", "-", "=", "+", "*", "#", "@"] }
     ]
     @bar_set_index = 0
     @height_mode = :full # :full or :mini
