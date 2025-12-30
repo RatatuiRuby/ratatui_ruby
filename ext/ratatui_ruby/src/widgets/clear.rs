@@ -11,8 +11,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     // If a block is provided, render it on top of the cleared area
     if let Ok(block_val) = node.funcall::<_, _, Value>("block", ()) {
         if !block_val.is_nil() {
-            let arena = Bump::new();
-            let block = crate::style::parse_block(block_val, &arena)?;
+            let bump = Bump::new();
+            let block = crate::style::parse_block(block_val, &bump)?;
             block.render(area, frame.buffer_mut());
         }
     }

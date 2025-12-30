@@ -7,7 +7,7 @@ use magnus::{prelude::*, Error, Value};
 use ratatui::{layout::Rect, text::Line, widgets::Tabs, Frame};
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
-    let arena = Bump::new();
+    let bump = Bump::new();
     let ruby = magnus::Ruby::get().unwrap();
     let titles_val: Value = node.funcall("titles", ())?;
     let selected_index: usize = node.funcall("selected_index", ())?;
@@ -22,7 +22,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
     let mut titles = Vec::new();
     for i in 0..titles_array.len() {
-        let title: String = titles_array.entry(i as isize)?;
+        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let title: String = titles_array.entry(index)?;
         titles.push(Line::from(title));
     }
 
@@ -44,7 +45,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     if !block_val.is_nil() {
-        tabs = tabs.block(parse_block(block_val, &arena)?);
+        tabs = tabs.block(parse_block(block_val, &bump)?);
     }
 
     if padding_left > 0 || padding_right > 0 {

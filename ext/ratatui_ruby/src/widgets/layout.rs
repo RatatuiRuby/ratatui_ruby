@@ -42,7 +42,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
         if let Some(arr) = constraints_array {
             for i in 0..arr.len() {
-                let constraint_obj: Value = arr.entry(i as isize)?;
+                let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+                let constraint_obj: Value = arr.entry(index)?;
                 if let Ok(constraint) = parse_constraint(constraint_obj) {
                     ratatui_constraints.push(constraint);
                 }
@@ -52,7 +53,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         // If constraints don't match children, adjust or default
         if ratatui_constraints.len() != len {
             ratatui_constraints = (0..len)
-                .map(|_| Constraint::Percentage(100 / (len as u16).max(1)))
+                .map(|_| Constraint::Percentage(100 / u16::try_from(len).unwrap_or(u16::MAX).max(1)))
                 .collect();
         }
 
@@ -63,9 +64,10 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
             .split(area);
 
         for i in 0..len {
-            let child: Value = children_array.entry(i as isize)?;
+            let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+            let child: Value = children_array.entry(index)?;
             if let Err(e) = render_node(frame, chunks[i], child) {
-                eprintln!("Error rendering child {}: {:?}", i, e);
+                eprintln!("Error rendering child {i}: {e:?}");
             }
         }
     }
@@ -166,7 +168,8 @@ pub fn split_layout(
     // Parse constraints
     let mut ratatui_constraints = Vec::new();
     for i in 0..constraints.len() {
-        let constraint_obj: Value = constraints.entry(i as isize)?;
+        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let constraint_obj: Value = constraints.entry(index)?;
         if let Ok(constraint) = parse_constraint(constraint_obj) {
             ratatui_constraints.push(constraint);
         }

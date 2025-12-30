@@ -13,7 +13,7 @@ use ratatui::{
 use crate::text::parse_text;
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
-    let arena = Bump::new();
+    let bump = Bump::new();
     let text_val: Value = node.funcall("text", ())?;
     let style_val: Value = node.funcall("style", ())?;
     let block_val: Value = node.funcall("block", ())?;
@@ -26,7 +26,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let mut paragraph = Paragraph::new(lines).style(style);
 
     if !block_val.is_nil() {
-        paragraph = paragraph.block(parse_block(block_val, &arena)?);
+        paragraph = paragraph.block(parse_block(block_val, &bump)?);
     }
 
     if wrap {

@@ -1,0 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+disallowed-methods = [
+    { path = "std::boxed::Box::leak", reason = "Use bumpalo arena allocation instead." },
+    { path = "std::vec::Vec::leak", reason = "Use bumpalo arena allocation instead." },
+]

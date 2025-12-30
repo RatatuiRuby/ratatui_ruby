@@ -32,10 +32,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
     scrollbar = match orientation_sym.to_string().as_str() {
         "vertical_left" => scrollbar.orientation(ScrollbarOrientation::VerticalLeft),
-        "vertical_right" => scrollbar.orientation(ScrollbarOrientation::VerticalRight),
+        "horizontal_bottom" | "horizontal" => scrollbar.orientation(ScrollbarOrientation::HorizontalBottom),
         "horizontal_top" => scrollbar.orientation(ScrollbarOrientation::HorizontalTop),
-        "horizontal_bottom" => scrollbar.orientation(ScrollbarOrientation::HorizontalBottom),
-        "horizontal" => scrollbar.orientation(ScrollbarOrientation::HorizontalBottom),
         _ => scrollbar.orientation(ScrollbarOrientation::VerticalRight),
     };
 
@@ -77,14 +75,14 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         scrollbar = scrollbar.style(crate::style::parse_style(style_val)?);
     }
 
-    if !block_val.is_nil() {
-        let arena = Bump::new();
-        let block = parse_block(block_val, &arena)?;
+    if block_val.is_nil() {
+        frame.render_stateful_widget(scrollbar, area, &mut state);
+    } else {
+        let bump = Bump::new();
+        let block = parse_block(block_val, &bump)?;
         let inner_area = block.inner(area);
         frame.render_widget(block, area);
         frame.render_stateful_widget(scrollbar, inner_area, &mut state);
-    } else {
-        frame.render_stateful_widget(scrollbar, area, &mut state);
     }
     Ok(())
 }

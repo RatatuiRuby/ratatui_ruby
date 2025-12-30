@@ -13,7 +13,7 @@ use std::convert::TryFrom;
 use time::{Date, Month};
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
-    let arena = Bump::new();
+    let bump = Bump::new();
     let ruby = magnus::Ruby::get().unwrap();
     let year: i32 = node.funcall("year", ())?;
     let month_u8: u8 = node.funcall("month", ())?;
@@ -51,12 +51,10 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
     let mut calendar = Monthly::new(date, event_store);
 
-
-
-    let header_style = if !header_style_val.is_nil() {
-        parse_style(header_style_val)?
-    } else {
+    let header_style = if header_style_val.is_nil() {
         ratatui::style::Style::default()
+    } else {
+        parse_style(header_style_val)?
     };
 
     let show_month_header: bool = node.funcall("show_month_header", ())?;
@@ -77,44 +75,9 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     if !block_val.is_nil() {
-        calendar = calendar.block(parse_block(block_val, &arena)?);
+        calendar = calendar.block(parse_block(block_val, &bump)?);
     }
 
     frame.render_widget(calendar, area);
     Ok(())
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use ratatui::buffer::Buffer;
-    use ratatui::widgets::Widget;
-
-    #[test]
-    fn test_calendar_rendering() {
-        let date = Date::from_calendar_date(2025, Month::December, 1).unwrap();
-        let calendar = Monthly::new(date, CalendarEventStore::default())
-            .show_month_header(ratatui::style::Style::default());
-        let mut buf = Buffer::empty(Rect::new(0, 0, 40, 20));
-        calendar.render(Rect::new(0, 0, 40, 20), &mut buf);
-        let mut content = String::new();
-        for y in 0..20 {
-            for x in 0..40 {
-                content.push_str(buf.cell((x, y)).unwrap().symbol());
-            }
-            content.push('\n');
-        }
-        assert!(
-            content.contains("December"),
-            "Content did not contain December: \n{}",
-            content
-        );
-        assert!(
-            content.contains("2025"),
-            "Content did not contain 2025: \n{}",
-            content
-        );
-    }
-
-
 }

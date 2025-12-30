@@ -9,9 +9,9 @@ use ratatui::text::{Line, Span};
 ///
 /// Supports:
 /// - String: Plain text without styling
-/// - Text::Span: A single styled fragment
-/// - Text::Line: A line composed of multiple spans
-/// - Array: Array of Text::Lines or Strings
+/// - `Text::Span`: A single styled fragment
+/// - `Text::Line`: A line composed of multiple spans
+/// - Array: Array of `Text::Lines` or Strings
 pub fn parse_text(value: Value) -> Result<Vec<Line<'static>>, Error> {
     let ruby = magnus::Ruby::get().unwrap();
 
@@ -35,24 +35,17 @@ pub fn parse_text(value: Value) -> Result<Vec<Line<'static>>, Error> {
     if let Some(arr) = magnus::RArray::from_value(value) {
         let mut lines = Vec::new();
         for i in 0..arr.len() {
-            let elem: Value = arr.entry(i as isize)?;
+            let ruby = magnus::Ruby::get().unwrap();
+            let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+            let elem: Value = arr.entry(index)?;
 
             // Try to convert to String
             if let Ok(s) = String::try_convert(elem) {
                 lines.push(Line::from(s));
-                continue;
-            }
-
-            // Try to parse as Line
-            if let Ok(line) = parse_line(elem) {
+            } else if let Ok(line) = parse_line(elem) {
                 lines.push(line);
-                continue;
-            }
-
-            // Try to parse as Span
-            if let Ok(span) = parse_span(elem) {
+            } else if let Ok(span) = parse_span(elem) {
                 lines.push(Line::from(vec![span]));
-                continue;
             }
         }
         return if lines.is_empty() {
@@ -114,7 +107,7 @@ fn parse_span(value: Value) -> Result<Span<'static>, Error> {
     Ok(Span::styled(content_str, style))
 }
 
-/// Parses a Ruby Text::Line object into a ratatui Line.
+/// Parses a Ruby `Text::Line` object into a ratatui Line.
 fn parse_line(value: Value) -> Result<Line<'static>, Error> {
     let ruby = magnus::Ruby::get().unwrap();
 
@@ -145,22 +138,20 @@ fn parse_line(value: Value) -> Result<Line<'static>, Error> {
 
     let mut spans = Vec::new();
     for i in 0..spans_array.len() {
-        let span_elem: Value = spans_array.entry(i as isize)?;
+        let ruby = magnus::Ruby::get().unwrap();
+        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let span_elem: Value = spans_array.entry(index)?;
 
         // If it's a string, convert to span without style
         if let Ok(s) = String::try_convert(span_elem) {
             spans.push(Span::raw(s));
-            continue;
-        }
-
-        // Try to parse as Span object
-        match parse_span(span_elem) {
-            Ok(span) => spans.push(span),
-            Err(_) => {
+        } else {
+            // Try to parse as Span object
+            if let Ok(span) = parse_span(span_elem) {
+                spans.push(span);
+            } else if let Ok(s) = String::try_convert(span_elem) {
                 // If it fails, try converting to string
-                if let Ok(s) = String::try_convert(span_elem) {
-                    spans.push(Span::raw(s));
-                }
+                spans.push(Span::raw(s));
             }
         }
     }
@@ -176,7 +167,5 @@ fn parse_line(value: Value) -> Result<Line<'static>, Error> {
 mod tests {
     #[test]
     fn test_parse_plain_string() {
-        // This test would require magnus setup, so it's a documentation test
-        // In practice, this is tested through the integration with Paragraph
     }
 }

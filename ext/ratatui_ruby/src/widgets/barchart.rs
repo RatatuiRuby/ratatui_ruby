@@ -7,7 +7,7 @@ use magnus::{prelude::*, Error, Symbol, Value};
 use ratatui::{layout::{Direction, Rect}, widgets::BarChart, Frame};
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
-    let arena = Bump::new();
+    let bump = Bump::new();
     let data_val: magnus::RHash = node.funcall("data", ())?;
     let bar_width: u16 = node.funcall("bar_width", ())?;
     let bar_gap: u16 = node.funcall("bar_gap", ())?;
@@ -23,7 +23,9 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let mut data_vec = Vec::new();
 
     for i in 0..keys.len() {
-        let key: Value = keys.entry(i as isize)?;
+        let ruby = magnus::Ruby::get().unwrap();
+        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let key: Value = keys.entry(index)?;
         let val: u64 = data_val.funcall("[]", (key,))?;
         let label: String = key.funcall("to_s", ())?;
         labels.push(label);
@@ -58,7 +60,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     if !block_val.is_nil() {
-        bar_chart = bar_chart.block(parse_block(block_val, &arena)?);
+        bar_chart = bar_chart.block(parse_block(block_val, &bump)?);
     }
 
     if !label_style_val.is_nil() {

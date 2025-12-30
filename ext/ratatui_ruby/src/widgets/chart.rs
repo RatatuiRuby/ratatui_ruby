@@ -13,11 +13,10 @@ use ratatui::{
 };
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
-    let arena = Bump::new();
+    let bump = Bump::new();
     let ruby = magnus::Ruby::get().unwrap();
-    let class = node.class();
-    // SAFETY: Immediate conversion to owned avoids GC-unsafe borrowed reference.
-    let class_name = unsafe { class.name() }.into_owned();
+    // SAFETY: Immediate conversion to owned string avoids GC-unsafe borrowed reference.
+    let class_name = unsafe { node.class().name() }.into_owned();
 
     if class_name == "RatatuiRuby::LineChart" {
         return render_line_chart(frame, area, node);
@@ -36,12 +35,14 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let mut data_storage: Vec<Vec<(f64, f64)>> = Vec::new();
 
     for i in 0..datasets_val.len() {
-        let ds_val: Value = datasets_val.entry(i as isize)?;
+        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let ds_val: Value = datasets_val.entry(index)?;
         let data_array: magnus::RArray = ds_val.funcall("data", ())?;
 
         let mut points = Vec::new();
         for j in 0..data_array.len() {
-            let point_array_val: Value = data_array.entry(j as isize)?;
+            let index = isize::try_from(j).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+            let point_array_val: Value = data_array.entry(index)?;
             let point_array = magnus::RArray::from_value(point_array_val).ok_or_else(|| {
                 Error::new(ruby.exception_type_error(), "expected array for point")
             })?;
@@ -53,13 +54,13 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     for (i, points) in data_storage.iter().enumerate() {
-        let ds_val: Value = datasets_val.entry(i as isize)?;
+        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let ds_val: Value = datasets_val.entry(index)?;
         let name: String = ds_val.funcall("name", ())?;
         let marker_sym: Symbol = ds_val.funcall("marker", ())?;
         let graph_type_sym: Symbol = ds_val.funcall("graph_type", ())?;
 
         let marker = match marker_sym.to_string().as_str() {
-            "dot" => symbols::Marker::Dot,
             "braille" => symbols::Marker::Braille,
             "block" => symbols::Marker::Block,
             "bar" => symbols::Marker::Bar,
@@ -67,7 +68,6 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         };
 
         let graph_type = match graph_type_sym.to_string().as_str() {
-            "line" => GraphType::Line,
             "scatter" => GraphType::Scatter,
             _ => GraphType::Line,
         };
@@ -96,7 +96,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let mut chart = Chart::new(datasets).x_axis(x_axis).y_axis(y_axis);
 
     if !block_val.is_nil() {
-        chart = chart.block(parse_block(block_val, &arena)?);
+        chart = chart.block(parse_block(block_val, &bump)?);
     }
 
     if !style_val.is_nil() {
@@ -107,7 +107,6 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         let pos_sym: Symbol = legend_position_val.funcall("to_sym", ())?;
         let pos = match pos_sym.to_string().as_str() {
             "top_left" => LegendPosition::TopLeft,
-            "top_right" => LegendPosition::TopRight,
             "bottom_left" => LegendPosition::BottomLeft,
             "bottom_right" => LegendPosition::BottomRight,
             _ => LegendPosition::TopRight,
@@ -131,6 +130,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 }
 
 fn parse_axis(axis_val: Value) -> Result<Axis<'static>, Error> {
+    let ruby = magnus::Ruby::get().unwrap();
     let title: String = axis_val.funcall("title", ())?;
     let bounds_val: magnus::RArray = axis_val.funcall("bounds", ())?;
     let labels_val: magnus::RArray = axis_val.funcall("labels", ())?;
@@ -141,7 +141,8 @@ fn parse_axis(axis_val: Value) -> Result<Axis<'static>, Error> {
 
     let mut labels = Vec::new();
     for i in 0..labels_val.len() {
-        let label: String = labels_val.entry(i as isize)?;
+        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let label: String = labels_val.entry(index)?;
         labels.push(Span::from(label));
     }
 
@@ -155,7 +156,6 @@ fn parse_axis(axis_val: Value) -> Result<Axis<'static>, Error> {
         let alignment_sym: Symbol = labels_alignment_val.funcall("to_sym", ())?;
         let alignment = match alignment_sym.to_string().as_str() {
             "left" => ratatui::layout::HorizontalAlignment::Left,
-            "center" => ratatui::layout::HorizontalAlignment::Center,
             "right" => ratatui::layout::HorizontalAlignment::Right,
             _ => ratatui::layout::HorizontalAlignment::Center,
         };
@@ -166,7 +166,7 @@ fn parse_axis(axis_val: Value) -> Result<Axis<'static>, Error> {
 }
 
 fn render_line_chart(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
-    let arena = Bump::new();
+    let bump = Bump::new();
     let ruby = magnus::Ruby::get().unwrap();
     let datasets_val: magnus::RArray = node.funcall("datasets", ())?;
     let x_labels_val: magnus::RArray = node.funcall("x_labels", ())?;
@@ -178,12 +178,14 @@ fn render_line_chart(frame: &mut Frame, area: Rect, node: Value) -> Result<(), E
     let mut data_storage: Vec<Vec<(f64, f64)>> = Vec::new();
 
     for i in 0..datasets_val.len() {
-        let ds_val: Value = datasets_val.entry(i as isize)?;
+        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let ds_val: Value = datasets_val.entry(index)?;
         let data_array: magnus::RArray = ds_val.funcall("data", ())?;
 
         let mut points = Vec::new();
         for j in 0..data_array.len() {
-            let point_array_val: Value = data_array.entry(j as isize)?;
+            let index = isize::try_from(j).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+            let point_array_val: Value = data_array.entry(index)?;
             let point_array = magnus::RArray::from_value(point_array_val).ok_or_else(|| {
                 Error::new(ruby.exception_type_error(), "expected array for point")
             })?;
@@ -195,7 +197,8 @@ fn render_line_chart(frame: &mut Frame, area: Rect, node: Value) -> Result<(), E
     }
 
     for (i, points) in data_storage.iter().enumerate() {
-        let ds_val: Value = datasets_val.entry(i as isize)?;
+        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let ds_val: Value = datasets_val.entry(index)?;
         let name: String = ds_val.funcall("name", ())?;
 
         let mut ds_style = ratatui::style::Style::default();
@@ -215,13 +218,15 @@ fn render_line_chart(frame: &mut Frame, area: Rect, node: Value) -> Result<(), E
 
     let mut x_labels = Vec::new();
     for i in 0..x_labels_val.len() {
-        let label: String = x_labels_val.entry(i as isize)?;
+        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let label: String = x_labels_val.entry(index)?;
         x_labels.push(Span::from(label));
     }
 
     let mut y_labels = Vec::new();
     for i in 0..y_labels_val.len() {
-        let label: String = y_labels_val.entry(i as isize)?;
+        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let label: String = y_labels_val.entry(index)?;
         y_labels.push(Span::from(label));
     }
     // Ratatui 0.29+ requires labels to be present for the axis line to render
@@ -251,7 +256,7 @@ fn render_line_chart(frame: &mut Frame, area: Rect, node: Value) -> Result<(), E
             }
         }
     }
-    if min_x == max_x {
+    if (min_x - max_x).abs() < f64::EPSILON {
         max_x = min_x + 1.0;
     }
 
@@ -260,7 +265,7 @@ fn render_line_chart(frame: &mut Frame, area: Rect, node: Value) -> Result<(), E
 
     let mut chart = Chart::new(datasets).x_axis(x_axis).y_axis(y_axis);
     if !block_val.is_nil() {
-        chart = chart.block(parse_block(block_val, &arena)?);
+        chart = chart.block(parse_block(block_val, &bump)?);
     }
 
     frame.render_widget(chart, area);

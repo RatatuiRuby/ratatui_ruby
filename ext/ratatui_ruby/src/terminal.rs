@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use magnus::Error;
+use magnus::value::ReprValue;
 use ratatui::{
     backend::{CrosstermBackend, TestBackend},
     Terminal,
@@ -11,12 +12,10 @@ use std::sync::Mutex;
 
 pub enum TerminalWrapper {
     Crossterm(Terminal<CrosstermBackend<io::Stdout>>),
-    Test(Terminal<TestBackend>), // We don't need Mutex inside the enum variant because the global is a Mutex
+    Test(Terminal<TestBackend>),
 }
 
-lazy_static::lazy_static! {
-    pub static ref TERMINAL: Mutex<Option<TerminalWrapper>> = Mutex::new(None);
-}
+pub static TERMINAL: Mutex<Option<TerminalWrapper>> = Mutex::new(None);
 
 pub fn init_terminal(focus_events: bool, bracketed_paste: bool) -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
@@ -59,32 +58,30 @@ pub fn init_test_terminal(width: u16, height: u16) -> Result<(), Error> {
     Ok(())
 }
 
-pub fn restore_terminal() -> Result<(), Error> {
+pub fn restore_terminal() {
     let mut term_lock = TERMINAL.lock().unwrap();
-    if let Some(TerminalWrapper::Crossterm(mut terminal)) = term_lock.take() {
-        let _ = ratatui::crossterm::terminal::disable_raw_mode();
-        let _ = ratatui::crossterm::execute!(
-            terminal.backend_mut(),
-            ratatui::crossterm::terminal::LeaveAlternateScreen,
-            ratatui::crossterm::event::DisableMouseCapture,
-            ratatui::crossterm::event::DisableFocusChange,
-            ratatui::crossterm::event::DisableBracketedPaste
-        );
+    if let Some(wrapper) = term_lock.take() {
+        match wrapper {
+            TerminalWrapper::Crossterm(mut t) => {
+                let _ = ratatui::crossterm::terminal::disable_raw_mode();
+                let _ = ratatui::crossterm::execute!(
+                    t.backend_mut(),
+                    ratatui::crossterm::terminal::LeaveAlternateScreen,
+                    ratatui::crossterm::event::DisableMouseCapture,
+                    ratatui::crossterm::event::DisableFocusChange,
+                    ratatui::crossterm::event::DisableBracketedPaste
+                );
+            }
+            TerminalWrapper::Test(_) => {}
+        }
     }
-    Ok(())
 }
 
 pub fn get_buffer_content() -> Result<String, Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let term_lock = TERMINAL.lock().unwrap();
     if let Some(TerminalWrapper::Test(terminal)) = term_lock.as_ref() {
-        // We need to access the buffer.
-        // Since we are mocking, we can just print the buffer to a string.
         let buffer = terminal.backend().buffer();
-        // Simple representation: each cell's symbol.
-        // For a more complex representation we could return an array of strings.
-        // Let's just return the full string representation for now which is useful for debugging/asserting.
-        // Actually, let's reconstruct it line by line.
         let area = buffer.area;
         let mut result = String::new();
         for y in 0..area.height {
@@ -125,14 +122,9 @@ pub fn resize_terminal(width: u16, height: u16) -> Result<(), Error> {
     if let Some(wrapper) = term_lock.as_mut() {
         match wrapper {
             TerminalWrapper::Crossterm(_) => {
-                // Resize happens automatically for Crossterm via signals usually,
-                // but we can't easily force it here without OS interaction.
-                // Ignoring for now as it's less critical for unit testing the logic.
             }
             TerminalWrapper::Test(terminal) => {
                 terminal.backend_mut().resize(width, height);
-                // Also resize the terminal wrapper itself if needed, but TestBackend resize handles the buffer.
-                // We might need to call terminal.resize() too if Ratatui caches the size.
                 if let Err(e) = terminal.resize(ratatui::layout::Rect::new(0, 0, width, height)) {
                     return Err(Error::new(
                         ruby.exception_runtime_error(),
@@ -146,7 +138,6 @@ pub fn resize_terminal(width: u16, height: u16) -> Result<(), Error> {
 }
 
 use magnus::Value;
-use magnus::value::ReprValue;
 
 pub fn get_cell_at(x: u16, y: u16) -> Result<magnus::RHash, Error> {
     let ruby = magnus::Ruby::get().unwrap();
@@ -163,7 +154,7 @@ pub fn get_cell_at(x: u16, y: u16) -> Result<magnus::RHash, Error> {
         } else {
             Err(Error::new(
                 ruby.exception_runtime_error(),
-                format!("Coordinates ({}, {}) out of bounds", x, y),
+                format!("Coordinates ({x}, {y}) out of bounds"),
             ))
         }
     } else {
@@ -195,9 +186,9 @@ fn color_to_value(color: ratatui::style::Color) -> Value {
         ratatui::style::Color::LightCyan => ruby.to_symbol("light_cyan").as_value(),
         ratatui::style::Color::White => ruby.to_symbol("white").as_value(),
         ratatui::style::Color::Rgb(r, g, b) => ruby
-            .str_new(&format!("#{:02x}{:02x}{:02x}", r, g, b))
+            .str_new(&(format!("#{r:02x}{g:02x}{b:02x}")))
             .as_value(),
-        ratatui::style::Color::Indexed(i) => ruby.to_symbol(&format!("indexed_{}", i)).as_value(),
+        ratatui::style::Color::Indexed(i) => ruby.to_symbol(format!("indexed_{i}")).as_value(),
     }
 }
 
@@ -206,31 +197,31 @@ fn modifiers_to_value(modifier: ratatui::style::Modifier) -> Value {
     let ary = ruby.ary_new();
     
     if modifier.contains(ratatui::style::Modifier::BOLD) {
-        ary.push(ruby.str_new("bold")).unwrap();
+        let _ = ary.push(ruby.str_new("bold"));
     }
     if modifier.contains(ratatui::style::Modifier::ITALIC) {
-        ary.push(ruby.str_new("italic")).unwrap();
+        let _ = ary.push(ruby.str_new("italic"));
     }
     if modifier.contains(ratatui::style::Modifier::DIM) {
-        ary.push(ruby.str_new("dim")).unwrap();
+        let _ = ary.push(ruby.str_new("dim"));
     }
     if modifier.contains(ratatui::style::Modifier::UNDERLINED) {
-        ary.push(ruby.str_new("underlined")).unwrap();
+        let _ = ary.push(ruby.str_new("underlined"));
     }
     if modifier.contains(ratatui::style::Modifier::REVERSED) {
-        ary.push(ruby.str_new("reversed")).unwrap();
+        let _ = ary.push(ruby.str_new("reversed"));
     }
     if modifier.contains(ratatui::style::Modifier::HIDDEN) {
-        ary.push(ruby.str_new("hidden")).unwrap();
+        let _ = ary.push(ruby.str_new("hidden"));
     }
     if modifier.contains(ratatui::style::Modifier::CROSSED_OUT) {
-        ary.push(ruby.str_new("crossed_out")).unwrap();
+        let _ = ary.push(ruby.str_new("crossed_out"));
     }
     if modifier.contains(ratatui::style::Modifier::SLOW_BLINK) {
-        ary.push(ruby.str_new("slow_blink")).unwrap();
+        let _ = ary.push(ruby.str_new("slow_blink"));
     }
     if modifier.contains(ratatui::style::Modifier::RAPID_BLINK) {
-        ary.push(ruby.str_new("rapid_blink")).unwrap();
+        let _ = ary.push(ruby.str_new("rapid_blink"));
     }
     
     ary.as_value()

@@ -21,17 +21,17 @@ pub fn render_node(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Err
         // Process returned draw commands
         if let Some(arr) = RArray::from_value(commands) {
             for i in 0..arr.len() {
-                let cmd: Value = arr.entry(i as isize)?;
+                let ruby = magnus::Ruby::get().unwrap();
+                let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+                let cmd: Value = arr.entry(index)?;
                 process_draw_command(frame.buffer_mut(), cmd)?;
             }
         }
         return Ok(());
     }
 
-    let class = node.class();
-    // SAFETY: We immediately convert to owned String to avoid holding a reference
-    // to Ruby-managed memory that could be freed by GC during subsequent Ruby calls.
-    let class_name = unsafe { class.name() }.into_owned();
+    // SAFETY: Immediate conversion to owned string avoids GC-unsafe borrowed reference.
+    let class_name = unsafe { node.class().name() }.into_owned();
 
     match class_name.as_str() {
         "RatatuiRuby::Paragraph" => widgets::paragraph::render(frame, area, node)?,
@@ -52,7 +52,7 @@ pub fn render_node(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Err
         "RatatuiRuby::Calendar" => widgets::calendar::render(frame, area, node)?,
         "RatatuiRuby::Sparkline" => widgets::sparkline::render(frame, area, node)?,
         "RatatuiRuby::Chart" | "RatatuiRuby::LineChart" => {
-            widgets::chart::render(frame, area, node)?
+            widgets::chart::render(frame, area, node)?;
         }
         _ => {}
     }
@@ -61,10 +61,8 @@ pub fn render_node(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Err
 
 fn process_draw_command(buffer: &mut Buffer, cmd: Value) -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
-    let class = cmd.class();
-    // SAFETY: We immediately convert to owned String to avoid holding a reference
-    // to Ruby-managed memory that could be freed by GC during subsequent Ruby calls.
-    let class_name = unsafe { class.name() }.into_owned();
+    // SAFETY: Immediate conversion to owned string avoids GC-unsafe borrowed reference.
+    let class_name = unsafe { cmd.class().name() }.into_owned();
 
     match class_name.as_str() {
         "RatatuiRuby::Draw::StringCmd" => {
@@ -105,7 +103,8 @@ fn process_draw_command(buffer: &mut Buffer, cmd: Value) -> Result<(), Error> {
 
             if let Some(mods_array) = RArray::from_value(modifiers_val) {
                 for i in 0..mods_array.len() {
-                    let mod_str: String = mods_array.entry::<String>(i as isize)?;
+                    let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+                    let mod_str: String = mods_array.entry::<String>(index)?;
                     if let Some(modifier) = parse_modifier_str(&mod_str) {
                         style = style.add_modifier(modifier);
                     }
@@ -119,11 +118,10 @@ fn process_draw_command(buffer: &mut Buffer, cmd: Value) -> Result<(), Error> {
         _ => {
             return Err(Error::new(
                 ruby.exception_type_error(),
-                format!("Unknown draw command: {}", class_name),
+                format!("Unknown draw command: {class_name}"),
             ));
         }
     }
 
     Ok(())
 }
-

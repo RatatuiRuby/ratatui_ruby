@@ -12,7 +12,7 @@ use ratatui::{
 };
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
-    let arena = Bump::new();
+    let bump = Bump::new();
     let ruby = magnus::Ruby::get().unwrap();
     let items_val: Value = node.funcall("items", ())?;
     let items_array = magnus::RArray::from_value(items_val)
@@ -27,17 +27,17 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let scroll_padding_val: Value = node.funcall("scroll_padding", ())?;
     let block_val: Value = node.funcall("block", ())?;
 
-    let mut items = Vec::new();
+    let mut items: Vec<String> = Vec::new();
     for i in 0..items_array.len() {
-        let item: String = items_array.entry(i as isize)?;
+        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let item: String = items_array.entry(index)?;
         items.push(item);
     }
 
-    let symbol: String = if !highlight_symbol_val.is_nil() {
-        let s: String = String::try_convert(highlight_symbol_val)?;
-        s
-    } else {
+    let symbol: String = if highlight_symbol_val.is_nil() {
         String::new()
+    } else {
+        String::try_convert(highlight_symbol_val)?
     };
 
     let mut state = ListState::default();
@@ -93,7 +93,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     if !block_val.is_nil() {
-        list = list.block(parse_block(block_val, &arena)?);
+        list = list.block(parse_block(block_val, &bump)?);
     }
 
     frame.render_stateful_widget(list, area, &mut state);

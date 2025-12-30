@@ -11,7 +11,7 @@ use ratatui::{
 };
 
 pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Result<(), Error> {
-    let arena = Bump::new();
+    let bump = Bump::new();
     let shapes_val: RArray = node.funcall("shapes", ())?;
     let x_bounds_val: RArray = node.funcall("x_bounds", ())?;
     let y_bounds_val: RArray = node.funcall("y_bounds", ())?;
@@ -25,7 +25,6 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
         "dot" => Marker::Dot,
         "block" => Marker::Block,
         "bar" => Marker::Bar,
-        "braille" => Marker::Braille,
         "half_block" => Marker::HalfBlock,
         "quadrant" => Marker::Quadrant,
         "sextant" => Marker::Sextant,
@@ -39,7 +38,7 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
         .marker(marker);
 
     if !block_val.is_nil() {
-        canvas = canvas.block(parse_block(block_val, &arena)?);
+        canvas = canvas.block(parse_block(block_val, &bump)?);
     }
 
     let background_color_val: Value = node.funcall("background_color", ())?;
@@ -52,7 +51,7 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
     let canvas = canvas.paint(|ctx| {
         for shape_val in shapes_val {
             let class = shape_val.class();
-            // SAFETY: Immediate conversion to owned avoids GC-unsafe borrowed reference.
+            // SAFETY: Immediate conversion to owned string avoids GC-unsafe borrowed reference.
             let class_name = unsafe { class.name() }.into_owned();
 
             match class_name.as_str() {
@@ -64,13 +63,7 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
                     let color_val: Value = shape_val.funcall("color", ()).unwrap();
                     let color =
                         parse_color(&color_val.to_string()).unwrap_or(ratatui::style::Color::Reset);
-                    ctx.draw(&Line {
-                        x1,
-                        y1,
-                        x2,
-                        y2,
-                        color,
-                    });
+                    ctx.draw(&Line { x1, y1, x2, y2, color });
                 }
                 "RatatuiRuby::Shape::Rectangle" => {
                     let x: f64 = shape_val.funcall("x", ()).unwrap_or(0.0);
@@ -80,13 +73,7 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
                     let color_val: Value = shape_val.funcall("color", ()).unwrap();
                     let color =
                         parse_color(&color_val.to_string()).unwrap_or(ratatui::style::Color::Reset);
-                    ctx.draw(&Rectangle {
-                        x,
-                        y,
-                        width,
-                        height,
-                        color,
-                    });
+                    ctx.draw(&Rectangle { x, y, width, height, color });
                 }
                 "RatatuiRuby::Shape::Circle" => {
                     let x: f64 = shape_val.funcall("x", ()).unwrap_or(0.0);
@@ -95,12 +82,7 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
                     let color_val: Value = shape_val.funcall("color", ()).unwrap();
                     let color =
                         parse_color(&color_val.to_string()).unwrap_or(ratatui::style::Color::Reset);
-                    ctx.draw(&Circle {
-                        x,
-                        y,
-                        radius,
-                        color,
-                    });
+                    ctx.draw(&Circle { x, y, radius, color });
                 }
                 "RatatuiRuby::Shape::Map" => {
                     let color_val: Value = shape_val.funcall("color", ()).unwrap();
@@ -147,7 +129,6 @@ mod tests {
         let mut buf = Buffer::empty(Rect::new(0, 0, 5, 5));
         canvas.render(Rect::new(0, 0, 5, 5), &mut buf);
 
-        // Verify that some Braille characters are rendered
         let mut found_braille = false;
         for cell in buf.content() {
             if !cell.symbol().trim().is_empty() {

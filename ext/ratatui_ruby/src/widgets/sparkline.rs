@@ -7,7 +7,8 @@ use magnus::{prelude::*, Error, RString, Value};
 use ratatui::{layout::Rect, widgets::Sparkline, widgets::RenderDirection, Frame};
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
-    let arena = Bump::new();
+    let bump = Bump::new();
+    let ruby = magnus::Ruby::get().unwrap();
     let data_val: magnus::RArray = node.funcall("data", ())?;
     let max_val: Value = node.funcall("max", ())?;
     let style_val: Value = node.funcall("style", ())?;
@@ -18,7 +19,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
     let mut data_vec = Vec::new();
     for i in 0..data_val.len() {
-        let val: Value = data_val.entry(i as isize)?;
+        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let val: Value = data_val.entry(index)?;
         if val.is_nil() {
             data_vec.push(None);
         } else {
@@ -39,7 +41,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     if !block_val.is_nil() {
-        sparkline = sparkline.block(parse_block(block_val, &arena)?);
+        sparkline = sparkline.block(parse_block(block_val, &bump)?);
     }
 
     if !direction_val.is_nil() {
