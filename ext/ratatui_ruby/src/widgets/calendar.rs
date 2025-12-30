@@ -49,12 +49,18 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
     let mut calendar = Monthly::new(date, event_store);
 
+
+
     let header_style = if !header_style_val.is_nil() {
         parse_style(header_style_val)?
     } else {
         ratatui::style::Style::default()
     };
-    calendar = calendar.show_month_header(header_style);
+
+    let show_month_header: bool = node.funcall("show_month_header", ())?;
+    if show_month_header {
+        calendar = calendar.show_month_header(header_style);
+    }
 
     if show_weekdays_header {
         calendar = calendar.show_weekdays_header(header_style);
@@ -107,4 +113,6 @@ mod tests {
             content
         );
     }
+
+
 }

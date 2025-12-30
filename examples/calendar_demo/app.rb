@@ -10,6 +10,7 @@ require "ratatui_ruby"
 class CalendarDemoApp
   def run
     RatatuiRuby.run do
+      show_header = true
       show_weekdays = true
       show_surrounding = false
       show_events = true
@@ -37,6 +38,7 @@ class CalendarDemoApp
           month: now.month,
           events: events_map,
           header_style: RatatuiRuby::Style.new(fg: "yellow", modifiers: [:bold]),
+          show_month_header: show_header,
           show_weekdays_header: show_weekdays,
           show_surrounding: surrounding_style,
           block: RatatuiRuby::Block.new(borders: [:top, :left, :right])
@@ -45,8 +47,8 @@ class CalendarDemoApp
         controls_text = [
           RatatuiRuby::Text::Line.new(
             spans: [
-              RatatuiRuby::Text::Span.new(content: " w/s/e", style: RatatuiRuby::Style.new(modifiers: [:bold])),
-              RatatuiRuby::Text::Span.new(content: ": Toggle Headers/Surrounding/Events  "),
+              RatatuiRuby::Text::Span.new(content: " h/w/s/e", style: RatatuiRuby::Style.new(modifiers: [:bold])),
+              RatatuiRuby::Text::Span.new(content: ": Toggle Header/Weekdays/Surrounding/Events  "),
               RatatuiRuby::Text::Span.new(content: "q", style: RatatuiRuby::Style.new(modifiers: [:bold])),
               RatatuiRuby::Text::Span.new(content: ": Quit"),
             ]
@@ -78,6 +80,8 @@ class CalendarDemoApp
         case event
         in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
           break
+        in type: :key, code: "h"
+          show_header = !show_header
         in type: :key, code: "w"
           show_weekdays = !show_weekdays
         in type: :key, code: "s"

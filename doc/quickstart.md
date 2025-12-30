@@ -155,7 +155,7 @@ A simple demonstration of `Block` and `Paragraph` widgets, reacting to key press
 
 ### [Calendar Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/calendar_demo/app.rb)
 
-Demonstrates the `Calendar` widget with interactive attribute cycling. Features event highlighting (dates with specific styles), toggleable weekday header, and surrounding month visibility (with custom styling) via keyboard shortcuts. Press `w` to toggle the weekday header, `s` to toggle surrounding month dates, and `e` to toggle events.
+Demonstrates the `Calendar` widget with interactive attribute cycling. Features event highlighting (dates with specific styles), toggleable month/weekday headers, and surrounding month visibility (with custom styling) via keyboard shortcuts. Press `h` to toggle month header, `w` to toggle weekday header, `s` to toggle surrounding month dates, and `e` to toggle events.
 
 ![calendar_demo](./images/calendar_demo.png)
 

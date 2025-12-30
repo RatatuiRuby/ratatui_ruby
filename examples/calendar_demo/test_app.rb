@@ -26,7 +26,7 @@ class TestCalendarDemoApp < Minitest::Test
       rendered_text = content.join("\n")
 
       # Verify the bottom controls are present
-      assert_match(/w\/s\/e: Toggle Headers\/Surrounding\/Events/, rendered_text)
+      assert_match(/h\/w\/s\/e: Toggle Header\/Weekdays\/Surrounding\/Events/, rendered_text)
       assert_match(/q: Quit/, rendered_text)
 
       # Verify the calendar content is present
@@ -49,6 +49,27 @@ class TestCalendarDemoApp < Minitest::Test
       rendered_text = content.join("\n")
 
       # The app should render successfully with weekdays toggled
+      assert_match(/#{Time.now.year}/, rendered_text)
+    end
+  end
+
+  def test_toggle_header
+    with_test_terminal do
+      inject_keys("h", :q)
+
+      @app.run
+
+      content = buffer_content
+      rendered_text = content.join("\n")
+
+      # The app should render successfully with header toggled (hidden)
+      refute_match(/#{Time.now.year}/, rendered_text)
+ 
+      # Inject h again to show it (h -> off, h -> on)
+      inject_keys("h", "h", :q)
+      @app.run
+      content = buffer_content
+      rendered_text = content.join("\n")
       assert_match(/#{Time.now.year}/, rendered_text)
     end
   end

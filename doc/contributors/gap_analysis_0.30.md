@@ -251,7 +251,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `display_date` | `year:` / `month:` | ✅ |
 | `block()` | `block:` | ✅ |
 | `default_style()` | `day_style:` | ✅ |
-| `show_month_header()` | `header_style:` | ⚠️ Partial |
+| `show_month_header()` | `show_month_header:` | ✅ |
 | `show_weekdays_header()` | `show_weekdays_header:` | ✅ |
 | `show_surrounding()` | `show_surrounding:` | ✅ |
 | `Event highlighting` | `events:` | ✅ |
