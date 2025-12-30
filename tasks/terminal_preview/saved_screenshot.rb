@@ -27,15 +27,15 @@ class SavedScreenshot < Data.define(:app, :path)
   end
 
   def app_last_modified
-    # If the file has unstaged changes, it's definitely stale
-    return Time.now.to_i if has_unstaged_changes?
+    # If the file has staged or unstaged changes, it's definitely stale
+    return Time.now.to_i if changed?
 
     # Otherwise, compare against the last git commit time
     app_last_commit_time
   end
 
-  def has_unstaged_changes?
-    system("git diff --quiet #{app.app_path} 2>/dev/null")
+  def changed?
+    system("git diff HEAD --quiet #{app.app_path} 2>/dev/null")
     !$?.success?
   end
 
