@@ -219,7 +219,19 @@ module RatatuiRuby
                  data
                end
 
-        super(data: data, bar_width: bar_width, bar_gap: bar_gap, group_gap: group_gap, max: max, style: style, block: block, direction: direction, label_style: label_style, value_style: value_style, bar_set: bar_set)
+        super(
+          data: data,
+          bar_width: Integer(bar_width),
+          bar_gap: Integer(bar_gap),
+          group_gap: Integer(group_gap),
+          max: max.nil? ? nil : Integer(max),
+          style: style,
+          block: block,
+          direction: direction,
+          label_style: label_style,
+          value_style: value_style,
+          bar_set: bar_set
+        )
       end
     end
 end

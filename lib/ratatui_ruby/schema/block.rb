@@ -171,7 +171,25 @@ module RatatuiRuby
             end
           end
         end
-        super(title: title, titles: titles, title_alignment: title_alignment, title_style: title_style, borders: borders, border_color: border_color, border_style: border_style, border_type: border_type, border_set: border_set, style: style, padding: padding, children: children)
+        coerced_padding = if padding.is_a?(Array)
+          padding.map { |v| Integer(v) }
+        else
+          Integer(padding)
+        end
+        super(
+          title: title,
+          titles: titles,
+          title_alignment: title_alignment,
+          title_style: title_style,
+          borders: borders,
+          border_color: border_color,
+          border_style: border_style,
+          border_type: border_type,
+          border_set: border_set,
+          style: style,
+          padding: coerced_padding,
+          children: children
+        )
       end
     end
 end

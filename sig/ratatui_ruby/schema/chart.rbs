@@ -8,7 +8,7 @@ module RatatuiRuby
     attr_reader labels: Array[String]
     attr_reader style: Style?
     attr_reader labels_alignment: Symbol?
-    def self.new: (?title: String, ?bounds: [Float, Float], ?labels: Array[String], ?style: Style?, ?labels_alignment: Symbol?) -> Axis
+    def self.new: (?title: String, ?bounds: [Numeric, Numeric], ?labels: Array[String], ?style: Style?, ?labels_alignment: Symbol?) -> Axis
   end
 
   class Dataset < Data
@@ -17,7 +17,7 @@ module RatatuiRuby
     attr_reader style: Style?
     attr_reader marker: Symbol
     attr_reader graph_type: Symbol
-    def self.new: (name: String | Symbol, data: Array[[Float, Float]], ?style: Style?, ?marker: Symbol, ?graph_type: Symbol) -> Dataset
+    def self.new: (name: String | Symbol, data: Array[[Numeric, Numeric]], ?style: Style?, ?marker: Symbol, ?graph_type: Symbol) -> Dataset
   end
 
   class Chart < Data
@@ -37,6 +37,6 @@ module RatatuiRuby
     attr_reader y_labels: Array[String]
     attr_reader y_bounds: [Float, Float]
     attr_reader block: Block?
-    def self.new: (datasets: Array[Dataset], ?x_labels: Array[String], ?y_labels: Array[String], ?y_bounds: [Float, Float], ?block: Block?) -> LineChart
+    def self.new: (datasets: Array[Dataset], ?x_labels: Array[String], ?y_labels: Array[String], ?y_bounds: [Numeric, Numeric], ?block: Block?) -> LineChart
   end
 end

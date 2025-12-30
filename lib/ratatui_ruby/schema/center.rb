@@ -47,7 +47,11 @@ module RatatuiRuby
       # [height_percent]
       #   Target height percentage (Integer, default: 100).
       def initialize(child:, width_percent: 100, height_percent: 100)
-        super
+        super(
+          child: child,
+          width_percent: Float(width_percent),
+          height_percent: Float(height_percent)
+        )
       end
     end
 end

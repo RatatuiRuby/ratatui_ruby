@@ -59,9 +59,9 @@ module RatatuiRuby
       # [use_unicode] Boolean (default: true).
       def initialize(ratio: nil, percent: nil, label: nil, style: nil, gauge_style: nil, block: nil, use_unicode: true)
         if percent
-          ratio = percent.to_f / 100.0
+          ratio = Float(percent) / 100.0
         end
-        ratio ||= 0.0
+        ratio = Float(ratio || 0.0)
         super(ratio:, label:, style:, gauge_style:, block:, use_unicode:)
       end
     end

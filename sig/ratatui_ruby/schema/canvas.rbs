@@ -7,8 +7,8 @@ module RatatuiRuby
       attr_reader x: Float
       attr_reader y: Float
 
-      def self.new: (x: Float, y: Float) -> Point
-                  | (Float, Float) -> Point
+      def self.new: (x: Numeric, y: Numeric) -> Point
+                  | (Numeric, Numeric) -> Point
     end
 
     class Line < Data
@@ -18,8 +18,8 @@ module RatatuiRuby
       attr_reader y2: Float
       attr_reader color: String | Symbol
 
-      def self.new: (x1: Float, y1: Float, x2: Float, y2: Float, color: String | Symbol) -> Line
-                  | (Float, Float, Float, Float, String | Symbol) -> Line
+      def self.new: (x1: Numeric, y1: Numeric, x2: Numeric, y2: Numeric, color: String | Symbol) -> Line
+                  | (Numeric, Numeric, Numeric, Numeric, String | Symbol) -> Line
     end
 
     class Rectangle < Data
@@ -29,8 +29,8 @@ module RatatuiRuby
       attr_reader height: Float
       attr_reader color: String | Symbol
 
-      def self.new: (x: Float, y: Float, width: Float, height: Float, color: String | Symbol) -> Rectangle
-                  | (Float, Float, Float, Float, String | Symbol) -> Rectangle
+      def self.new: (x: Numeric, y: Numeric, width: Numeric, height: Numeric, color: String | Symbol) -> Rectangle
+                  | (Numeric, Numeric, Numeric, Numeric, String | Symbol) -> Rectangle
     end
 
     class Circle < Data
@@ -39,8 +39,8 @@ module RatatuiRuby
       attr_reader radius: Float
       attr_reader color: String | Symbol
 
-      def self.new: (x: Float, y: Float, radius: Float, color: String | Symbol) -> Circle
-                  | (Float, Float, Float, String | Symbol) -> Circle
+      def self.new: (x: Numeric, y: Numeric, radius: Numeric, color: String | Symbol) -> Circle
+                  | (Numeric, Numeric, Numeric, String | Symbol) -> Circle
     end
 
     class Map < Data
@@ -50,10 +50,19 @@ module RatatuiRuby
       def self.new: (color: String | Symbol, resolution: Symbol) -> Map
                   | (String | Symbol, Symbol) -> Map
     end
+
+    class Label < Data
+      attr_reader x: Float
+      attr_reader y: Float
+      attr_reader text: String | Text::Line
+      attr_reader style: Style?
+
+      def self.new: (x: Numeric, y: Numeric, text: String | Text::Line, ?style: Style?) -> Label
+    end
   end
 
   class Canvas < Data
-    attr_reader shapes: Array[Shape::Line | Shape::Rectangle | Shape::Circle | Shape::Map]
+    attr_reader shapes: Array[Shape::Line | Shape::Rectangle | Shape::Circle | Shape::Map | Shape::Label]
     attr_reader x_bounds: Array[Float]
     attr_reader y_bounds: Array[Float]
     attr_reader marker: Symbol
@@ -61,6 +70,6 @@ module RatatuiRuby
 
     attr_reader background_color: String | Symbol | nil
 
-    def self.new: (?shapes: Array[Shape::Line | Shape::Rectangle | Shape::Circle | Shape::Map], ?x_bounds: Array[Float], ?y_bounds: Array[Float], ?marker: Symbol, ?block: Block?, ?background_color: String | Symbol | nil) -> Canvas
+    def self.new: (?shapes: Array[Shape::Line | Shape::Rectangle | Shape::Circle | Shape::Map | Shape::Label], ?x_bounds: Array[Numeric], ?y_bounds: Array[Numeric], ?marker: Symbol, ?block: Block?, ?background_color: String | Symbol | nil) -> Canvas
   end
 end

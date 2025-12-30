@@ -63,7 +63,16 @@ module RatatuiRuby
        # [filled_symbol] String (default: <tt>"█"</tt>).
        # [unfilled_symbol] String (default: <tt>"░"</tt>).
        def initialize(ratio: 0.0, label: nil, style: nil, filled_style: nil, unfilled_style: nil, block: nil, filled_symbol: "█", unfilled_symbol: "░")
-         super
+         super(
+           ratio: Float(ratio),
+           label: label,
+           style: style,
+           filled_style: filled_style,
+           unfilled_style: unfilled_style,
+           block: block,
+           filled_symbol: filled_symbol,
+           unfilled_symbol: unfilled_symbol
+         )
        end
     end
 end

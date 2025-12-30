@@ -11,6 +11,6 @@ module RatatuiRuby
     attr_reader filled_symbol: String
     attr_reader unfilled_symbol: String
 
-    def self.new: (?ratio: Float, ?label: String?, ?filled_style: Style?, ?unfilled_style: Style?, ?block: Block?, ?filled_symbol: String, ?unfilled_symbol: String) -> LineGauge
+    def self.new: (?ratio: Numeric, ?label: String?, ?style: Style?, ?filled_style: Style?, ?unfilled_style: Style?, ?block: Block?, ?filled_symbol: String, ?unfilled_symbol: String) -> LineGauge
   end
 end

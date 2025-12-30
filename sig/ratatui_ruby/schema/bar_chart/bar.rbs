@@ -10,7 +10,7 @@ module RatatuiRuby
       attr_reader value_style: Style?
       attr_reader text_value: String?
 
-      def self.new: (value: Integer, ?label: String?, ?style: Style?, ?value_style: Style?, ?text_value: String?) -> Bar
+      def self.new: (value: Numeric, ?label: String?, ?style: Style?, ?value_style: Style?, ?text_value: String?) -> Bar
     end
   end
 end

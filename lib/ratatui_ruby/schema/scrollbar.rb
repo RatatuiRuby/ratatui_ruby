@@ -119,7 +119,21 @@ module RatatuiRuby
         style: nil,
         block: nil
       )
-        super
+        super(
+          content_length: Integer(content_length),
+          position: Integer(position),
+          orientation: orientation,
+          thumb_symbol: thumb_symbol,
+          thumb_style: thumb_style,
+          track_symbol: track_symbol,
+          track_style: track_style,
+          begin_symbol: begin_symbol,
+          begin_style: begin_style,
+          end_symbol: end_symbol,
+          end_style: end_style,
+          style: style,
+          block: block
+        )
       end
     end
 end

@@ -21,28 +21,35 @@ module RatatuiRuby
     class Rect < Data.define(:x, :y, :width, :height)
       ##
       # :attr_reader: x
-      # X coordinate (column) of the top-left corner.
+      # X coordinate (column) of the top-left corner (Integer, coerced via +to_int+ or +to_i+).
 
       ##
       # :attr_reader: y
-      # Y coordinate (row) of the top-left corner.
+      # Y coordinate (row) of the top-left corner (Integer, coerced via +to_int+ or +to_i+).
 
       ##
       # :attr_reader: width
-      # Width in characters.
+      # Width in characters (Integer, coerced via +to_int+ or +to_i+).
 
       ##
       # :attr_reader: height
-      # Height in characters.
+      # Height in characters (Integer, coerced via +to_int+ or +to_i+).
 
       # Creates a new Rect.
       #
-      # [x] Column index (Integer).
-      # [y] Row index (Integer).
-      # [width] Width in columns (Integer).
-      # [height] Height in rows (Integer).
+      # All parameters accept any object responding to +to_int+ or +to_i+ (duck-typed).
+      #
+      # [x] Column index (Numeric).
+      # [y] Row index (Numeric).
+      # [width] Width in columns (Numeric).
+      # [height] Height in rows (Numeric).
       def initialize(x: 0, y: 0, width: 0, height: 0)
-        super
+        super(
+          x: Integer(x),
+          y: Integer(y),
+          width: Integer(width),
+          height: Integer(height)
+        )
       end
 
       # Tests whether a point is inside this rectangle.

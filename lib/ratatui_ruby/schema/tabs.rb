@@ -64,7 +64,16 @@ module RatatuiRuby
       # [padding_left] Integer (default: 0).
       # [padding_right] Integer (default: 0).
       def initialize(titles: [], selected_index: 0, block: nil, divider: nil, highlight_style: nil, style: nil, padding_left: 0, padding_right: 0)
-        super
+        super(
+          titles: titles,
+          selected_index: Integer(selected_index),
+          block: block,
+          divider: divider,
+          highlight_style: highlight_style,
+          style: style,
+          padding_left: Integer(padding_left),
+          padding_right: Integer(padding_right)
+        )
       end
     end
 end

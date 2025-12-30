@@ -32,7 +32,13 @@ module RatatuiRuby
       # The text to display as the value (optional String).
   
       def initialize(value:, label: nil, style: nil, value_style: nil, text_value: nil)
-        super
+        super(
+          value: Integer(value),
+          label: label,
+          style: style,
+          value_style: value_style,
+          text_value: text_value
+        )
       end
     end
   end

@@ -14,11 +14,19 @@ module RatatuiRuby
     class Point < Data.define(:x, :y)
       ##
       # :attr_reader: x
-      # X coordinate.
+      # X coordinate (Float, duck-typed via +to_f+).
 
       ##
       # :attr_reader: y
-      # Y coordinate.
+      # Y coordinate (Float, duck-typed via +to_f+).
+
+      # Creates a new Point.
+      #
+      # [x] X coordinate (Numeric).
+      # [y] Y coordinate (Numeric).
+      def initialize(x:, y:)
+        super(x: Float(x), y: Float(y))
+      end
     end
 
     # A line shape on a canvas.
@@ -31,23 +39,34 @@ module RatatuiRuby
     class Line < Data.define(:x1, :y1, :x2, :y2, :color)
       ##
       # :attr_reader: x1
-      # Start X.
+      # Start X (Float, duck-typed via +to_f+).
 
       ##
       # :attr_reader: y1
-      # Start Y.
+      # Start Y (Float, duck-typed via +to_f+).
 
       ##
       # :attr_reader: x2
-      # End X.
+      # End X (Float, duck-typed via +to_f+).
 
       ##
       # :attr_reader: y2
-      # End Y.
+      # End Y (Float, duck-typed via +to_f+).
 
       ##
       # :attr_reader: color
       # Line color.
+
+      # Creates a new Line.
+      #
+      # [x1] Start X (Numeric).
+      # [y1] Start Y (Numeric).
+      # [x2] End X (Numeric).
+      # [y2] End Y (Numeric).
+      # [color] Line color (Symbol).
+      def initialize(x1:, y1:, x2:, y2:, color:)
+        super(x1: Float(x1), y1: Float(y1), x2: Float(x2), y2: Float(y2), color: color)
+      end
     end
 
     # A rectangle shape on a canvas.
@@ -60,23 +79,34 @@ module RatatuiRuby
     class Rectangle < Data.define(:x, :y, :width, :height, :color)
       ##
       # :attr_reader: x
-      # Bottom-left X.
+      # Bottom-left X (Float, duck-typed via +to_f+).
 
       ##
       # :attr_reader: y
-      # Bottom-left Y.
+      # Bottom-left Y (Float, duck-typed via +to_f+).
 
       ##
       # :attr_reader: width
-      # Width.
+      # Width (Float, duck-typed via +to_f+).
 
       ##
       # :attr_reader: height
-      # Height.
+      # Height (Float, duck-typed via +to_f+).
 
       ##
       # :attr_reader: color
       # Color.
+
+      # Creates a new Rectangle.
+      #
+      # [x] Bottom-left X (Numeric).
+      # [y] Bottom-left Y (Numeric).
+      # [width] Width (Numeric).
+      # [height] Height (Numeric).
+      # [color] Color (Symbol).
+      def initialize(x:, y:, width:, height:, color:)
+        super(x: Float(x), y: Float(y), width: Float(width), height: Float(height), color: color)
+      end
     end
 
     # A circle shape on a canvas.
@@ -88,19 +118,29 @@ module RatatuiRuby
     class Circle < Data.define(:x, :y, :radius, :color)
       ##
       # :attr_reader: x
-      # Center X.
+      # Center X (Float, duck-typed via +to_f+).
 
       ##
       # :attr_reader: y
-      # Center Y.
+      # Center Y (Float, duck-typed via +to_f+).
 
       ##
       # :attr_reader: radius
-      # Radius.
+      # Radius (Float, duck-typed via +to_f+).
 
       ##
       # :attr_reader: color
       # Color.
+
+      # Creates a new Circle.
+      #
+      # [x] Center X (Numeric).
+      # [y] Center Y (Numeric).
+      # [radius] Radius (Numeric).
+      # [color] Color (Symbol).
+      def initialize(x:, y:, radius:, color:)
+        super(x: Float(x), y: Float(y), radius: Float(radius), color: color)
+      end
     end
 
     # A world map shape on a canvas.
@@ -170,13 +210,20 @@ module RatatuiRuby
       # Creates a new Canvas.
       #
       # [shapes] Array of Shapes.
-      # [x_bounds] Array of [min, max].
-      # [y_bounds] Array of [min, max].
+      # [x_bounds] Array of [min, max] (Numeric, duck-typed via +to_f+).
+      # [y_bounds] Array of [min, max] (Numeric, duck-typed via +to_f+).
       # [marker] Symbol (default: <tt>:braille</tt>).
       # [block] Block (optional).
       # [background_color] Color (optional).
       def initialize(shapes: [], x_bounds: [0.0, 100.0], y_bounds: [0.0, 100.0], marker: :braille, block: nil, background_color: nil)
-        super
+        super(
+          shapes: shapes,
+          x_bounds: [Float(x_bounds[0]), Float(x_bounds[1])],
+          y_bounds: [Float(y_bounds[0]), Float(y_bounds[1])],
+          marker: marker,
+          block: block,
+          background_color: background_color
+        )
       end
     end
 end

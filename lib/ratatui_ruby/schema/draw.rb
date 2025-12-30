@@ -37,17 +37,17 @@ module RatatuiRuby
 
     # Creates a string draw command.
     #
-    # [x] X coordinate.
-    # [y] Y coordinate.
+    # [x] X coordinate (Integer, duck-typed via +to_int+).
+    # [y] Y coordinate (Integer, duck-typed via +to_int+).
     # [string] Text to draw.
     # [style] Optional style (Hash or Style).
-    def self.string(x, y, string, style = {}) = StringCmd.new(x:, y:, string:, style:)
+    def self.string(x, y, string, style = {}) = StringCmd.new(x: Integer(x), y: Integer(y), string:, style:)
 
     # Creates a cell draw command.
     #
-    # [x] X coordinate.
-    # [y] Y coordinate.
+    # [x] X coordinate (Integer, duck-typed via +to_int+).
+    # [y] Y coordinate (Integer, duck-typed via +to_int+).
     # [cell] Cell to draw.
-    def self.cell(x, y, cell) = CellCmd.new(x:, y:, cell:)
+    def self.cell(x, y, cell) = CellCmd.new(x: Integer(x), y: Integer(y), cell:)
   end
 end

@@ -13,6 +13,6 @@ module RatatuiRuby
     attr_reader direction: Symbol
     attr_reader scroll_padding: Integer?
     attr_reader block: Block?
-    def self.new: (?items: Array[String], ?selected_index: Integer?, ?style: Style?, ?highlight_style: Style?, ?highlight_symbol: String?, ?repeat_highlight_symbol: bool, ?highlight_spacing: Symbol, ?direction: Symbol, ?scroll_padding: Integer?, ?block: Block?) -> List
+    def self.new: (?items: Array[String], ?selected_index: Numeric?, ?style: Style?, ?highlight_style: Style?, ?highlight_symbol: String?, ?repeat_highlight_symbol: bool, ?highlight_spacing: Symbol, ?direction: Symbol, ?scroll_padding: Numeric?, ?block: Block?) -> List
   end
 end

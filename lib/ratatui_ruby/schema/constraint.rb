@@ -35,7 +35,7 @@ module RatatuiRuby
       #
       # [v] Number of cells (Integer).
       def self.length(v)
-        new(type: :length, value: v)
+        new(type: :length, value: Integer(v))
       end
 
       # Requests a percentage of available space.
@@ -44,7 +44,7 @@ module RatatuiRuby
       #
       # [v] Percentage 0-100 (Integer).
       def self.percentage(v)
-        new(type: :percentage, value: v)
+        new(type: :percentage, value: Integer(v))
       end
 
       # Enforces a minimum size.
@@ -55,7 +55,7 @@ module RatatuiRuby
       #
       # [v] Minimum cells (Integer).
       def self.min(v)
-        new(type: :min, value: v)
+        new(type: :min, value: Integer(v))
       end
 
       # Enforces a maximum size.
@@ -64,7 +64,7 @@ module RatatuiRuby
       #
       # [v] Maximum cells (Integer).
       def self.max(v)
-        new(type: :max, value: v)
+        new(type: :max, value: Integer(v))
       end
 
       # Fills remaining space proportionally.
@@ -77,7 +77,7 @@ module RatatuiRuby
       #
       # [v] Proportional weight (Integer, default: 1).
       def self.fill(v = 1)
-        new(type: :fill, value: v)
+        new(type: :fill, value: Integer(v))
       end
 
       # Requests a specific ratio of the total space.
@@ -87,7 +87,7 @@ module RatatuiRuby
       # [numerator] Top part of fraction (Integer).
       # [denominator] Bottom part of fraction (Integer).
       def self.ratio(numerator, denominator)
-        new(type: :ratio, value: [numerator, denominator])
+        new(type: :ratio, value: [Integer(numerator), Integer(denominator)])
       end
     end
 end

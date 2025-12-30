@@ -106,7 +106,23 @@ module RatatuiRuby
       # [style] Style object or Hash (optional).
       # [column_spacing] Integer (optional, default: 1).
       def initialize(header: nil, rows: [], widths: [], highlight_style: nil, highlight_symbol: "> ", highlight_spacing: :when_selected, column_highlight_style: nil, cell_highlight_style: nil, selected_row: nil, selected_column: nil, block: nil, footer: nil, flex: :legacy, style: nil, column_spacing: 1)
-        super
+        super(
+          header: header,
+          rows: rows,
+          widths: widths,
+          highlight_style: highlight_style,
+          highlight_symbol: highlight_symbol,
+          highlight_spacing: highlight_spacing,
+          column_highlight_style: column_highlight_style,
+          cell_highlight_style: cell_highlight_style,
+          selected_row: selected_row.nil? ? nil : Integer(selected_row),
+          selected_column: selected_column.nil? ? nil : Integer(selected_column),
+          block: block,
+          footer: footer,
+          flex: flex,
+          style: style,
+          column_spacing: Integer(column_spacing)
+        )
       end
     end
 end

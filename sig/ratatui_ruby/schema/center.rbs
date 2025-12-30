@@ -4,8 +4,8 @@
 module RatatuiRuby
   class Center < Data
     attr_reader child: widget
-    attr_reader width_percent: Integer
-    attr_reader height_percent: Integer
-    def self.new: (child: widget, width_percent: Integer, height_percent: Integer) -> Center
+    attr_reader width_percent: Float
+    attr_reader height_percent: Float
+    def self.new: (child: widget, ?width_percent: Numeric, ?height_percent: Numeric) -> Center
   end
 end

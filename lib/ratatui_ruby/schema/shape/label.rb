@@ -38,11 +38,11 @@ module RatatuiRuby
     class Label < Data.define(:x, :y, :text, :style)
       ##
       # :attr_reader: x
-      # X coordinate in canvas space.
+      # X coordinate in canvas space (Float, duck-typed via +to_f+).
 
       ##
       # :attr_reader: y
-      # Y coordinate in canvas space.
+      # Y coordinate in canvas space (Float, duck-typed via +to_f+).
 
       ##
       # :attr_reader: text
@@ -54,12 +54,12 @@ module RatatuiRuby
 
       # Creates a new Label.
       #
-      # [x] X coordinate (Float).
-      # [y] Y coordinate (Float).
+      # [x] X coordinate (Numeric).
+      # [y] Y coordinate (Numeric).
       # [text] Text content (String or Text::Line).
       # [style] Style (optional).
       def initialize(x:, y:, text:, style: nil)
-        super
+        super(x: Float(x), y: Float(y), text: text, style: style)
       end
     end
   end

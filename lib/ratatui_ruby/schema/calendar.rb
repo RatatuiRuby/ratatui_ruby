@@ -67,7 +67,17 @@ module RatatuiRuby
       # [show_weekdays_header] Boolean. Whether to show the weekday header.
       # [show_surrounding] <tt>Style</tt> or <tt>nil</tt>. Style for surrounding month dates.
       def initialize(year:, month:, events: {}, day_style: nil, header_style: nil, block: nil, show_weekdays_header: true, show_surrounding: nil, show_month_header: false)
-        super
+        super(
+          year: Integer(year),
+          month: Integer(month),
+          events: events,
+          day_style: day_style,
+          header_style: header_style,
+          block: block,
+          show_weekdays_header: show_weekdays_header,
+          show_surrounding: show_surrounding,
+          show_month_header: show_month_header
+        )
       end
     end
 end

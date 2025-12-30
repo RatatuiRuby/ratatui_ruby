@@ -39,7 +39,13 @@ module RatatuiRuby
       # [style] Style.
       # [labels_alignment] Symbol (:left, :center, :right).
       def initialize(title: "", bounds: [0.0, 10.0], labels: [], style: nil, labels_alignment: nil)
-        super
+        super(
+          title: title,
+          bounds: [Float(bounds[0]), Float(bounds[1])],
+          labels: labels,
+          style: style,
+          labels_alignment: labels_alignment
+        )
       end
     end
 
@@ -81,12 +87,13 @@ module RatatuiRuby
       # Creates a new Dataset.
       #
       # [name] String.
-      # [data] Array of [x, y].
+      # [data] Array of [x, y] (Numeric, duck-typed via +to_f+).
       # [style] Style.
       # [marker] Symbol.
       # [graph_type] Symbol.
       def initialize(name:, data:, style: nil, marker: :dot, graph_type: :line)
-        super
+        coerced_data = data.map { |point| [Float(point[0]), Float(point[1])] }
+        super(name: name, data: coerced_data, style: style, marker: marker, graph_type: graph_type)
       end
     end
 
@@ -172,7 +179,13 @@ module RatatuiRuby
     # [y_bounds] Array of two Floats [min, max] for the Y-axis.
     # [block] Optional block widget to wrap the chart.
     def initialize(datasets:, x_labels: [], y_labels: [], y_bounds: [0.0, 100.0], block: nil)
-      super
+      super(
+        datasets: datasets,
+        x_labels: x_labels,
+        y_labels: y_labels,
+        y_bounds: [Float(y_bounds[0]), Float(y_bounds[1])],
+        block: block
+      )
     end
   end
 end

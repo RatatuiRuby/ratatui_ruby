@@ -16,11 +16,11 @@ module RatatuiRuby
     attr_reader bar_set: String?
 
     def self.new: (
-      data: Hash[String | Symbol | _ToS, Integer] | Array[Array[String | Symbol | _ToS | Integer]] | Array[BarChart::BarGroup],
-      ?bar_width: Integer,
-      ?bar_gap: Integer,
-      ?group_gap: Integer,
-      ?max: Integer?,
+      data: Hash[String | Symbol | _ToS, Numeric] | Array[Array[String | Symbol | _ToS | Numeric]] | Array[BarChart::BarGroup],
+      ?bar_width: Numeric,
+      ?bar_gap: Numeric,
+      ?group_gap: Numeric,
+      ?max: Numeric?,
       ?style: Style?,
       ?block: Block?,
       ?direction: :vertical | :horizontal,

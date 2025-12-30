@@ -5,6 +5,6 @@ module RatatuiRuby
   class Cursor < Data
     attr_reader x: Integer
     attr_reader y: Integer
-    def self.new: (x: Integer, y: Integer) -> Cursor
+    def self.new: (x: Numeric, y: Numeric) -> Cursor
   end
 end

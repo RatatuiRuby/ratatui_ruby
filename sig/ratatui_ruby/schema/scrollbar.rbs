@@ -18,8 +18,8 @@ module RatatuiRuby
     attr_reader block: Block?
 
     def self.new: (
-      content_length: Integer,
-      position: Integer,
+      content_length: Numeric,
+      position: Numeric,
       ?orientation: Symbol,
       ?thumb_symbol: String,
       ?thumb_style: Style?,

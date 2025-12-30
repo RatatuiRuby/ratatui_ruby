@@ -72,18 +72,31 @@ module RatatuiRuby
 
       # Creates a new List.
       #
+      # Integer parameters accept any object responding to +to_int+ or +to_i+ (duck-typed).
+      #
       # [items] Array of Strings.
-      # [selected_index] Integer (nullable).
+      # [selected_index] Numeric (nullable, coerced to Integer).
       # [style] Style object.
       # [highlight_style] Style object.
       # [highlight_symbol] String (default: <tt>"> "</tt>).
       # [repeat_highlight_symbol] Boolean (default: <tt>false</tt>).
       # [highlight_spacing] Symbol (default: <tt>:when_selected</tt>).
       # [direction] Symbol (default: <tt>:top_to_bottom</tt>).
-      # [scroll_padding] Integer (nullable, default: <tt>nil</tt>).
+      # [scroll_padding] Numeric (nullable, coerced to Integer, default: <tt>nil</tt>).
       # [block] Block (optional).
       def initialize(items: [], selected_index: nil, style: nil, highlight_style: nil, highlight_symbol: "> ", repeat_highlight_symbol: false, highlight_spacing: :when_selected, direction: :top_to_bottom, scroll_padding: nil, block: nil)
-        super
+        super(
+          items: items,
+          selected_index: selected_index.nil? ? nil : Integer(selected_index),
+          style: style,
+          highlight_style: highlight_style,
+          highlight_symbol: highlight_symbol,
+          repeat_highlight_symbol: repeat_highlight_symbol,
+          highlight_spacing: highlight_spacing,
+          direction: direction,
+          scroll_padding: scroll_padding.nil? ? nil : Integer(scroll_padding),
+          block: block
+        )
       end
     end
 end

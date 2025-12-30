@@ -10,6 +10,6 @@ module RatatuiRuby
     attr_reader highlight_style: Style
     attr_reader padding_left: Integer
     attr_reader padding_right: Integer
-    def self.new: (?titles: Array[String | _ToS], ?selected_index: Integer, ?block: Block?, ?divider: String?, ?highlight_style: Style?, ?style: Style?, ?padding_left: Integer, ?padding_right: Integer) -> Tabs
+    def self.new: (?titles: Array[String | _ToS], ?selected_index: Numeric, ?block: Block?, ?divider: String?, ?highlight_style: Style?, ?style: Style?, ?padding_left: Numeric, ?padding_right: Numeric) -> Tabs
   end
 end

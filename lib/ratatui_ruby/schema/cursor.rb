@@ -29,7 +29,7 @@ module RatatuiRuby
       # [x] Integer.
       # [y] Integer.
       def initialize(x:, y:)
-        super
+        super(x: Integer(x), y: Integer(y))
       end
     end
 end

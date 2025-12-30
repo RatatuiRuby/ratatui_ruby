@@ -17,7 +17,7 @@ module RatatuiRuby
       def self.new: (x: Integer, y: Integer, cell: Cell) -> CellCmd
     end
 
-    def self.string: (Integer x, Integer y, String string, ?Style | Hash[Symbol, untyped] style) -> StringCmd
-    def self.cell: (Integer x, Integer y, Cell cell) -> CellCmd
+    def self.string: (Numeric x, Numeric y, String string, ?Style | Hash[Symbol, untyped] style) -> StringCmd
+    def self.cell: (Numeric x, Numeric y, Cell cell) -> CellCmd
   end
 end

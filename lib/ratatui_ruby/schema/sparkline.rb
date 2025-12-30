@@ -115,7 +115,17 @@ module RatatuiRuby
             end
           end
         end
-        super(data: data, max: max, style: style, block: block, direction: direction, absent_value_symbol: absent_value_symbol, absent_value_style: absent_value_style, bar_set: bar_set)
+        coerced_data = data.map { |v| v.nil? ? nil : Integer(v) }
+        super(
+          data: coerced_data,
+          max: max.nil? ? nil : Integer(max),
+          style: style,
+          block: block,
+          direction: direction,
+          absent_value_symbol: absent_value_symbol,
+          absent_value_style: absent_value_style,
+          bar_set: bar_set
+        )
       end
     end
 end
