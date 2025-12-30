@@ -234,4 +234,50 @@ class TestBlock < Minitest::Test
       assert_equal "└───────────────Bot┘", buffer_content[2]
     end
   end
+
+  def test_block_creation_with_border_set
+    set = { top_left: "1", top_right: "2", bottom_left: "3", bottom_right: "4" }
+    b = RatatuiRuby::Block.new(border_set: set)
+    assert_equal set, b.border_set
+  end
+
+  def test_block_creation_with_border_set_short_keys
+    set = { tl: "1", tr: "2", bl: "3", br: "4" }
+    expected = { top_left: "1", top_right: "2", bottom_left: "3", bottom_right: "4" }
+    b = RatatuiRuby::Block.new(border_set: set)
+    assert_equal expected, b.border_set
+  end
+
+  def test_block_creation_with_border_set_mixed_keys
+    set = { tl: "1", tr: "2", bottom_left: "3", br: "4" }
+    expected = { top_left: "1", top_right: "2", bottom_left: "3", bottom_right: "4" }
+    b = RatatuiRuby::Block.new(border_set: set)
+    assert_equal expected, b.border_set
+  end
+
+  def test_render_with_border_set
+    with_test_terminal(20, 3) do
+      # Full custom set
+      set = {
+        top_left: "1", top_right: "2", bottom_left: "3", bottom_right: "4",
+        vertical_left: "5", vertical_right: "6", horizontal_top: "7", horizontal_bottom: "8"
+      }
+      b = RatatuiRuby::Block.new(borders: [:all], border_set: set)
+      RatatuiRuby.draw(b)
+      assert_equal "17777777777777777772", buffer_content[0]
+      assert_equal "5                  6", buffer_content[1]
+      assert_equal "38888888888888888884", buffer_content[2]
+    end
+  end
+
+  def test_render_with_partial_border_set
+    with_test_terminal(20, 3) do
+      set = { top_left: "@" }
+      b = RatatuiRuby::Block.new(borders: [:all], border_set: set)
+      RatatuiRuby.draw(b)
+      assert_equal "@──────────────────┐", buffer_content[0]
+      assert_equal "│                  │", buffer_content[1]
+      assert_equal "└──────────────────┘", buffer_content[2]
+    end
+  end
 end

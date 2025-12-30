@@ -7,7 +7,35 @@ use ratatui::{
     text::Line,
     widgets::{Block, BorderType, Borders, Padding},
     layout::Alignment,
+    symbols,
 };
+use std::collections::HashSet;
+use std::sync::RwLock;
+
+lazy_static::lazy_static! {
+    static ref BORDER_STRING_INTERNER: RwLock<HashSet<&'static str>> = RwLock::new(HashSet::new());
+}
+
+fn intern_string(s: &str) -> &'static str {
+    // fast path: check if string is already interned
+    {
+        let reader = BORDER_STRING_INTERNER.read().unwrap();
+        if let Some(&interned) = reader.get(s) {
+            return interned;
+        }
+    }
+
+    // slow path: intern string
+    let mut writer = BORDER_STRING_INTERNER.write().unwrap();
+    if let Some(&interned) = writer.get(s) {
+        // another thread might have interned it in the meantime
+        return interned;
+    }
+
+    let leaked = Box::leak(s.to_string().into_boxed_str());
+    writer.insert(leaked);
+    leaked
+}
 
 pub fn parse_color(color_str: &str) -> Option<Color> {
     color_str.parse::<Color>().ok()
@@ -104,6 +132,43 @@ pub fn parse_style(style_val: Value) -> Result<Style, Error> {
     Ok(style)
 }
 
+pub fn parse_border_set(set_val: Value) -> Result<symbols::border::Set<'static>, Error> {
+    let ruby = magnus::Ruby::get().unwrap();
+    let hash = magnus::RHash::from_value(set_val).ok_or_else(|| {
+        Error::new(ruby.exception_type_error(), "expected hash for border_set")
+    })?;
+
+    let get_char = |key: &str| -> Result<Option<&str>, Error> {
+        let sym = ruby.to_symbol(key);
+        let mut val: Value = hash.lookup(sym).unwrap_or(ruby.qnil().as_value());
+
+        if val.is_nil() {
+            let str_key = ruby.str_new(key);
+            val = hash.lookup(str_key).unwrap_or(ruby.qnil().as_value());
+        }
+
+        if val.is_nil() {
+            Ok(None)
+        } else {
+            let s: String = val.funcall("to_s", ())?;
+            Ok(Some(intern_string(&s)))
+        }
+    };
+
+    let mut set = symbols::border::Set::default();
+    
+    if let Some(s) = get_char("top_left")? { set.top_left = s; }
+    if let Some(s) = get_char("top_right")? { set.top_right = s; }
+    if let Some(s) = get_char("bottom_left")? { set.bottom_left = s; }
+    if let Some(s) = get_char("bottom_right")? { set.bottom_right = s; }
+    if let Some(s) = get_char("vertical_left")? { set.vertical_left = s; }
+    if let Some(s) = get_char("vertical_right")? { set.vertical_right = s; }
+    if let Some(s) = get_char("horizontal_top")? { set.horizontal_top = s; }
+    if let Some(s) = get_char("horizontal_bottom")? { set.horizontal_bottom = s; }
+
+    Ok(set)
+}
+
 pub fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
     if block_val.is_nil() {
         return Ok(Block::default());
@@ -116,6 +181,7 @@ pub fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
     let border_color: Value = block_val.funcall("border_color", ())?;
     let border_style_val: Value = block_val.funcall("border_style", ())?;
     let border_type_val: Value = block_val.funcall("border_type", ())?;
+    let border_set_val: Value = block_val.funcall("border_set", ())?;
     let style_val: Value = block_val.funcall("style", ())?;
     let padding_val: Value = block_val.funcall("padding", ())?;
 
@@ -245,7 +311,9 @@ pub fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
         }
     }
 
-    if !border_type_val.is_nil() {
+    if !border_set_val.is_nil() {
+        block = block.border_set(parse_border_set(border_set_val)?);
+    } else     if !border_type_val.is_nil() {
         if let Some(sym) = Symbol::from_value(border_type_val) {
             match sym.to_string().as_str() {
                 "plain" => block = block.border_type(BorderType::Plain),

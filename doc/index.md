@@ -11,6 +11,7 @@
 - [Quickstart](./quickstart.md)
 - [Application Architecture](./application_architecture.md)
 - [Testing Your Application](./application_testing.md)
+- [Performance Considerations](./performance.md)
 
 
 ## Documentation for Contributors

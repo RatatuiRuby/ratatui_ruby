@@ -24,7 +24,7 @@ module RatatuiRuby
     #     style: Style.new(fg: :yellow),
     #     padding: [1, 1, 0, 0] # Left, Right, Top, Bottom
     #   )
-    class Block < Data.define(:title, :titles, :title_alignment, :title_style, :borders, :border_color, :border_style, :border_type, :style, :padding, :children)
+    class Block < Data.define(:title, :titles, :title_alignment, :title_style, :borders, :border_color, :border_style, :border_type, :border_set, :style, :padding, :children)
       ##
       # :attr_reader: title
       # The main title displayed on the top border.
@@ -92,6 +92,24 @@ module RatatuiRuby
       # One of <tt>:plain</tt>, <tt>:rounded</tt>, <tt>:double</tt>, <tt>:thick</tt>, etc.
 
       ##
+      # :attr_reader: border_set
+      # Custom characters for the border lines.
+      #
+      # A Hash with keys defining the characters for the borders.
+      # Keys: <tt>:top_left</tt>, <tt>:top_right</tt>, <tt>:bottom_left</tt>, <tt>:bottom_right</tt>,
+      # <tt>:vertical_left</tt>, <tt>:vertical_right</tt>, <tt>:horizontal_top</tt>, <tt>:horizontal_bottom</tt>.
+      #
+      # Providing this overrides <tt>border_type</tt>.
+      #
+      # <b>Performance Note:</b> Each unique character string used in a border set is interned
+      # (permanently stored in memory) to satisfy backend requirements. While negligible for
+      # typical usage, avoid dynamically generating infinite variations of border characters.
+      #
+      # === Example
+      #
+      #   Block.new(border_set: { top_left: "1", top_right: "2", bottom_left: "3", bottom_right: "4", vertical_left: "5", vertical_right: "6", horizontal_top: "7", horizontal_bottom: "8" })
+
+      ##
       # :attr_reader: style
       # Base style (colors/modifiers) for the block content.
 
@@ -138,14 +156,25 @@ module RatatuiRuby
       #   Style object or Hash for the border lines.
       # [border_type]
       #   Symbol: <tt>:plain</tt> (default), <tt>:rounded</tt>, <tt>:double</tt>, <tt>:thick</tt>, <tt>:hidden</tt>, <tt>:quadrant_inside</tt>, <tt>:quadrant_outside</tt>.
+      # [border_set]
+      #   Hash: Custom characters for the border lines. Unique characters are interned (leaked) permanently, so avoid infinite dynamic variations.
       # [style]
       #   Style object or Hash for the block's content area.
       # [padding]
       #   Integer (uniform) or Array[4] (left, right, top, bottom).
       # [children]
       #   Array of widgets to render inside the block (optional).
-      def initialize(title: nil, titles: [], title_alignment: nil, title_style: nil, borders: [:all], border_color: nil, border_style: nil, border_type: nil, style: nil, padding: 0, children: [])
-        super
+      def initialize(title: nil, titles: [], title_alignment: nil, title_style: nil, borders: [:all], border_color: nil, border_style: nil, border_type: nil, border_set: nil, style: nil, padding: 0, children: [])
+        if border_set
+          border_set = border_set.dup
+          %i[top_left top_right bottom_left bottom_right vertical_left vertical_right horizontal_top horizontal_bottom].each do |long_key|
+            short_key = long_key.to_s.split("_").map { |s| s[0] }.join
+            if val = border_set.delete(short_key.to_sym) || border_set.delete(short_key)
+              border_set[long_key] = val
+            end
+          end
+        end
+        super(title: title, titles: titles, title_alignment: title_alignment, title_style: title_style, borders: borders, border_color: border_color, border_style: border_style, border_type: border_type, border_set: border_set, style: style, padding: padding, children: children)
       end
     end
 end
