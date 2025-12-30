@@ -46,10 +46,10 @@ module RatatuiRuby
   # Defines a Dataset for a Chart.
   # [name] The name of the dataset.
   # [data] Array of arrays [[x, y], [x, y]] (Floats).
-  # [color] The color of the line.
+  # [style] The style of the line.
   # [marker] Symbol (<tt>:dot</tt>, <tt>:braille</tt>, <tt>:block</tt>, <tt>:bar</tt>)
   # [graph_type] Symbol (<tt>:line</tt>, <tt>:scatter</tt>)
-    class Dataset < Data.define(:name, :data, :color, :marker, :graph_type)
+    class Dataset < Data.define(:name, :data, :style, :marker, :graph_type)
       ##
       # :attr_reader: name
       # Name for logical identification or legend.
@@ -59,8 +59,16 @@ module RatatuiRuby
       # list of [x, y] coordinates.
 
       ##
-      # :attr_reader: color
-      # Color of the line/marker (Symbol/String).
+      # :attr_reader: style
+      # Style applied to the dataset (Style).
+      #
+      # **Note**: Due to Ratatui's Chart widget design, only the foreground color (<tt>fg</tt>) is applied to markers in the chart area.
+      # The full style (including <tt>bg</tt> and <tt>modifiers</tt>) is displayed in the legend.
+      #
+      # Supports:
+      # - +fg+: Foreground color of markers (Symbol/Hex) - _applied to chart_
+      # - +bg+: Background color (Symbol/Hex) - _legend only_
+      # - +modifiers+: Array of effects (<tt>:bold</tt>, <tt>:dim</tt>, <tt>:italic</tt>, <tt>:underlined</tt>, <tt>:slow_blink</tt>, <tt>:rapid_blink</tt>, <tt>:reversed</tt>, <tt>:hidden</tt>, <tt>:crossed_out</tt>) - _legend only_
 
       ##
       # :attr_reader: marker
@@ -74,10 +82,10 @@ module RatatuiRuby
       #
       # [name] String.
       # [data] Array of [x, y].
-      # [color] Symbol/String.
+      # [style] Style.
       # [marker] Symbol.
       # [graph_type] Symbol.
-      def initialize(name:, data:, color: "reset", marker: :dot, graph_type: :line)
+      def initialize(name:, data:, style: nil, marker: :dot, graph_type: :line)
         super
       end
     end
@@ -97,7 +105,7 @@ module RatatuiRuby
     #       Dataset.new(
     #         name: "Requests",
     #         data: [[0.0, 1.0], [1.0, 2.0], [2.0, 1.5]],
-    #         color: :yellow
+    #         style: Style.new(fg: :yellow)
     #       )
     #     ],
     #     x_axis: Axis.new(title: "Time", bounds: [0.0, 5.0]),

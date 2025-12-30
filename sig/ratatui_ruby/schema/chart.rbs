@@ -14,10 +14,10 @@ module RatatuiRuby
   class Dataset < Data
     attr_reader name: String | Symbol
     attr_reader data: Array[[Float, Float]]
-    attr_reader color: String | Symbol
+    attr_reader style: Style?
     attr_reader marker: Symbol
     attr_reader graph_type: Symbol
-    def self.new: (name: String | Symbol, data: Array[[Float, Float]], ?color: String | Symbol, ?marker: Symbol, ?graph_type: Symbol) -> Dataset
+    def self.new: (name: String | Symbol, data: Array[[Float, Float]], ?style: Style?, ?marker: Symbol, ?graph_type: Symbol) -> Dataset
   end
 
   class Chart < Data
@@ -26,7 +26,9 @@ module RatatuiRuby
     attr_reader y_axis: Axis
     attr_reader block: Block?
     attr_reader style: Style?
-    def self.new: (datasets: Array[Dataset], x_axis: Axis, y_axis: Axis, ?block: Block?, ?style: Style?) -> Chart
+    attr_reader legend_position: Symbol?
+    attr_reader hidden_legend_constraints: Array[Constraint]
+    def self.new: (datasets: Array[Dataset], x_axis: Axis, y_axis: Axis, ?block: Block?, ?style: Style?, ?legend_position: Symbol?, ?hidden_legend_constraints: Array[Constraint]) -> Chart
   end
 
   class LineChart < Data

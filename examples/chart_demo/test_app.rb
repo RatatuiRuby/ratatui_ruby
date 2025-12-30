@@ -30,7 +30,7 @@ class TestChartDemo < Minitest::Test
       assert_includes content, "Controls"
       # Verify controls are visible
       assert_includes content, "Marker"
-      assert_includes content, "Color"
+      assert_includes content, "Style"
       assert_includes content, "Align"
     end
   end
@@ -48,9 +48,9 @@ class TestChartDemo < Minitest::Test
     end
   end
 
-  def test_color_cycling
+  def test_style_cycling
     with_test_terminal do
-      inject_key("c")  # Cycle color
+      inject_key("s")  # Cycle style
       inject_key(:q)
       @app.run
 
@@ -87,7 +87,7 @@ class TestChartDemo < Minitest::Test
   def test_multiple_cycles
     with_test_terminal do
       inject_key("m")
-      inject_key("c")
+      inject_key("s")
       inject_key("x")
       inject_key("y")
       inject_key(:q)

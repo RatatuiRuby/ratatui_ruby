@@ -73,12 +73,9 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         };
 
         let mut ds_style = ratatui::style::Style::default();
-        let color_val: Value = ds_val.funcall("color", ())?;
-        if !color_val.is_nil() {
-            let color_str: String = color_val.funcall("to_s", ())?;
-            if let Some(color) = crate::style::parse_color(&color_str) {
-                ds_style = ds_style.fg(color);
-            }
+        let style_val: Value = ds_val.funcall("style", ())?;
+        if !style_val.is_nil() {
+            ds_style = parse_style(style_val)?;
         }
 
         let ds = Dataset::default()
@@ -202,10 +199,9 @@ fn render_line_chart(frame: &mut Frame, area: Rect, node: Value) -> Result<(), E
         let name: String = ds_val.funcall("name", ())?;
 
         let mut ds_style = ratatui::style::Style::default();
-        let color_val: Value = ds_val.funcall("color", ())?;
-        let color_str: String = color_val.funcall("to_s", ())?;
-        if let Some(color) = crate::style::parse_color(&color_str) {
-            ds_style = ds_style.fg(color);
+        let style_val: Value = ds_val.funcall("style", ())?;
+        if !style_val.is_nil() {
+            ds_style = parse_style(style_val)?;
         }
 
         let ds = Dataset::default()

@@ -43,6 +43,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `legend_position`: Position legend at `:top_left`, `:top_right`, `:bottom_left`, or `:bottom_right` (defaults to `:top_right`).
 - `hidden_legend_constraints`: Array of two `Constraint` objects to hide the legend when chart area is too small.
 - **Axis**: `labels_alignment` to control horizontal alignment (`:left`, `:center`, `:right`) of axis labels.
+- `Dataset`: `style` parameter replaces `color`, enabling full styling (fg, bg, modifiers) for chart datasets. **Breaking**: `color` parameter removed.
 
 #### Gauge Widget
 

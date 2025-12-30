@@ -17,14 +17,18 @@ class ChartDemoApp
     ]
     @marker_index = 0
 
-    @dataset_colors = [
-      { name: "Yellow", color: :yellow },
-      { name: "Green", color: :green },
-      { name: "Cyan", color: :cyan },
-      { name: "Red", color: :red },
-      { name: "Magenta", color: :magenta }
+    @dataset_styles = [
+      { name: "Yellow", style: RatatuiRuby::Style.new(fg: :yellow) },
+      { name: "Green", style: RatatuiRuby::Style.new(fg: :green) },
+      { name: "Cyan", style: RatatuiRuby::Style.new(fg: :cyan) },
+      { name: "Red", style: RatatuiRuby::Style.new(fg: :red) },
+      { name: "Magenta", style: RatatuiRuby::Style.new(fg: :magenta) },
+      { name: "Bold Blue", style: RatatuiRuby::Style.new(fg: :blue, modifiers: [:bold]) },
+      { name: "Dim White", style: RatatuiRuby::Style.new(fg: :white, modifiers: [:dim]) },
+      { name: "Italic Green", style: RatatuiRuby::Style.new(fg: :green, modifiers: [:italic]) },
+      { name: "Alert (Red/White/Bar)", style: RatatuiRuby::Style.new(fg: :white, bg: :red, modifiers: [:bold]) }
     ]
-    @dataset_color_index = 0
+    @dataset_style_index = 0
 
     @x_alignments = [
       { name: "Left", alignment: :left },
@@ -75,23 +79,23 @@ class ChartDemoApp
       [rand(0.0..10.0), rand(-1.0..1.0)]
     end
 
-    color = @dataset_colors[@dataset_color_index][:color]
-    # Ensure the second dataset has a different color
-    scatter_color = @dataset_colors[(@dataset_color_index + 2) % @dataset_colors.length][:color]
+    style = @dataset_styles[@dataset_style_index][:style]
+    # Ensure the second dataset has a different style
+    scatter_style = @dataset_styles[(@dataset_style_index + 2) % @dataset_styles.length][:style]
 
     datasets = [
       RatatuiRuby::Dataset.new(
         name: "Line",
         data: line_data,
-        color:,
-        marker: @markers[@marker_index][:marker],
+        style:,
+        marker: style.modifiers.include?(:bold) && style.bg ? :bar : @markers[@marker_index][:marker],
         graph_type: :line
       ),
       RatatuiRuby::Dataset.new(
         name: "Scatter",
         data: scatter_data,
-        color: scatter_color,
-        marker: @markers[@marker_index][:marker],
+        style: scatter_style,
+        marker: scatter_style.modifiers.include?(:bold) && scatter_style.bg ? :bar : @markers[@marker_index][:marker],
         graph_type: :scatter
       )
     ]
@@ -146,8 +150,8 @@ class ChartDemoApp
                 RatatuiRuby::Text::Line.new(spans: [
                   RatatuiRuby::Text::Span.new(content: "m", style: @hotkey_style),
                   RatatuiRuby::Text::Span.new(content: ": Marker (#{@markers[@marker_index][:name]})  "),
-                  RatatuiRuby::Text::Span.new(content: "c", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Color (#{@dataset_colors[@dataset_color_index][:name]})")
+                  RatatuiRuby::Text::Span.new(content: "s", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Style (#{@dataset_styles[@dataset_style_index][:name]})")
                 ]),
                 # Line 2: Axis alignments
                 RatatuiRuby::Text::Line.new(spans: [
@@ -182,8 +186,8 @@ class ChartDemoApp
       :quit
     in type: :key, code: "m"
       @marker_index = (@marker_index + 1) % @markers.length
-    in type: :key, code: "c"
-      @dataset_color_index = (@dataset_color_index + 1) % @dataset_colors.length
+    in type: :key, code: "s"
+      @dataset_style_index = (@dataset_style_index + 1) % @dataset_styles.length
     in type: :key, code: "x"
       @x_alignment_index = (@x_alignment_index + 1) % @x_alignments.length
     in type: :key, code: "y"

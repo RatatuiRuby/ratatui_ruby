@@ -242,7 +242,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `data()` | `data:` | ✅ |
 | `marker()` | `marker:` | ✅ |
 | `graph_type()` | `graph_type:` | ✅ |
-| `style()` | `color:` | ⚠️ Partial (color only) |
+| `style()` | `style:` | ✅ |
 
 ---
 
@@ -323,4 +323,3 @@ All modifiers are covered. ✅
 ### Lower Priority (Niche/Advanced)
 3. **Canvas labels** - Text printing on canvas (advanced use case)
 4. **Paragraph::line_count / line_width** - Read-only properties (minimal value)
-5. **Chart::Dataset::style** - Full Style object (currently color-only)

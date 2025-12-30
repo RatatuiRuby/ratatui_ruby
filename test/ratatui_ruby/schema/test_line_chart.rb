@@ -8,7 +8,7 @@ require "test_helper"
 class TestLineChart < Minitest::Test
     include RatatuiRuby::TestHelper
   def test_line_chart_creation
-    ds = RatatuiRuby::Dataset.new(name: "test", data: [[0.0, 0.0], [1.0, 1.0]], color: "red")
+    ds = RatatuiRuby::Dataset.new(name: "test", data: [[0.0, 0.0], [1.0, 1.0]], style: RatatuiRuby::Style.new(fg: :red))
     chart = RatatuiRuby::LineChart.new(datasets: [ds], x_labels: ["0", "1"])
     assert_equal [ds], chart.datasets
     assert_equal ["0", "1"], chart.x_labels

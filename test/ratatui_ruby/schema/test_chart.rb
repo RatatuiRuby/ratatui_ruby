@@ -18,7 +18,7 @@ module RatatuiRuby
         Dataset.new(
           name: "TestDS",
           data: [[0.0, 0.0], [10.0, 10.0]],
-          color: "red",
+          style: Style.new(fg: :red),
           marker: :dot,
         ),
       ]
@@ -50,7 +50,7 @@ module RatatuiRuby
         Dataset.new(
           name: "TestDS",
           data: [[0.0, 0.0], [10.0, 10.0]],
-          color: "green",
+          style: Style.new(fg: :green),
           marker: :dot,
         ),
       ]
@@ -88,7 +88,7 @@ module RatatuiRuby
         Dataset.new(
           name: "TestDS",
           data: [[0.0, 0.0], [10.0, 10.0]],
-          color: "blue",
+          style: Style.new(fg: :blue),
         ),
       ]
 
