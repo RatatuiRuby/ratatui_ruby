@@ -36,16 +36,17 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         for j in 0..row_array.len() {
             let cell_val: Value = row_array.entry(j as isize)?;
             let class = cell_val.class();
-            let class_name = unsafe { class.name() };
+            // SAFETY: Immediate conversion to owned avoids GC-unsafe borrowed reference.
+            let class_name = unsafe { class.name() }.into_owned();
 
-            if class_name.as_ref() == "RatatuiRuby::Paragraph" {
+            if class_name == "RatatuiRuby::Paragraph" {
                 let text: String = cell_val.funcall("text", ())?;
                 let style_val: Value = cell_val.funcall("style", ())?;
                 let cell_style = parse_style(style_val)?;
                 cells.push(Cell::from(text).style(cell_style));
-            } else if class_name.as_ref() == "RatatuiRuby::Style" {
+            } else if class_name == "RatatuiRuby::Style" {
                 cells.push(Cell::from("").style(parse_style(cell_val)?));
-            } else if class_name.as_ref() == "RatatuiRuby::Cell" {
+            } else if class_name == "RatatuiRuby::Cell" {
                 // Handle RatatuiRuby::Cell -> ratatui::widgets::Cell
                 let symbol: String = cell_val.funcall("char", ())?;
                 let fg_val: Value = cell_val.funcall("fg", ())?;
@@ -147,14 +148,15 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         for i in 0..header_array.len() {
             let cell_val: Value = header_array.entry(i as isize)?;
             let class = cell_val.class();
-            let class_name = unsafe { class.name() };
+            // SAFETY: Immediate conversion to owned avoids GC-unsafe borrowed reference.
+            let class_name = unsafe { class.name() }.into_owned();
 
-            if class_name.as_ref() == "RatatuiRuby::Paragraph" {
+            if class_name == "RatatuiRuby::Paragraph" {
                 let text: String = cell_val.funcall("text", ())?;
                 let style_val: Value = cell_val.funcall("style", ())?;
                 let cell_style = parse_style(style_val)?;
                 header_cells.push(Cell::from(text).style(cell_style));
-            } else if class_name.as_ref() == "RatatuiRuby::Cell" {
+            } else if class_name == "RatatuiRuby::Cell" {
                 let symbol: String = cell_val.funcall("char", ())?;
                 let fg_val: Value = cell_val.funcall("fg", ())?;
                 let bg_val: Value = cell_val.funcall("bg", ())?;
@@ -196,14 +198,15 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         for i in 0..footer_array.len() {
             let cell_val: Value = footer_array.entry(i as isize)?;
             let class = cell_val.class();
-            let class_name = unsafe { class.name() };
+            // SAFETY: Immediate conversion to owned avoids GC-unsafe borrowed reference.
+            let class_name = unsafe { class.name() }.into_owned();
 
-            if class_name.as_ref() == "RatatuiRuby::Paragraph" {
+            if class_name == "RatatuiRuby::Paragraph" {
                 let text: String = cell_val.funcall("text", ())?;
                 let style_val: Value = cell_val.funcall("style", ())?;
                 let cell_style = parse_style(style_val)?;
                 footer_cells.push(Cell::from(text).style(cell_style));
-            } else if class_name.as_ref() == "RatatuiRuby::Cell" {
+            } else if class_name == "RatatuiRuby::Cell" {
                  let symbol: String = cell_val.funcall("char", ())?;
                  let fg_val: Value = cell_val.funcall("fg", ())?;
                  let bg_val: Value = cell_val.funcall("bg", ())?;

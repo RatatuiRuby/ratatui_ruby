@@ -29,9 +29,11 @@ pub fn render_node(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Err
     }
 
     let class = node.class();
-    let class_name = unsafe { class.name() };
+    // SAFETY: We immediately convert to owned String to avoid holding a reference
+    // to Ruby-managed memory that could be freed by GC during subsequent Ruby calls.
+    let class_name = unsafe { class.name() }.into_owned();
 
-    match class_name.as_ref() {
+    match class_name.as_str() {
         "RatatuiRuby::Paragraph" => widgets::paragraph::render(frame, area, node)?,
         "RatatuiRuby::Clear" => widgets::clear::render(frame, area, node)?,
         "RatatuiRuby::Cursor" => widgets::cursor::render(frame, area, node)?,
@@ -60,9 +62,11 @@ pub fn render_node(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Err
 fn process_draw_command(buffer: &mut Buffer, cmd: Value) -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let class = cmd.class();
-    let class_name = unsafe { class.name() };
+    // SAFETY: We immediately convert to owned String to avoid holding a reference
+    // to Ruby-managed memory that could be freed by GC during subsequent Ruby calls.
+    let class_name = unsafe { class.name() }.into_owned();
 
-    match class_name.as_ref() {
+    match class_name.as_str() {
         "RatatuiRuby::Draw::StringCmd" => {
             let x: u16 = cmd.funcall("x", ())?;
             let y: u16 = cmd.funcall("y", ())?;

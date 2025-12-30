@@ -14,7 +14,8 @@ use ratatui::{
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let class = node.class();
-    let class_name = unsafe { class.name() };
+    // SAFETY: Immediate conversion to owned avoids GC-unsafe borrowed reference.
+    let class_name = unsafe { class.name() }.into_owned();
 
     if class_name == "RatatuiRuby::LineChart" {
         return render_line_chart(frame, area, node);

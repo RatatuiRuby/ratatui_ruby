@@ -50,9 +50,10 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
     let canvas = canvas.paint(|ctx| {
         for shape_val in shapes_val {
             let class = shape_val.class();
-            let class_name = unsafe { class.name() };
+            // SAFETY: Immediate conversion to owned avoids GC-unsafe borrowed reference.
+            let class_name = unsafe { class.name() }.into_owned();
 
-            match class_name.as_ref() {
+            match class_name.as_str() {
                 "RatatuiRuby::Shape::Line" => {
                     let x1: f64 = shape_val.funcall("x1", ()).unwrap_or(0.0);
                     let y1: f64 = shape_val.funcall("y1", ()).unwrap_or(0.0);

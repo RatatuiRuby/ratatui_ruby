@@ -4,9 +4,9 @@ This document provides a safety audit of the `ratatui_ruby` Rust extension (`ext
 
 ## Executive Summary
 
-The codebase generally follows safe Rust patterns, with usage of `magnus` ensuring safe interaction with the Ruby VM. The audit identified two categories of findings:
+The codebase generally follows safe Rust patterns, with usage of `magnus` ensuring safe interaction with the Ruby VM. The audit identified two categories of findings, both now resolved:
 1.  ~~**Critical Safety Issue**~~ **Resolved**: The Use-After-Free (UAF) vulnerability involving `BufferWrapper` has been eliminated by switching to a declarative command buffer pattern.
-2.  **Minor Unsafe Usage**: Repeated use of `unsafe { class.name() }` which should be validated or replaced.
+2.  ~~**Minor Unsafe Usage**~~ **Resolved**: Repeated use of `unsafe { class.name() }` now immediately converts to owned strings to avoid GC-related memory safety issues.
 
 ## Detailed Findings
 
@@ -38,20 +38,24 @@ Ruby widgets return an array of `Draw::StringCmd` and `Draw::CellCmd` objects. R
 - **Testability**: Widgets can be unit tested by asserting on the returned array.
 - **Consistency**: Aligns with the rest of the library's "Data In, Data Out" architecture.
 
-### 2. Unsafe `class.name()` Usage
+### 2. ~~Unsafe `class.name()` Usage~~ (Resolved)
 
 **Files**: `src/rendering.rs`, `src/widgets/*.rs`
-**Severity**: Low
+**Severity**: ~~Low~~ **Resolved**
 
-There are multiple occurrences of:
+~~There are multiple occurrences of:~~
 ```rust
 let class_name = unsafe { class.name() };
 ```
 
-Magnus marks `RClass::name()` as unsafe. This typically implies that the returned value might not be rooted or has lifetime requirements tied to the Ruby VM state that are not automatically enforced by the type system.
+**Resolution**: All occurrences now immediately convert to an owned `String`:
 
-**Recommendation**:
-Verify if `class.inspect()` or a safe alternative exists, or confirm via Magnus documentation that this usage is safe in the context where the GIL is held (which it is). If it is safe, document the rationale in a comment next to the `unsafe` block.
+```rust
+// SAFETY: Immediate conversion to owned avoids GC-unsafe borrowed reference.
+let class_name = unsafe { class.name() }.into_owned();
+```
+
+Magnus marks `RClass::name()` as unsafe because it returns a `Cow<str>` backed by Ruby-managed memory. By calling `.into_owned()`, we copy the string data into Rust-owned memory before any subsequent Ruby calls that might trigger GC. This eliminates any risk of use-after-free.
 
 ### 3. Memory Leaks Check
 
@@ -64,4 +68,6 @@ The code generally relies on standard Rust vectors and Magnus's handle of Ruby o
 
 ## Conclusion
 
-The extension is well-written. The previously critical `BufferWrapper` raw pointer handling has been replaced with a safe declarative command buffer pattern. The remaining `unsafe { class.name() }` usages are low-severity and follow standard Magnus patterns.
+The extension is well-written with no remaining safety concerns. Both previously-identified issues have been resolved:
+- The `BufferWrapper` raw pointer handling has been replaced with a safe declarative command buffer pattern.
+- All `unsafe { class.name() }` usages now immediately convert to owned strings, eliminating GC-related memory concerns.
