@@ -71,6 +71,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `flex`: Layout distribution mode (`:legacy`, `:start`, `:center`, `:end`, `:space_between`, `:space_around`, `:space_evenly`).
 - `highlight_spacing`: Control selection column reservation (`:always`, `:when_selected`, `:never`).
 - `column_highlight_style`: Style applied to the selected column.
+- `cell_highlight_style`: Style applied to the selected cell (intersection of row and column).
 - `selected_column`: Index of the selected column (Integer or nil).
 - `widths`: Now support all constraint types (`:max`, `:fill`, `:ratio`) with full flexibility.
 

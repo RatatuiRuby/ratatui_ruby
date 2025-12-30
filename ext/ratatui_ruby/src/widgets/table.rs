@@ -23,6 +23,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for widths"))?;
     let highlight_style_val: Value = node.funcall("highlight_style", ())?;
     let column_highlight_style_val: Value = node.funcall("column_highlight_style", ())?;
+    let cell_highlight_style_val: Value = node.funcall("cell_highlight_style", ())?;
     let highlight_symbol_val: Value = node.funcall("highlight_symbol", ())?;
     let selected_row_val: Value = node.funcall("selected_row", ())?;
     let selected_column_val: Value = node.funcall("selected_column", ())?;
@@ -76,6 +77,10 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
     if !column_highlight_style_val.is_nil() {
         table = table.column_highlight_style(parse_style(column_highlight_style_val)?);
+    }
+
+    if !cell_highlight_style_val.is_nil() {
+        table = table.cell_highlight_style(parse_style(cell_highlight_style_val)?);
     }
 
     if !highlight_symbol_val.is_nil() {

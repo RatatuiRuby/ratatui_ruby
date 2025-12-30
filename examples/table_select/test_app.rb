@@ -20,13 +20,17 @@ class TestTableSelectApp < Minitest::Test
 
   def test_initial_render_no_selection
     with_test_terminal do
+      # By default, selection is at index 1 and highlights are on.
       inject_key(:q)
       @app.run
 
-      content = buffer_content
-      assert content.any? { |line| line.include?("none") }
-      assert content.any? { |line| line.include?("Cyan") }
-      assert content.any? { |line| line.include?("PID") }
+      content = buffer_content.join("\n")
+      # Row 1 (postgres) should be selected.
+      # Default style is Cyan.
+      # "Toggle Row (1)" should be visible in footer.
+      assert_includes content, "Toggle Row (1)"
+      assert_includes content, "Cyan"
+      assert_includes content, "PID"
     end
   end
 
@@ -44,32 +48,24 @@ class TestTableSelectApp < Minitest::Test
 
   def test_toggle_selection_on
     with_test_terminal do
-      # Press x to toggle on, then quit
+      # Default is ON (1 selected).
+      # Press x to toggle off (none), then quit
       inject_keys(:x, :q)
       @app.run
 
       content = buffer_content.join("\n")
-      content = buffer_content.join("\n")
-      assert_includes content, "Toggle Row (0)"
-      refute_includes content, "Toggle Row (none)"
+      # "Toggle Row (none)" should be visible.
+      assert_includes content, "Toggle Row (none)"
     end
   end
 
   def test_toggle_selection_off
     with_test_terminal do
-      # Press x to toggle on, x again to toggle off, then quit
+      # Default is ON.
+      # Press x to toggle off, x again to toggle on (0 selected now because toggle logic resets to 0 if nil?), then quit
+      # Wait, app logic: @selected_index = @selected_index.nil? ? 0 : nil
+      # If default is 1, toggling off makes it nil. Toggling on makes it 0.
       inject_keys(:x, :x, :q)
-      @app.run
-
-      content = buffer_content.join("\n")
-      content = buffer_content.join("\n")
-      assert_includes content, "Toggle Row (none)"
-    end
-  end
-
-  def test_navigation_selects_and_moves
-    with_test_terminal do
-      inject_keys(:down, :q)
       @app.run
 
       content = buffer_content.join("\n")
@@ -77,10 +73,25 @@ class TestTableSelectApp < Minitest::Test
     end
   end
 
+  def test_navigation_selects_and_moves
+    with_test_terminal do
+      # Default is 1. Down -> 2.
+      inject_keys(:down, :q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      assert_includes content, "Toggle Row (2)"
+    end
+  end
+
   def test_navigation_wrapping
     with_test_terminal do
-      # Start nil, down->0, up->wraps to last
-      inject_keys(:down, :up, :q)
+      # Start 1, down->2... wrap around logic needs check.
+      # Logic: (@selected_index + 1) % length.
+      # To test wrap, need to go to end. Length is 7.
+      # From 1, need 6 downs to wrap? No, just up from 0 wraps to last.
+      # So: up (1->0), up (0->6).
+      inject_keys(:up, :up, :q)
       @app.run
 
       content = buffer_content.join("\n")
@@ -91,8 +102,8 @@ class TestTableSelectApp < Minitest::Test
 
   def test_column_navigation
     with_test_terminal do
-      # Right arrow selects column 0 -> 1
-      inject_keys(:right, :right, :q)
+      # Default col 1. Right -> 2.
+      inject_keys(:right, :q)
       @app.run
 
       content = buffer_content.join("\n")

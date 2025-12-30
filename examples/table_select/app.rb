@@ -20,7 +20,7 @@ PROCESSES = [
 ].freeze
 
 class TableSelectApp
-  attr_reader :selected_index, :selected_col, :current_style_index, :column_spacing, :highlight_spacing, :column_highlight_style
+  attr_reader :selected_index, :selected_col, :current_style_index, :column_spacing, :highlight_spacing, :column_highlight_style, :cell_highlight_style
 
   STYLES = [
     { name: "Cyan", style: RatatuiRuby::Style.new(fg: :cyan) },
@@ -37,14 +37,16 @@ class TableSelectApp
   ].freeze
 
   def initialize
-    @selected_index = nil
-    @selected_col = nil
+    @selected_index = 1
+    @selected_col = 1
     @current_style_index = 0
     @column_spacing = 1
     @highlight_spacing_index = 0
     @highlight_spacing_index = 0
     @column_highlight_style = RatatuiRuby::Style.new(fg: :magenta)
-    @show_column_highlight = false
+    @show_column_highlight = true
+    @cell_highlight_style = RatatuiRuby::Style.new(fg: :white, bg: :red, modifiers: [:bold])
+    @show_cell_highlight = true
     @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
   end
 
@@ -88,7 +90,9 @@ class TableSelectApp
       highlight_style: highlight_style,
       highlight_symbol: "> ",
       highlight_spacing: current_spacing_entry[:spacing],
+      highlight_spacing: current_spacing_entry[:spacing],
       column_highlight_style: @show_column_highlight ? @column_highlight_style : nil,
+      cell_highlight_style: @show_cell_highlight ? @cell_highlight_style : nil,
       style: current_style_entry[:style],
       column_spacing: @column_spacing,
       block: RatatuiRuby::Block.new(
@@ -125,10 +129,11 @@ class TableSelectApp
             ]),
             # Line 3: More Controls
             RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "+/-", style: @hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Col Space (#{@column_spacing})  "),
               RatatuiRuby::Text::Span.new(content: "c", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Col Highlight (#{@show_column_highlight ? 'On' : 'Off'})")
+              RatatuiRuby::Text::Span.new(content: ": Col Highlight (#{@show_column_highlight ? 'On' : 'Off'})  "),
+              RatatuiRuby::Text::Span.new(content: "z", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Cell Highlight (#{@show_cell_highlight ? 'On' : 'Off'})")
             ])
           ]
         )
@@ -183,6 +188,8 @@ class TableSelectApp
       @selected_index = @selected_index.nil? ? 0 : nil
     in type: :key, code: "c"
       @show_column_highlight = !@show_column_highlight
+    in type: :key, code: "z"
+      @show_cell_highlight = !@show_cell_highlight
     else
       nil
     end

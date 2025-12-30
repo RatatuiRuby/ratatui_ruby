@@ -85,7 +85,7 @@ Comparison of ratatui 0.30 features vs ratatui_ruby current implementation.
 | `style()` | `style:` | ✅ |
 | `row_highlight_style()` | `highlight_style:` | ✅ |
 | `column_highlight_style()` | `column_highlight_style:` | ✅ |
-| `cell_highlight_style()` | — | ❌ **MISSING** |
+| `cell_highlight_style()` | `cell_highlight_style:` | ✅ |
 | `state.select_column()` | `selected_column:` | ✅ |
 | `highlight_symbol()` | `highlight_symbol:` | ✅ |
 | `highlight_spacing()` | `highlight_spacing:` | ✅ |
