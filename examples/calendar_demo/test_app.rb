@@ -25,28 +25,24 @@ class TestCalendarDemoApp < Minitest::Test
       content = buffer_content
       rendered_text = content.join("\n")
 
-      assert_match(/Calendar \(w=toggle/, rendered_text)
+      # Verify the bottom controls are present
+      assert_match(/w: Weekdays \(true\)/, rendered_text)
+      assert_match(/s: Surrounding \(Hidden\)/, rendered_text)
+      assert_match(/q: Quit/, rendered_text)
+
+      # Verify the calendar content is present
       assert_match(/#{Time.now.year}/, rendered_text)
 
-      # Verify the size constraint: the terminal is 80x24
-      # But the layout should be constrained to 24x10.
-      lines = content
-
-      # First 10 rows: first 24 chars can have content, 24..79 should be empty
-      10.times do |i|
-        assert_equal " " * 56, lines[i][24..79], "Row #{i} should be empty after column 24"
-      end
-
-      # Rows 10..23 should be completely empty
-      (10..23).each do |i|
-        assert_equal " " * 80, lines[i], "Row #{i} should be completely empty"
-      end
+      # Verify layout structure (calendar taking up most space, controls at bottom)
+      # The controls are on the last line (index 23 for 24 lines) if the terminal is 24 lines high
+      # but standard terminal might be different. with_test_terminal defaults to 80x24.
+      assert_match(/q: Quit/, content[23]) if content[23]
     end
   end
 
   def test_toggle_weekdays_header
     with_test_terminal do
-      inject_keys("w", "w", :q)
+      inject_keys("w", :q)
 
       @app.run
 
@@ -55,12 +51,14 @@ class TestCalendarDemoApp < Minitest::Test
 
       # The app should render successfully with weekdays toggled
       assert_match(/#{Time.now.year}/, rendered_text)
+      # Weekdays is now false
+      assert_match(/Weekdays \(false\)/, rendered_text)
     end
   end
 
   def test_toggle_surrounding
     with_test_terminal do
-      inject_keys("s", "s", :q)
+      inject_keys("s", :q)
 
       @app.run
 
@@ -69,6 +67,8 @@ class TestCalendarDemoApp < Minitest::Test
 
       # The app should render successfully with surrounding toggled
       assert_match(/#{Time.now.year}/, rendered_text)
+      # Surrounding is now Dim instead of Hidden
+      assert_match(/Surrounding \(Dim\)/, rendered_text)
     end
   end
 end

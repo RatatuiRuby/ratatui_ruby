@@ -21,36 +21,45 @@ class CalendarDemoApp
           nil
         end
 
+        layout = RatatuiRuby::Layout.new(
+          direction: :vertical,
+          constraints: [
+            RatatuiRuby::Constraint.min(0),
+            RatatuiRuby::Constraint.length(1),
+          ],
+        )
+
         calendar = RatatuiRuby::Calendar.new(
           year: now.year,
           month: now.month,
           header_style: RatatuiRuby::Style.new(fg: "yellow", modifiers: [:bold]),
           show_weekdays_header: show_weekdays,
           show_surrounding: surrounding_style,
-          block: RatatuiRuby::Block.new(title: " Calendar (w=toggle weekdays, s=toggle surrounding, q=quit) ", borders: [:all])
+          block: RatatuiRuby::Block.new(title: " Calendar ", borders: [:all])
         )
 
-        # Constrain the calendar to 24x10 characters
-        view = RatatuiRuby::Layout.new(
+        controls_text = RatatuiRuby::Text::Line.new(
+          spans: [
+            RatatuiRuby::Text::Span.new(content: "w", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
+            RatatuiRuby::Text::Span.new(content: ": Weekdays (#{show_weekdays})  "),
+            RatatuiRuby::Text::Span.new(content: "s", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
+            RatatuiRuby::Text::Span.new(content: ": Surrounding (#{show_surrounding ? "Dim" : "Hidden"})  "),
+            RatatuiRuby::Text::Span.new(content: "q", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
+            RatatuiRuby::Text::Span.new(content: ": Quit"),
+          ]
+        )
+        controls = RatatuiRuby::Paragraph.new(text: [controls_text])
+
+        layout = RatatuiRuby::Layout.new(
           direction: :vertical,
           constraints: [
-            RatatuiRuby::Constraint.length(10),
             RatatuiRuby::Constraint.min(0),
+            RatatuiRuby::Constraint.length(1),
           ],
-          children: [
-            RatatuiRuby::Layout.new(
-              direction: :horizontal,
-              constraints: [
-                RatatuiRuby::Constraint.length(24),
-                RatatuiRuby::Constraint.min(0),
-              ],
-              children: [calendar, nil],
-            ),
-            nil,
-          ],
+          children: [calendar, controls]
         )
 
-        RatatuiRuby.draw(view)
+        RatatuiRuby.draw(layout)
 
         event = RatatuiRuby.poll_event
         case event
