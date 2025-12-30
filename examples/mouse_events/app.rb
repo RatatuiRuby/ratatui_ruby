@@ -34,7 +34,7 @@ class MouseEventsApp
 
     content = RatatuiRuby::Paragraph.new(
       text: "#{@message}\n#{@details}",
-      align: :center,
+      alignment: :center,
       block:
     )
 

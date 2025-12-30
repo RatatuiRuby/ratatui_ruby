@@ -46,7 +46,7 @@ begin
     # We define a Paragraph widget inside a Block with a title and borders.
     view = RatatuiRuby::Paragraph.new(
       text: "Hello, Ratatui! Press 'q' to quit.",
-      align: :center,
+      alignment: :center,
       block: RatatuiRuby::Block.new(
         title: "My Ruby TUI App",
         title_alignment: :center,
@@ -92,7 +92,7 @@ RatatuiRuby.run do |tui|
     # 2. Create your UI with methods instead of classes.
     view = tui.paragraph(
       text: "Hello, Ratatui! Press 'q' to quit.",
-      align: :center,
+      alignment: :center,
       block: tui.block(
         title: "My Ruby TUI App",
         title_alignment: :center,

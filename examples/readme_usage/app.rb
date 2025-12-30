@@ -13,7 +13,7 @@ class ReadmeUsageApp
         tui.draw \
           tui.paragraph \
             text: "Hello, Ratatui! Press 'q' to quit.",
-            align: :center,
+            alignment: :center,
             block: tui.block(
               title: "My Ruby TUI App",
               borders: [:all],

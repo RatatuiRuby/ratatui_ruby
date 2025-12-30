@@ -50,7 +50,7 @@ module RatatuiRuby
   #       tui.draw \
   #         tui.paragraph \
   #             text: "Hello, Ratatui! Press 'q' to quit.",
-  #             align: :center,
+  #             alignment: :center,
   #             block: tui.block(
   #               title: "My Ruby TUI App",
   #               borders: [:all],
@@ -68,7 +68,7 @@ module RatatuiRuby
   #       RatatuiRuby.draw \
   #         RatatuiRuby::Paragraph.new(
   #             text: "Hello, Ratatui! Press 'q' to quit.",
-  #             align: :center,
+  #             alignment: :center,
   #             block: RatatuiRuby::Block.new(
   #               title: "My Ruby TUI App",
   #               borders: [:all],
@@ -87,7 +87,7 @@ module RatatuiRuby
   #       RatatuiRuby.draw \
   #         tui.paragraph \
   #             text: "Hello, Ratatui! Press 'q' to quit.",
-  #             align: :center,
+  #             alignment: :center,
   #             block: tui.block(
   #               title: "My Ruby TUI App",
   #               borders: [:all],

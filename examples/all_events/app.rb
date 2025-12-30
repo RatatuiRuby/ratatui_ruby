@@ -46,7 +46,7 @@ class AllEventsApp
 
     key_panel = RatatuiRuby::Paragraph.new(
       text: @key_info,
-      align: :center,
+      alignment: :center,
       block: RatatuiRuby::Block.new(
         title: "⌨️  Key Events",
         borders: [:all],
@@ -56,7 +56,7 @@ class AllEventsApp
 
     mouse_panel = RatatuiRuby::Paragraph.new(
       text: @mouse_info,
-      align: :center,
+      alignment: :center,
       block: RatatuiRuby::Block.new(
         title: "🖱️  Mouse Events",
         borders: [:all],
@@ -66,7 +66,7 @@ class AllEventsApp
 
     resize_panel = RatatuiRuby::Paragraph.new(
       text: @resize_info,
-      align: :center,
+      alignment: :center,
       block: RatatuiRuby::Block.new(
         title: "📐 Resize Events",
         borders: [:all],
@@ -76,7 +76,7 @@ class AllEventsApp
 
     special_panel = RatatuiRuby::Paragraph.new(
       text: @special_info,
-      align: :center,
+      alignment: :center,
       block: RatatuiRuby::Block.new(
         title: "✨ Paste & Focus Events",
         borders: [:all],
@@ -106,7 +106,7 @@ class AllEventsApp
     # Header with instructions
     header = RatatuiRuby::Paragraph.new(
       text: "All Event Types Demo — Press 'q' or Ctrl+C to quit",
-      align: :center,
+      alignment: :center,
       style: { fg: :cyan, modifiers: [:bold] }
     )
 

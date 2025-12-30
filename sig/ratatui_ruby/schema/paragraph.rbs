@@ -7,8 +7,8 @@ module RatatuiRuby
     attr_reader style: Style
     attr_reader block: Block?
     attr_reader wrap: bool
-    attr_reader align: Symbol
-    attr_reader scroll: [Integer, Integer]
-    def self.new: (text: String, ?style: Style?, ?fg: (String | Symbol)?, ?bg: (String | Symbol)?, ?block: Block?, ?wrap: bool, ?align: Symbol, ?scroll: [Numeric, Numeric]) -> Paragraph
+    attr_reader alignment: Symbol
+    def initialize: (text: String, ?style: Style, ?block: Block?, ?wrap: bool, ?alignment: Symbol, ?scroll: [Numeric, Numeric]) -> void
+    def self.new: (text: String, ?style: Style?, ?fg: (String | Symbol)?, ?bg: (String | Symbol)?, ?block: Block?, ?wrap: bool, ?alignment: Symbol, ?scroll: [Numeric, Numeric]) -> Paragraph
   end
 end

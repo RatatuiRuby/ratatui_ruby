@@ -17,7 +17,7 @@ fn create_paragraph<'a>(node: Value, bump: &'a Bump) -> Result<Paragraph<'a>, Er
     let style_val: Value = node.funcall("style", ())?;
     let block_val: Value = node.funcall("block", ())?;
     let wrap: bool = node.funcall("wrap", ())?;
-    let align_sym: Symbol = node.funcall("align", ())?;
+    let alignment_opt: Option<Symbol> = node.funcall("alignment", ())?;
     let scroll_val: Value = node.funcall("scroll", ())?;
 
     let lines = parse_text(text_val)?;
@@ -32,10 +32,12 @@ fn create_paragraph<'a>(node: Value, bump: &'a Bump) -> Result<Paragraph<'a>, Er
         paragraph = paragraph.wrap(Wrap { trim: true });
     }
 
-    match align_sym.to_string().as_str() {
-        "center" => paragraph = paragraph.alignment(HorizontalAlignment::Center),
-        "right" => paragraph = paragraph.alignment(HorizontalAlignment::Right),
-        _ => {}
+    if let Some(alignment) = alignment_opt {
+        match alignment.to_string().as_str() {
+            "center" => paragraph = paragraph.alignment(HorizontalAlignment::Center),
+            "right" => paragraph = paragraph.alignment(HorizontalAlignment::Right),
+            _ => {}
+        }
     }
 
     if !scroll_val.is_nil() {

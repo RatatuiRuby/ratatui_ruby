@@ -15,7 +15,7 @@ class QuickstartDslApp
         # 2. Create your UI with methods instead of classes.
         view = tui.paragraph(
           text: "Hello, Ratatui! Press 'q' to quit.",
-          align: :center,
+          alignment: :center,
           block: tui.block(
             title: "My Ruby TUI App",
             borders: [:all],

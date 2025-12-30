@@ -46,7 +46,7 @@ class PopupDemoApp
 
     popup_content = RatatuiRuby::Paragraph.new(
       text: popup_text,
-      align: :center,
+      alignment: :center,
       block: RatatuiRuby::Block.new(
         title: "Popup Demo (q to quit, space to toggle)",
         borders: [:all]

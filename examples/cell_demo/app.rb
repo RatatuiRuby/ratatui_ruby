@@ -81,7 +81,7 @@ class CellDemoApp
                   height_percent: 50,
                   child: RatatuiRuby::Paragraph.new(
                     text: "Custom Widget Demo\n(CheckeredBackground)",
-                    align: :center,
+                    alignment: :center,
                     block: RatatuiRuby::Block.new(borders: :all, title: "Overlay")
                   )
                 )

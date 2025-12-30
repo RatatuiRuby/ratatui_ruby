@@ -17,7 +17,7 @@ class QuickstartLifecycleApp
         # We define a Paragraph widget inside a Block with a title and borders.
         view = RatatuiRuby::Paragraph.new(
           text: "Hello, Ratatui! Press 'q' to quit.",
-          align: :center,
+          alignment: :center,
           block: RatatuiRuby::Block.new(
             title: "My Ruby TUI App",
             borders: [:all],

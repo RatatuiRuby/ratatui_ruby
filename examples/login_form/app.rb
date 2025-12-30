@@ -43,7 +43,7 @@ class LoginFormApp
       RatatuiRuby::Paragraph.new(
         text: "#{PREFIX}#{@username}#{SUFFIX}",
         block: RatatuiRuby::Block.new(borders: :all, title: "Login Form"),
-        align: :left
+        alignment: :left
       ),
       RatatuiRuby::Cursor.new(x: cursor_x, y: cursor_y),
     ])
@@ -62,7 +62,7 @@ class LoginFormApp
           text: "Login Successful!\nPress 'q' to quit.",
           style: RatatuiRuby::Style.new(fg: :green, bg: :black),
           block: RatatuiRuby::Block.new(borders: :all),
-          align: :center,
+          alignment: :center,
           wrap: true
         ),
         width_percent: 30,

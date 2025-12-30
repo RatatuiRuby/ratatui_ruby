@@ -16,6 +16,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - All numeric parameters now accept any object that responds to `to_f` (for floats) or `to_int`/`to_i` (for integers). This provides idiomatic Ruby interoperability with `BigDecimal`, `Rational`, and custom numeric types. Uses Ruby's built-in `Float()` and `Integer()` Kernel methods for proper duck-type handling.
 
+#### Paragraph Widget
+
+- `alignment`: **Breaking Change**: Renamed `align` to `alignment` to match Ratatui 0.30 API.
+
 #### Custom Widgets
 
 - **Draw Command API**: Custom widgets now return an array of `Draw` commands instead of writing to a buffer. Use `RatatuiRuby::Draw.string(x, y, string, style)` and `RatatuiRuby::Draw.cell(x, y, cell)` to create draw commands. This eliminates use-after-free bugs by keeping all pointers inside Rust while Ruby works with pure data objects. **Breaking:** The `render` method signature changed from `render(area, buffer)` to `render(area)`.

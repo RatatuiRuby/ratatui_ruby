@@ -124,7 +124,7 @@ class BoxDemoApp
       block: block,
       fg: style_config[:style] ? nil : color_config[:color],
       style: style_config[:style],
-      align: :center
+      alignment: :center
     )
 
     # Bottom control panel

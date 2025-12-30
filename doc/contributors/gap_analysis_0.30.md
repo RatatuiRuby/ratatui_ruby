@@ -120,7 +120,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `style()` | `style:` | ✅ |
 | `wrap()` | `wrap:` | ✅ |
 | `scroll()` | `scroll:` | ✅ |
-| `alignment()` | `align:` | ⚠️ **FIXME #4** (should be `alignment:` for API fidelity) |
+| `alignment()` | `alignment:` | ✅ |
 | `line_count()` | `line_count` | ✅ |
 | `line_width()` | `line_width` | ✅ |
 
@@ -190,6 +190,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `absent_value_symbol()` | `absent_value_symbol:` | ✅ |
 
 **Note on absent_value_symbol/style:** The data array accepts `Integer` or `nil`. A `nil` value marks an absent value (distinct from a `0` value). Absent values render with the style set by `absent_value_style:` and the symbol set by `absent_value_symbol:`. These features are fully implemented in ratatui 0.30.0+.
+
 
 ---
 

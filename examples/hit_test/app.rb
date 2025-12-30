@@ -125,7 +125,7 @@ class HitTestApp
 
     RatatuiRuby::Paragraph.new(
       text: content,
-      align: :center,
+      alignment: :center,
       block: RatatuiRuby::Block.new(
         title: "#{title} (#{active ? 'CLICKED' : 'idle'})",
         borders: [:all],
