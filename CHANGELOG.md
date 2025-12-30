@@ -11,6 +11,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [Unreleased]
 
 ### Added
+#### RatatuiLogo Widget
+
+- **RatatuiLogo**: New widget to display the Ratatui logo.
+
 
 #### Duck-Typed Numeric Coercion
 

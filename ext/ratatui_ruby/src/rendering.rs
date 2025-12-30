@@ -54,6 +54,7 @@ pub fn render_node(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Err
         "RatatuiRuby::Chart" | "RatatuiRuby::LineChart" => {
             widgets::chart::render(frame, area, node)?;
         }
+        "RatatuiRuby::RatatuiLogo" => widgets::ratatui_logo::render(frame, area, node)?,
         _ => {}
     }
     Ok(())

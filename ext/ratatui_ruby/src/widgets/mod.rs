@@ -15,6 +15,7 @@ pub mod line_gauge;
 pub mod list;
 pub mod overlay;
 pub mod paragraph;
+pub mod ratatui_logo;
 pub mod scrollbar;
 pub mod sparkline;
 pub mod table;

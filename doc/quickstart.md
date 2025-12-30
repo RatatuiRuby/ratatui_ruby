@@ -213,6 +213,13 @@ Demonstrates the `Clear` widget and how to prevent "style bleed" when rendering 
 
 ![popup_demo](./images/popup_demo.png)
 
+### [Ratatui Logo Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/ratatui_logo_demo/app.rb)
+
+Demonstrates the `RatatuiLogo` widget.
+
+
+![ratatui_logo_demo](./images/ratatui_logo_demo.png)
+
 ### [Rich Text](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/rich_text/app.rb)
 
 Demonstrates `Text::Span` and `Text::Line` for creating styled text with inline formatting, enabling word-level control over colors and text modifiers.

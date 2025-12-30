@@ -308,7 +308,7 @@ All modifiers are covered. ✅
 
 | Ratatui 0.30 Widget | Status |
 |---------------------|--------|
-| `RatatuiLogo` | ⏳ Planned #7 (useful for demos, lowest priority) |
+| `RatatuiLogo` | ✅ (No custom style support) |
 | `RatatuiMascot` | ⏳ Planned #8 (useful for demos, lowest priority) |
 
 
