@@ -121,6 +121,39 @@ pub fn parse_border_set<'a>(set_val: Value, bump: &'a Bump) -> Result<symbols::b
     Ok(set)
 }
 
+pub fn parse_bar_set<'a>(set_val: Value, bump: &'a Bump) -> Result<symbols::bar::Set<'a>, Error> {
+    let ruby = magnus::Ruby::get().unwrap();
+    let hash = magnus::RHash::from_value(set_val).ok_or_else(|| {
+        Error::new(ruby.exception_type_error(), "expected hash for bar_set")
+    })?;
+
+    let get_char = |key: &str| -> Result<Option<&'a str>, Error> {
+        let mut val: Value = hash.lookup(ruby.to_symbol(key)).unwrap_or_else(|_| ruby.qnil().as_value());
+        if val.is_nil() {
+            val = hash.lookup(ruby.str_new(key)).unwrap_or_else(|_| ruby.qnil().as_value());
+        }
+        if val.is_nil() {
+            Ok(None)
+        } else {
+            let s: String = val.funcall("to_s", ())?;
+            Ok(Some(bump.alloc_str(&s)))
+        }
+    };
+
+    let mut set = symbols::bar::Set::default();
+    if let Some(s) = get_char("empty")? { set.empty = s; }
+    if let Some(s) = get_char("one_eighth")? { set.one_eighth = s; }
+    if let Some(s) = get_char("one_quarter")? { set.one_quarter = s; }
+    if let Some(s) = get_char("three_eighths")? { set.three_eighths = s; }
+    if let Some(s) = get_char("half")? { set.half = s; }
+    if let Some(s) = get_char("five_eighths")? { set.five_eighths = s; }
+    if let Some(s) = get_char("three_quarters")? { set.three_quarters = s; }
+    if let Some(s) = get_char("seven_eighths")? { set.seven_eighths = s; }
+    if let Some(s) = get_char("full")? { set.full = s; }
+
+    Ok(set)
+}
+
 pub fn parse_block(block_val: Value, bump: &Bump) -> Result<Block<'_>, Error> {
     if block_val.is_nil() { return Ok(Block::default()); }
 

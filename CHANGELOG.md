@@ -16,6 +16,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - **Draw Command API**: Custom widgets now return an array of `Draw` commands instead of writing to a buffer. Use `RatatuiRuby::Draw.string(x, y, string, style)` and `RatatuiRuby::Draw.cell(x, y, cell)` to create draw commands. This eliminates use-after-free bugs by keeping all pointers inside Rust while Ruby works with pure data objects. **Breaking:** The `render` method signature changed from `render(area, buffer)` to `render(area)`.
 
+#### BarChart Widget
+
+- `bar_set`: Customize bar characters (digits, symbols, blocks).
+
 #### Block Widget
 
 - `border_type`: Customize border style (`:plain`, `:rounded`, `:double`, `:thick`, `:quadrant_inside`, `:quadrant_outside`).
@@ -209,3 +213,4 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [0.3.0]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.2.0...v0.3.0
 [0.2.0]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.1.0...v0.2.0
 [0.1.0]: https://git.sr.ht/~kerrick/ratatui_ruby/tree/v0.1.0
+

@@ -20,8 +20,7 @@ class BoxDemoApp
     @border_type_index = 0
 
     # Custom Border Sets
-    # NOTE: We define these ONCE in initialize to avoid creating new Hashes/Strings in the render loop.
-    # While RatatuiRuby interns strings, best practice is to reuse objects.
+    # NOTE: We define these ONCE in initialize for efficiency.
     @border_sets = [
       { name: "None", set: nil },
       { name: "Digits (Short)", set: {

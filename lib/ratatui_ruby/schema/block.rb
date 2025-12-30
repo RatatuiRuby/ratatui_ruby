@@ -101,9 +101,6 @@ module RatatuiRuby
       #
       # Providing this overrides <tt>border_type</tt>.
       #
-      # <b>Performance Note:</b> Each unique character string used in a border set is interned
-      # (permanently stored in memory) to satisfy backend requirements. While negligible for
-      # typical usage, avoid dynamically generating infinite variations of border characters.
       #
       # === Example
       #

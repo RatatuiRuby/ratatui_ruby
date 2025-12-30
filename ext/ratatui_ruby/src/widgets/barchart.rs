@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use crate::style::{parse_block, parse_style};
+use crate::style::{parse_block, parse_style, parse_bar_set};
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, Symbol, Value};
 use ratatui::{layout::{Direction, Rect}, widgets::BarChart, Frame};
@@ -17,6 +17,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let direction_sym: Symbol = node.funcall("direction", ())?;
     let label_style_val: Value = node.funcall("label_style", ())?;
     let value_style_val: Value = node.funcall("value_style", ())?;
+    let bar_set_val: Value = node.funcall("bar_set", ())?;
 
     let keys: magnus::RArray = data_val.funcall("keys", ())?;
     let mut labels = Vec::new();
@@ -69,6 +70,10 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
     if !value_style_val.is_nil() {
         bar_chart = bar_chart.value_style(parse_style(value_style_val)?);
+    }
+
+    if !bar_set_val.is_nil() {
+        bar_chart = bar_chart.bar_set(parse_bar_set(bar_set_val, &bump)?);
     }
 
     frame.render_widget(bar_chart, area);

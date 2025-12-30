@@ -34,6 +34,14 @@ class AnalyticsApp
     @direction = :vertical
     @label_style_index = 0
     @value_style_index = 0
+    @bar_sets = [
+      { name: "Default", set: nil },
+      { name: "Numbers (Short)", set: { 8 => "8", 7 => "7", 6 => "6", 5 => "5", 4 => "4", 3 => "3", 2 => "2", 1 => "1", 0 => "0" } },
+      { name: "Letters (Long)", set: { full: "H", seven_eighths: "G", three_quarters: "F", five_eighths: "E", half: "D", three_eighths: "C", one_quarter: "B", one_eighth: "A", empty: " " } },
+      { name: "ASCII (Array)", set: [" ", ".", ":", "-", "+", "*", "#", "%", "@"] }
+    ]
+    @bar_set_index = 0
+    @height_mode = :full # :full or :mini
 
     @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
   end
@@ -43,7 +51,6 @@ class AnalyticsApp
       loop do
         render
         break if handle_input == :quit
-        sleep 0.05
       end
     end
   end
@@ -65,6 +72,33 @@ class AnalyticsApp
                 when 0 then RatatuiRuby::Style.new(fg: "green")
                 when 1 then RatatuiRuby::Style.new(fg: "blue")
                 when 2 then RatatuiRuby::Style.new(fg: "red")
+    end
+
+    # Define the BarChart widget
+    bar_chart = RatatuiRuby::BarChart.new(
+      data:,
+      bar_width: @direction == :vertical ? 8 : 1,
+      style: bar_style,
+      direction: @direction,
+      label_style: @styles[@label_style_index][:style],
+      value_style: @styles[@value_style_index][:style],
+      bar_set: @bar_sets[@bar_set_index][:set],
+      block: RatatuiRuby::Block.new(
+        title: "Analytics: #{@tabs[@selected_tab]}",
+        borders: [:all]
+      )
+    )
+
+    # Wrap chart in a layout to control height if in mini mode
+    chart_area = if @height_mode == :mini
+       # Height 3: 1 row content + 2 borders
+       RatatuiRuby::Layout.new(
+         direction: :vertical,
+         constraints: [RatatuiRuby::Constraint.length(3), RatatuiRuby::Constraint.fill(1)],
+         children: [bar_chart, RatatuiRuby::Block.new] # Empty block to fill rest
+       )
+    else
+      bar_chart
     end
 
     # Build the UI
@@ -93,18 +127,7 @@ class AnalyticsApp
               padding_left: @padding_left,
               padding_right: @padding_right
             ),
-            RatatuiRuby::BarChart.new(
-              data:,
-              bar_width: @direction == :vertical ? 8 : 1,
-              style: bar_style,
-              direction: @direction,
-              label_style: @styles[@label_style_index][:style],
-              value_style: @styles[@value_style_index][:style],
-              block: RatatuiRuby::Block.new(
-                title: "Analytics: #{@tabs[@selected_tab]}",
-                borders: [:all]
-              )
-            ),
+            chart_area
           ]
         ),
         # Bottom control panel
@@ -146,7 +169,11 @@ class AnalyticsApp
                 # Line 4: More Styles
                 RatatuiRuby::Text::Line.new(spans: [
                   RatatuiRuby::Text::Span.new(content: "z", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Value (#{@styles[@value_style_index][:name]})")
+                  RatatuiRuby::Text::Span.new(content: ": Value (#{@styles[@value_style_index][:name]})  "),
+                  RatatuiRuby::Text::Span.new(content: "b", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Bar Set (#{@bar_sets[@bar_set_index][:name]})  "),
+                  RatatuiRuby::Text::Span.new(content: "m", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Mode (#{@height_mode == :full ? 'Full' : 'Mini'})")
                 ])
               ]
             )
@@ -186,6 +213,10 @@ class AnalyticsApp
       @label_style_index = (@label_style_index + 1) % @styles.size
     in type: :key, code: "z"
       @value_style_index = (@value_style_index + 1) % @styles.size
+    in type: :key, code: "b"
+      @bar_set_index = (@bar_set_index + 1) % @bar_sets.size
+    in type: :key, code: "m"
+      @height_mode = @height_mode == :full ? :mini : :full
     else
       # Ignore other events
     end

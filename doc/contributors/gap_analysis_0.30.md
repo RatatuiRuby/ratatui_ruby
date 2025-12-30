@@ -206,7 +206,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `bar_style()` | `style:` | ✅ (mapped) |
 | `value_style()` | `value_style:` | ✅ |
 | `label_style()` | `label_style:` | ✅ |
-| `bar_set()` | — | ❌ **MISSING** |
+| `bar_set()` | `bar_set:` | ✅ |
 | `group_gap()` | — | ❌ **MISSING** |
 | `direction()` | `direction:` | ✅ |
 | Grouped bar charts | — | ❌ **MISSING** (BarGroup API) |

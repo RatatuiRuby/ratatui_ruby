@@ -125,7 +125,7 @@ To see more complex layouts and widget usage, check out the `examples/` director
 
 ### [Analytics](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/analytics/app.rb)
 
-Demonstrates the use of `Tabs` and `BarChart` widgets with a simple data-switching mechanism. Features custom highlight styles, base styles, and dividers for the tabs, as well as toggling the `BarChart::direction` between vertical and horizontal, and customizing `BarChart::label_style` (x) and `BarChart::value_style` (z).
+Demonstrates the use of `Tabs` and `BarChart` widgets with a simple data-switching mechanism. Features custom highlight styles, base styles, and dividers for the tabs, as well as toggling the `BarChart::direction` between vertical and horizontal, customizing `BarChart::label_style` (x) and `BarChart::value_style` (z), cycling through custom `BarChart::bar_set` (b), and toggling the view mode between Full and Mini height (m).
 
 ![analytics](./images/analytics.png)
 
