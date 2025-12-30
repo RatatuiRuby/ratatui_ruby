@@ -7,7 +7,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 Comparison of ratatui 0.30 features vs ratatui_ruby current implementation.
 
-**Last Updated:** Dec 29, 2025 - Verified and updated completed items.
+**Last Updated:** Dec 30, 2025 - Audited against Ratatui 0.30.0 official docs. Removed deprecated items, added missing features.
 
 ## Layout & Constraints
 
@@ -107,6 +107,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `highlight_style()` | `highlight_style:` | ✅ |
 | `divider()` | `divider:` | ✅ |
 | `padding()` / `padding_left()` / `padding_right()` | `padding_left:` / `padding_right:` | ✅ |
+| `width()` | — | ⚠️ **TODO #1** (new in 0.30.0 - calculates total tab width) |
 
 ---
 
@@ -119,7 +120,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `style()` | `style:` | ✅ |
 | `wrap()` | `wrap:` | ✅ |
 | `scroll()` | `scroll:` | ✅ |
-| `alignment()` | `align:` | ✅ |
+| `alignment()` | `align:` | ⚠️ **FIXME #4** (should be `alignment:` for API fidelity) |
 | `line_count()` | `line_count` | ✅ |
 | `line_width()` | `line_width` | ✅ |
 
@@ -141,7 +142,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `end_symbol()` | `end_symbol:` | ✅ |
 | `end_style()` | `end_style:` | ✅ |
 | `style()` | `style:` | ✅ |
-
+| `get_position()` | `position` (attr_reader) | ✅ |
 
 
 ---
@@ -172,8 +173,6 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `filled_style()` | `filled_style:` | ✅ |
 | `unfilled_style()` | `unfilled_style:` | ✅ |
 | `style()` | `style:` | ✅ |
-| `gauge_style()` | — | ℹ️ Not applicable (deprecated in Ratatui 0.30+) |
-| `line_set()` | — | ❌ **MISSING** (deprecated) |
 
 ---
 
@@ -203,7 +202,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `bar_gap()` | `bar_gap:` | ✅ |
 | `max()` | `max:` | ✅ |
 | `block()` | `block:` | ✅ |
-| `bar_style()` | `style:` | ✅ (mapped) |
+| `style()` (on BarChart) | `style:` | ✅ |
 | `value_style()` | `value_style:` | ✅ |
 | `label_style()` | `label_style:` | ✅ |
 | `bar_set()` | `bar_set:` | ✅ |
@@ -252,7 +251,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 |-----------------|--------------|--------|
 | `display_date` | `year:` / `month:` | ✅ |
 | `block()` | `block:` | ✅ |
-| `default_style()` | `day_style:` | ✅ |
+| `default_style()` | `day_style:` | ⚠️ **FIXME #5** (should be `default_style:` for API fidelity) |
 | `show_month_header()` | `show_month_header:` | ✅ |
 | `show_weekdays_header()` | `show_weekdays_header:` | ✅ |
 | `show_surrounding()` | `show_surrounding:` | ✅ |
@@ -269,6 +268,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `block()` | `block:` | ✅ |
 | `background_color()` | `background_color:` | ✅ |
 | Labels (ctx.print) | `Shape::Label` | ✅ |
+| Block border merging (0.30.0) | Automatic in Ratatui | ✅ |
 
 ### Markers
 
@@ -303,23 +303,11 @@ All modifiers are covered. ✅
 
 ---
 
-## Missing Widgets
+## Additional Widgets
 
 | Ratatui 0.30 Widget | Status |
 |---------------------|--------|
-| `RatatuiLogo` | ❌ Not needed (branding widget) |
-| `RatatuiMascot` | ❌ Not needed (branding widget) |
+| `RatatuiLogo` | ⏳ Planned #7 (useful for demos, lowest priority) |
+| `RatatuiMascot` | ⏳ Planned #8 (useful for demos, lowest priority) |
 
----
 
-## Remaining Gaps & Priority Recommendations
-
-### High Priority (Common Use Cases)
-1.  ~~**BarChart::Grouped bars** - Multi-value bars per label (moved from Medium)~~ (Implemented)
-
-### Medium Priority
-2.  ~~**BarChart::group_gap** - Control spacing in grouped bar charts~~ (Implemented)
-
-### Lower Priority (Niche/Advanced)
-3. ~~**Canvas labels** - Text printing on canvas (advanced use case)~~ (Implemented)
-4. ~~**Paragraph::line_count / line_width** - Read-only properties (minimal value)~~ (Implemented)

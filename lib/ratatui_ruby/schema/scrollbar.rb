@@ -41,6 +41,8 @@ module RatatuiRuby
       ##
       # :attr_reader: position
       # Current scroll offset (index).
+      #
+      # Maps to Ratatui's <tt>ScrollbarState::get_position()</tt> (new in 0.30.0).
 
       ##
       # :attr_reader: orientation
