@@ -149,7 +149,7 @@ Demonstrates the `Block` widget's ability to render multiple titles with individ
 
 ### [Box Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/box_demo/app.rb)
 
-A simple demonstration of `Block` and `Paragraph` widgets, reacting to key presses to change colors, border styles, and title styling (`title_style`).
+A simple demonstration of `Block` and `Paragraph` widgets, reacting to key presses to change colors, border types, border styles, and title styling. Features the new `border_style` parameter for applying colors and modifiers (bold, italic) to borders independently of the content background.
 
 ![box_demo](./images/box_demo.png)
 

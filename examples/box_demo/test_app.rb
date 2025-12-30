@@ -75,4 +75,14 @@ class TestBoxDemo < Minitest::Test
       assert buffer_content.any? { |line| line.include?("Controls") }
     end
   end
+
+  def test_border_style_cycling
+    with_test_terminal do
+      inject_keys(:b, :q)
+      @app.run
+
+      # At least the Controls section should be rendered
+      assert buffer_content.any? { |line| line.include?("Controls") }
+    end
+  end
 end

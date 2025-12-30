@@ -45,6 +45,15 @@ class BoxDemoApp
       { name: "Yellow Bold Underlined", style: { fg: "yellow", modifiers: [:bold, :underlined] } }
     ]
     @title_style_index = 0
+
+    @border_styles = [
+      { name: "Default (no border style)", style: nil },
+      { name: "Bold Red", style: { fg: "red", modifiers: [:bold] } },
+      { name: "Cyan Italic", style: { fg: "cyan", modifiers: [:italic] } },
+      { name: "Magenta Dim", style: { fg: "magenta", modifiers: [:dim] } }
+    ]
+    @border_style_index = 0
+
     @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
   end
 
@@ -66,9 +75,12 @@ class BoxDemoApp
     title_alignment_config = @title_alignments[@title_alignment_index]
     style_config = @styles[@style_index]
     title_style_config = @title_styles[@title_style_index]
+    border_style_config = @border_styles[@border_style_index]
 
     # 1. State/View
-    effective_border_color = style_config[:style] ? nil : color_config[:color]
+    # Use border_style if provided, otherwise fall back to border_color
+    effective_border_style = border_style_config[:style]
+    effective_border_color = effective_border_style ? nil : (style_config[:style] ? nil : color_config[:color])
 
     block = RatatuiRuby::Block.new(
       title: "Box Demo",
@@ -76,6 +88,7 @@ class BoxDemoApp
       title_style: title_style_config[:style],
       borders: [:all],
       border_color: effective_border_color,
+      border_style: effective_border_style,
       border_type: border_config[:type],
       style: style_config[:style]
     )
@@ -110,12 +123,17 @@ class BoxDemoApp
               RatatuiRuby::Text::Span.new(content: "s", style: @hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Style (#{style_config[:name]})")
             ]),
-            # Line 3: Title
+            # Line 3: Title alignment and style
             RatatuiRuby::Text::Line.new(spans: [
               RatatuiRuby::Text::Span.new(content: "enter", style: @hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Align Title (#{title_alignment_config[:name]})  "),
               RatatuiRuby::Text::Span.new(content: "t", style: @hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Title Style (#{title_style_config[:name]})")
+            ]),
+            # Line 4: Border style
+            RatatuiRuby::Text::Line.new(spans: [
+              RatatuiRuby::Text::Span.new(content: "b", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Border Style (#{border_style_config[:name]})")
             ])
           ]
         )
@@ -127,7 +145,7 @@ class BoxDemoApp
       direction: :vertical,
       constraints: [
         RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.length(5),
+        RatatuiRuby::Constraint.length(6),
       ],
       children: [main_panel, control_panel]
     )
@@ -157,6 +175,8 @@ class BoxDemoApp
       @style_index = (@style_index + 1) % @styles.size
     in type: :key, code: "t"
       @title_style_index = (@title_style_index + 1) % @title_styles.size
+    in type: :key, code: "b"
+      @border_style_index = (@border_style_index + 1) % @border_styles.size
     else
       nil
     end

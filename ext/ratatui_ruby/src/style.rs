@@ -114,6 +114,7 @@ pub fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
     let title_style_val: Value = block_val.funcall("title_style", ())?;
     let borders_val: Value = block_val.funcall("borders", ())?;
     let border_color: Value = block_val.funcall("border_color", ())?;
+    let border_style_val: Value = block_val.funcall("border_style", ())?;
     let border_type_val: Value = block_val.funcall("border_type", ())?;
     let style_val: Value = block_val.funcall("style", ())?;
     let padding_val: Value = block_val.funcall("padding", ())?;
@@ -232,7 +233,12 @@ pub fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
         block = block.borders(ratatui_borders);
     }
 
-    if !border_color.is_nil() {
+    // Apply border style. If both border_style and border_color are provided, border_style takes precedence.
+    if !border_style_val.is_nil() {
+        let border_style = crate::style::parse_style(border_style_val)?;
+        block = block.border_style(border_style);
+    } else if !border_color.is_nil() {
+        // Fallback to border_color for backward compatibility
         let color_str: String = border_color.funcall("to_s", ())?;
         if let Some(color) = parse_color(&color_str) {
             block = block.border_style(Style::default().fg(color));

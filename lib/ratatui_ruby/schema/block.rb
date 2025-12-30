@@ -24,7 +24,7 @@ module RatatuiRuby
     #     style: Style.new(fg: :yellow),
     #     padding: [1, 1, 0, 0] # Left, Right, Top, Bottom
     #   )
-    class Block < Data.define(:title, :titles, :title_alignment, :title_style, :borders, :border_color, :border_type, :style, :padding, :children)
+    class Block < Data.define(:title, :titles, :title_alignment, :title_style, :borders, :border_color, :border_style, :border_type, :style, :padding, :children)
       ##
       # :attr_reader: title
       # The main title displayed on the top border.
@@ -74,6 +74,16 @@ module RatatuiRuby
       ##
       # :attr_reader: border_color
       # Color of the border lines.
+      #
+      # Deprecated: Use <tt>border_style:</tt> instead for full style support.
+
+      ##
+      # :attr_reader: border_style
+      # Full style (colors/modifiers) for the border lines.
+      #
+      # A Style object or Hash with <tt>:fg</tt>, <tt>:bg</tt>, and <tt>:modifiers</tt>.
+      # This allows borders to be bold, italic, colored, etc. If both <tt>border_color</tt>
+      # and <tt>border_style</tt> are provided, <tt>border_style</tt> takes precedence.
 
       ##
       # :attr_reader: border_type
@@ -123,7 +133,9 @@ module RatatuiRuby
       # [borders]
       #   Array of borders to show: <tt>:top</tt>, <tt>:bottom</tt>, <tt>:left</tt>, <tt>:right</tt>, or <tt>:all</tt> (default).
       # [border_color]
-      #   Color string or symbol (e.g., <tt>:red</tt>).
+      #   Color string or symbol (e.g., <tt>:red</tt>). Deprecated: use <tt>border_style</tt> instead.
+      # [border_style]
+      #   Style object or Hash for the border lines.
       # [border_type]
       #   Symbol: <tt>:plain</tt> (default), <tt>:rounded</tt>, <tt>:double</tt>, <tt>:thick</tt>, <tt>:hidden</tt>, <tt>:quadrant_inside</tt>, <tt>:quadrant_outside</tt>.
       # [style]
@@ -132,7 +144,7 @@ module RatatuiRuby
       #   Integer (uniform) or Array[4] (left, right, top, bottom).
       # [children]
       #   Array of widgets to render inside the block (optional).
-      def initialize(title: nil, titles: [], title_alignment: nil, title_style: nil, borders: [:all], border_color: nil, border_type: nil, style: nil, padding: 0, children: [])
+      def initialize(title: nil, titles: [], title_alignment: nil, title_style: nil, borders: [:all], border_color: nil, border_style: nil, border_type: nil, style: nil, padding: 0, children: [])
         super
       end
     end
