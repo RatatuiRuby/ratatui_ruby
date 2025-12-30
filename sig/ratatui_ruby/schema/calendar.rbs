@@ -5,11 +5,12 @@ module RatatuiRuby
   class Calendar < Data
     attr_reader year: Integer
     attr_reader month: Integer
+    attr_reader events: Hash[untyped, Style]
     attr_reader day_style: Style?
     attr_reader header_style: Style?
     attr_reader block: Block?
     attr_reader show_weekdays_header: bool
     attr_reader show_surrounding: Style?
-    def self.new: (year: Integer, month: Integer, ?day_style: Style?, ?header_style: Style?, ?block: Block?, ?show_weekdays_header: bool, ?show_surrounding: Style?) -> Calendar
+    def self.new: (year: Integer, month: Integer, ?events: Hash[untyped, Style], ?day_style: Style?, ?header_style: Style?, ?block: Block?, ?show_weekdays_header: bool, ?show_surrounding: Style?) -> Calendar
   end
 end

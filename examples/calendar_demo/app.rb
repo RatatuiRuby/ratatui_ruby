@@ -12,6 +12,7 @@ class CalendarDemoApp
     RatatuiRuby.run do
       show_weekdays = true
       show_surrounding = false
+      show_events = true
 
       loop do
         now = Time.now
@@ -21,45 +22,57 @@ class CalendarDemoApp
           nil
         end
 
-        layout = RatatuiRuby::Layout.new(
-          direction: :vertical,
-          constraints: [
-            RatatuiRuby::Constraint.min(0),
-            RatatuiRuby::Constraint.length(1),
-          ],
-        )
+        events_map = if show_events
+          {
+            now => RatatuiRuby::Style.new(fg: "green", modifiers: [:bold]),
+            (now + 86400 * 2) => RatatuiRuby::Style.new(fg: "red", modifiers: [:underlined]),
+            (now - 86400 * 5) => RatatuiRuby::Style.new(fg: "blue", bg: "white"),
+          }
+        else
+          {}
+        end
 
         calendar = RatatuiRuby::Calendar.new(
           year: now.year,
           month: now.month,
+          events: events_map,
           header_style: RatatuiRuby::Style.new(fg: "yellow", modifiers: [:bold]),
           show_weekdays_header: show_weekdays,
           show_surrounding: surrounding_style,
-          block: RatatuiRuby::Block.new(title: " Calendar ", borders: [:all])
+          block: RatatuiRuby::Block.new(borders: [:top, :left, :right])
         )
 
-        controls_text = RatatuiRuby::Text::Line.new(
-          spans: [
-            RatatuiRuby::Text::Span.new(content: "w", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
-            RatatuiRuby::Text::Span.new(content: ": Weekdays (#{show_weekdays})  "),
-            RatatuiRuby::Text::Span.new(content: "s", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
-            RatatuiRuby::Text::Span.new(content: ": Surrounding (#{show_surrounding ? "Dim" : "Hidden"})  "),
-            RatatuiRuby::Text::Span.new(content: "q", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
-            RatatuiRuby::Text::Span.new(content: ": Quit"),
-          ]
+        controls_text = [
+          RatatuiRuby::Text::Line.new(
+            spans: [
+              RatatuiRuby::Text::Span.new(content: " w/s/e", style: RatatuiRuby::Style.new(modifiers: [:bold])),
+              RatatuiRuby::Text::Span.new(content: ": Toggle Headers/Surrounding/Events  "),
+              RatatuiRuby::Text::Span.new(content: "q", style: RatatuiRuby::Style.new(modifiers: [:bold])),
+              RatatuiRuby::Text::Span.new(content: ": Quit"),
+            ]
+          ),
+          RatatuiRuby::Text::Line.new(
+            spans: [
+              RatatuiRuby::Text::Span.new(content: " Events: ", style: RatatuiRuby::Style.new(modifiers: [:bold])),
+              RatatuiRuby::Text::Span.new(content: "Today (Green), +2d (Red), -5d (Blue) (#{show_events ? "On" : "Off"})"),
+            ]
+          )
+        ]
+        controls = RatatuiRuby::Paragraph.new(
+          text: controls_text,
+          block: RatatuiRuby::Block.new(title: " Controls ", borders: [:all])
         )
-        controls = RatatuiRuby::Paragraph.new(text: [controls_text])
 
-        layout = RatatuiRuby::Layout.new(
-          direction: :vertical,
-          constraints: [
-            RatatuiRuby::Constraint.min(0),
-            RatatuiRuby::Constraint.length(1),
-          ],
-          children: [calendar, controls]
+        RatatuiRuby.draw(
+          RatatuiRuby::Layout.new(
+            direction: :vertical,
+            constraints: [
+              RatatuiRuby::Constraint.min(0),
+              RatatuiRuby::Constraint.length(4),
+            ],
+            children: [calendar, controls]
+          )
         )
-
-        RatatuiRuby.draw(layout)
 
         event = RatatuiRuby.poll_event
         case event
@@ -69,6 +82,8 @@ class CalendarDemoApp
           show_weekdays = !show_weekdays
         in type: :key, code: "s"
           show_surrounding = !show_surrounding
+        in type: :key, code: "e"
+          show_events = !show_events
         else
           nil
         end

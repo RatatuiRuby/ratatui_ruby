@@ -15,6 +15,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let year: i32 = node.funcall("year", ())?;
     let month_u8: u8 = node.funcall("month", ())?;
+    let events_val: Value = node.funcall("events", ())?;
     let day_style_val: Value = node.funcall("day_style", ())?;
     let header_style_val: Value = node.funcall("header_style", ())?;
     let block_val: Value = node.funcall("block", ())?;
@@ -27,7 +28,26 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let date = Date::from_calendar_date(year, month, 1)
         .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?;
 
-    let mut calendar = Monthly::new(date, CalendarEventStore::default());
+    let mut event_store = CalendarEventStore::default();
+    if !events_val.is_nil() {
+        let events_hash = magnus::RHash::try_convert(events_val)?;
+        events_hash.foreach(|date_val: Value, style_val: Value| {
+            let year = date_val.funcall("year", ())?;
+            let month_u8: u8 = date_val.funcall("month", ())?;
+            let day: u8 = date_val.funcall("day", ())?;
+
+            let month = Month::try_from(month_u8)
+                .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?;
+            let date = Date::from_calendar_date(year, month, day)
+                .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?;
+            let style = parse_style(style_val)?;
+
+            event_store.add(date, style);
+            Ok(magnus::r_hash::ForEach::Continue)
+        })?;
+    }
+
+    let mut calendar = Monthly::new(date, event_store);
 
     let header_style = if !header_style_val.is_nil() {
         parse_style(header_style_val)?
