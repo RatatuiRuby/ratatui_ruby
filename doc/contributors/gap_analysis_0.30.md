@@ -7,6 +7,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 Comparison of ratatui 0.30 features vs ratatui_ruby current implementation.
 
+**Last Updated:** Dec 29, 2025 - Verified and updated completed items.
+
 ## Layout & Constraints
 
 ### Flex Modes
@@ -47,9 +49,9 @@ Comparison of ratatui 0.30 features vs ratatui_ruby current implementation.
 | `title_position()` | `titles: [{position: ...}]` | ✅ |
 | `title_position()` | `titles: [{position: ...}]` | ✅ |
 | `borders()` | `borders:` | ✅ |
-| `border_style()` | `border_color:` | ⚠️ Partial (color only, not full style) |
+| `border_style()` | `border_style:` | ✅ |
 | `border_type()` | `border_type:` | ✅ |
-| `border_set()` | — | ❌ **MISSING** (custom border chars) |
+| `border_set()` | `border_set:` | ✅ |
 | `style()` | `style:` | ✅ |
 | `padding()` | `padding:` | ✅ |
 
@@ -86,7 +88,6 @@ Comparison of ratatui 0.30 features vs ratatui_ruby current implementation.
 | `cell_highlight_style()` | — | ❌ **MISSING** |
 | `highlight_symbol()` | `highlight_symbol:` | ✅ |
 | `highlight_spacing()` | `highlight_spacing:` | ✅ |
-| `highlight_spacing()` | — | ❌ **MISSING** |
 | `column_spacing()` | `column_spacing:` | ✅ |
 | `flex()` | `flex:` | ✅ |
 
@@ -152,8 +153,8 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `percent()` | `percent:` | ✅ (alternative to ratio) |
 | `label()` | `label:` | ✅ |
 | `block()` | `block:` | ✅ |
-| `style()` | — | ❌ **MISSING** |
-| `gauge_style()` | `style:` | ✅ (mapped) |
+| `style()` | `style:` | ✅ |
+| `gauge_style()` | `gauge_style:` | ✅ |
 | `use_unicode()` | `use_unicode:` | ✅ |
 
 ---
@@ -170,7 +171,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `filled_style()` | `filled_style:` | ✅ |
 | `unfilled_style()` | `unfilled_style:` | ✅ |
 | `style()` | `style:` | ✅ |
-| `gauge_style()` | — | ❌ **MISSING** |
+| `gauge_style()` | — | ℹ️ Not applicable (deprecated in Ratatui 0.30+) |
 | `line_set()` | — | ❌ **MISSING** (deprecated) |
 
 ---
@@ -310,16 +311,19 @@ All modifiers are covered. ✅
 
 ---
 
-## Priority Recommendations
+## Remaining Gaps & Priority Recommendations
 
 ### High Priority (Common Use Cases)
-
-
+1. **Table::column_highlight_style** - Useful for column-based selection in tables
+2. **Table::cell_highlight_style** - Useful for cell-based selection
 
 ### Medium Priority
-3. **Chart::legend_position** - Nice to have
-4. **Sparkline::direction** - Niche use case
+3. **BarChart::bar_set** - Custom bar characters (like block::border_set)
+4. **BarChart::group_gap** - Control spacing in grouped bar charts
+5. **BarChart::Grouped bars** - Multi-value bars per label
 
-### Lower Priority
-5. **Canvas labels** - Advanced use case
-6. **BarChart grouped** - Advanced charting
+### Lower Priority (Niche/Advanced)
+6. **Sparkline::bar_set** - Custom bar characters
+7. **Canvas labels** - Text printing on canvas (advanced use case)
+8. **Paragraph::line_count / line_width** - Read-only properties (minimal value)
+9. **Chart::Dataset::style** - Full Style object (currently color-only)
