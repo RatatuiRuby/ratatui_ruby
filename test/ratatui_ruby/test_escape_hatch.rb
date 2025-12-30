@@ -6,10 +6,12 @@
 require "test_helper"
 
 class CustomWidget
-  def render(area, buffer)
-    buffer.set_string(area.x, area.y, "X", RatatuiRuby::Style.new(fg: :red))
-    # Stay within the 2-row height of the test layout
-    buffer.set_string(area.x + 1, area.y, "Y", RatatuiRuby::Style.new(fg: :blue))
+  def render(area)
+    [
+      RatatuiRuby::Draw.string(area.x, area.y, "X", { fg: :red }),
+      # Stay within the 2-row height of the test layout
+      RatatuiRuby::Draw.string(area.x + 1, area.y, "Y", { fg: :blue })
+    ]
   end
 end
 

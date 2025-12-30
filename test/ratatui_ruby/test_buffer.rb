@@ -5,19 +5,20 @@
 
 require "test_helper"
 
-class TestBuffer < Minitest::Test
-    include RatatuiRuby::TestHelper
+class TestDraw < Minitest::Test
+  include RatatuiRuby::TestHelper
+
   class CustomWidget
     def initialize(cell)
       @cell = cell
     end
 
-    def render(area, buffer)
-      buffer.set_cell(0, 0, @cell)
+    def render(area)
+      [RatatuiRuby::Draw.cell(0, 0, @cell)]
     end
   end
 
-  def test_set_cell
+  def test_draw_cell
     cell = RatatuiRuby::Cell.new(char: "X", fg: :red, bg: :blue, modifiers: ["bold"])
     widget = CustomWidget.new(cell)
 
@@ -33,13 +34,15 @@ class TestBuffer < Minitest::Test
   end
 
   class OverwritingWidget
-    def render(area, buffer)
-      buffer.set_cell(0, 0, RatatuiRuby::Cell.char("A"))
-      buffer.set_cell(0, 0, RatatuiRuby::Cell.char("B"))
+    def render(area)
+      [
+        RatatuiRuby::Draw.cell(0, 0, RatatuiRuby::Cell.char("A")),
+        RatatuiRuby::Draw.cell(0, 0, RatatuiRuby::Cell.char("B"))
+      ]
     end
   end
 
-  def test_set_cell_overwrite
+  def test_draw_cell_overwrite
     with_test_terminal(10, 5) do
       RatatuiRuby.draw(OverwritingWidget.new)
       assert_equal "B", RatatuiRuby.get_cell_at(0, 0).char
@@ -47,13 +50,13 @@ class TestBuffer < Minitest::Test
   end
 
   class OutOfBoundsWidget
-    def render(area, buffer)
+    def render(area)
       # Should not crash
-      buffer.set_cell(100, 100, RatatuiRuby::Cell.char("X"))
+      [RatatuiRuby::Draw.cell(100, 100, RatatuiRuby::Cell.char("X"))]
     end
   end
 
-  def test_set_cell_out_of_bounds
+  def test_draw_cell_out_of_bounds
     with_test_terminal(10, 5) do
       RatatuiRuby.draw(OutOfBoundsWidget.new)
       # No assertion needed, just verifying no crash
@@ -61,3 +64,4 @@ class TestBuffer < Minitest::Test
     end
   end
 end
+

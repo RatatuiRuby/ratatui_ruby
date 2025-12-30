@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-mod buffer;
+
 mod events;
 mod rendering;
 mod style;
@@ -9,7 +9,7 @@ mod terminal;
 mod text;
 mod widgets;
 
-use magnus::{function, Class, Error, Module, Object, Value};
+use magnus::{function, Error, Module, Object, Value};
 use terminal::{init_terminal, restore_terminal, TERMINAL};
 
 fn draw(tree: Value) -> Result<(), Error> {
@@ -51,11 +51,7 @@ fn init() -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let m = ruby.define_module("RatatuiRuby")?;
 
-    let buffer_class = m.define_class("Buffer", ruby.class_object())?;
-    buffer_class.undef_default_alloc_func();
-    buffer_class.define_method("set_string", magnus::method!(buffer::BufferWrapper::set_string, 4))?;
-    buffer_class.define_method("set_cell", magnus::method!(buffer::BufferWrapper::set_cell, 3))?;
-    buffer_class.define_method("area", magnus::method!(buffer::BufferWrapper::area, 0))?;
+
 
     m.define_module_function("_init_terminal", function!(init_terminal, 2))?;
     m.define_module_function("restore_terminal", function!(restore_terminal, 0))?;

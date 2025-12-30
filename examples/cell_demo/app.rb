@@ -5,17 +5,19 @@ require "ratatui_ruby"
 
 # A custom widget that fills its area with a checkered pattern using Cell objects.
 class CheckeredBackground
-  def render(area, buffer)
+  def render(area)
     cell = RatatuiRuby::Cell.new(char: "░", fg: :dark_gray)
+    commands = []
     area.height.times do |y|
       area.width.times do |x|
         # Checkerboard logic
         if (x + y).even?
           # Use a dim cell for the background pattern
-          buffer.set_cell(area.x + x, area.y + y, cell)
+          commands << RatatuiRuby::Draw.cell(area.x + x, area.y + y, cell)
         end
       end
     end
+    commands
   end
 end
 
@@ -102,5 +104,5 @@ class CellDemoApp
 end
 
 if __FILE__ == $0
-  CellDemo.new.main
+  CellDemoApp.new.main
 end

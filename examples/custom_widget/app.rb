@@ -8,16 +8,16 @@ require "ratatui_ruby"
 
 # A custom widget that draws a diagonal line.
 class DiagonalWidget
-  def render(area, buffer)
+  def render(area)
     # Draw a diagonal line within the area
-    (0..10).each do |i|
+    (0..10).filter_map do |i|
       next if area.x + i >= area.x + area.width || area.y + i >= area.y + area.height
 
-      buffer.set_string(
+      RatatuiRuby::Draw.string(
         area.x + i,
         area.y + i,
         "\\",
-        RatatuiRuby::Style.new(fg: :red, modifiers: [:bold])
+        { fg: :red, modifiers: [:bold] }
       )
     end
   end

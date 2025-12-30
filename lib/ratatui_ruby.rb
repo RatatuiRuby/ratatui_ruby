@@ -28,6 +28,7 @@ require_relative "ratatui_ruby/schema/calendar"
 require_relative "ratatui_ruby/schema/canvas"
 require_relative "ratatui_ruby/schema/calendar"
 require_relative "ratatui_ruby/schema/text"
+require_relative "ratatui_ruby/schema/draw"
 require_relative "ratatui_ruby/event"
 require_relative "ratatui_ruby/cell"
 

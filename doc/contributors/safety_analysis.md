@@ -4,42 +4,39 @@ This document provides a safety audit of the `ratatui_ruby` Rust extension (`ext
 
 ## Executive Summary
 
-The codebase generally follows safe Rust patterns, with usage of `magnus` ensuring safe interaction with the Ruby VM. However, there are two categories of findings:
-1.  **Critical Safety Issue**: A potential Use-After-Free (UAF) vulnerability involving `BufferWrapper`.
+The codebase generally follows safe Rust patterns, with usage of `magnus` ensuring safe interaction with the Ruby VM. The audit identified two categories of findings:
+1.  ~~**Critical Safety Issue**~~ **Resolved**: The Use-After-Free (UAF) vulnerability involving `BufferWrapper` has been eliminated by switching to a declarative command buffer pattern.
 2.  **Minor Unsafe Usage**: Repeated use of `unsafe { class.name() }` which should be validated or replaced.
 
 ## Detailed Findings
 
 ### 1. `BufferWrapper` Use-After-Free Vulnerability
 
-**File**: `src/buffer.rs`, `src/rendering.rs`
-**Severity**: **Critical**
+**File**: ~~`src/buffer.rs`~~, `src/rendering.rs`
+**Severity**: ~~**Critical**~~ **Resolved**
 
-The `BufferWrapper` struct holds a raw pointer to a `ratatui::buffer::Buffer`:
+~~The `BufferWrapper` struct holds a raw pointer to a `ratatui::buffer::Buffer`:~~
 
-```rust
-pub struct BufferWrapper {
-    ptr: *mut Buffer,
-}
-unsafe impl Send for BufferWrapper {}
+**Resolution**: The `BufferWrapper` was completely removed. Custom widgets now use a **declarative command buffer pattern**:
+
+```ruby
+# Old (REMOVED):
+def render(area, buffer)
+  buffer.set_string(0, 0, "Hi", {fg: :red})
+end
+
+# New:
+def render(area)
+  [RatatuiRuby::Draw.string(0, 0, "Hi", {fg: :red})]
+end
 ```
 
-This wrapper is created in `src/rendering.rs` inside the `draw` loop, where `Frame` borrows the buffer from the terminal backend. The wrapper is then passed to Ruby code via `node.render(area, wrapper)`.
+Ruby widgets return an array of `Draw::StringCmd` and `Draw::CellCmd` objects. Rust processes these commands internally without ever exposing buffer pointers to Ruby code. This eliminates the category of use-after-free bugs entirely.
 
-```rust
-// src/rendering.rs
-let wrapper = BufferWrapper::new(frame.buffer_mut());
-// ...
-node.funcall::<_, _, Value>("render", (ruby_area, wrapper_obj))?;
-```
-
-**The Issue**:
-The `BufferWrapper` structure does not enforce any lifetime constraints on the underlying `Buffer`. If the Ruby code were to store the `BufferWrapper` object (e.g., in a global variable or instance variable) and access it after the `draw` function has returned, the `ptr` would point to invalid memory (stack memory or a dropped buffer from the previous frame). Accessing it would lead to undefined behavior (segfault or memory corruption).
-
-**Recommendation**:
-The `BufferWrapper` functionality needs to be safer.
-1.  **Invalidation**: Add a mechanism to invalidate the wrapper after the `render` call returns. The wrapper could hold a flag or shared state that marks it as "closed", and all methods (`set_string`, `set_cell`) would check this flag before dereferencing the pointer.
-2.  **Review Usage**: Ensure that documentation explicitly warns against storing the `Buffer` object. However, documentation is not a safety guarantee.
+**Benefits**:
+- **Safety**: No raw pointers exposed to Ruby—impossible to cause segfaults.
+- **Testability**: Widgets can be unit tested by asserting on the returned array.
+- **Consistency**: Aligns with the rest of the library's "Data In, Data Out" architecture.
 
 ### 2. Unsafe `class.name()` Usage
 
@@ -67,4 +64,4 @@ The code generally relies on standard Rust vectors and Magnus's handle of Ruby o
 
 ## Conclusion
 
-The extension is mostly well-written but the `BufferWrapper` raw pointer handling presents a significant safety risk that should be addressed to prevent potential crashes in complex Ruby applications.
+The extension is well-written. The previously critical `BufferWrapper` raw pointer handling has been replaced with a safe declarative command buffer pattern. The remaining `unsafe { class.name() }` usages are low-severity and follow standard Magnus patterns.

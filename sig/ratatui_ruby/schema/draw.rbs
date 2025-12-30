@@ -1,0 +1,23 @@
+module RatatuiRuby
+  module Draw
+    class StringCmd < Data
+      attr_reader x: Integer
+      attr_reader y: Integer
+      attr_reader string: String
+      attr_reader style: Style | Hash[Symbol, untyped]
+
+      def self.new: (x: Integer, y: Integer, string: String, style: Style | Hash[Symbol, untyped]) -> StringCmd
+    end
+
+    class CellCmd < Data
+      attr_reader x: Integer
+      attr_reader y: Integer
+      attr_reader cell: Cell
+
+      def self.new: (x: Integer, y: Integer, cell: Cell) -> CellCmd
+    end
+
+    def self.string: (Integer x, Integer y, String string, ?Style | Hash[Symbol, untyped] style) -> StringCmd
+    def self.cell: (Integer x, Integer y, Cell cell) -> CellCmd
+  end
+end
