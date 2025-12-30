@@ -161,7 +161,7 @@ Demonstrates the `Calendar` widget with interactive attribute cycling. Features 
 
 ### [Chart Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/chart_demo/app.rb)
 
-Demonstrates the `Chart` widget with both scatter and line datasets, including custom axes. Features customizable axis label alignment (left, center, right) for precise control over label positioning.
+Demonstrates the `Chart` widget with both scatter and line datasets, including custom axes. Features customizable axis label alignment and legend positioning.
 
 ![chart_demo](./images/chart_demo.png)
 

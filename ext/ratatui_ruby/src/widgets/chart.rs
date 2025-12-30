@@ -7,7 +7,7 @@ use ratatui::{
     layout::Rect,
     symbols,
     text::Span,
-    widgets::{Axis, Chart, Dataset, GraphType},
+    widgets::{Axis, Chart, Dataset, GraphType, LegendPosition},
     Frame,
 };
 
@@ -25,6 +25,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let y_axis_val: Value = node.funcall("y_axis", ())?;
     let block_val: Value = node.funcall("block", ())?;
     let style_val: Value = node.funcall("style", ())?;
+    let legend_position_val: Value = node.funcall("legend_position", ())?;
+    let hidden_legend_constraints_val: Value = node.funcall("hidden_legend_constraints", ())?;
 
     let mut datasets = Vec::new();
     // We need to keep the data alive until the chart is rendered
@@ -96,6 +98,29 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
     if !style_val.is_nil() {
         chart = chart.style(parse_style(style_val)?);
+    }
+
+    if !legend_position_val.is_nil() {
+        let pos_sym: Symbol = legend_position_val.funcall("to_sym", ())?;
+        let pos = match pos_sym.to_string().as_str() {
+            "top_left" => LegendPosition::TopLeft,
+            "top_right" => LegendPosition::TopRight,
+            "bottom_left" => LegendPosition::BottomLeft,
+            "bottom_right" => LegendPosition::BottomRight,
+            _ => LegendPosition::TopRight,
+        };
+        chart = chart.legend_position(Some(pos));
+    }
+
+    if !hidden_legend_constraints_val.is_nil() {
+        let constraints_array: magnus::RArray = hidden_legend_constraints_val.funcall("to_a", ())?;
+        if constraints_array.len() == 2 {
+            let width_val: Value = constraints_array.entry(0)?;
+            let height_val: Value = constraints_array.entry(1)?;
+            let width_constraint = super::layout::parse_constraint(width_val)?;
+            let height_constraint = super::layout::parse_constraint(height_val)?;
+            chart = chart.hidden_legend_constraints((width_constraint, height_constraint));
+        }
     }
 
     frame.render_widget(chart, area);

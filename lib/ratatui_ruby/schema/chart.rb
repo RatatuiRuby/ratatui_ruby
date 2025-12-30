@@ -101,9 +101,10 @@ module RatatuiRuby
     #       )
     #     ],
     #     x_axis: Axis.new(title: "Time", bounds: [0.0, 5.0]),
-    #     y_axis: Axis.new(title: "RPS", bounds: [0.0, 5.0])
+    #     y_axis: Axis.new(title: "RPS", bounds: [0.0, 5.0]),
+    #     legend_position: :top_right
     #   )
-    class Chart < Data.define(:datasets, :x_axis, :y_axis, :block, :style)
+    class Chart < Data.define(:datasets, :x_axis, :y_axis, :block, :style, :legend_position, :hidden_legend_constraints)
       ##
       # :attr_reader: datasets
       # Array of Dataset objects to plot.
@@ -124,6 +125,15 @@ module RatatuiRuby
       # :attr_reader: style
       # Base style for the chart area.
 
+      ##
+      # :attr_reader: legend_position
+      # Position of the legend (<tt>:top_left</tt>, <tt>:top_right</tt>, <tt>:bottom_left</tt>, <tt>:bottom_right</tt>).
+
+      ##
+      # :attr_reader: hidden_legend_constraints
+      # Constraints for hiding the legend when the chart is too small (Array of [width, height]).
+
+
       # Creates a new Chart widget.
       #
       # [datasets] Array of Datasets.
@@ -131,7 +141,9 @@ module RatatuiRuby
       # [y_axis] Y Axis config.
       # [block] Wrapper (optional).
       # [style] Base style (optional).
-      def initialize(datasets:, x_axis:, y_axis:, block: nil, style: nil)
+      # [legend_position] Symbol (<tt>:top_left</tt>, <tt>:top_right</tt>, <tt>:bottom_left</tt>, <tt>:bottom_right</tt>).
+      # [hidden_legend_constraints] Array of two Constraints [width, height] (optional).
+      def initialize(datasets:, x_axis:, y_axis:, block: nil, style: nil, legend_position: nil, hidden_legend_constraints: [])
         super
       end
     end

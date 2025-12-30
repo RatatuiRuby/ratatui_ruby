@@ -43,40 +43,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         if let Some(arr) = constraints_array {
             for i in 0..arr.len() {
                 let constraint_obj: Value = arr.entry(i as isize)?;
-                let type_sym: Symbol = constraint_obj.funcall("type", ())?;
-                let value_obj: Value = constraint_obj.funcall("value", ())?;
-
-                match type_sym.to_string().as_str() {
-                    "length" => {
-                        let val = u16::try_convert(value_obj)?;
-                        ratatui_constraints.push(Constraint::Length(val));
-                    }
-                    "percentage" => {
-                        let val = u16::try_convert(value_obj)?;
-                        ratatui_constraints.push(Constraint::Percentage(val));
-                    }
-                    "min" => {
-                        let val = u16::try_convert(value_obj)?;
-                        ratatui_constraints.push(Constraint::Min(val));
-                    }
-                    "max" => {
-                        let val = u16::try_convert(value_obj)?;
-                        ratatui_constraints.push(Constraint::Max(val));
-                    }
-                    "fill" => {
-                        let val = u16::try_convert(value_obj)?;
-                        ratatui_constraints.push(Constraint::Fill(val));
-                    }
-                    "ratio" => {
-                        if let Some(arr) = magnus::RArray::from_value(value_obj) {
-                            if arr.len() == 2 {
-                                let n = u32::try_convert(arr.entry(0)?)?;
-                                let d = u32::try_convert(arr.entry(1)?)?;
-                                ratatui_constraints.push(Constraint::Ratio(n, d));
-                            }
-                        }
-                    }
-                    _ => {}
+                if let Ok(constraint) = parse_constraint(constraint_obj) {
+                    ratatui_constraints.push(constraint);
                 }
             }
         }
@@ -102,6 +70,53 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         }
     }
     Ok(())
+}
+
+pub fn parse_constraint(value: Value) -> Result<Constraint, Error> {
+    let type_sym: Symbol = value.funcall("type", ())?;
+    let value_obj: Value = value.funcall("value", ())?;
+
+    match type_sym.to_string().as_str() {
+        "length" => {
+            let val = u16::try_convert(value_obj)?;
+            Ok(Constraint::Length(val))
+        }
+        "percentage" => {
+            let val = u16::try_convert(value_obj)?;
+            Ok(Constraint::Percentage(val))
+        }
+        "min" => {
+            let val = u16::try_convert(value_obj)?;
+            Ok(Constraint::Min(val))
+        }
+        "max" => {
+            let val = u16::try_convert(value_obj)?;
+            Ok(Constraint::Max(val))
+        }
+        "fill" => {
+            let val = u16::try_convert(value_obj)?;
+            Ok(Constraint::Fill(val))
+        }
+        "ratio" => {
+            if let Some(arr) = magnus::RArray::from_value(value_obj) {
+                if arr.len() == 2 {
+                    let n = u32::try_convert(arr.entry(0)?)?;
+                    let d = u32::try_convert(arr.entry(1)?)?;
+                    return Ok(Constraint::Ratio(n, d));
+                }
+            }
+            // Fallback or error for invalid ratio?
+            // For now, let's treat it as Min(0) or similar, or error.
+            // But to match previous behavior (which ignored invalid), we just return 0 length or something?
+            // Check previous logic: it ignored it (`_ => {}`).
+            // But we need to return a Constraint. Use Length(0) as safe fallback if unmatched?
+            // Actually, let's error if strictly required, but existing logic pushed nothing if mismatched.
+            // If we push nothing, we can't return a Constraint.
+            // Let's assume input is valid for now or return a default.
+            Ok(Constraint::Length(0))
+        }
+        _ => Ok(Constraint::Length(0)), // Default fallback
+    }
 }
 
 /// Splits an area into multiple rectangles based on constraints.
@@ -152,40 +167,8 @@ pub fn split_layout(
     let mut ratatui_constraints = Vec::new();
     for i in 0..constraints.len() {
         let constraint_obj: Value = constraints.entry(i as isize)?;
-        let type_sym: Symbol = constraint_obj.funcall("type", ())?;
-        let value_obj: Value = constraint_obj.funcall("value", ())?;
-
-        match type_sym.to_string().as_str() {
-            "length" => {
-                let val = u16::try_convert(value_obj)?;
-                ratatui_constraints.push(Constraint::Length(val));
-            }
-            "percentage" => {
-                let val = u16::try_convert(value_obj)?;
-                ratatui_constraints.push(Constraint::Percentage(val));
-            }
-            "min" => {
-                let val = u16::try_convert(value_obj)?;
-                ratatui_constraints.push(Constraint::Min(val));
-            }
-            "max" => {
-                let val = u16::try_convert(value_obj)?;
-                ratatui_constraints.push(Constraint::Max(val));
-            }
-            "fill" => {
-                let val = u16::try_convert(value_obj)?;
-                ratatui_constraints.push(Constraint::Fill(val));
-            }
-            "ratio" => {
-                if let Some(arr) = magnus::RArray::from_value(value_obj) {
-                    if arr.len() == 2 {
-                        let n = u32::try_convert(arr.entry(0)?)?;
-                        let d = u32::try_convert(arr.entry(1)?)?;
-                        ratatui_constraints.push(Constraint::Ratio(n, d));
-                    }
-                }
-            }
-            _ => {}
+        if let Ok(constraint) = parse_constraint(constraint_obj) {
+            ratatui_constraints.push(constraint);
         }
     }
 

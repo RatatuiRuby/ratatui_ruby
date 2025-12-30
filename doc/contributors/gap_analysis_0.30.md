@@ -219,8 +219,8 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `x_axis` / `y_axis` | `x_axis:` / `y_axis:` | ✅ |
 | `block()` | `block:` | ✅ |
 | `style()` | `style:` | ✅ |
-| `legend_position()` | — | ❌ **MISSING** |
-| `hidden_legend_constraints()` | — | ❌ **MISSING** |
+| `legend_position()` | `legend_position:` | ✅ |
+| `hidden_legend_constraints()` | `hidden_legend_constraints:` | ✅ |
 
 ### Axis
 

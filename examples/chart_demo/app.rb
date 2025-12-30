@@ -40,6 +40,14 @@ class ChartDemoApp
     ]
     @y_alignment_index = 2
 
+    @legend_positions = [
+      { name: "Top Right", position: :top_right },
+      { name: "Top Left", position: :top_left },
+      { name: "Bottom Right", position: :bottom_right },
+      { name: "Bottom Left", position: :bottom_left }
+    ]
+    @legend_position_index = 0
+
     @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
   end
 
@@ -68,6 +76,8 @@ class ChartDemoApp
     end
 
     color = @dataset_colors[@dataset_color_index][:color]
+    # Ensure the second dataset has a different color
+    scatter_color = @dataset_colors[(@dataset_color_index + 2) % @dataset_colors.length][:color]
 
     datasets = [
       RatatuiRuby::Dataset.new(
@@ -80,7 +90,7 @@ class ChartDemoApp
       RatatuiRuby::Dataset.new(
         name: "Scatter",
         data: scatter_data,
-        color:,
+        color: scatter_color,
         marker: @markers[@marker_index][:marker],
         graph_type: :scatter
       )
@@ -88,6 +98,7 @@ class ChartDemoApp
 
     x_alignment = @x_alignments[@x_alignment_index][:alignment]
     y_alignment = @y_alignments[@y_alignment_index][:alignment]
+    legend_position = @legend_positions[@legend_position_index][:position]
 
     chart = RatatuiRuby::Chart.new(
       datasets:,
@@ -108,7 +119,12 @@ class ChartDemoApp
       block: RatatuiRuby::Block.new(
         title: "Chart Widget Demo",
         borders: [:all]
-      )
+      ),
+      legend_position:,
+      hidden_legend_constraints: [
+        RatatuiRuby::Constraint.min(20),
+        RatatuiRuby::Constraint.min(10)
+      ]
     )
 
     layout = RatatuiRuby::Layout.new(
@@ -139,6 +155,11 @@ class ChartDemoApp
                   RatatuiRuby::Text::Span.new(content: ": X Align (#{@x_alignments[@x_alignment_index][:name]})  "),
                   RatatuiRuby::Text::Span.new(content: "y", style: @hotkey_style),
                   RatatuiRuby::Text::Span.new(content: ": Y Align (#{@y_alignments[@y_alignment_index][:name]})  "),
+                  RatatuiRuby::Text::Span.new(content: "l", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Legend (#{@legend_positions[@legend_position_index][:name]})")
+                ]),
+                # Line 3: Quit
+                RatatuiRuby::Text::Line.new(spans: [
                   RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
                   RatatuiRuby::Text::Span.new(content: ": Quit")
                 ])
@@ -167,6 +188,8 @@ class ChartDemoApp
       @x_alignment_index = (@x_alignment_index + 1) % @x_alignments.length
     in type: :key, code: "y"
       @y_alignment_index = (@y_alignment_index + 1) % @y_alignments.length
+    in type: :key, code: "l"
+      @legend_position_index = (@legend_position_index + 1) % @legend_positions.length
     else
       nil
     end
