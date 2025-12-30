@@ -197,7 +197,7 @@ Shows how to use `Overlay`, `Center`, and `Cursor` to build a modal login form w
 
 ### [Map Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/map_demo/app.rb)
 
-Exhibits the `Canvas` widget's power, rendering a world map along with animated circles and lines.
+Exhibits the `Canvas` widget's power, rendering a world map with city labels, animated circles, and lines.
 
 ![map_demo](./images/map_demo.png)
 

@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  # Namespace for canvas shape primitives (Point, Line, Rectangle, Circle, Map).
+  # Namespace for canvas shape primitives (Point, Line, Rectangle, Circle, Map, Label).
   # Distinct from text components and other Line usages.
   module Shape
     # A point in the canvas coordinate system.
@@ -134,9 +134,8 @@ module RatatuiRuby
     #     y_bounds: [-90, 90],
     #     shapes: [
     #       Shape::Map.new(color: :green, resolution: :high),
-    #       Shape::Circle.new(x: 0, y: 0, radius: 10, color: :red)
-    #     ]
-    #   )
+    #       Shape::Circle.new(x: 0, y: 0, radius: 10, color: :red),
+    #       Shape::Label.new(x: -122.4, y: 37.8, text: "San Francisco")
     #     ]
     #   )
     class Canvas < Data.define(:shapes, :x_bounds, :y_bounds, :marker, :block, :background_color)

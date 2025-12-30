@@ -94,6 +94,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `background_color`: Set canvas background color.
 - `:half_block` marker: Block-based rendering using half-height blocks.
 - `:quadrant`, `:sextant`, `:octant` markers: High-resolution pseudo-pixel rendering.
+- `Shape::Label`: Text labels at canvas coordinates with optional styling.
 
 #### Scrollbar Widget
 

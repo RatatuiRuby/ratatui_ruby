@@ -1,7 +1,8 @@
 // SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use crate::style::{parse_block, parse_color};
+use crate::style::{parse_block, parse_color, parse_style};
+use crate::text::parse_text;
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, RArray, Symbol, Value};
 use ratatui::{
@@ -94,6 +95,26 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
                         _ => MapResolution::Low,
                     };
                     ctx.draw(&Map { color, resolution });
+                }
+                "RatatuiRuby::Shape::Label" => {
+                    let x: f64 = shape_val.funcall("x", ()).unwrap_or(0.0);
+                    let y: f64 = shape_val.funcall("y", ()).unwrap_or(0.0);
+                    let text_val: Value = shape_val.funcall("text", ()).unwrap();
+                    let style_val: Value = shape_val.funcall("style", ()).unwrap();
+
+                    // Parse text - take first line if multiple
+                    if let Ok(lines) = parse_text(text_val) {
+                        let mut line = lines.into_iter().next().unwrap_or_default();
+
+                        // Apply style if provided
+                        if !style_val.is_nil() {
+                            if let Ok(style) = parse_style(style_val) {
+                                line = line.style(style);
+                            }
+                        }
+
+                        ctx.print(x, y, line);
+                    }
                 }
                 _ => {}
             }

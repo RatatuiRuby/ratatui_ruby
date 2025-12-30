@@ -18,17 +18,30 @@ class MapDemoApp
   # +radius+:: The radius of the animated circle.
   # +marker+:: The marker type.
   # +background_color+:: The background color of the canvas.
-  def view(radius, marker = :braille, background_color = nil)
+  # +show_labels+:: Whether to show city labels.
+  def view(radius, marker = :braille, background_color = nil, show_labels: true)
+    shapes = [
+      Shape::Map.new(color: :green, resolution: :high),
+      Shape::Circle.new(x: 0.0, y: 0.0, radius:, color: :red),
+      Shape::Line.new(x1: 0.0, y1: 0.0, x2: 50.0, y2: 25.0, color: :yellow),
+    ]
+
+    if show_labels
+      shapes += [
+        Shape::Label.new(x: -0.1, y: 51.5, text: "London", style: Style.new(fg: :cyan)),
+        Shape::Label.new(x: 139.7, y: 35.7, text: "Tokyo", style: Style.new(fg: :magenta)),
+        Shape::Label.new(x: -74.0, y: 40.7, text: "New York", style: Style.new(fg: :yellow)),
+        Shape::Label.new(x: -122.4, y: 37.8, text: "San Francisco", style: Style.new(fg: :blue)),
+        Shape::Label.new(x: 151.2, y: -33.9, text: "Sydney", style: Style.new(fg: :green)),
+      ]
+    end
+
     Canvas.new(
-      shapes: [
-        Shape::Map.new(color: :green, resolution: :high),
-        Shape::Circle.new(x: 0.0, y: 0.0, radius:, color: :red),
-        Shape::Line.new(x1: 0.0, y1: 0.0, x2: 50.0, y2: 25.0, color: :yellow),
-      ],
+      shapes: shapes,
       x_bounds: [-180.0, 180.0],
       y_bounds: [-90.0, 90.0],
       marker: marker,
-      block: Block.new(title: "World Map ['b' background, 'm' marker: #{marker}]", borders: :all),
+      block: Block.new(title: "World Map ['b' bg, 'm' marker: #{marker}, 'l' labels: #{show_labels ? 'on' : 'off'}]", borders: :all),
       background_color: background_color
     )
   end
@@ -40,6 +53,7 @@ class MapDemoApp
       direction = 1
       bg_index = 0
       marker_index = 0
+      show_labels = true
 
       loop do
         # Animate the circle radius
@@ -49,7 +63,7 @@ class MapDemoApp
         end
 
         # Define the view
-        v = view(radius, MARKERS[marker_index], COLORS[bg_index])
+        v = view(radius, MARKERS[marker_index], COLORS[bg_index], show_labels:)
 
         RatatuiRuby.draw(v)
 
@@ -61,6 +75,8 @@ class MapDemoApp
           bg_index = (bg_index + 1) % COLORS.size
         in type: :key, code: "m"
           marker_index = (marker_index + 1) % MARKERS.size
+        in type: :key, code: "l"
+          show_labels = !show_labels
         else
           # Ignore other events
         end

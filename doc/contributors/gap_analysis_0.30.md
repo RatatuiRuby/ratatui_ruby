@@ -268,7 +268,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `marker()` | `marker:` | ✅ |
 | `block()` | `block:` | ✅ |
 | `background_color()` | `background_color:` | ✅ |
-| Labels (ctx.print) | — | ❌ **MISSING** |
+| Labels (ctx.print) | `Shape::Label` | ✅ |
 
 ### Markers
 
@@ -321,5 +321,5 @@ All modifiers are covered. ✅
 2.  ~~**BarChart::group_gap** - Control spacing in grouped bar charts~~ (Implemented)
 
 ### Lower Priority (Niche/Advanced)
-3. **Canvas labels** - Text printing on canvas (advanced use case)
+3. ~~**Canvas labels** - Text printing on canvas (advanced use case)~~ (Implemented)
 4. **Paragraph::line_count / line_width** - Read-only properties (minimal value)

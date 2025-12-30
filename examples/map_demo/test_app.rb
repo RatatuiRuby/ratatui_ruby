@@ -19,18 +19,17 @@ class TestMapDemoApp < Minitest::Test
 
   def test_map_demo_renders
     with_test_terminal do
-      # Queue quit event
-      inject_key(:q)
+      # Queue events: turn off labels so buffer matches original, then quit
+      inject_keys("l", "q")
 
       # Stub sleep to speed up test
       @app.stub :sleep, nil do
         @app.run
       end
 
-      # Verify the buffer content reflects the rendered map
-      # radius should be 0.5 for the first frame
+      # Verify the buffer content reflects the rendered map (with labels off)
       expected_buffer = [
-        "┌World Map ['b' background, 'm' marker: braille]───────────────────────────────┐",
+        "┌World Map ['b' bg, 'm' marker: braille, 'l' labels: off]──────────────────────┐",
         "│                     ⣀⢀⣀⣀⡀   ⢀⣀⡀ ⡀                                            │",
         "│            ⢠⣤⣰⣦⣶⣶⣿⣭⣿⣣⠶⠶⣿⣉⣉⠉⠉⠁  ⠁⠉⢽⠎⠁    ⠲⠶⠶⠖   ⠐⠛⢃⡀⣀⢤   ⢀⣐⣋⣷⠶⡤⣀    ⣀⡀⣀⡀      │",
         "│⢖⡀⡀⣤⡖⠒⠒⠤⠤⠤⠤⠶⠿⠿⣿⣹⢿⣿⣿⢿⣭⣽⣿⡒⣦⣀⠘⣷⠄  ⢀⡀⢼⣏⢀      ⡠⠤⠒⠶⡤⢀⣄⡀⢻⠯⠤⢾⣻⡗⠛⠉    ⠈⠉⠈⠈⠙⠒⠚⠋ ⠒⠐⠦⠤⠤⠤⠶│",
@@ -63,6 +62,36 @@ class TestMapDemoApp < Minitest::Test
       # Verify the background color is set on the view (Unit test of the view method)
       view = @app.view(0.0, :braille, nil)
       assert_nil view.background_color
+
+      # Verify labels are included in the shapes (default show_labels: true)
+      label_shapes = view.shapes.select { |s| s.is_a?(RatatuiRuby::Shape::Label) }
+      assert_equal 5, label_shapes.size, "Should have 5 city labels"
+      assert label_shapes.any? { |l| l.text == "London" }, "Should have London label"
+      assert label_shapes.any? { |l| l.text == "Tokyo" }, "Should have Tokyo label"
+    end
+  end
+
+  def test_labels_visible
+    with_test_terminal do
+      # Don't toggle labels - they're on by default
+      inject_keys("q")
+      @app.stub :sleep, nil do
+        @app.run
+      end
+      # Labels should be visible - check for a city name in the buffer
+      buffer_text = buffer_content.join
+      assert_includes buffer_text, "London", "London label should be visible"
+    end
+  end
+
+  def test_labels_toggle
+    with_test_terminal do
+      inject_keys("l", "q")
+      @app.stub :sleep, nil do
+        @app.run
+      end
+      # After pressing 'l', labels should be off - check title
+      assert_includes buffer_content[0], "labels: off"
     end
   end
 
