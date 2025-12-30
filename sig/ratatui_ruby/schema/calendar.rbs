@@ -6,12 +6,12 @@ module RatatuiRuby
     attr_reader year: Integer
     attr_reader month: Integer
     attr_reader events: Hash[untyped, Style]
-    attr_reader day_style: Style?
+    attr_reader default_style: Style?
     attr_reader header_style: Style?
     attr_reader block: Block?
     attr_reader show_weekdays_header: bool
     attr_reader show_surrounding: Style?
     attr_reader show_month_header: bool
-    def self.new: (year: Numeric, month: Numeric, ?events: Hash[untyped, Style], ?day_style: Style?, ?header_style: Style?, ?block: Block?, ?show_weekdays_header: bool, ?show_surrounding: Style?, ?show_month_header: bool) -> Calendar
+    def self.new: (year: Numeric, month: Numeric, ?events: Hash[untyped, Style], ?default_style: Style?, ?header_style: Style?, ?block: Block?, ?show_weekdays_header: bool, ?show_surrounding: Style?, ?show_month_header: bool) -> Calendar
   end
 end

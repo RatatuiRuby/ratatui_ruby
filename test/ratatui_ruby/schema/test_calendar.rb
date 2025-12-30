@@ -41,7 +41,7 @@ module RatatuiRuby
         calendar = Calendar.new(
           year: 2025,
           month: 12,
-          day_style: style,
+          default_style: style,
           header_style: style,
           show_month_header: true,
           block: Block.new(title: "Test Block")

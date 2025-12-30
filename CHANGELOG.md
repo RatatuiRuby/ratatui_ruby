@@ -161,6 +161,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- **Calendar:** Renamed `day_style` to `default_style` to match Ratatui 0.30 API. This is a breaking change. [Kerrick Long]
+
 - **Custom Widget `render` Method (Breaking)**: Changed signature from `render(area, buffer)` to `render(area)`, with render methods now returning an array of `Draw` commands instead of writing directly to a buffer. This change improves memory safety by eliminating use-after-free risks.
 - **Ratatui Upgraded to 0.30.0**: Underlying `ratatui` library upgraded from 0.29, bringing modularized crates, `no_std` support for embedded targets, and major widget/layout enhancements. Layout cache explicitly enabled for performance.
 - **Event API (Breaking)**: `RatatuiRuby.poll_event` returns typed `Event` objects instead of raw Hashes. Code using `event[:type]` must change to `event.key?`, `event.code`, etc.

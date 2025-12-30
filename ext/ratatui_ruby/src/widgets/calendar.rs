@@ -18,7 +18,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let year: i32 = node.funcall("year", ())?;
     let month_u8: u8 = node.funcall("month", ())?;
     let events_val: Value = node.funcall("events", ())?;
-    let day_style_val: Value = node.funcall("day_style", ())?;
+    let default_style_val: Value = node.funcall("default_style", ())?;
     let header_style_val: Value = node.funcall("header_style", ())?;
     let block_val: Value = node.funcall("block", ())?;
     let show_weekdays_header: bool = node.funcall("show_weekdays_header", ())?;
@@ -70,8 +70,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         calendar = calendar.show_surrounding(parse_style(show_surrounding_val)?);
     }
 
-    if !day_style_val.is_nil() {
-        calendar = calendar.default_style(parse_style(day_style_val)?);
+    if !default_style_val.is_nil() {
+        calendar = calendar.default_style(parse_style(default_style_val)?);
     }
 
     if !block_val.is_nil() {

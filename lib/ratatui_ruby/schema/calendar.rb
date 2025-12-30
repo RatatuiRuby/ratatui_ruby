@@ -18,10 +18,10 @@ module RatatuiRuby
     #   Calendar.new(
     #     year: 2025,
     #     month: 12,
-    #     day_style: Style.new(fg: :white),
+    #     default_style: Style.new(fg: :white),
     #     header_style: Style.new(fg: :yellow, modifiers: [:bold])
     #   )
-    class Calendar < Data.define(:year, :month, :events, :day_style, :header_style, :block, :show_weekdays_header, :show_surrounding, :show_month_header)
+    class Calendar < Data.define(:year, :month, :events, :default_style, :header_style, :block, :show_weekdays_header, :show_surrounding, :show_month_header)
       ##
       # :attr_reader: year
       # The year to display (Integer).
@@ -37,7 +37,7 @@ module RatatuiRuby
       # Values must be `Style` objects.
 
       ##
-      # :attr_reader: day_style
+      # :attr_reader: default_style
       # Style for the days.
 
       ##
@@ -61,17 +61,17 @@ module RatatuiRuby
       # [year] Integer.
       # [month] Integer.
       # [events] Hash<Date, Style>. Optional.
-      # [day_style] Style.
+      # [default_style] Style.
       # [header_style] Style.
       # [block] Block.
       # [show_weekdays_header] Boolean. Whether to show the weekday header.
       # [show_surrounding] <tt>Style</tt> or <tt>nil</tt>. Style for surrounding month dates.
-      def initialize(year:, month:, events: {}, day_style: nil, header_style: nil, block: nil, show_weekdays_header: true, show_surrounding: nil, show_month_header: false)
+      def initialize(year:, month:, events: {}, default_style: nil, header_style: nil, block: nil, show_weekdays_header: true, show_surrounding: nil, show_month_header: false)
         super(
           year: Integer(year),
           month: Integer(month),
           events: events,
-          day_style: day_style,
+          default_style: default_style,
           header_style: header_style,
           block: block,
           show_weekdays_header: show_weekdays_header,
