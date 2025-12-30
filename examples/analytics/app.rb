@@ -144,7 +144,7 @@ class AnalyticsApp
             RatatuiRuby::Constraint.new(type: :min, value: 0),
           ],
           children: [
-            RatatuiRuby::Tabs.new(
+            tabs = RatatuiRuby::Tabs.new(
               titles: @tabs,
               selected_index: @selected_tab,
               block: RatatuiRuby::Block.new(title: "Views", borders: [:all]),
@@ -180,7 +180,8 @@ class AnalyticsApp
                   RatatuiRuby::Text::Span.new(content: "j/k", style: @hotkey_style),
                   RatatuiRuby::Text::Span.new(content: ": Pad Right (#{@padding_right})  "),
                   RatatuiRuby::Text::Span.new(content: "d", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Divider (#{@dividers[@divider_index]})")
+                  RatatuiRuby::Text::Span.new(content: ": Divider (#{@dividers[@divider_index]})  "),
+                  RatatuiRuby::Text::Span.new(content: "Width: #{tabs.width}")
                 ]),
                 # Line 3: Styles
                 RatatuiRuby::Text::Line.new(spans: [

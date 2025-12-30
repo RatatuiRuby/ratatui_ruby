@@ -80,4 +80,23 @@ class TestTabs < Minitest::Test
       assert_includes line, "B"
     end
   end
+
+  def test_tabs_width
+    # Basic width: "A" (1) + "|" (1) + "B" (1) = 3
+    tabs = RatatuiRuby::Tabs.new(titles: ["A", "B"])
+    assert_equal 3, tabs.width
+
+    # Custom divider: "A" (1) + " - " (3) + "B" (1) = 5
+    tabs = RatatuiRuby::Tabs.new(titles: ["A", "B"], divider: " - ")
+    assert_equal 5, tabs.width
+
+    # Padding: 2 + "A" (1) + "|" (1) + "B" (1) + 2 = 7
+    tabs = RatatuiRuby::Tabs.new(titles: ["A", "B"], padding_left: 2, padding_right: 2)
+    assert_equal 7, tabs.width
+
+    # Line objects in titles
+    line_title = RatatuiRuby::Text::Line.from_string("Foo") # width 3
+    tabs = RatatuiRuby::Tabs.new(titles: [line_title, "Bar"]) # 3 + 1 + 3 = 7
+    assert_equal 7, tabs.width
+  end
 end

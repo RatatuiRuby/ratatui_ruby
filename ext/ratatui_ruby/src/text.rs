@@ -108,7 +108,7 @@ fn parse_span(value: Value) -> Result<Span<'static>, Error> {
 }
 
 /// Parses a Ruby `Text::Line` object into a ratatui Line.
-fn parse_line(value: Value) -> Result<Line<'static>, Error> {
+pub fn parse_line(value: Value) -> Result<Line<'static>, Error> {
     let ruby = magnus::Ruby::get().unwrap();
 
     // Get class name

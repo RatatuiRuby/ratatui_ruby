@@ -95,6 +95,9 @@ fn init() -> Result<(), Error> {
     m.define_module_function("_paragraph_line_count", function!(widgets::paragraph::line_count, 2))?;
     m.define_module_function("_paragraph_line_width", function!(widgets::paragraph::line_width, 1))?;
 
+    // Tabs metrics
+    m.define_module_function("_tabs_width", function!(widgets::tabs::width, 1))?;
+
     Ok(())
 }
 

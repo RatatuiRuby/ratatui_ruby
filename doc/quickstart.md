@@ -125,7 +125,7 @@ To see more complex layouts and widget usage, check out the `examples/` director
 
 ### [Analytics](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/analytics/app.rb)
 
-Demonstrates the use of `Tabs` and `BarChart` widgets. Features custom highlight styles, base styles, and dividers for the tabs. The `BarChart` showcases both standard and grouped bars (Quarterly view), highlighting features like `group_gap` spacing, toggling `BarChart::direction`, customizing label/value styles, cycling custom `BarChart::bar_set` characters, and switching between Full and Mini height modes.
+Demonstrates the use of `Tabs` and `BarChart` widgets. Features custom highlight styles, base styles, dividers for the tabs, and dynamic width calculation. The `BarChart` showcases both standard and grouped bars (Quarterly view), highlighting features like `group_gap` spacing, toggling `BarChart::direction`, customizing label/value styles, cycling custom `BarChart::bar_set` characters, and switching between Full and Mini height modes.
 
 ![analytics](./images/analytics.png)
 

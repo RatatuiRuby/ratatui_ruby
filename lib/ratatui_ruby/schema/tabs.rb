@@ -75,5 +75,10 @@ module RatatuiRuby
           padding_right: Integer(padding_right)
         )
       end
+
+      # Returns the total width of the tabs.
+      def width
+        RatatuiRuby._tabs_width(self)
+      end
     end
 end

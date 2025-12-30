@@ -8,6 +8,14 @@ use ratatui::{layout::Rect, text::Line, widgets::Tabs, Frame};
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let bump = Bump::new();
+    let tabs = create_tabs(node, &bump)?;
+    frame.render_widget(tabs, area);
+    Ok(())
+}
+
+use crate::text::parse_line;
+
+fn create_tabs<'a>(node: Value, bump: &'a Bump) -> Result<Tabs<'a>, Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let titles_val: Value = node.funcall("titles", ())?;
     let selected_index: usize = node.funcall("selected_index", ())?;
@@ -23,8 +31,13 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let mut titles = Vec::new();
     for i in 0..titles_array.len() {
         let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
-        let title: String = titles_array.entry(index)?;
-        titles.push(Line::from(title));
+        let val: Value = titles_array.entry(index)?;
+        if let Ok(line) = parse_line(val) {
+            titles.push(line);
+        } else {
+            let s: String = String::try_convert(val)?;
+            titles.push(Line::from(s));
+        }
     }
 
     let mut tabs = Tabs::new(titles).select(selected_index);
@@ -45,7 +58,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     if !block_val.is_nil() {
-        tabs = tabs.block(parse_block(block_val, &bump)?);
+        tabs = tabs.block(parse_block(block_val, bump)?);
     }
 
     if padding_left > 0 || padding_right > 0 {
@@ -54,8 +67,46 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         tabs = tabs.padding(left_str, right_str);
     }
 
-    frame.render_widget(tabs, area);
-    Ok(())
+    Ok(tabs)
+}
+
+pub fn width(node: Value) -> Result<usize, Error> {
+    let ruby = magnus::Ruby::get().unwrap();
+    let titles_val: Value = node.funcall("titles", ())?;
+    let divider_val: Value = node.funcall("divider", ())?;
+    let padding_left: usize = node.funcall("padding_left", ())?;
+    let padding_right: usize = node.funcall("padding_right", ())?;
+
+    let titles_array = magnus::RArray::from_value(titles_val)
+        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for titles"))?;
+
+    let mut total_width = padding_left + padding_right;
+    
+    let mut titles_count = 0;
+    for i in 0..titles_array.len() {
+        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let val: Value = titles_array.entry(index)?;
+        let line_width = if let Ok(line) = parse_line(val) {
+            line.width()
+        } else {
+            let s: String = String::try_convert(val)?;
+            ratatui::text::Span::raw(s).width()
+        };
+        total_width += line_width;
+        titles_count += 1;
+    }
+
+    if titles_count > 1 {
+        let divider_width = if !divider_val.is_nil() {
+            let d: String = divider_val.funcall("to_s", ())?;
+            ratatui::text::Span::raw(d).width()
+        } else {
+            1 // Default divider is "|"
+        };
+        total_width += (titles_count - 1) * divider_width;
+    }
+
+    Ok(total_width)
 }
 
 #[cfg(test)]

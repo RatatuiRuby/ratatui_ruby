@@ -107,7 +107,7 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `highlight_style()` | `highlight_style:` | ✅ |
 | `divider()` | `divider:` | ✅ |
 | `padding()` / `padding_left()` / `padding_right()` | `padding_left:` / `padding_right:` | ✅ |
-| `width()` | — | ⚠️ **TODO #1** (new in 0.30.0 - calculates total tab width) |
+| `width()` | `width` | ✅ |
 
 ---
 

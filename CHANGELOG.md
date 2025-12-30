@@ -94,6 +94,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - `style`: Base style applied to the entire tabs area.
 - `padding_left` and `padding_right`: Horizontal padding around tab titles.
+- `width`: Calculate total width of the tabs (including dividers/padding).
 
 #### Canvas Widget
 
