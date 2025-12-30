@@ -7,92 +7,150 @@
 All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
 ## [Unreleased]
 
 ### Added
 
-- **Calendar Event Highlighting**: Added `events` parameter to `Calendar` widget, accepting a Hash mapping `Date` objects to `Style` objects. This allows highlighting specific dates with custom colors and modifiers, useful for displaying holidays, appointments, or other date-based metadata. The `calendar_demo` example now demonstrates this by highlighting the current date, a date 2 days in the future, and a date 5 days in the past.
-- **Block Border Set**: Added `border_set` parameter to `Block` widget, allowing custom characters for borders. This enables using digits, specific symbols, or other characters for border lines, as demonstrated in the `box_demo`.
+#### Custom Widgets
 
-- **Calendar Weekdays Header and Surrounding Dates**: Added `show_weekdays_header` (boolean, default `true`) and `show_surrounding` (optional Style) parameters to the `Calendar` widget. The `show_weekdays_header` parameter controls whether day-of-week names (Mon, Tue, etc.) are displayed. The `show_surrounding` parameter accepts a Style object to display dates from the previous and next month with custom styling; pass `nil` to hide them. The `calendar_demo` example now demonstrates these features with interactive toggling via keyboard shortcuts.
-- **Block Border Style**: Added `border_style` parameter to the `Block` widget, enabling full style support (colors and modifiers) for borders. Previously, only `border_color` was supported. The `border_style` parameter accepts a `Style` object or Hash with `fg`, `bg`, and `modifiers` keys, allowing borders to be bold, italic, colored, or any combination thereof. When both `border_color` and `border_style` are provided, `border_style` takes precedence. The `box_demo` example now demonstrates cycling through border styles with the `b` key.
-- **List Scroll Padding**: Added `scroll_padding` parameter to the `List` widget. This parameter controls how many items remain visible above and below the selected item when scrolling through a long list. When set to a positive integer (e.g., `1` or `2`), the list keeps neighboring items visible during navigation, improving UX when browsing large datasets. The `list_demo` example now demonstrates this feature with the `p` key.
-- **Sparkline Absent Value Styling**: Added `absent_value_symbol` and `absent_value_style` parameters to the `Sparkline` widget. The data array now accepts `Integer` or `nil`. A `nil` value marks an absent value (distinct from `0`), allowing clear visual distinction between missing data and low values. The `absent_value_symbol` parameter customizes the character displayed for absent values (default is space), while `absent_value_style` controls their styling.
-- **Sparkline Demo Example**: New `sparkline_demo` example demonstrates the `Sparkline` widget comprehensively with interactive attribute cycling (data set, direction, color, absent value marker, and marker style). Follows the developing_examples.md pattern with a sidebar for hotkey documentation.
-- **List Repeat Highlight Symbol**: Added `repeat_highlight_symbol` parameter to the `List` widget. When set to `true`, the highlight symbol is repeated on each line of the selected item, rather than appearing only on the first line. Matches Ratatui 0.30's `repeat_highlight_symbol` feature. The `list_styles` example now demonstrates toggling this option with the `r` key.
-- **Gauge Style and GaugeStyle (Breaking)**: Added separate `style` and `gauge_style` parameters to the `Gauge` widget. The `style` parameter applies a base style to the entire gauge background, while `gauge_style` applies specifically to the filled bar portion. This matches Ratatui 0.30's widget API distinction. **Breaking:** The `style` parameter no longer defaults to `Style.default` and is now optional. Existing code that passes `style:` expecting bar coloring should change to `gauge_style:` instead.
-- **Gauge Demo Example**: New `gauge_demo` example demonstrates the `Gauge` widget comprehensively with interactive attribute cycling (ratio, gauge color, background style, Unicode mode, label format). Follows the developing_examples.md pattern with a sidebar for hotkey documentation.
-- **Calendar Month Header (Breaking)**: Added `show_month_header` parameter to `Calendar` widget (boolean, defaults to `false`). This aligns with Ratatui's default behavior where the month header is hidden unless explicitly enabled. **Breaking:** Previously, the header was always shown essentially by default (via `header_style`). Existing code relying on the header being visible must now set `show_month_header: true`. The `calendar_demo` example now demonstrates toggling this with the `h` key.
+- **Draw Command API**: Custom widgets now return an array of `Draw` commands instead of writing to a buffer. Use `RatatuiRuby::Draw.string(x, y, string, style)` and `RatatuiRuby::Draw.cell(x, y, cell)` to create draw commands. This eliminates use-after-free bugs by keeping all pointers inside Rust while Ruby works with pure data objects. **Breaking:** The `render` method signature changed from `render(area, buffer)` to `render(area)`.
 
-### Added (continued)
+#### Block Widget
 
-- **Axis Labels Alignment**: Added `labels_alignment` parameter to the `Axis` widget used in `Chart`. This parameter controls the horizontal alignment of axis labels (`:left`, `:center`, `:right`), allowing for precise control over label positioning on charts. The `chart_demo` example now demonstrates this feature with centered X-axis labels and right-aligned Y-axis labels.
-- **LineGauge Style**: Added `style` parameter to `LineGauge` widget, allowing a base style to be applied to the entire gauge area. This complements the existing `filled_style` and `unfilled_style` parameters.
-- **Chart Legend Positioning**: Added `legend_position` and `hidden_legend_constraints` to the `Chart` widget. `legend_position` accepts `:top_left`, `:top_right`, `:bottom_left`, or `:bottom_right` (defaulting to `:top_right`). `hidden_legend_constraints` accepts an array of two `Constraint` objects (width and height) to hide the legend when the chart area is too small. The `chart_demo` example now demonstrates toggling legend position.
+- `border_type`: Customize border style (`:plain`, `:rounded`, `:double`, `:thick`, `:quadrant_inside`, `:quadrant_outside`).
+- `border_set`: Customize border characters (e.g., digits, symbols).
+- `border_style`: Apply full style support (colors and modifiers) to borders. Takes precedence over `border_color`.
+- `children`: Declare child widgets within the block's area for composable UI structures.
+- Multiple `titles`: Display multiple titles with individual alignment (`:left`, `:center`, `:right`) and vertical positioning (`:top`, `:bottom`). Each title supports its own `style`.
+- `title_style`: Base style applied to all titles.
+- `style`: Base style applied to the entire block.
+- `padding`: Directional padding via a single integer (uniform) or array of 4 integers (`[left, right, top, bottom]`).
 
-- **Cached Layout Pattern**: Documented in `doc/interactive_design.md`, a canonical design for immediate-mode UI. Solve the layout duplication problem by calculating geometry once per frame (before rendering and event handling), then reusing the cached `Rect` objects everywhere. Three-phase lifecycle: `calculate_layout`, `render`, `handle_input`. Forms the foundation for Component architecture in Gem 1.5 where layout caching is automated.
-- **Example Sidebars**: Refactored interactive examples (`box_demo`, `list_styles`, `table_select`, `hit_test`, `stock_ticker`, `system_monitor`, `scroll_text`, `dashboard`) to display hotkey controls and current settings in a sidebar, following the pattern introduced in the `analytics` example. This provides consistent, discoverable documentation of interactive features within each example.
-- **Block Children**: Added `children` parameter to `Block` widget, enabling declarative composition of child widgets within the block's area. This allows nested UI structures like `Block.new(children: [Paragraph.new(...)])` for more ergonomic view composition.
-- **Typed Event API**: `RatatuiRuby.poll_event` now returns rich, typed Ruby objects instead of raw Hashes. The new event classes (`Event::Key`, `Event::Mouse`, `Event::Resize`, `Event::Paste`, `Event::FocusGained`, `Event::FocusLost`) provide predicate methods (`key?`, `mouse?`, `ctrl?`, etc.), pattern matching support, and direct Symbol/String comparison for cleaner event handling code.
-- **Table Highlight Spacing**: Added `highlight_spacing` parameter to `Table` widget, accepting `:always`, `:when_selected`, or `:never`. This controls whether the selection column is reserved or hidden when no row is selected.
-- **List Highlight Spacing**: Added `highlight_spacing` parameter to `List` widget, accepting `:always`, `:when_selected`, or `:never`. This controls whether the selection column is reserved when no item is selected.
-- **Table**: Added `column_spacing` support ([#gap-analysis](https://github.com/kerricklong/ratatui_ruby/issues/21)).
-- **Canvas**: Added `background_color` property to `Canvas` widget ([#gap-analysis](https://github.com/kerricklong/ratatui_ruby/issues/21)).
-- **Tabs Style**: Added `style` parameter to `Tabs` widget, allowing a base style to be applied to the entire tabs area.
-- **BarChart Direction**: Added `direction` parameter to `BarChart` widget, accepting `:vertical` (default) or `:horizontal`.
-- **BarChart Styling**: Added `label_style` and `value_style` support to `BarChart`, matching Ratatui 0.30's improved chart styling capabilities.
-- **Tabs Padding**: Added `padding_left` and `padding_right` parameters to `Tabs` widget, enabling horizontal padding around the tab titles.
-- **Sparkline Direction**: Added `direction` parameter to `Sparkline` widget, accepting `:left_to_right` (default) or `:right_to_left`.
-- **Resize Events**: The event system now exposes terminal resize events via `Event::Resize`, which includes `width` and `height` attributes for building responsive layouts.
-- **Paste Events**: Bracketed paste is now surfaced via `Event::Paste(content:)`, enabling safe handling of pasted text as a single atomic event.
-- **Focus Events**: Terminal focus changes are now surfaced via `Event::FocusGained` and `Event::FocusLost` for terminals that support it (e.g., iTerm2, Kitty).
-- **Event Discriminator Pattern**: Implementation of a discriminator pattern for events via a `type:` key in `#deconstruct_keys`. This enables more concise and idiomatic Ruby 3.0+ pattern matching (e.g., `in type: :key, code: "q"`). All existing subclasses (`Key`, `Mouse`, `Resize`, `Paste`, `FocusGained`, `FocusLost`) now support this pattern.
-- **Block Title Styling**: Adds `title_style` to the `Block` widget. This paints a default style across all titles. Each entry in the `titles` array can also carry its own `style`.
-- **Block Titles**: Adds multiple titles with individual alignment and positioning (top/bottom) via the `titles` array.
-- **Block Style**: Added `style` parameter to `Block` widget. **Note:** This inserts a new member into the `Block` Data object, which changes the positional order of members. Pattern matching or positional initialization of `Block` is affected.
-- **List Direction**: Added `direction` attribute (`:top_to_bottom` or `:bottom_to_top`) to `List` widget.
-- **Table Footer**: The `Table` widget now supports a `footer` parameter, allowing for summary rows at the bottom of the table.
-- **Table Style**: The `Table` widget now supports a `style` parameter, which applies a base style to the entire table area.
-- **Block Padding**: `Block` widget now supports correct padding via the `padding` parameter, accepting either a single integer for uniform padding or an array of 4 integers for directional padding (`[left, right, top, bottom]`).
-- **Block Title Alignment**: `Block` widget now supports `title_alignment` (`:left`, `:center`, `:right`) for positioning the title on the border.
-- **Constraint Ratio**: Added `Constraint.ratio(numerator, denominator)` to support proportional constraints where the ratio is explicit (e.g., 1/4 and 3/4).
-- **Table Constraints**: `Table` widget `widths` now support all constraint types including `:max`, `:fill` and `:ratio`, matching the flexibility of the `Layout` widget.
-- **Table Flex**: Added `flex` parameter to `Table` widget to support modern table layouts (`:legacy`, `:start`, `:center`, `:end`, `:space_between`, `:space_around`, `:space_evenly`).
-- **Flex::SpaceEvenly**: Added `Flex::SpaceEvenly` layout mode to `Layout` widget.
-- **Block Border Types**: Added `border_type` to `Block` widget, allowing `:plain`, `:rounded`, `:double`, `:thick`, `:quadrant_inside`, and `:quadrant_outside` border styles.
-- **Fill and Max Constraints**: Added `Constraint.fill(weight)` and `Constraint.max(value)` for modern ratatui layout patterns. Fill constraints distribute remaining space proportionally—for example, `Fill(1)` and `Fill(3)` split space in a 1:3 ratio. Max constraints cap the maximum size of a section.
-- **Flex Layout**: The `Layout` widget now supports a `flex` parameter to control how empty space is distributed. Options include `:legacy` (default), `:start`, `:center`, `:end`, `:space_between`, and `:space_around`.
-- **Rich Text Support**: Introduced `Text::Span` and `Text::Line` classes for creating styled text with inline formatting. Spans can be combined into lines with optional alignment, enabling word-level control over colors, modifiers, and other style attributes.
-- **LineGauge Widget**: New `LineGauge` widget for displaying compact, character-based progress bars using line characters. Supports ratio, label, style, and block customization.
-- **New Canvas Markers**: Support for the new `Quadrant`, `Sextant`, and `Octant` markers in the `Canvas` widget for higher-resolution pseudo-pixel rendering.
-- **Canvas HalfBlock Marker**: Added `:half_block` marker to `Canvas` widget for block-based rendering using half-height blocks.
-- **Shape Module**: Canvas shape primitives (`Point`, `Line`, `Rectangle`, `Circle`, `Map`) are now organized under the `Shape` module (e.g., `Shape::Line`) to avoid naming conflicts with `Text::Line`. The session provides disambiguated helper methods: `shape_line`, `shape_circle`, etc. for shapes and `text_span`, `text_line` for text components.
-- **Scrollbar Styling**: Added full styling support to the `Scrollbar` widget, including `thumb_style`, `track_symbol`, `track_style`, `begin_symbol`, `begin_style`, `end_symbol`, `end_style`, and `style`.
-- **Scrollbar Orientation**: Added support for all `ratatui` scrollbar orientations: `:vertical_left`, `:vertical_right`, `:horizontal_top`, and `:horizontal_bottom`. Existing `:vertical` and `:horizontal` options remain as aliases.
-- **Gauge Enhancements**: Added `percent` initialization parameter as a convenience alternative to `ratio`, and explicitly exposed `use_unicode` attribute to toggle between unicode blocks and ASCII rendering (defaults to `true`).
-- **Sparkline Direction**: Added `direction` parameter to `Sparkline` widget, accepting `:left_to_right` (default) or `:right_to_left`. Use `:right_to_left` when new data should appear on the left.
-- **TestHelper Improvements**: Added `inject_keys` helper for concise event injection and a default `timeout` (2s) to `with_test_terminal` to prevent hanging tests. Also implemented value equality (`==`) for `Event` objects to simplify assertions.
-- **Test Color Inspection**: Added `RatatuiRuby::TestHelper#get_cell` and `#assert_cell_style` for testing terminal cell attributes (colors, characters).
-- **Test Safegaurds**: `RatatuiRuby::TestHelper#inject_event` (and `inject_keys`) now raises a helpful error if called outside of `with_test_terminal`, preventing test hangs caused by race conditions.
-- **Cell Example**: Added `examples/cell_demo.rb` showcasing how to mix `Cell` objects with Strings in tables and custom widgets, demonstrating advanced styling and layout composition.
-- **Layout Reflection**: Added `Layout.split(area, direction:, constraints:, flex:)` class method that computes layout rectangles without rendering. This enables hit testing by letting Ruby calculate where widgets will be placed before drawing.
-- **Rect Hit Testing**: Added `Rect#contains?(x, y)` method for testing whether a point is inside a rectangle, essential for implementing mouse click handlers in component systems.
+#### Calendar Widget
+
+- `events`: Hash mapping `Date` objects to `Style` objects for highlighting specific dates.
+- `show_month_header`: Toggle month header visibility (defaults to `false`). **Breaking:** Previously always shown.
+- `show_weekdays_header`: Toggle weekday names (Mon, Tue, etc.) visibility (defaults to `true`).
+- `show_surrounding`: Optional `Style` to display dates from adjacent months, or `nil` to hide them.
+
+#### Chart Widget
+
+- `legend_position`: Position legend at `:top_left`, `:top_right`, `:bottom_left`, or `:bottom_right` (defaults to `:top_right`).
+- `hidden_legend_constraints`: Array of two `Constraint` objects to hide the legend when chart area is too small.
+- **Axis**: `labels_alignment` to control horizontal alignment (`:left`, `:center`, `:right`) of axis labels.
+
+#### Gauge Widget
+
+- `style`: Base style applied to the entire gauge background.
+- `gauge_style`: Style applied specifically to the filled bar. **Breaking:** Use this instead of `style` if you want bar coloring; `style` no longer defaults to `Style.default`.
+- `percent`: Convenience parameter alternative to `ratio` for initialization.
+- `use_unicode`: Explicitly toggle between unicode blocks and ASCII rendering (defaults to `true`).
+
+#### LineGauge Widget
+
+- `style`: Base style applied to the entire gauge area.
+
+#### List Widget
+
+- `scroll_padding`: Number of items to keep visible above and below the selected item during scrolling.
+- `repeat_highlight_symbol`: When `true`, repeat highlight symbol on each line of multi-line selections.
+- `highlight_spacing`: Control selection column reservation (`:always`, `:when_selected`, `:never`).
+- `direction`: List orientation (`:top_to_bottom` or `:bottom_to_top`).
+
+#### Sparkline Widget
+
+- `absent_value_symbol` and `absent_value_style`: Customize rendering of `nil` values (distinct from `0`).
+- `direction`: Rendering direction (`:left_to_right` or `:right_to_left`).
+
+#### Table Widget
+
+- `style`: Base style applied to the entire table.
+- `column_spacing`: Horizontal spacing between columns.
+- `footer`: Summary rows at the bottom of the table.
+- `flex`: Layout distribution mode (`:legacy`, `:start`, `:center`, `:end`, `:space_between`, `:space_around`, `:space_evenly`).
+- `highlight_spacing`: Control selection column reservation (`:always`, `:when_selected`, `:never`).
+- `widths`: Now support all constraint types (`:max`, `:fill`, `:ratio`) with full flexibility.
+
+#### Tabs Widget
+
+- `style`: Base style applied to the entire tabs area.
+- `padding_left` and `padding_right`: Horizontal padding around tab titles.
+
+#### Canvas Widget
+
+- `background_color`: Set canvas background color.
+- `:half_block` marker: Block-based rendering using half-height blocks.
+- `:quadrant`, `:sextant`, `:octant` markers: High-resolution pseudo-pixel rendering.
+
+#### Scrollbar Widget
+
+- Full styling support: `thumb_style`, `track_symbol`, `track_style`, `begin_symbol`, `begin_style`, `end_symbol`, `end_style`, `style`.
+- All orientation variants: `:vertical_left`, `:vertical_right`, `:horizontal_top`, `:horizontal_bottom` (`:vertical` and `:horizontal` remain as aliases).
+
+#### Layout & Constraints
+
+- `Constraint.ratio(numerator, denominator)`: Proportional constraints with explicit ratio.
+- `Constraint.fill(weight)`: Distribute remaining space proportionally. Use multiple `Fill` to split space (e.g., `Fill(1)` and `Fill(3)` split 1:3).
+- `Constraint.max(value)`: Cap maximum size of a section.
+- `Layout.split(area, direction:, constraints:, flex:)`: Compute layout rectangles without rendering, enabling hit testing.
+- `Flex::SpaceEvenly`: New layout mode for `Layout` widget.
+- `flex` parameter: All layout options (`:legacy`, `:start`, `:center`, `:end`, `:space_between`, `:space_around`, `:space_evenly`).
+
+#### Rich Text & Text Components
+
+- `Text::Span` and `Text::Line`: Styled text with inline formatting. Combine spans into lines with optional alignment.
+- `Shape` module: Canvas shape primitives (`Shape::Line`, `Shape::Circle`, `Shape::Rectangle`, `Shape::Point`, `Shape::Map`) to avoid naming conflicts with `Text::Line`.
+
+#### Event System
+
+- Typed `Event` API: `RatatuiRuby.poll_event` returns typed objects (`Event::Key`, `Event::Mouse`, `Event::Resize`, `Event::Paste`, `Event::FocusGained`, `Event::FocusLost`).
+- Predicate methods: `key?`, `mouse?`, `ctrl?`, etc. for cleaner event handling.
+- Pattern matching support and discriminator pattern via `type:` key in `#deconstruct_keys`.
+- `Event::Resize`: Terminal resize events with `width` and `height` attributes.
+- `Event::Paste`: Bracketed paste as atomic event with `content:`.
+- `Event::FocusGained` and `Event::FocusLost`: Terminal focus changes.
+- `Event::Mouse.new` accepts `nil` for `button` parameter (treated as `"none"`).
+
+#### Geometry & Hit Testing
+
+- `Rect#contains?(x, y)`: Test whether a point is inside a rectangle. Essential for mouse click handlers.
+- `Layout.split`: Enables calculating widget positions before rendering.
+
+#### Testing
+
+- `RatatuiRuby::TestHelper#inject_keys`: Concise event injection helper.
+- `RatatuiRuby::TestHelper#get_cell` and `#assert_cell_style`: Inspect terminal cell attributes (colors, characters).
+- `with_test_terminal`: Default timeout of 2 seconds to prevent hanging tests. **Breaking:** Default size is now 80×24 (VT100 standard) instead of 20×10.
+- Error on `inject_event`/`inject_keys` outside `with_test_terminal`: Prevents test hangs from race conditions.
+- Value equality (`==`) for `Event` objects: Simplify assertions.
+
+#### Lifecycle & Application Structure
+
+- `RatatuiRuby.run`: New context manager that initializes terminal, yields session, and restores on exit. Allows custom event loop control.
+- **Session** class: Renamed from `DSL` to better reflect its purpose as a managed terminal session with convenience methods.
+- Focus and Bracketed Paste events: Enabled by default in `RatatuiRuby.run` and `RatatuiRuby.init_terminal` (disable with `focus_events: false` or `bracketed_paste: false`).
+
+#### Documentation & Examples
+
+- **Cached Layout Pattern**: Documented in `doc/interactive_design.md`. Three-phase lifecycle pattern (`calculate_layout`, `render`, `handle_input`) solves layout duplication in immediate-mode UI. Foundation for Component architecture in Gem 1.5.
 
 ### Changed
 
-- **Cell Refactor (Breaking)**: Renamed `RatatuiRuby::Cell#symbol` to `#char` to avoid confusion with Ruby's `Symbol` class. This affects initialization (`Cell.new(char: "X")`) and property access (`cell.char`).
-- **Event API (Breaking)**: `RatatuiRuby.poll_event` now returns typed `Event` objects instead of raw Hashes. Code that previously used `event[:type]`, `event[:code]`, etc. must be updated to use `event.key?`, `event.code`, and similar methods. See `doc/event_handling.md` for migration guidance.
-- **Ratatui Upgraded to 0.30.0**: Upgraded the underlying `ratatui` library from 0.29 to 0.30.0, bringing significant improvements including modularized crates, `no_std` support for embedded targets, and major widget and layout enhancements. Layout cache is now explicitly enabled to maintain performance.
-- **RatatuiRuby.run**: Added `RatatuiRuby.run` as a lifecycle context manager that initializes the terminal, yields a session, and ensures the terminal is restored, allowing users to define their own application loops. `RatatuiRuby.main_loop` has been removed in favor of this more explicit API.
-- **Event::Mouse Initialization**: `Event::Mouse.new` now allows `nil` for the `button` parameter, which is treated as `"none"`. This simplifies creation of mouse events where a specific button isn't relevant, such as scrolling.
-- **Session**: The `DSL` class previously yielded by `main_loop` has been renamed to `Session` to better reflect its purpose as a managed terminal session with convenience methods.
-- **Improved Event Defaults**: `RatatuiRuby.run` and `RatatuiRuby.init_terminal` now enable Focus and Bracketed Paste events by default. This provides a fuller TUI experience out of the box. Users can explicitly disable them by passing `focus_events: false` or `bracketed_paste: false`.
-- **TestHelper Terminal Size (Breaking)**: `with_test_terminal` now defaults to 80×24 (standard VT100 dimensions) instead of 20×10. Tests that relied on the old defaults must now explicitly specify `with_test_terminal(20, 10)`.
+- **Custom Widget `render` Method (Breaking)**: Changed signature from `render(area, buffer)` to `render(area)`, with render methods now returning an array of `Draw` commands instead of writing directly to a buffer. This change improves memory safety by eliminating use-after-free risks.
+- **Ratatui Upgraded to 0.30.0**: Underlying `ratatui` library upgraded from 0.29, bringing modularized crates, `no_std` support for embedded targets, and major widget/layout enhancements. Layout cache explicitly enabled for performance.
+- **Event API (Breaking)**: `RatatuiRuby.poll_event` returns typed `Event` objects instead of raw Hashes. Code using `event[:type]` must change to `event.key?`, `event.code`, etc.
+- **Cell API (Breaking)**: Renamed `Cell#symbol` to `#char` to avoid confusion with Ruby's `Symbol` class.
+- **RatatuiRuby.main_loop Removed (Breaking)**: Removed in favor of `RatatuiRuby.run` for more explicit lifecycle control.
+- **TestHelper Terminal Size (Breaking)**: `with_test_terminal` defaults to 80×24 instead of 20×10.
+- **Calendar Month Header Default (Breaking)**: `show_month_header` defaults to `false` (previously always shown). Set `show_month_header: true` if relying on the old behavior.
+- **Gauge `style` Default (Breaking)**: No longer defaults to `Style.default`. Use `gauge_style` for bar coloring instead.
 
 ### Fixed
 
 - **Alpine Linux Support**: Fixed gem installation failures on Alpine Linux (musl targets) by properly configuring `crate-type` to support static linking where dynamic linking is unsupported.
-- **Rust Compilation**: Resolved a deprecation warning for `ratatui::buffer::Buffer::get_mut` by upgrading to `cell_mut`, ensuring clean builds with `cargo check` and `bundle exec rake`.
+- **Rust Safety**: Convert `class.name()` results to owned strings for proper GC safety with Magnus 0.8.
+- **Terminal Preview Detection**: Detect staged changes correctly in preview generation.
 
 ## [0.3.1] - 2025-12-28
 
