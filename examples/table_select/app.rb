@@ -20,7 +20,7 @@ PROCESSES = [
 ].freeze
 
 class TableSelectApp
-  attr_reader :selected_index, :current_style_index, :column_spacing, :highlight_spacing
+  attr_reader :selected_index, :selected_col, :current_style_index, :column_spacing, :highlight_spacing, :column_highlight_style
 
   STYLES = [
     { name: "Cyan", style: RatatuiRuby::Style.new(fg: :cyan) },
@@ -38,9 +38,13 @@ class TableSelectApp
 
   def initialize
     @selected_index = nil
+    @selected_col = nil
     @current_style_index = 0
     @column_spacing = 1
     @highlight_spacing_index = 0
+    @highlight_spacing_index = 0
+    @column_highlight_style = RatatuiRuby::Style.new(fg: :magenta)
+    @show_column_highlight = false
     @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
   end
 
@@ -72,6 +76,7 @@ class TableSelectApp
     current_style_entry = STYLES[@current_style_index]
     current_spacing_entry = HIGHLIGHT_SPACINGS[@highlight_spacing_index]
     selection_label = @selected_index.nil? ? "none" : @selected_index.to_s
+    col_label = @selected_col.nil? ? "none" : @selected_col.to_s
 
     # Main table
     table = RatatuiRuby::Table.new(
@@ -79,9 +84,11 @@ class TableSelectApp
       rows: rows,
       widths: widths,
       selected_row: @selected_index,
+      selected_column: @selected_col,
       highlight_style: highlight_style,
       highlight_symbol: "> ",
       highlight_spacing: current_spacing_entry[:spacing],
+      column_highlight_style: @show_column_highlight ? @column_highlight_style : nil,
       style: current_style_entry[:style],
       column_spacing: @column_spacing,
       block: RatatuiRuby::Block.new(
@@ -101,9 +108,11 @@ class TableSelectApp
             # Line 1: Navigation
             RatatuiRuby::Text::Line.new(spans: [
               RatatuiRuby::Text::Span.new(content: "↑/↓", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Navigate  "),
+              RatatuiRuby::Text::Span.new(content: ": Nav Row  "),
+              RatatuiRuby::Text::Span.new(content: "←/→", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Nav Col  "),
               RatatuiRuby::Text::Span.new(content: "x", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Toggle Selection (#{selection_label})  "),
+              RatatuiRuby::Text::Span.new(content: ": Toggle Row (#{selection_label})  "),
               RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Quit")
             ]),
@@ -111,10 +120,15 @@ class TableSelectApp
             RatatuiRuby::Text::Line.new(spans: [
               RatatuiRuby::Text::Span.new(content: "s", style: @hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Style (#{current_style_entry[:name]})  "),
-              RatatuiRuby::Text::Span.new(content: "h", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Spacing (#{current_spacing_entry[:name]})  "),
+              RatatuiRuby::Text::Span.new(content: "p", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Spacing (#{current_spacing_entry[:name]})  ")
+            ]),
+            # Line 3: More Controls
+            RatatuiRuby::Text::Line.new(spans: [
               RatatuiRuby::Text::Span.new(content: "+/-", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Col Space (#{@column_spacing})")
+              RatatuiRuby::Text::Span.new(content: ": Col Space (#{@column_spacing})  "),
+              RatatuiRuby::Text::Span.new(content: "c", style: @hotkey_style),
+              RatatuiRuby::Text::Span.new(content: ": Col Highlight (#{@show_column_highlight ? 'On' : 'Off'})")
             ])
           ]
         )
@@ -126,7 +140,7 @@ class TableSelectApp
       direction: :vertical,
       constraints: [
         RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.length(4),
+        RatatuiRuby::Constraint.length(5),
       ],
       children: [table, control_panel]
     )
@@ -147,16 +161,28 @@ class TableSelectApp
     in type: :key, code: "up" | "k"
       @selected_index = (@selected_index || 0) - 1
       @selected_index = PROCESSES.length - 1 if @selected_index.negative?
+    in type: :key, code: "right" | "l"
+      @selected_col = ((@selected_col || -1) + 1) % 3 # 3 columns
+    in type: :key, code: "left" | "h"
+      # 'h' is already used for highlight spacing, but let's override it or ignore vim keys for left/right?
+      # Actually 'h' is used for spacing in this demo. Let's just use arrows for cols.
+      # Or map 'h' to left if user meant vim keys.
+      # The demo uses 'h' for "Spacing". Let's change Spacing key to 'p' (property/padding?) or something else.
+      # Or just stick to arrows for columns to avoid conflict.
+      @selected_col = (@selected_col || 0) - 1
+      @selected_col = 2 if @selected_col.negative?
     in type: :key, code: "s"
       @current_style_index = (@current_style_index + 1) % STYLES.length
     in type: :key, code: "+"
       @column_spacing += 1
     in type: :key, code: "-"
       @column_spacing = [@column_spacing - 1, 0].max
-    in type: :key, code: "h"
+    in type: :key, code: "p"
       @highlight_spacing_index = (@highlight_spacing_index + 1) % HIGHLIGHT_SPACINGS.length
     in type: :key, code: "x"
       @selected_index = @selected_index.nil? ? 0 : nil
+    in type: :key, code: "c"
+      @show_column_highlight = !@show_column_highlight
     else
       nil
     end

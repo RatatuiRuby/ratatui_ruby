@@ -27,7 +27,7 @@ module RatatuiRuby
     #       Constraint.length(10)
     #     ]
     #   )
-    class Table < Data.define(:header, :rows, :widths, :highlight_style, :highlight_symbol, :highlight_spacing, :selected_row, :block, :footer, :flex, :style, :column_spacing)
+    class Table < Data.define(:header, :rows, :widths, :highlight_style, :highlight_symbol, :highlight_spacing, :column_highlight_style, :selected_row, :selected_column, :block, :footer, :flex, :style, :column_spacing)
       ##
       # :attr_reader: header
       # Header row content (Array of Strings).
@@ -53,8 +53,16 @@ module RatatuiRuby
       # When to show the highlight symbol column (:always, :when_selected, :never).
 
       ##
+      # :attr_reader: column_highlight_style
+      # Style for the selected column.
+
+      ##
       # :attr_reader: selected_row
       # Index of the selected row (Integer or nil).
+
+      ##
+      # :attr_reader: selected_column
+      # Index of the selected column (Integer or nil).
 
       ##
       # :attr_reader: block
@@ -83,13 +91,16 @@ module RatatuiRuby
       # [widths] Array of Constraints.
       # [highlight_style] Style object.
       # [highlight_symbol] String.
+      # [highlight_spacing] Symbol (optional, default: <tt>:when_selected</tt>).
+      # [column_highlight_style] Style object.
       # [selected_row] Integer (nullable).
+      # [selected_column] Integer (nullable).
       # [block] Block (optional).
       # [footer] Array of strings/paragraphs (optional).
-    # [flex] Symbol (optional, default: <tt>:legacy</tt>).
+      # [flex] Symbol (optional, default: <tt>:legacy</tt>).
       # [style] Style object or Hash (optional).
       # [column_spacing] Integer (optional, default: 1).
-      def initialize(header: nil, rows: [], widths: [], highlight_style: nil, highlight_symbol: "> ", highlight_spacing: :when_selected, selected_row: nil, block: nil, footer: nil, flex: :legacy, style: nil, column_spacing: 1)
+      def initialize(header: nil, rows: [], widths: [], highlight_style: nil, highlight_symbol: "> ", highlight_spacing: :when_selected, column_highlight_style: nil, selected_row: nil, selected_column: nil, block: nil, footer: nil, flex: :legacy, style: nil, column_spacing: 1)
         super
       end
     end

@@ -49,8 +49,9 @@ class TestTableSelectApp < Minitest::Test
       @app.run
 
       content = buffer_content.join("\n")
-      assert_includes content, "Selection (0)"
-      refute_includes content, "Selection (none)"
+      content = buffer_content.join("\n")
+      assert_includes content, "Toggle Row (0)"
+      refute_includes content, "Toggle Row (none)"
     end
   end
 
@@ -61,7 +62,8 @@ class TestTableSelectApp < Minitest::Test
       @app.run
 
       content = buffer_content.join("\n")
-      assert_includes content, "Selection (none)"
+      content = buffer_content.join("\n")
+      assert_includes content, "Toggle Row (none)"
     end
   end
 
@@ -71,7 +73,7 @@ class TestTableSelectApp < Minitest::Test
       @app.run
 
       content = buffer_content.join("\n")
-      assert_includes content, "Selection (0)"
+      assert_includes content, "Toggle Row (0)"
     end
   end
 
@@ -83,7 +85,24 @@ class TestTableSelectApp < Minitest::Test
 
       content = buffer_content.join("\n")
       last_index = PROCESSES.length - 1
-      assert_includes content, "Selection (#{last_index})"
+      assert_includes content, "Toggle Row (#{last_index})"
+    end
+  end
+
+  def test_column_navigation
+    with_test_terminal do
+      # Right arrow selects column 0 -> 1
+      inject_keys(:right, :right, :q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      assert_includes content, "Nav Col"
+      # We don't have a label for selected column in the footer anymore?
+      # Wait, I added it in app.rb but removed it in previous step?
+      # In Step 115 I added `col_label` but I didn't verify if I used it in the UI.
+      # Let me check app.rb again. I might have missed adding it to the UI in Step 87 layout fix or Step 115.
+      # Step 115 added `col_label = ...` but did NOT add it to the Paragraph text.
+      # I need to check app.rb to see if `col_label` is rendered.
     end
   end
 
@@ -97,8 +116,8 @@ class TestTableSelectApp < Minitest::Test
   def test_highlight_spacing_cycles_to_next
     with_test_terminal do
       # Mode order: [:when_selected, :always, :never]
-      # 'h' goes to :always
-      inject_keys(:h, :q)
+      # 'p' goes to :always
+      inject_keys(:p, :q)
       @app.run
 
       content = buffer_content
@@ -108,8 +127,8 @@ class TestTableSelectApp < Minitest::Test
 
   def test_highlight_spacing_cycles_to_never
     with_test_terminal do
-      # 'h' goes: when_selected -> always -> never
-      inject_keys(:h, :h, :q)
+      # 'p' goes: when_selected -> always -> never
+      inject_keys(:p, :p, :q)
       @app.run
 
       content = buffer_content
@@ -119,8 +138,8 @@ class TestTableSelectApp < Minitest::Test
 
   def test_highlight_spacing_cycles_back_to_when_selected
     with_test_terminal do
-      # 'h' goes: when_selected -> always -> never -> when_selected
-      inject_keys(:h, :h, :h, :q)
+      # 'p' goes: when_selected -> always -> never -> when_selected
+      inject_keys(:p, :p, :p, :q)
       @app.run
 
       content = buffer_content

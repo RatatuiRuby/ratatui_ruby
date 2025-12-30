@@ -22,8 +22,10 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let widths_array = magnus::RArray::from_value(widths_val)
         .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for widths"))?;
     let highlight_style_val: Value = node.funcall("highlight_style", ())?;
+    let column_highlight_style_val: Value = node.funcall("column_highlight_style", ())?;
     let highlight_symbol_val: Value = node.funcall("highlight_symbol", ())?;
     let selected_row_val: Value = node.funcall("selected_row", ())?;
+    let selected_column_val: Value = node.funcall("selected_column", ())?;
     let block_val: Value = node.funcall("block", ())?;
     let flex_sym: Symbol = node.funcall("flex", ())?;
     let highlight_spacing_sym: Symbol = node.funcall("highlight_spacing", ())?;
@@ -72,6 +74,10 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         table = table.row_highlight_style(parse_style(highlight_style_val)?);
     }
 
+    if !column_highlight_style_val.is_nil() {
+        table = table.column_highlight_style(parse_style(column_highlight_style_val)?);
+    }
+
     if !highlight_symbol_val.is_nil() {
         let symbol: String = highlight_symbol_val.funcall("to_s", ())?;
         table = table.highlight_symbol(symbol);
@@ -92,6 +98,10 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     if !selected_row_val.is_nil() {
         let index: usize = selected_row_val.funcall("to_int", ())?;
         state.select(Some(index));
+    }
+    if !selected_column_val.is_nil() {
+        let index: usize = selected_column_val.funcall("to_int", ())?;
+        state.select_column(Some(index));
     }
 
     frame.render_stateful_widget(table, area, &mut state);

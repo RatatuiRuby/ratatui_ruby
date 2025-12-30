@@ -84,8 +84,9 @@ Comparison of ratatui 0.30 features vs ratatui_ruby current implementation.
 | `block()` | `block:` | ✅ |
 | `style()` | `style:` | ✅ |
 | `row_highlight_style()` | `highlight_style:` | ✅ |
-| `column_highlight_style()` | — | ❌ **MISSING** |
+| `column_highlight_style()` | `column_highlight_style:` | ✅ |
 | `cell_highlight_style()` | — | ❌ **MISSING** |
+| `state.select_column()` | `selected_column:` | ✅ |
 | `highlight_symbol()` | `highlight_symbol:` | ✅ |
 | `highlight_spacing()` | `highlight_spacing:` | ✅ |
 | `column_spacing()` | `column_spacing:` | ✅ |
@@ -314,8 +315,7 @@ All modifiers are covered. ✅
 ## Remaining Gaps & Priority Recommendations
 
 ### High Priority (Common Use Cases)
-1. **Table::column_highlight_style** - Useful for column-based selection in tables
-2. **Table::cell_highlight_style** - Useful for cell-based selection
+1. **Table::cell_highlight_style** - Useful for cell-based selection
 
 ### Medium Priority
 3. **BarChart::bar_set** - Custom bar characters (like block::border_set)
