@@ -13,17 +13,13 @@ class SavedScreenshot < Data.define(:app, :path)
   def stale?
     return true unless exists?
 
-    app_last_modified > mtime
+    app_last_modified > screenshot_last_commit_time
   end
 
   private
 
   def exists?
     File.exist?(path)
-  end
-
-  def mtime
-    File.mtime(path).to_i
   end
 
   def app_last_modified
@@ -46,5 +42,14 @@ class SavedScreenshot < Data.define(:app, :path)
     Time.iso8601(output).to_i
   rescue StandardError
     0
+  end
+
+  def screenshot_last_commit_time
+    output = `git log -1 --format=%cI "#{path}" 2>/dev/null`.strip
+    return Time.now.to_i if output.empty?
+
+    Time.iso8601(output).to_i
+  rescue StandardError
+    Time.now.to_i
   end
 end
