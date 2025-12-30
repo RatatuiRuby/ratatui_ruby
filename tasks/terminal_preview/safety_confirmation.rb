@@ -3,6 +3,9 @@
 # SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+require_relative "preview_timing"
+require_relative "system_appearance"
+
 class SafetyConfirmation
   def initialize(stale_count, total_count)
     @stale_count = stale_count
@@ -32,7 +35,9 @@ class SafetyConfirmation
     puts "  - Automation -> System Events"
     puts
     puts "⚠️  PLEASE DO NOT TOUCH YOUR COMPUTER WHILE THIS RUNS."
-    puts "   (Estimated time: ~#{(@stale_count * 1.5).to_i} seconds)"
+    min_time = (@stale_count * PreviewTiming.total).to_i
+    max_time = (@stale_count * (PreviewTiming.total + PreviewTiming.close_delay)).to_i
+    puts "   (Estimated time: #{min_time}-#{max_time} seconds)"
     puts
   end
 
@@ -40,8 +45,14 @@ class SafetyConfirmation
     loop do
       print "Continue? [Y/n]: "
       response = $stdin.gets.strip.downcase
-      return if response.empty? || response == "y"
-      abort "Cancelled." if response == "n"
+
+      if response.empty? || response == "y"
+        return if SystemAppearance.dark?
+        puts "⚠️  Dark Mode is not enabled. Please enable it in System Settings or Control Center before proceeding."
+        puts
+      elsif response == "n"
+        abort "Cancelled."
+      end
     end
   end
 end

@@ -6,6 +6,8 @@
 require "fileutils"
 require_relative "example_app"
 require_relative "app_screenshot"
+require_relative "crash_report"
+require_relative "preview_timing"
 require_relative "safety_confirmation"
 require_relative "saved_screenshot"
 
@@ -28,8 +30,13 @@ class PreviewCollection
     SafetyConfirmation.new(stale_count, apps.count).request
 
     puts "\nHere we go!"
-    apps.each { |app| capture_app(app) }
-    puts "\n✨ All captures complete. Check doc/images/."
+    failures = apps.count { |app| !capture_app(app) }
+    
+    if failures.zero?
+      puts "\n✨ All captures complete. Check doc/images/."
+    else
+      abort "\n❌ #{failures} capture(s) failed."
+    end
   end
 
   private
@@ -42,9 +49,12 @@ class PreviewCollection
     saved = SavedScreenshot.for(app, @output_dir)
 
     if saved.stale?
-      AppScreenshot.new(app, saved.path).capture
+      success = AppScreenshot.new(app, saved.path).capture
+      sleep PreviewTiming.between_captures
+      success
     else
       puts "  ⏭️  #{app} (unchanged)"
+      true
     end
   end
-end
+  end

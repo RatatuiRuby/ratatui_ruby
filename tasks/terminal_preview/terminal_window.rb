@@ -4,12 +4,21 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 require_relative "window_id"
+require_relative "preview_timing"
 
-class TerminalWindow < Data.define(:window_id)
-  def self.open(launcher_script_path)
+class TerminalWindow
+  CTRL_C = "ASCII character 3"
+
+  def initialize(launcher_script_path, pid_file)
+    @launcher_script_path = launcher_script_path
+    @pid_file = pid_file
+    @window_id = nil
+  end
+
+  def open
     setup_script = <<~APPLESCRIPT
       tell application "Terminal"
-        set newTab to do script "#{launcher_script_path}"
+        set newTab to do script "#{@launcher_script_path}"
         set currentWindow to window 1
         
         set number of rows of currentWindow to 24
@@ -21,25 +30,109 @@ class TerminalWindow < Data.define(:window_id)
       end tell
     APPLESCRIPT
 
-    id = WindowID.new(`osascript -e '#{setup_script}'`.strip)
-    new(id)
+    @window_id = WindowID.new(`osascript -e '#{setup_script}'`.strip)
+    wait_for_startup
+    yield self
+  ensure
+    close if @window_id
   end
 
+  def window_id
+    @window_id
+  end
+
+  private
+
   def close
-    cleanup_script = <<~APPLESCRIPT
+    try_graceful_shutdown
+    kill_process if process_still_alive?
+
+    delay_script = <<~APPLESCRIPT
       tell application "Terminal"
+        delay #{PreviewTiming.close_delay}
+        
         try
-          -- Send ASCII 3 (Ctrl+C) to force-quit the process cleanly.
-          do script (ASCII character 3) in window id #{window_id}
+          close window id #{@window_id}
         end try
-        
-        -- Tiny pause to let the signal process
-        delay 0.1
-        
-        close window id #{window_id}
       end tell
     APPLESCRIPT
 
-    system("osascript", "-e", cleanup_script)
+    system("osascript", "-e", delay_script, out: File::NULL, err: File::NULL)
+  end
+
+  def wait_for_startup
+    sleep PreviewTiming.window_startup
+
+    unless @window_id.valid?
+      raise "Failed to open terminal window"
+    end
+
+    unless process_running?
+      error_output = contents
+      raise error_output
+    end
+  end
+
+  def try_graceful_shutdown
+    shutdown_script = <<~APPLESCRIPT
+      tell application "Terminal"
+        try
+          do script (#{CTRL_C}) in window id #{@window_id}
+        end try
+      end tell
+    APPLESCRIPT
+
+    system("osascript", "-e", shutdown_script, out: File::NULL, err: File::NULL)
+    sleep 0.2
+  end
+
+  def process_still_alive?
+    return false unless @pid_file && File.exist?(@pid_file)
+
+    pid = File.read(@pid_file).strip.to_i
+    Process.kill(0, pid)
+    true
+  rescue Errno::ESRCH, Errno::ENOENT
+    false
+  end
+
+  def kill_process
+    return unless @pid_file && File.exist?(@pid_file)
+
+    pid = File.read(@pid_file).strip.to_i
+    Process.kill("TERM", pid)
+  rescue Errno::ESRCH, Errno::ENOENT
+    # Process already gone or PID file doesn't exist
+  end
+
+  def process_running?
+    check_script = <<~APPLESCRIPT
+      tell application "Terminal"
+        try
+          set theWindow to window id #{@window_id}
+          return busy of theWindow
+        on error
+          return false
+        end try
+      end tell
+    APPLESCRIPT
+
+    result = `osascript -e '#{check_script}'`.strip
+    result == "true"
+  end
+
+  def contents
+    read_script = <<~APPLESCRIPT
+      tell application "Terminal"
+        try
+          set theWindow to window id #{@window_id}
+          return contents of selected tab of theWindow
+        on error
+          return ""
+        end try
+      end tell
+    APPLESCRIPT
+
+    `osascript -e '#{read_script}'`
   end
 end

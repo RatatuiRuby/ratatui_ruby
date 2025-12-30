@@ -6,24 +6,25 @@
 require "tmpdir"
 require_relative "launcher_script"
 require_relative "terminal_window"
+require_relative "crash_report"
 
 class AppScreenshot < Data.define(:app, :output_path)
   def capture
     print "  📸 #{app}..."
 
-    begin
-      launcher = LauncherScript.new(app.app_path, Dir.pwd)
-      window = TerminalWindow.open(launcher.path)
-      sleep 0.8
-
-      take_snapshot(window.window_id) if window.window_id.valid?
-
-      window.close
-      puts " done."
-      sleep 0.2
-    rescue => e
-      puts " FAILED: #{e.message}"
+    LauncherScript.new(app.app_path, Dir.pwd).run do |launcher|
+      TerminalWindow.new(launcher.path, launcher.pid_file).open do |window|
+        take_snapshot(window.window_id)
+        puts " done."
+        true
+      end
     end
+  rescue => e
+    puts " FAILED"
+    puts
+    puts CrashReport.new(app, e, "Program crashed before screenshot could be taken:")
+    puts
+    false
   end
 
   private
