@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::{parse_block, parse_style};
+use bumpalo::Bump;
 use magnus::{prelude::*, Error, Symbol, Value};
 use ratatui::{
     layout::{Constraint, Flex, Rect},
@@ -10,6 +11,7 @@ use ratatui::{
 };
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+    let arena = Bump::new();
     let ruby = magnus::Ruby::get().unwrap();
     let header_val: Value = node.funcall("header", ())?;
     let footer_val: Value = node.funcall("footer", ())?;
@@ -241,7 +243,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     if !block_val.is_nil() {
-        table = table.block(parse_block(block_val)?);
+        table = table.block(parse_block(block_val, &arena)?);
     }
 
     if !highlight_style_val.is_nil() {

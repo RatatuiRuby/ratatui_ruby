@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::parse_block;
+use bumpalo::Bump;
 use magnus::{prelude::*, Error, Symbol, Value};
 use ratatui::{
     layout::Rect,
@@ -77,7 +78,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     if !block_val.is_nil() {
-        let block = parse_block(block_val)?;
+        let arena = Bump::new();
+        let block = parse_block(block_val, &arena)?;
         let inner_area = block.inner(area);
         frame.render_widget(block, area);
         frame.render_stateful_widget(scrollbar, inner_area, &mut state);

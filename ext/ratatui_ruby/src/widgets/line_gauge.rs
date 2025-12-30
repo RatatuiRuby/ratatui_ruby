@@ -2,10 +2,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::{parse_block, parse_style};
+use bumpalo::Bump;
 use magnus::{prelude::*, Error, Value};
 use ratatui::{layout::Rect, widgets::LineGauge, Frame};
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+    let arena = Bump::new();
     let ratio: f64 = node.funcall("ratio", ())?;
     let label_val: Value = node.funcall("label", ())?;
     let style_val: Value = node.funcall("style", ())?;
@@ -40,7 +42,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     if !block_val.is_nil() {
-        gauge = gauge.block(parse_block(block_val)?);
+        gauge = gauge.block(parse_block(block_val, &arena)?);
     }
 
     frame.render_widget(gauge, area);

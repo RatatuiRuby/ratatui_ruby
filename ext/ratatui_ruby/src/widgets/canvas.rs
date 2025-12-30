@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::{parse_block, parse_color};
+use bumpalo::Bump;
 use magnus::{prelude::*, Error, RArray, Symbol, Value};
 use ratatui::{
     symbols::Marker,
@@ -10,6 +11,7 @@ use ratatui::{
 };
 
 pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Result<(), Error> {
+    let arena = Bump::new();
     let shapes_val: RArray = node.funcall("shapes", ())?;
     let x_bounds_val: RArray = node.funcall("x_bounds", ())?;
     let y_bounds_val: RArray = node.funcall("y_bounds", ())?;
@@ -37,7 +39,7 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
         .marker(marker);
 
     if !block_val.is_nil() {
-        canvas = canvas.block(parse_block(block_val)?);
+        canvas = canvas.block(parse_block(block_val, &arena)?);
     }
 
     let background_color_val: Value = node.funcall("background_color", ())?;

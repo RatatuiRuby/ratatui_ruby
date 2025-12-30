@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::{parse_block, parse_style};
+use bumpalo::Bump;
 use magnus::{prelude::*, Error, Symbol, TryConvert, Value};
 use ratatui::{
     layout::Rect,
@@ -11,6 +12,7 @@ use ratatui::{
 };
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+    let arena = Bump::new();
     let ruby = magnus::Ruby::get().unwrap();
     let items_val: Value = node.funcall("items", ())?;
     let items_array = magnus::RArray::from_value(items_val)
@@ -91,7 +93,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     if !block_val.is_nil() {
-        list = list.block(parse_block(block_val)?);
+        list = list.block(parse_block(block_val, &arena)?);
     }
 
     frame.render_stateful_widget(list, area, &mut state);

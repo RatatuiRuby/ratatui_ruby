@@ -3,11 +3,13 @@
 
 use crate::rendering::render_node;
 use crate::style::parse_block;
+use bumpalo::Bump;
 use magnus::{prelude::*, Error, Value};
 use ratatui::{layout::Rect, widgets::Widget, Frame};
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
-    let block = parse_block(node)?;
+    let arena = Bump::new();
+    let block = parse_block(node, &arena)?;
     let block_clone = block.clone();
     
     // Render the block itself (borders, styling)

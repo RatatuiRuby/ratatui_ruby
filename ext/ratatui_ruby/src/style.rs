@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
-// SPDX-License-Identifier: AGPL-3.0-or-later
-
 use magnus::{prelude::*, Error, Symbol, Value};
 use ratatui::{
     style::{Color, Modifier, Style},
@@ -9,33 +6,7 @@ use ratatui::{
     layout::Alignment,
     symbols,
 };
-use std::collections::HashSet;
-use std::sync::RwLock;
-
-lazy_static::lazy_static! {
-    static ref BORDER_STRING_INTERNER: RwLock<HashSet<&'static str>> = RwLock::new(HashSet::new());
-}
-
-fn intern_string(s: &str) -> &'static str {
-    // fast path: check if string is already interned
-    {
-        let reader = BORDER_STRING_INTERNER.read().unwrap();
-        if let Some(&interned) = reader.get(s) {
-            return interned;
-        }
-    }
-
-    // slow path: intern string
-    let mut writer = BORDER_STRING_INTERNER.write().unwrap();
-    if let Some(&interned) = writer.get(s) {
-        // another thread might have interned it in the meantime
-        return interned;
-    }
-
-    let leaked = Box::leak(s.to_string().into_boxed_str());
-    writer.insert(leaked);
-    leaked
-}
+use bumpalo::Bump;
 
 pub fn parse_color(color_str: &str) -> Option<Color> {
     color_str.parse::<Color>().ok()
@@ -132,13 +103,13 @@ pub fn parse_style(style_val: Value) -> Result<Style, Error> {
     Ok(style)
 }
 
-pub fn parse_border_set(set_val: Value) -> Result<symbols::border::Set<'static>, Error> {
+pub fn parse_border_set<'a>(set_val: Value, arena: &'a Bump) -> Result<symbols::border::Set<'a>, Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let hash = magnus::RHash::from_value(set_val).ok_or_else(|| {
         Error::new(ruby.exception_type_error(), "expected hash for border_set")
     })?;
 
-    let get_char = |key: &str| -> Result<Option<&str>, Error> {
+    let get_char = |key: &str| -> Result<Option<&'a str>, Error> {
         let sym = ruby.to_symbol(key);
         let mut val: Value = hash.lookup(sym).unwrap_or(ruby.qnil().as_value());
 
@@ -151,7 +122,7 @@ pub fn parse_border_set(set_val: Value) -> Result<symbols::border::Set<'static>,
             Ok(None)
         } else {
             let s: String = val.funcall("to_s", ())?;
-            Ok(Some(intern_string(&s)))
+            Ok(Some(arena.alloc_str(&s)))
         }
     };
 
@@ -169,7 +140,7 @@ pub fn parse_border_set(set_val: Value) -> Result<symbols::border::Set<'static>,
     Ok(set)
 }
 
-pub fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
+pub fn parse_block<'a>(block_val: Value, arena: &'a Bump) -> Result<Block<'a>, Error> {
     if block_val.is_nil() {
         return Ok(Block::default());
     }
@@ -312,7 +283,7 @@ pub fn parse_block(block_val: Value) -> Result<Block<'static>, Error> {
     }
 
     if !border_set_val.is_nil() {
-        block = block.border_set(parse_border_set(border_set_val)?);
+        block = block.border_set(parse_border_set(border_set_val, arena)?);
     } else     if !border_type_val.is_nil() {
         if let Some(sym) = Symbol::from_value(border_type_val) {
             match sym.to_string().as_str() {

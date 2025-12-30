@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::{parse_block, parse_style};
+use bumpalo::Bump;
 use magnus::{prelude::*, Error, Value};
 use ratatui::{
     layout::Rect,
@@ -12,6 +13,7 @@ use std::convert::TryFrom;
 use time::{Date, Month};
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+    let arena = Bump::new();
     let ruby = magnus::Ruby::get().unwrap();
     let year: i32 = node.funcall("year", ())?;
     let month_u8: u8 = node.funcall("month", ())?;
@@ -75,7 +77,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     if !block_val.is_nil() {
-        calendar = calendar.block(parse_block(block_val)?);
+        calendar = calendar.block(parse_block(block_val, &arena)?);
     }
 
     frame.render_widget(calendar, area);

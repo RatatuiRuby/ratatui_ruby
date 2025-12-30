@@ -2,10 +2,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::{parse_block, parse_style};
+use bumpalo::Bump;
 use magnus::{prelude::*, Error, RString, Value};
 use ratatui::{layout::Rect, widgets::Sparkline, widgets::RenderDirection, Frame};
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+    let arena = Bump::new();
     let data_val: magnus::RArray = node.funcall("data", ())?;
     let max_val: Value = node.funcall("max", ())?;
     let style_val: Value = node.funcall("style", ())?;
@@ -37,7 +39,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     if !block_val.is_nil() {
-        sparkline = sparkline.block(parse_block(block_val)?);
+        sparkline = sparkline.block(parse_block(block_val, &arena)?);
     }
 
     if !direction_val.is_nil() {

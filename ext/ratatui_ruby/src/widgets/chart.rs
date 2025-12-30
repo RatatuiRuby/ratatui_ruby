@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::{parse_block, parse_style};
+use bumpalo::Bump;
 use magnus::{prelude::*, Error, Symbol, Value};
 use ratatui::{
     layout::Rect,
@@ -12,6 +13,7 @@ use ratatui::{
 };
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+    let arena = Bump::new();
     let ruby = magnus::Ruby::get().unwrap();
     let class = node.class();
     // SAFETY: Immediate conversion to owned avoids GC-unsafe borrowed reference.
@@ -94,7 +96,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let mut chart = Chart::new(datasets).x_axis(x_axis).y_axis(y_axis);
 
     if !block_val.is_nil() {
-        chart = chart.block(parse_block(block_val)?);
+        chart = chart.block(parse_block(block_val, &arena)?);
     }
 
     if !style_val.is_nil() {
@@ -164,6 +166,7 @@ fn parse_axis(axis_val: Value) -> Result<Axis<'static>, Error> {
 }
 
 fn render_line_chart(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+    let arena = Bump::new();
     let ruby = magnus::Ruby::get().unwrap();
     let datasets_val: magnus::RArray = node.funcall("datasets", ())?;
     let x_labels_val: magnus::RArray = node.funcall("x_labels", ())?;
@@ -257,7 +260,7 @@ fn render_line_chart(frame: &mut Frame, area: Rect, node: Value) -> Result<(), E
 
     let mut chart = Chart::new(datasets).x_axis(x_axis).y_axis(y_axis);
     if !block_val.is_nil() {
-        chart = chart.block(parse_block(block_val)?);
+        chart = chart.block(parse_block(block_val, &arena)?);
     }
 
     frame.render_widget(chart, area);

@@ -2,10 +2,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::parse_block;
+use bumpalo::Bump;
 use magnus::{prelude::*, Error, Value};
 use ratatui::{layout::Rect, text::Line, widgets::Tabs, Frame};
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+    let arena = Bump::new();
     let ruby = magnus::Ruby::get().unwrap();
     let titles_val: Value = node.funcall("titles", ())?;
     let selected_index: usize = node.funcall("selected_index", ())?;
@@ -42,7 +44,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     if !block_val.is_nil() {
-        tabs = tabs.block(parse_block(block_val)?);
+        tabs = tabs.block(parse_block(block_val, &arena)?);
     }
 
     if padding_left > 0 || padding_right > 0 {

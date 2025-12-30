@@ -2,10 +2,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::{parse_block, parse_style};
+use bumpalo::Bump;
 use magnus::{prelude::*, Error, Symbol, Value};
 use ratatui::{layout::{Direction, Rect}, widgets::BarChart, Frame};
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+    let arena = Bump::new();
     let data_val: magnus::RHash = node.funcall("data", ())?;
     let bar_width: u16 = node.funcall("bar_width", ())?;
     let bar_gap: u16 = node.funcall("bar_gap", ())?;
@@ -56,7 +58,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     if !block_val.is_nil() {
-        bar_chart = bar_chart.block(parse_block(block_val)?);
+        bar_chart = bar_chart.block(parse_block(block_val, &arena)?);
     }
 
     if !label_style_val.is_nil() {

@@ -64,7 +64,7 @@ Magnus marks `RClass::name()` as unsafe because it returns a `Cow<str>` backed b
 
 The code generally relies on standard Rust vectors and Magnus's handle of Ruby objects.
 - In `chart.rs`, `data_storage` is used to own the vector data for `Dataset` slices. This is a correct pattern to bridge Ruby arrays (which might move or GC) to longer-living Rust slices required by Ratatui widgets within the function scope. The vectors are dropped at the end of the function, preventing leaks.
-- No manual `malloc`/`free` or `Box::leak` was observed.
+- ~~The `style.rs` string interner used `Box::leak` for custom border characters.~~ Replaced with render-scoped arena allocation (`bumpalo::Bump`)—no permanent leaks.
 
 ## Conclusion
 

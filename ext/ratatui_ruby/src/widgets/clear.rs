@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+use bumpalo::Bump;
 use magnus::{prelude::*, Error, Value};
 use ratatui::{layout::Rect, widgets::Widget, Frame};
 
@@ -10,7 +11,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     // If a block is provided, render it on top of the cleared area
     if let Ok(block_val) = node.funcall::<_, _, Value>("block", ()) {
         if !block_val.is_nil() {
-            let block = crate::style::parse_block(block_val)?;
+            let arena = Bump::new();
+            let block = crate::style::parse_block(block_val, &arena)?;
             block.render(area, frame.buffer_mut());
         }
     }
