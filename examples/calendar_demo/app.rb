@@ -10,13 +10,24 @@ require "ratatui_ruby"
 class CalendarDemoApp
   def run
     RatatuiRuby.run do
+      show_weekdays = true
+      show_surrounding = false
+
       loop do
         now = Time.now
+        surrounding_style = if show_surrounding
+          RatatuiRuby::Style.new(fg: "gray", modifiers: [:dim])
+        else
+          nil
+        end
+
         calendar = RatatuiRuby::Calendar.new(
           year: now.year,
           month: now.month,
           header_style: RatatuiRuby::Style.new(fg: "yellow", modifiers: [:bold]),
-          block: RatatuiRuby::Block.new(title: " Calendar (q = quit) ", borders: [:all])
+          show_weekdays_header: show_weekdays,
+          show_surrounding: surrounding_style,
+          block: RatatuiRuby::Block.new(title: " Calendar (w=toggle weekdays, s=toggle surrounding, q=quit) ", borders: [:all])
         )
 
         # Constrain the calendar to 24x10 characters
@@ -42,9 +53,18 @@ class CalendarDemoApp
         RatatuiRuby.draw(view)
 
         event = RatatuiRuby.poll_event
-        break if event == "q" || event == :ctrl_c
+        case event
+        in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
+          break
+        in type: :key, code: "w"
+          show_weekdays = !show_weekdays
+        in type: :key, code: "s"
+          show_surrounding = !show_surrounding
+        else
+          nil
+        end
 
-        sleep 0.1
+        sleep 0.05
       end
     end
   end

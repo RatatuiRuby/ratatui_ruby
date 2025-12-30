@@ -21,14 +21,14 @@ module RatatuiRuby
     #     day_style: Style.new(fg: :white),
     #     header_style: Style.new(fg: :yellow, modifiers: [:bold])
     #   )
-    class Calendar < Data.define(:year, :month, :day_style, :header_style, :block)
+    class Calendar < Data.define(:year, :month, :day_style, :header_style, :block, :show_weekdays_header, :show_surrounding)
       ##
       # :attr_reader: year
       # The year to display (Integer).
 
       ##
       # :attr_reader: month
-      # The month to display (1-12).
+      # The month to display (1–12).
 
       ##
       # :attr_reader: day_style
@@ -42,6 +42,14 @@ module RatatuiRuby
       # :attr_reader: block
       # Optional wrapping block.
 
+      ##
+      # :attr_reader: show_weekdays_header
+      # Whether to show the weekday header (Mon, Tue, etc.).
+
+      ##
+      # :attr_reader: show_surrounding
+      # Style for dates from surrounding months. If <tt>nil</tt>, surrounding dates are hidden.
+
       # Creates a new Calendar.
       #
       # [year] Integer.
@@ -49,7 +57,9 @@ module RatatuiRuby
       # [day_style] Style.
       # [header_style] Style.
       # [block] Block.
-      def initialize(year:, month:, day_style: nil, header_style: nil, block: nil)
+      # [show_weekdays_header] Boolean. Whether to show the weekday header.
+      # [show_surrounding] <tt>Style</tt> or <tt>nil</tt>. Style for surrounding month dates.
+      def initialize(year:, month:, day_style: nil, header_style: nil, block: nil, show_weekdays_header: true, show_surrounding: nil)
         super
       end
     end

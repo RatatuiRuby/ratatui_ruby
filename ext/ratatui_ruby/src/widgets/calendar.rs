@@ -18,6 +18,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let day_style_val: Value = node.funcall("day_style", ())?;
     let header_style_val: Value = node.funcall("header_style", ())?;
     let block_val: Value = node.funcall("block", ())?;
+    let show_weekdays_header: bool = node.funcall("show_weekdays_header", ())?;
+    let show_surrounding_val: Value = node.funcall("show_surrounding", ())?;
 
     let month = Month::try_from(month_u8)
         .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?;
@@ -32,9 +34,15 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     } else {
         ratatui::style::Style::default()
     };
-    calendar = calendar
-        .show_month_header(header_style)
-        .show_weekdays_header(header_style);
+    calendar = calendar.show_month_header(header_style);
+
+    if show_weekdays_header {
+        calendar = calendar.show_weekdays_header(header_style);
+    }
+
+    if !show_surrounding_val.is_nil() {
+        calendar = calendar.show_surrounding(parse_style(show_surrounding_val)?);
+    }
 
     if !day_style_val.is_nil() {
         calendar = calendar.default_style(parse_style(day_style_val)?);

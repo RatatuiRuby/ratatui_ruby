@@ -8,6 +8,8 @@ module RatatuiRuby
     attr_reader day_style: Style?
     attr_reader header_style: Style?
     attr_reader block: Block?
-    def self.new: (year: Integer, month: Integer, ?day_style: Style?, ?header_style: Style?, ?block: Block?) -> Calendar
+    attr_reader show_weekdays_header: bool
+    attr_reader show_surrounding: Style?
+    def self.new: (year: Integer, month: Integer, ?day_style: Style?, ?header_style: Style?, ?block: Block?, ?show_weekdays_header: bool, ?show_surrounding: Style?) -> Calendar
   end
 end

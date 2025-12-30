@@ -25,7 +25,7 @@ class TestCalendarDemoApp < Minitest::Test
       content = buffer_content
       rendered_text = content.join("\n")
 
-      assert_match(/Calendar \(q = quit\)/, rendered_text)
+      assert_match(/Calendar \(w=toggle/, rendered_text)
       assert_match(/#{Time.now.year}/, rendered_text)
 
       # Verify the size constraint: the terminal is 80x24
@@ -41,6 +41,34 @@ class TestCalendarDemoApp < Minitest::Test
       (10..23).each do |i|
         assert_equal " " * 80, lines[i], "Row #{i} should be completely empty"
       end
+    end
+  end
+
+  def test_toggle_weekdays_header
+    with_test_terminal do
+      inject_keys("w", "w", :q)
+
+      @app.run
+
+      content = buffer_content
+      rendered_text = content.join("\n")
+
+      # The app should render successfully with weekdays toggled
+      assert_match(/#{Time.now.year}/, rendered_text)
+    end
+  end
+
+  def test_toggle_surrounding
+    with_test_terminal do
+      inject_keys("s", "s", :q)
+
+      @app.run
+
+      content = buffer_content
+      rendered_text = content.join("\n")
+
+      # The app should render successfully with surrounding toggled
+      assert_match(/#{Time.now.year}/, rendered_text)
     end
   end
 end

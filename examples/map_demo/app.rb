@@ -54,12 +54,15 @@ class MapDemoApp
         RatatuiRuby.draw(v)
 
         event = RatatuiRuby.poll_event
-        break if event == "q" || event == :ctrl_c
-
-        if event == "b"
+        case event
+        in {type: :key, code: "q"} | {type: :key, code: :ctrl_c}
+          break
+        in type: :key, code: "b"
           bg_index = (bg_index + 1) % COLORS.size
-        elsif event == "m"
+        in type: :key, code: "m"
           marker_index = (marker_index + 1) % MARKERS.size
+        else
+          # Ignore other events
         end
 
         sleep 0.05
