@@ -3,15 +3,30 @@
 
 module RatatuiRuby
   class BarChart < Data
-    attr_reader data: Hash[String | Symbol | _ToS, Integer]
+    attr_reader data: Array[BarChart::BarGroup]
     attr_reader bar_width: Integer
     attr_reader bar_gap: Integer
+    attr_reader group_gap: Integer
     attr_reader max: Integer?
     attr_reader style: Style?
     attr_reader block: Block?
     attr_reader direction: :vertical | :horizontal
     attr_reader label_style: Style?
     attr_reader value_style: Style?
-    def self.new: (data: Hash[String | Symbol | _ToS, Integer], ?bar_width: Integer, ?bar_gap: Integer, ?max: Integer?, ?style: Style?, ?block: Block?, ?direction: :vertical | :horizontal, ?label_style: Style?, ?value_style: Style?) -> BarChart
+    attr_reader bar_set: String?
+
+    def self.new: (
+      data: Hash[String | Symbol | _ToS, Integer] | Array[Array[String | Symbol | _ToS | Integer]] | Array[BarChart::BarGroup],
+      ?bar_width: Integer,
+      ?bar_gap: Integer,
+      ?group_gap: Integer,
+      ?max: Integer?,
+      ?style: Style?,
+      ?block: Block?,
+      ?direction: :vertical | :horizontal,
+      ?label_style: Style?,
+      ?value_style: Style?,
+      ?bar_set: String?
+    ) -> BarChart
   end
 end

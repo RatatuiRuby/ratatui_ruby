@@ -10,14 +10,27 @@ class TestBarChart < Minitest::Test
   def test_bar_chart_creation
     data = { "a" => 1, "b" => 2 }
     chart = RatatuiRuby::BarChart.new(data:, bar_width: 5)
-    assert_equal data, chart.data
+    assert_equal 2, chart.data.size
+    
+    group_a = chart.data[0]
+    assert_kind_of RatatuiRuby::BarChart::BarGroup, group_a
+    assert_equal "a", group_a.label
+    assert_equal 1, group_a.bars.first.value
+    
+    group_b = chart.data[1]
+    assert_equal "b", group_b.label
+    assert_equal 2, group_b.bars.first.value
+
     assert_equal 5, chart.bar_width
   end
 
   def test_bar_chart_defaults
     data = { "a" => 1 }
     chart = RatatuiRuby::BarChart.new(data:)
-    assert_equal data, chart.data
+    assert_equal 1, chart.data.size
+    assert_equal 1, chart.data.first.bars.size
+    assert_equal "a", chart.data.first.label
+    assert_equal 1, chart.data.first.bars.first.value
     assert_equal 3, chart.bar_width
     assert_equal 1, chart.bar_gap
     assert_nil chart.max
@@ -45,7 +58,7 @@ class TestBarChart < Minitest::Test
       assert_equal "    ███             ", buffer_content[1]
       assert_equal "███ ███             ", buffer_content[2]
       assert_equal "█1█ █2█             ", buffer_content[3]
-      assert_equal " A   B              ", buffer_content[4]
+      assert_equal "A   B               ", buffer_content[4]
     end
   end
 

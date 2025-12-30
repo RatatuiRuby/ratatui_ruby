@@ -12,7 +12,7 @@ require "ratatui_ruby"
 class AnalyticsApp
   def initialize
     @selected_tab = 0
-    @tabs = ["Revenue", "Traffic", "Errors"]
+    @tabs = ["Revenue", "Traffic", "Errors", "Quarterly"]
     @styles = [
       { name: "Yellow Bold", style: RatatuiRuby::Style.new(fg: :yellow, modifiers: [:bold]) },
       { name: "Italic Blue on White", style: RatatuiRuby::Style.new(fg: :blue, bg: :white, modifiers: [:italic]) },
@@ -42,6 +42,7 @@ class AnalyticsApp
     ]
     @bar_set_index = 0
     @height_mode = :full # :full or :mini
+    @group_gap = 0
 
     @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
   end
@@ -61,17 +62,41 @@ class AnalyticsApp
     # Data for different tabs
     data = case @selected_tab
            when 0 # Revenue
-             { "Q1" => 50, "Q2" => 80 }
+             {
+               "Q1" => 50, "Q2" => 80, "Q3" => 45, "Q4" => 60,
+               "Q1'" => 55, "Q2'" => 85, "Q3'" => 50, "Q4'" => 65
+             }
            when 1 # Traffic
-             { "Mon" => 120, "Tue" => 150 }
+             [
+               ["Mon", 120], ["Tue", 150], ["Wed", 130], ["Thu", 160],
+               ["Fri", 140],
+               ["Sat", 110, RatatuiRuby::Style.new(fg: :red)],
+               ["Sun", 100, RatatuiRuby::Style.new(fg: :red)]
+             ]
            when 2 # Errors
-             { "DB" => 5, "UI" => 2 }
+             { DB: 5, UI: 2, API: 8, Auth: 3, Net: 4, "I/O": 1, Mem: 6, CPU: 7 }
+           when 3 # Quarterly
+             [
+               RatatuiRuby::BarChart::BarGroup.new(label: "2024", bars: [
+                 RatatuiRuby::BarChart::Bar.new(value: 40, label: "Q1"),
+                 RatatuiRuby::BarChart::Bar.new(value: 45, label: "Q2"),
+                 RatatuiRuby::BarChart::Bar.new(value: 50, label: "Q3"),
+                 RatatuiRuby::BarChart::Bar.new(value: 55, label: "Q4")
+               ]),
+               RatatuiRuby::BarChart::BarGroup.new(label: "2025", bars: [
+                 RatatuiRuby::BarChart::Bar.new(value: 60, label: "Q1", style: RatatuiRuby::Style.new(fg: :yellow)),
+                 RatatuiRuby::BarChart::Bar.new(value: 65, label: "Q2", style: RatatuiRuby::Style.new(fg: :yellow)),
+                 RatatuiRuby::BarChart::Bar.new(value: 70, label: "Q3", style: RatatuiRuby::Style.new(fg: :yellow)),
+                 RatatuiRuby::BarChart::Bar.new(value: 75, label: "Q4", style: RatatuiRuby::Style.new(fg: :yellow))
+               ])
+             ]
     end
 
     bar_style = case @selected_tab
                 when 0 then RatatuiRuby::Style.new(fg: "green")
                 when 1 then RatatuiRuby::Style.new(fg: "blue")
                 when 2 then RatatuiRuby::Style.new(fg: "red")
+                when 3 then RatatuiRuby::Style.new(fg: "cyan")
     end
 
     # Define the BarChart widget
@@ -79,6 +104,8 @@ class AnalyticsApp
       data:,
       bar_width: @direction == :vertical ? 8 : 1,
       style: bar_style,
+      bar_gap: 1,
+      group_gap: @group_gap,
       direction: @direction,
       label_style: @styles[@label_style_index][:style],
       value_style: @styles[@value_style_index][:style],
@@ -173,7 +200,9 @@ class AnalyticsApp
                   RatatuiRuby::Text::Span.new(content: "b", style: @hotkey_style),
                   RatatuiRuby::Text::Span.new(content: ": Bar Set (#{@bar_sets[@bar_set_index][:name]})  "),
                   RatatuiRuby::Text::Span.new(content: "m", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Mode (#{@height_mode == :full ? 'Full' : 'Mini'})")
+                  RatatuiRuby::Text::Span.new(content: ": Mode (#{@height_mode == :full ? 'Full' : 'Mini'})  "),
+                  RatatuiRuby::Text::Span.new(content: "g", style: @hotkey_style),
+                  RatatuiRuby::Text::Span.new(content: ": Group Gap (#{@group_gap})")
                 ])
               ]
             )
@@ -217,6 +246,8 @@ class AnalyticsApp
       @bar_set_index = (@bar_set_index + 1) % @bar_sets.size
     in type: :key, code: "m"
       @height_mode = @height_mode == :full ? :mini : :full
+    in type: :key, code: "g"
+      @group_gap = (@group_gap + 1) % 4
     else
       # Ignore other events
     end

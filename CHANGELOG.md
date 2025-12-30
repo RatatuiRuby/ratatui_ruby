@@ -19,6 +19,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 #### BarChart Widget
 
 - `bar_set`: Customize bar characters (digits, symbols, blocks).
+- `group_gap`: Control spacing between groups in grouped bar charts.
+- `data`: Now accepts an Array of `BarGroup` objects, enabling grouped bar charts.
+- `Bar` and `BarGroup`: New schema classes for defining grouped bar data.
 
 #### Block Widget
 

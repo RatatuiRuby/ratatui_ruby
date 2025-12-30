@@ -207,9 +207,9 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `value_style()` | `value_style:` | ✅ |
 | `label_style()` | `label_style:` | ✅ |
 | `bar_set()` | `bar_set:` | ✅ |
-| `group_gap()` | — | ❌ **MISSING** |
+| `group_gap()` | `group_gap:` | ✅ |
 | `direction()` | `direction:` | ✅ |
-| Grouped bar charts | — | ❌ **MISSING** (BarGroup API) |
+| Grouped bar charts | `data: [BarGroup...]` | ✅ |
 
 ---
 
@@ -315,10 +315,10 @@ All modifiers are covered. ✅
 ## Remaining Gaps & Priority Recommendations
 
 ### High Priority (Common Use Cases)
-1. **BarChart::Grouped bars** - Multi-value bars per label (moved from Medium)
+1.  ~~**BarChart::Grouped bars** - Multi-value bars per label (moved from Medium)~~ (Implemented)
 
 ### Medium Priority
-2. **BarChart::group_gap** - Control spacing in grouped bar charts
+2.  ~~**BarChart::group_gap** - Control spacing in grouped bar charts~~ (Implemented)
 
 ### Lower Priority (Niche/Advanced)
 3. **Canvas labels** - Text printing on canvas (advanced use case)

@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class BarChart
+    class BarGroup < Data
+      attr_reader label: String
+      attr_reader bars: Array[BarChart::Bar]
+
+      def self.new: (label: String, bars: Array[BarChart::Bar]) -> BarGroup
+    end
+  end
+end
