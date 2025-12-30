@@ -34,7 +34,7 @@ class TestScrollTextApp < Minitest::Test
       assert content.any? { |line| line.include?("Line 1") }
       # Should show controls
       assert content.any? { |line| line.include?("Controls") }
-      assert content.any? { |line| line.include?("Vert Scroll (0)") }
+      assert content.any? { |line| line.include?("Vert Scroll (0/102)") }
     end
   end
 
@@ -48,7 +48,7 @@ class TestScrollTextApp < Minitest::Test
       content = buffer_content
       
       # Should show controls with updated Y position
-      assert content.any? { |line| line.include?("Vert Scroll (1)") }
+      assert content.any? { |line| line.include?("Vert Scroll (1/102)") }
     end
   end
 

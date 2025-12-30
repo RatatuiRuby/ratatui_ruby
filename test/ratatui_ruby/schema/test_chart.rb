@@ -5,6 +5,7 @@
 
 require "ratatui_ruby"
 require "minitest/autorun"
+require_relative "../../test_helper"
 
 module RatatuiRuby
   class TestChart < Minitest::Test

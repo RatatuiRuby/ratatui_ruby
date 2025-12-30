@@ -120,8 +120,8 @@ Note: Table widths support all constraints (`:length`, `:percentage`, `:min`, `:
 | `wrap()` | `wrap:` | ✅ |
 | `scroll()` | `scroll:` | ✅ |
 | `alignment()` | `align:` | ✅ |
-| `line_count()` | — | ❌ **MISSING** (read-only, not critical) |
-| `line_width()` | — | ❌ **MISSING** (read-only, not critical) |
+| `line_count()` | `line_count` | ✅ |
+| `line_width()` | `line_width` | ✅ |
 
 ---
 
@@ -322,4 +322,4 @@ All modifiers are covered. ✅
 
 ### Lower Priority (Niche/Advanced)
 3. ~~**Canvas labels** - Text printing on canvas (advanced use case)~~ (Implemented)
-4. **Paragraph::line_count / line_width** - Read-only properties (minimal value)
+4. ~~**Paragraph::line_count / line_width** - Read-only properties (minimal value)~~ (Implemented)

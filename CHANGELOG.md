@@ -37,6 +37,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `title_style`: Base style applied to all titles.
 - `style`: Base style applied to the entire block.
 - `padding`: Directional padding via a single integer (uniform) or array of 4 integers (`[left, right, top, bottom]`).
+- `line_count(width)`: **(Experimental)** Calculate rendered lines (including borders/padding) for a given width. Delegates to Ratatui's underlying unstable `line_count`.
+- `line_width`: **(Experimental)** Calculate minimum width to avoid wrapping (including borders/padding). Delegates to Ratatui's underlying unstable `line_width`.
 
 #### Calendar Widget
 

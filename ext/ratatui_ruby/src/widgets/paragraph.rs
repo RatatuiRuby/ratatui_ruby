@@ -12,8 +12,7 @@ use ratatui::{
 
 use crate::text::parse_text;
 
-pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
-    let bump = Bump::new();
+fn create_paragraph<'a>(node: Value, bump: &'a Bump) -> Result<Paragraph<'a>, Error> {
     let text_val: Value = node.funcall("text", ())?;
     let style_val: Value = node.funcall("style", ())?;
     let block_val: Value = node.funcall("block", ())?;
@@ -26,7 +25,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let mut paragraph = Paragraph::new(lines).style(style);
 
     if !block_val.is_nil() {
-        paragraph = paragraph.block(parse_block(block_val, &bump)?);
+        paragraph = paragraph.block(parse_block(block_val, bump)?);
     }
 
     if wrap {
@@ -39,8 +38,6 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         _ => {}
     }
 
-    // Apply scroll offset if provided
-    // Ruby passes (y, x) array matching ratatui's convention
     if !scroll_val.is_nil() {
         let scroll_array: Vec<u16> = Vec::<u16>::try_convert(scroll_val)?;
         if scroll_array.len() >= 2 {
@@ -48,8 +45,26 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         }
     }
 
+    Ok(paragraph)
+}
+
+pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+    let bump = Bump::new();
+    let paragraph = create_paragraph(node, &bump)?;
     frame.render_widget(paragraph, area);
     Ok(())
+}
+
+pub fn line_count(node: Value, width: u16) -> Result<usize, Error> {
+    let bump = Bump::new();
+    let paragraph = create_paragraph(node, &bump)?;
+    Ok(paragraph.line_count(width))
+}
+
+pub fn line_width(node: Value) -> Result<usize, Error> {
+    let bump = Bump::new();
+    let paragraph = create_paragraph(node, &bump)?;
+    Ok(paragraph.line_width())
 }
 
 #[cfg(test)]

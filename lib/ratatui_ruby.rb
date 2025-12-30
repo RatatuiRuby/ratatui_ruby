@@ -61,6 +61,30 @@ module RatatuiRuby
     _init_terminal(focus_events, bracketed_paste)
   end
 
+  @experimental_warnings = true
+  class << self
+    ##
+    # :attr_accessor: experimental_warnings
+    # Whether to show warnings when using experimental features (default: true).
+    attr_accessor :experimental_warnings
+  end
+
+  ##
+  # Warns about usage of an experimental feature unless warnings are suppressed.
+  #
+  # [feature_name] String name of the feature (e.g., "Paragraph#line_count")
+  #
+  # This warns only once per feature name per session.
+  def self.warn_experimental_feature(feature_name)
+    return unless experimental_warnings
+
+    @warned_features ||= {}
+    return if @warned_features[feature_name]
+
+    warn "WARNING: #{feature_name} is an experimental feature and may change in future versions. Disable this warning with RatatuiRuby.experimental_warnings = false."
+    @warned_features[feature_name] = true
+  end
+
   # (Native method _init_terminal implemented in Rust)
   private_class_method :_init_terminal
 

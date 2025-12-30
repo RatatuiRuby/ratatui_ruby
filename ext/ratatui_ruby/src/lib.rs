@@ -90,6 +90,10 @@ fn init() -> Result<(), Error> {
     // Register Layout.split on the Layout class
     let layout_class = m.const_get::<_, magnus::RClass>("Layout")?;
     layout_class.define_singleton_method("_split", function!(widgets::layout::split_layout, 4))?;
+    
+    // Paragraph metrics
+    m.define_module_function("_paragraph_line_count", function!(widgets::paragraph::line_count, 2))?;
+    m.define_module_function("_paragraph_line_width", function!(widgets::paragraph::line_width, 1))?;
 
     Ok(())
 }

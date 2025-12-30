@@ -58,7 +58,7 @@ class ScrollTextApp
       text: text,
       scroll: [@scroll_y, @scroll_x],
       block: RatatuiRuby::Block.new(
-        title: "Scrollable Text",
+        title: "Scrollable Text (#{text.lines.count} lines)",
         borders: [:all]
       )
     )
@@ -71,13 +71,13 @@ class ScrollTextApp
         RatatuiRuby::Paragraph.new(
           text: [
             RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "NAVIGATION", style: RatatuiRuby::Style.new(modifiers: [:bold]))
+              RatatuiRuby::Text::Span.new(content: "NAVIGATION (Size: #{main_paragraph.line_count(65535)}x#{main_paragraph.line_width})", style: RatatuiRuby::Style.new(modifiers: [:bold]))
             ]),
             RatatuiRuby::Text::Line.new(spans: [
               RatatuiRuby::Text::Span.new(content: "↑/↓", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Vert Scroll (#{@scroll_y})  "),
+              RatatuiRuby::Text::Span.new(content: ": Vert Scroll (#{@scroll_y}/#{main_paragraph.line_count(65535)})  "),
               RatatuiRuby::Text::Span.new(content: "←/→", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Horz Scroll (#{@scroll_x})  "),
+              RatatuiRuby::Text::Span.new(content: ": Horz Scroll (#{@scroll_x}/#{main_paragraph.line_width})  "),
               RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Quit")
             ])

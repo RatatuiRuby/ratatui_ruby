@@ -79,5 +79,19 @@ module RatatuiRuby
         coerced_scroll = [Integer(scroll[0]), Integer(scroll[1])]
         super(text:, style:, block:, wrap:, align:, scroll: coerced_scroll)
       end
+
+      # Returns the number of lines the paragraph would take up if rendered with the given width.
+      #
+      # [width] Integer (max width).
+      def line_count(width)
+        RatatuiRuby.warn_experimental_feature("Paragraph#line_count")
+        RatatuiRuby._paragraph_line_count(self, Integer(width))
+      end
+
+      # Returns the minimum width needed to not wrap any text.
+      def line_width
+        RatatuiRuby.warn_experimental_feature("Paragraph#line_width")
+        RatatuiRuby._paragraph_line_width(self)
+      end
     end
 end
