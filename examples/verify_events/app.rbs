@@ -1,7 +1,0 @@
-class VerifyEventsApp
-  # @public
-  def self.new: () -> VerifyEventsApp
-
-  # @public
-  def run: () -> void
-end
