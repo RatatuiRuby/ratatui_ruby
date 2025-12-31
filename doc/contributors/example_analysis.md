@@ -73,7 +73,7 @@ These serve as automated documentation tests: if the example code changes but th
   - `widget_` (widget showcase): `widget_gauge_demo`, `widget_list_demo`, etc.
   - Apply this retroactively to all examples via directory renames (includes renaming screenshots in `doc/images/`, updating markdown image references in documentation, updating links in markdown files, and ensuring the `ExampleApp.all` list reflects the new names).
 
-- [ ] **Update Quickstart** to reduce the heading levels of individual examples, inserting a new heading level above them and below "## Examples". This new heading level should map to the naming conventions, and this will require recategorizing the examples in quickstart.md.
+- [x] **Update Quickstart** to reduce the heading levels of individual examples, inserting a new heading level above them and below "## Examples". This new heading level should map to the naming conventions, and this will require recategorizing the examples in quickstart.md.
 
 - [ ] **Split `analytics`** (demonstrates both Tabs and BarChart interactively). Create `widget_tabs_demo` and move BarChart demo to it, or extract BarChart into its own single-widget showcase.
 
