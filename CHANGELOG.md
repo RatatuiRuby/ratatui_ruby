@@ -12,6 +12,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+#### Frame API
+
+- **`RatatuiRuby.draw { |frame| ... }`**: New block-based drawing API that yields a `Frame` object for explicit widget placement. Enables hit testing without duplicating layout calculations.
+- **`Frame#area`**: Returns the terminal area as a `Rect`.
+- **`Frame#render_widget(widget, rect)`**: Renders a widget at a specific position. Works with all existing widgets and `Rect` objects.
+
 ### Changed
 
 ### Fixed

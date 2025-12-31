@@ -11,36 +11,83 @@
 #![allow(clippy::module_name_repetitions)]
 
 mod events;
+mod frame;
 mod rendering;
 mod style;
 mod terminal;
 mod text;
 mod widgets;
 
-use magnus::{function, Error, Module, Object, Value};
+use frame::RubyFrame;
+use magnus::{function, method, Error, Module, Object, Ruby, Value};
 use terminal::{init_terminal, restore_terminal, TERMINAL};
 
-fn draw(tree: Value) -> Result<(), Error> {
-    let ruby = magnus::Ruby::get().unwrap();
+/// Draw to the terminal.
+///
+/// Supports two calling conventions:
+/// - Legacy: `RatatuiRuby.draw(tree)` - Renders a widget tree to the full terminal area
+/// - New: `RatatuiRuby.draw { |frame| ... }` - Yields a Frame for explicit widget placement
+fn draw(args: &[Value]) -> Result<(), Error> {
+    let ruby = Ruby::get().unwrap();
+
+    // Parse arguments: check for optional tree argument
+    let tree: Option<Value> = if args.is_empty() {
+        None
+    } else if args.len() == 1 {
+        Some(args[0])
+    } else {
+        return Err(Error::new(
+            ruby.exception_arg_error(),
+            format!(
+                "wrong number of arguments (given {}, expected 0..1)",
+                args.len()
+            ),
+        ));
+    };
+    let block_given = ruby.block_given();
+
+    // Validate: must have either tree or block, but not both
+    if tree.is_some() && block_given {
+        return Err(Error::new(
+            ruby.exception_arg_error(),
+            "Cannot provide both a tree and a block to draw",
+        ));
+    }
+    if tree.is_none() && !block_given {
+        return Err(Error::new(
+            ruby.exception_arg_error(),
+            "Must provide either a tree or a block to draw",
+        ));
+    }
+
     let mut term_lock = TERMINAL.lock().unwrap();
-    let mut render_error = None;
+    let mut render_error: Option<Error> = None;
+
+    // Helper closure to execute the draw callback logic for either terminal type
+    let mut draw_callback = |f: &mut ratatui::Frame<'_>| {
+        if block_given {
+            // New API: yield RubyFrame to block
+            let ruby_frame = RubyFrame::new(f);
+            if let Err(e) = ruby.yield_value::<_, Value>(ruby_frame) {
+                render_error = Some(e);
+            }
+        } else if let Some(tree_value) = tree {
+            // Legacy API: render tree to full area
+            if let Err(e) = rendering::render_node(f, f.area(), tree_value) {
+                render_error = Some(e);
+            }
+        }
+    };
+
     if let Some(wrapper) = term_lock.as_mut() {
         match wrapper {
             terminal::TerminalWrapper::Crossterm(term) => {
-                term.draw(|f| {
-                    if let Err(e) = rendering::render_node(f, f.area(), tree) {
-                        render_error = Some(e);
-                    }
-                })
-                .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
+                term.draw(&mut draw_callback)
+                    .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
             }
             terminal::TerminalWrapper::Test(term) => {
-                term.draw(|f| {
-                    if let Err(e) = rendering::render_node(f, f.area(), tree) {
-                        render_error = Some(e);
-                    }
-                })
-                .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
+                term.draw(&mut draw_callback)
+                    .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
             }
         }
     } else {
@@ -61,7 +108,12 @@ fn init() -> Result<(), Error> {
 
     m.define_module_function("_init_terminal", function!(init_terminal, 2))?;
     m.define_module_function("restore_terminal", function!(restore_terminal, 0))?;
-    m.define_module_function("draw", function!(draw, 1))?;
+    m.define_module_function("draw", function!(draw, -1))?;
+
+    // Register Frame class
+    let frame_class = m.define_class("Frame", ruby.class_object())?;
+    frame_class.define_method("area", method!(RubyFrame::area, 0))?;
+    frame_class.define_method("render_widget", method!(RubyFrame::render_widget, 2))?;
     m.define_module_function("_poll_event", function!(events::poll_event, 0))?;
     m.define_module_function("inject_test_event", function!(events::inject_test_event, 2))?;
     m.define_module_function("clear_events", function!(events::clear_events, 0))?;

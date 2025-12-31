@@ -48,11 +48,13 @@ end
 
 ---
 
-## Phase 1: The Rust Foundation
+## Phase 1: The Rust Foundation ✅
 
 **Goal:** Expose the `Frame` and `render_widget` logic to Ruby via Magnus.
 
-### Step 1.1: Define the `RubyFrame` Struct
+**Status:** DONE (2025-12-31)
+
+### Step 1.1: Define the `RubyFrame` Struct ✅
 
 * **File:** `ext/ratatui_ruby/src/frame.rs` (Create new file)
 
@@ -72,7 +74,7 @@ end
 
         * Calls `frame.render_widget(converted_widget, area)`.
 
-### Step 1.2: Update `lib.rs` and `rendering.rs`
+### Step 1.2: Update `lib.rs` and `rendering.rs` ✅
 
 * **File:** `ext/ratatui_ruby/src/lib.rs`
 
