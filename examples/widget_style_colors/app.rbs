@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+class ColorGradientDemo
+  def initialize: () -> void
+  def run: () -> void
+
+  private
+
+  def render: (RatatuiRuby::TUI) -> void
+  def hsl_to_rgb: (Float, Float, Float) -> [Integer, Integer, Integer]
+  def hue_to_rgb: (Float, Float, Float) -> Float
+  def rgb_to_hex: ([Integer, Integer, Integer]) -> String
+end

@@ -12,6 +12,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+#### Hex Color Support
+
+- **Style**: `fg` and `bg` parameters now accept hex color strings (e.g., `"#ff0000"` for red). Requires a 24-bit true color capable terminal (Kitty, iTerm2, modern Terminal.app). Terminals without true color support will gracefully fall back to the closest ANSI color.
+
 #### RatatuiMascot Widget
 
 - **RatatuiMascot**: New widget to display the Ratatui mascot (Ferris).

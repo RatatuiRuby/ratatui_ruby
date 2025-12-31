@@ -9,7 +9,23 @@ use ratatui::{
 use bumpalo::Bump;
 
 pub fn parse_color(color_str: &str) -> Option<Color> {
-    color_str.parse::<Color>().ok()
+    // Try standard ratatui parsing first (named colors, indexed, etc.)
+    if let Ok(color) = color_str.parse::<Color>() {
+        return Some(color);
+    }
+    
+    // Try hex parsing manually: #RRGGBB
+    let hex_str = color_str.trim();
+    if hex_str.starts_with('#') && hex_str.len() == 7 {
+        if let Ok(hex_val) = u32::from_str_radix(&hex_str[1..], 16) {
+            let r = ((hex_val >> 16) & 0xFF) as u8;
+            let g = ((hex_val >> 8) & 0xFF) as u8;
+            let b = (hex_val & 0xFF) as u8;
+            return Some(Color::Rgb(r, g, b));
+        }
+    }
+    
+    None
 }
 
 pub fn parse_color_value(val: Value) -> Result<Option<Color>, Error> {

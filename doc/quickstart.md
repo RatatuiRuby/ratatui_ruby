@@ -44,6 +44,7 @@ begin
   loop do
     # 2. Create your UI (Immediate Mode)
     # We define a Paragraph widget inside a Block with a title and borders.
+    # Other widgets include RatatuiRuby::RatatuiMascot, RatatuiRuby::RatatuiLogo, etc.
     view = RatatuiRuby::Paragraph.new(
       text: "Hello, Ratatui! Press 'q' to quit.",
       alignment: :center,
@@ -261,4 +262,10 @@ Demonstrates interactive row selection in the `Table` widget with keyboard navig
 Demonstrates different flex modes in the `Table` widget, such as `:space_between` and `:space_around`, allowing for modern, responsive table layouts.
 
 ![table_flex](./images/table_flex.png)
+
+### [Widget Style Colors](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_style_colors/app.rb)
+
+Demonstrates hexadecimal color code support in Style parameters. Renders an 80x24 color gradient using HSL-to-RGB conversion and #RRGGBB hex codes, showcasing 24-bit true color rendering on capable terminals.
+
+![widget_style_colors](./images/widget_style_colors.png)
 
