@@ -43,7 +43,14 @@ class MyExampleApp
 
   def handle_input
     event = RatatuiRuby.poll_event
-    # Process event, return :quit to exit
+    case event
+    in { type: :key, code: "q" }
+      :quit
+    in { type: :key, code: code }
+      # Handle other keys
+    else
+      nil  # Catch-all for unmatched events (mouse, resize, focus, etc.)
+    end
   end
 end
 
@@ -94,13 +101,29 @@ end
 
 2. **Use `RatatuiRuby.run` for terminal management.** Never call `init_terminal` or `restore_terminal` directly. The `run` block handles terminal setup/teardown automatically and safely, even if an exception occurs.
 
-3. **Use keyboard keys to cycle through widget attributes.** Users should be able to interactively explore all widget options. Common patterns:
+3. **Event handling must include a catch-all pattern.** When using pattern matching in `handle_input`, always include an `else` clause at the end to catch unmatched events (mouse events, resize events, focus events, etc.). Without it, unmatched events will raise `NoMatchingPatternError`:
+
+   ```ruby
+   def handle_input
+     event = RatatuiRuby.poll_event
+     case event
+     in { type: :key, code: "q" }
+       :quit
+     in { type: :mouse, kind: "down", x:, y: }
+       handle_click(x, y)
+     else
+       nil  # Required: catch unmatched event types
+     end
+   end
+   ```
+
+4. **Use keyboard keys to cycle through widget attributes.** Users should be able to interactively explore all widget options. Common patterns:
     - Arrow keys: Navigate or adjust values
     - Letter keys: Cycle through styles, modes, or variants. Prefer all lowercase keys to avoid confusion and simplify the UI description.
     - Space: Toggle or select
     - `q` or Ctrl+C: Quit
 
-### Naming Conventions for Controls
+5. **Naming Conventions for Controls**
 
 When documenting hotkeys and cycling options in the UI, use consistent naming:
 
@@ -122,7 +145,7 @@ When documenting hotkeys and cycling options in the UI, use consistent naming:
 
 This keeps the UI self-documenting and users can see exact parameter names when they read the hotkey help.
 
-### Hit Testing
+6. **Hit Testing**
 
 Examples with mouse interaction should use the **Frame API**. By calling `Layout.split` inside `RatatuiRuby.draw`, you obtain the exact `Rect`s used for rendering. Store these rects in instance variables (e.g., `@sidebar_rect`) to use them in your `handle_input` method for hit testing:
 

@@ -6,10 +6,42 @@
 module RatatuiRuby
   # Base class for all RatatuiRuby events.
   #
-  # Events are returned by RatatuiRuby.poll_event.
-  # All events support Ruby 3.0+ pattern matching via #deconstruct_keys.
+  # Events represent terminal input: keyboard, mouse, resize, paste, focus changes.
+  # Returned by RatatuiRuby.poll_event. All events support Ruby 3.0+ pattern matching.
   #
-  # See RatatuiRuby.poll_event
+  # == Event Types
+  #
+  # * <tt>Key</tt> — keyboard input
+  # * <tt>Mouse</tt> — mouse clicks, movement, wheel
+  # * <tt>Resize</tt> — terminal resized
+  # * <tt>Paste</tt> — clipboard paste
+  # * <tt>FocusGained</tt> — terminal gained focus
+  # * <tt>FocusLost</tt> — terminal lost focus
+  #
+  # == Pattern Matching (Exhaustive)
+  #
+  # Use <tt>case...in</tt> to dispatch on event type. Include an +else+ clause
+  # to catch unmatched patterns, otherwise Ruby raises <tt>NoMatchingPatternError</tt>:
+  #
+  #   case RatatuiRuby.poll_event
+  #   in { type: :key, code: "q" }
+  #     break
+  #   in { type: :mouse, kind: "down", x:, y: }
+  #     handle_click(x, y)
+  #   else
+  #     # Ignore other events (resize, paste, focus, etc.)
+  #   end
+  #
+  # == Type Checking
+  #
+  # Check event types with predicates without pattern matching:
+  #
+  #   event = RatatuiRuby.poll_event
+  #   if event.key?
+  #     puts "Key pressed"
+  #   elsif event.mouse?
+  #     puts "Mouse event"
+  #   end
   class Event
     # Returns true if this is a Key event.
     def key?

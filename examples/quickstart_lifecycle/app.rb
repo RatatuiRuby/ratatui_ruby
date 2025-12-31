@@ -36,7 +36,7 @@ class QuickstartLifecycleApp
 
         # 4. Poll for events
         event = RatatuiRuby.poll_event
-        break if event == "q" || event == :ctrl_c
+        break if event.key? && event.code == "q"
       end
     ensure
       # 5. Restore the terminal to its original state

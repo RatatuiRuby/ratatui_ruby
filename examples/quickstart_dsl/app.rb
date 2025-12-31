@@ -29,9 +29,14 @@ class QuickstartDslApp
         tui.draw do |frame|
           frame.render_widget(view, frame.area)
         end
-        event = tui.poll_event
 
-        break if event == "q" || event == :ctrl_c
+        # 4. Poll for events with pattern matching
+        case tui.poll_event
+        in { type: :key, code: "q" }
+          break
+        else
+          # Ignore other events
+        end
       end
     end
   end

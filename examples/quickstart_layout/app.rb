@@ -55,8 +55,12 @@ class QuickstartLayoutApp
           )
         end
 
-        event = tui.poll_event
-        break if event == "q" || event == :ctrl_c
+        case tui.poll_event
+        in { type: :key, code: "q" }
+          break
+        else
+          # Ignore other events
+        end
       end
     end
   end

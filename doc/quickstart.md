@@ -63,7 +63,7 @@ begin
  
     # 4. Poll for events
     event = RatatuiRuby.poll_event
-    break if event == "q" || event == :ctrl_c
+    break if event.key? && event.code == "q"
   end
 ensure
   # 5. Restore the terminal to its original state
@@ -76,10 +76,10 @@ end
 ### How it works
 
 1.  **`RatatuiRuby.init_terminal`**: Enters raw mode and switches to the alternate screen.
-2.  **Immediate Mode UI**: On every iteration of the loop, you describe what the UI should look like by creating `Data` objects (like `Paragraph` and `Block`).
-3.  **`RatatuiRuby.draw { |frame| ... }`**: The block receives a `Frame` object, which acts as a canvas for the current render cycle. It allows you to render widgets onto specific areas of the screen. Nothing is drawn to the terminal until this block finishes, ensuring a flicker-free update.
-4.  **`RatatuiRuby.poll_event`**: Checks for keyboard, mouse, or resize events.
-5.  **`RatatuiRuby.restore_terminal`**: Crucial for leaving raw mode and returning the user to their shell properly. Always wrap your loop in a `begin...ensure` block to guarantee this runs.
+2.  **Immediate Mode UI**: On every iteration, describe your UI by creating `Data` objects (e.g., `Paragraph`, `Block`).
+3.  **`RatatuiRuby.draw { |frame| ... }`**: The block receives a `Frame` object as a canvas. Render widgets onto specific areas. Nothing is drawn until the block finishes, ensuring flicker-free updates.
+4.  **`RatatuiRuby.poll_event`**: Returns a typed `Event` object with predicates like `key?`, `mouse?`, `resize?`, etc., or `nil` if none pending. Use predicates to check event type without pattern matching.
+5.  **`RatatuiRuby.restore_terminal`**: Essential for leaving raw mode and returning to the shell. Always wrap your loop in `begin...ensure` to guarantee this runs.
 
 ### Idiomatic Session
 
@@ -108,9 +108,14 @@ RatatuiRuby.run do |tui|
     tui.draw do |frame|
       frame.render_widget(view, frame.area)
     end
-    event = tui.poll_event
-    
-    break if event == "q" || event == :ctrl_c
+
+    # 4. Poll for events with pattern matching
+    case tui.poll_event
+    in { type: :key, code: "q" }
+      break
+    else
+      # Ignore other events
+    end
   end
 end
 ```
@@ -121,6 +126,7 @@ end
 1.  **`RatatuiRuby.run`**: This context manager initializes the terminal before the block starts and ensures `restore_terminal` is called when the block exits (even if an error occurs).
 2.  **Widget Shorthand**: The block yields a `Session` object (here named `tui`). This object provides factory methods for every widget, allowing you to write `tui.paragraph(...)` instead of the more verbose `RatatuiRuby::Paragraph.new(...)`.
 3.  **Method Shorthand**: The session object also provides aliases for module functions of `RatatuiRuby`, allowing you to write `tui.draw(...)` instead of the more verbose `RatatuiRuby.draw(...)`.
+4.  **Pattern Matching for Events**: Use `case...in` with pattern matching for elegant event dispatch. Always include an `else` clause at the end to catch unmatched event types (mouse, resize, paste, focus, etc.), otherwise Ruby raises `NoMatchingPatternError`.
 
 For a deeper dive into the available application architectures (Manual vs Managed), see [Application Architecture](./application_architecture.md).
 
@@ -177,8 +183,12 @@ RatatuiRuby.run do |tui|
       )
     end
 
-    event = tui.poll_event
-    break if event == "q" || event == :ctrl_c
+    case tui.poll_event
+    in { type: :key, code: "q" }
+      break
+    else
+      # Ignore other events
+    end
   end
 end
 ```
