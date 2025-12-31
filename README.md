@@ -21,7 +21,7 @@ Mailing List: Announcements](https://img.shields.io/badge/mailing_list-announcem
 **ratatui_ruby** is a community wrapper that is not affiliated with [the Ratatui team](https://github.com/orgs/ratatui/people).
 
 > [!WARNING]  
-> **ratatui_ruby** is currently in an early stage of development. Use at your own risk.
+> **ratatui_ruby** is currently in **BETA**. The API may change between minor versions.
 
 Please join the **announce** mailing list at https://lists.sr.ht/~kerrick/ratatui_ruby-announce to stay up-to-date on new releases and announcements.
 

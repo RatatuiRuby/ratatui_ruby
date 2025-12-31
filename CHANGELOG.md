@@ -12,6 +12,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Removed
+
+## [0.4.0] - 2025-12-30
+
+### Added
+
 #### Hex Color Support
 
 - **Style**: `fg` and `bg` parameters now accept hex color strings (e.g., `"#ff0000"` for red). Requires a 24-bit true color capable terminal (Kitty, iTerm2, modern Terminal.app). Terminals without true color support will gracefully fall back to the closest ANSI color.
@@ -239,9 +249,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Input Handling**: Robust handling for both Keyboard and Mouse events.
 - **Testing Support**: Included `RatatuiRuby::TestHelper` and RSpec integration to make testing your TUI applications possible.
 
-[Unreleased]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.3.1...HEAD
+[Unreleased]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.4.0...HEAD
+[0.4.0]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.3.1...v0.4.0
 [0.3.1]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.3.0...v0.3.1
 [0.3.0]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.2.0...v0.3.0
 [0.2.0]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.1.0...v0.2.0
 [0.1.0]: https://git.sr.ht/~kerrick/ratatui_ruby/tree/v0.1.0
-
