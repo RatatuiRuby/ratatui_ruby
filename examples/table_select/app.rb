@@ -42,7 +42,6 @@ class TableSelectApp
     @current_style_index = 0
     @column_spacing = 1
     @highlight_spacing_index = 0
-    @highlight_spacing_index = 0
     @column_highlight_style = RatatuiRuby::Style.new(fg: :magenta)
     @show_column_highlight = true
     @cell_highlight_style = RatatuiRuby::Style.new(fg: :white, bg: :red, modifiers: [:bold])
@@ -78,7 +77,6 @@ class TableSelectApp
     current_style_entry = STYLES[@current_style_index]
     current_spacing_entry = HIGHLIGHT_SPACINGS[@highlight_spacing_index]
     selection_label = @selected_index.nil? ? "none" : @selected_index.to_s
-    col_label = @selected_col.nil? ? "none" : @selected_col.to_s
 
     # Main table
     table = RatatuiRuby::Table.new(
@@ -89,7 +87,6 @@ class TableSelectApp
       selected_column: @selected_col,
       highlight_style: highlight_style,
       highlight_symbol: "> ",
-      highlight_spacing: current_spacing_entry[:spacing],
       highlight_spacing: current_spacing_entry[:spacing],
       column_highlight_style: @show_column_highlight ? @column_highlight_style : nil,
       cell_highlight_style: @show_cell_highlight ? @cell_highlight_style : nil,

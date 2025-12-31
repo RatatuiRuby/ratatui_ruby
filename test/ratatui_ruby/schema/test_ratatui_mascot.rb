@@ -19,7 +19,7 @@ module RatatuiRuby
         
         # Check for block characters "▀" (upper half block) or "▄" (lower half block) or "█" (full block)
         # We can just check for any of these to ensure it's rendering blocks.
-        assert_match /[▀▄█]/, content, "Mascot should be rendered with block characters"
+        assert_match(/[▀▄█]/, content, "Mascot should be rendered with block characters")
       end
     end
 

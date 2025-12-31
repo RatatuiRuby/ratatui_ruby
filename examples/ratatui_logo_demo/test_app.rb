@@ -28,7 +28,7 @@ class TestRatatuiLogoDemoApp < Minitest::Test
       # The logo is centered.
       center_x = 40
       center_y = 10
-      cell = RatatuiRuby.get_cell_at(center_x, center_y)
+      RatatuiRuby.get_cell_at(center_x, center_y)
       
       # It might not be exactly at 40, 10, but the logo is large enough that checking a region is safe.
       # Or simpler: verify the buffer contains non-whitespace lines in the middle.

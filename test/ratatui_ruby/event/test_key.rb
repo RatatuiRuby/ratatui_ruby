@@ -146,5 +146,5 @@ module RatatuiRuby
       refute_predicate event_alt_shift_up, :alt_up?
       refute_predicate event_alt_shift_up, :shift_up?
     end
-   end
- end
+  end
+end
