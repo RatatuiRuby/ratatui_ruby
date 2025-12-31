@@ -6,7 +6,7 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
-class ColorGradientDemo
+class WidgetStyleColors
   def initialize
     @width = 80
     @height = 24
@@ -19,7 +19,7 @@ class ColorGradientDemo
           frame.render_widget(render(tui), frame.area)
         end
         event = tui.poll_event
-        break if event&.key? && (event.ctrl_c? || event == :q)
+        break if event.key? && (event.ctrl_c? || event == :q)
       end
     end
   end
@@ -99,4 +99,4 @@ class ColorGradientDemo
   end
 end
 
-ColorGradientDemo.new.run if __FILE__ == $PROGRAM_NAME
+WidgetStyleColors.new.run if __FILE__ == $PROGRAM_NAME

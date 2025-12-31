@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+class WidgetScrollText
+  # @public
+  def self.new: () -> WidgetScrollText
+
+  # @public
+  def run: () -> void
+end

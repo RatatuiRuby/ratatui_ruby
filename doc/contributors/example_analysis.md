@@ -25,11 +25,15 @@ These examples follow the pattern described in `developing_examples.md`: they ex
 - `cell_demo`: Demonstrates Cell widget.
 - `block_titles`: Demonstrates Block title positioning and alignment.
 - `block_padding`: Demonstrates Block padding (uniform and directional).
+- `color_picker`: Interactive tool for picking colors, generating palettes, and copying hex codes.
 - `ratatui_logo_demo`: Demonstrates RatatuiLogo with style cycling.
 - `ratatui_mascot_demo`: Demonstrates RatatuiMascot with style cycling.
 - `list_styles`: Demonstrates List styling variations.
 - `popup_demo`: Demonstrates Popup widget positioning and behavior.
+- `rich_text`: Demonstrates styling via `Text::Span` and `Text::Line` objects.
 - `scroll_text`: Demonstrates text scrolling behavior.
+- `table_flex`: Demonstrates Table widget with flexible layouts.
+- `widget_style_colors`: Demonstrates hex color gradients and style modifiers.
 
 ## Category 2: Real-Application Showcases
 
@@ -46,6 +50,7 @@ These are not API documentation—they do not systematically cycle through all w
 - `mouse_events`: Multi-panel event display app showcasing all mouse event types.
 - `all_events`: Multi-panel dashboard displaying all event types (key, mouse, resize, paste, focus).
 - `flex_layout`: Layout demo showcasing Layout flex modes (space_between, space_evenly, fill, ratio).
+- `frame_demo`: Interactive hit-testing dashboard demonstrating `Layout.split` and frame rendering.
 - `custom_widget`: Demonstrates custom widget implementation with a diagonal line widget.
 
 ## Category 3: Documentation-Verification Examples
@@ -56,16 +61,19 @@ These serve as automated documentation tests: if the example code changes but th
 
 **Examples:**
 - `quickstart_lifecycle`: Copy of the lifecycle example from `README.md` or quickstart documentation.
+- `quickstart_layout`: Copy of the layout example from quickstart documentation.
 - `quickstart_dsl`: Copy of the DSL-style example from quickstart documentation.
 - `readme_usage`: Copy of the simple "Hello, Ratatui!" example from `README.md`.
 
 ## TODO
 
-- [ ] **Establish a naming prefix convention** to disambiguate categories alphabetically without requiring subdirectories. Suggested prefixes:
+- [x] **Establish a naming prefix convention** to disambiguate categories alphabetically without requiring subdirectories. Suggested prefixes:
   - `app_` (application): `app_analytics`, `app_login_form`, etc.
   - `verify_` (doc/documentation): `verify_quickstart_lifecycle`, `verify_readme_usage`, etc.
   - `widget_` (widget showcase): `widget_gauge_demo`, `widget_list_demo`, etc.
   - Apply this retroactively to all examples via directory renames (includes renaming screenshots in `doc/images/`, updating markdown image references in documentation, updating links in markdown files, and ensuring the `ExampleApp.all` list reflects the new names).
+
+- [ ] **Update Quickstart** to reduce the heading levels of individual examples, inserting a new heading level above them and below "## Examples". This new heading level should map to the naming conventions, and this will require recategorizing the examples in quickstart.md.
 
 - [ ] **Split `analytics`** (demonstrates both Tabs and BarChart interactively). Create `widget_tabs_demo` and move BarChart demo to it, or extract BarChart into its own single-widget showcase.
 
@@ -78,5 +86,6 @@ These serve as automated documentation tests: if the example code changes but th
 - [ ] **Reassign `hit_test`**: Currently categorized as Category 2 but serves partly to document the "Cached Layout Pattern". Consider renaming to `verify_hit_test` if it should be documentation-verification, or ensure it's purely a showcase of an application pattern.
 
 - [ ] **Verify `custom_widget`**: Currently Category 2 (real app), but is it actually a documented pattern or example code? If it's meant to verify custom widget documentation, rename to `verify_custom_widget`.
+- [ ] **Verify `frame_demo`**: Currently Category 2 (real app), but heavily used to explain caching/hit-testing. Decide if it should be `verify_frame_rendering`.
 
 - [ ] **Update documentation** (developing_examples.md) to reflect the new naming convention and clarify which category each example should belong to.

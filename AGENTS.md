@@ -44,6 +44,7 @@ Architecture:
   - Runs default task (compile + test + lint): `bin/agent_rake`
   - Runs specific task: `bin/agent_rake test:ruby` (for example)
 - **Setup:** `bin/setup` must handle both Bundler and Cargo dependencies.
+- **Git:** ALWAYS use `--no-pager` with `git diff`, `git log`, etc..
 
 ### Ruby Standards
 

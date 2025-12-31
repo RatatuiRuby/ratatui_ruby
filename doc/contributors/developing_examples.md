@@ -60,11 +60,12 @@ MyExampleApp.new.run if __FILE__ == $PROGRAM_NAME
 
 ### Naming Convention (Required)
 
-Example classes **must** follow the naming convention:
-- **Directory:** `examples/my_example/` (snake_case)
-- **Class:** `MyExampleApp` (PascalCase with `App` suffix)
+Example directories **must** follow a prefixing convention to categorize them alphabetically:
+- `app_`: Application showcases (e.g., `app_analytics`). Class name: `AppAnalytics`.
+- `widget_`: Widget-focused demonstrations (e.g., `widget_gauge_demo`). Class name: `WidgetGaugeDemo`.
+- `verify_`: Documentation verification examples (e.g., `verify_readme_usage`). Class name: `VerifyReadmeUsage`.
 
-The class name is derived from the directory name: `my_example` → `MyExampleApp`.
+The directory and class names must match (snake_case directory maps to PascalCase class).
 
 This convention enables the `terminal_preview:update` rake task to automatically capture terminal output for all examples without maintaining a manual registry.
 

@@ -9,11 +9,11 @@ require "ratatui_ruby/test_helper"
 require "minitest/autorun"
 require_relative "app"
 
-class TestColorGradientDemo < Minitest::Test
+class TestWidgetStyleColors < Minitest::Test
   include RatatuiRuby::TestHelper
 
   def setup
-    @app = ColorGradientDemo.new
+    @app = WidgetStyleColors.new
   end
 
   def test_renders_with_title

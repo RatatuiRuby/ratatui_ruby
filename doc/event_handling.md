@@ -24,7 +24,6 @@ For a complete list of supported keys, modifiers, and event types, please refer 
 
 ```ruby
 event = RatatuiRuby.poll_event
-next unless event
 
 # 1. Check for quit keys
 if event == "q" || event == :ctrl_c

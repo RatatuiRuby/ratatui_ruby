@@ -80,7 +80,6 @@ Reuse the cached rects. Test clicks:
 ```ruby
 def handle_input
   event = RatatuiRuby.poll_event
-  return unless event
 
   case event
   in type: :mouse, kind: "down", x:, y:
