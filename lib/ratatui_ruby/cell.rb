@@ -22,7 +22,12 @@ module RatatuiRuby
   #
   class Cell
     # The character displayed in the cell.
-    attr_reader :char
+    #
+    # Named to match Ratatui's Cell::symbol() method.
+    attr_reader :symbol
+
+    # Alias for Rubyists who prefer a shorter name.
+    alias char symbol
 
     # The foreground color of the cell (e.g., :red, :blue, "#ff0000").
     attr_reader :fg
@@ -40,7 +45,7 @@ module RatatuiRuby
     #   Cell.empty # => #<RatatuiRuby::Cell char=" ">
     #
     def self.empty
-      new(char: " ", fg: nil, bg: nil, modifiers: [])
+      new(symbol: " ", fg: nil, bg: nil, modifiers: [])
     end
 
     # Returns a default cell (alias for empty).
@@ -55,24 +60,29 @@ module RatatuiRuby
 
     # Returns a cell with a specific character and no styles.
     #
-    # [char] String (single character).
+    # [symbol] String (single character).
     #
     # === Example
     #
-    #   Cell.char("X") # => #<RatatuiRuby::Cell char="X">
+    #   Cell.symbol("X") # => #<RatatuiRuby::Cell symbol="X">
     #
+    def self.symbol(symbol)
+      new(symbol: symbol, fg: nil, bg: nil, modifiers: [])
+    end
+
+    # Alias for Rubyists who prefer a shorter name.
     def self.char(char)
-      new(char: char, fg: nil, bg: nil, modifiers: [])
+      symbol(char)
     end
 
     # Creates a new Cell.
     #
-    # [char] String (single character).
+    # [symbol] String (single character). Aliased as <tt>char:</tt>.
     # [fg] Symbol or String (nullable).
     # [bg] Symbol or String (nullable).
     # [modifiers] Array of Strings.
-    def initialize(char:, fg: nil, bg: nil, modifiers: [])
-      @char = char
+    def initialize(symbol: nil, char: nil, fg: nil, bg: nil, modifiers: [])
+      @symbol = symbol || char || " "
       @fg = fg
       @bg = bg
       @modifiers = modifiers.freeze
@@ -135,7 +145,7 @@ module RatatuiRuby
 
     # Returns a string representation of the cell.
     def inspect
-      parts = ["char=#{char.inspect}"]
+      parts = ["symbol=#{symbol.inspect}"]
       parts << "fg=#{fg.inspect}" if fg
       parts << "bg=#{bg.inspect}" if bg
       parts << "modifiers=#{modifiers.inspect}" unless modifiers.empty?
@@ -144,12 +154,13 @@ module RatatuiRuby
 
     # Returns the cell's character.
     def to_s
-      char
+      symbol
     end
 
     # Support for pattern matching.
+    # Supports both <tt>:symbol</tt> and <tt>:char</tt> keys.
     def deconstruct_keys(keys)
-      { char: char, fg: fg, bg: bg, modifiers: modifiers }
+      { symbol: symbol, char: symbol, fg: fg, bg: bg, modifiers: modifiers }
     end
   end
 end

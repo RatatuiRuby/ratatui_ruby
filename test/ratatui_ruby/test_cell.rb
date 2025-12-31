@@ -41,9 +41,31 @@ module RatatuiRuby
     def test_cell_char
       cell = Cell.char("Z")
       assert_equal "Z", cell.char
+      assert_equal "Z", cell.symbol  # alias works too
       assert_nil cell.fg
       assert_nil cell.bg
       assert_empty cell.modifiers
+    end
+
+    def test_cell_symbol
+      cell = Cell.symbol("Y")
+      assert_equal "Y", cell.symbol
+      assert_equal "Y", cell.char  # alias works too
+      assert_nil cell.fg
+      assert_nil cell.bg
+      assert_empty cell.modifiers
+    end
+
+    def test_initialize_accepts_both_symbol_and_char
+      # Using symbol: (primary)
+      c1 = Cell.new(symbol: "A", fg: :red)
+      assert_equal "A", c1.symbol
+      assert_equal "A", c1.char
+
+      # Using char: (alias)
+      c2 = Cell.new(char: "B", fg: :blue)
+      assert_equal "B", c2.symbol
+      assert_equal "B", c2.char
     end
 
     def test_equality
@@ -57,10 +79,10 @@ module RatatuiRuby
 
     def test_inspect
       c1 = Cell.new(char: "X", fg: :red, modifiers: ["bold"])
-      assert_equal '#<RatatuiRuby::Cell char="X" fg=:red modifiers=["bold"]>', c1.inspect
+      assert_equal '#<RatatuiRuby::Cell symbol="X" fg=:red modifiers=["bold"]>', c1.inspect
 
       c2 = Cell.empty
-      assert_equal '#<RatatuiRuby::Cell char=" ">', c2.inspect
+      assert_equal '#<RatatuiRuby::Cell symbol=" ">', c2.inspect
     end
 
     def test_to_s
