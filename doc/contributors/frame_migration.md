@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Migration Plan: Adopting the Frame-Based API
 
-Status: Approved  
+Status: Approved
 
 Target Version: v0.5.0  
 
@@ -136,7 +136,7 @@ end
 
 ---
 
-## Phase 3: Layout Integration
+## Phase 3: Layout Integration ✅
 
 **Status:** DONE (2025-12-31)
 
@@ -180,6 +180,41 @@ end
 
 ---
 
+## Phase 5: Final Review ✅
+
+**Status:** DONE (2025-12-31)
+
+**Goal:** Verification Agent review of the entire implementation.
+
+---
+
+## Phase 6: Documentation Examples
+
+**Goal:** Convert documentation-verification examples to use the new Frame-based API.
+
+### Step 6.1: Convert Examples
+
+* **Targets:**
+    * `examples/quickstart_lifecycle`
+    * `examples/quickstart_dsl`
+    * `examples/readme_usage`
+
+* **Action:**
+    * Update `app.rb` to use `RatatuiRuby.draw { |frame| ... }`.
+    * Use `Layout.split` for layout.
+    * Ensure corresponding tests pass.
+    * Update code snippets in `README.md` and documentation files to match.
+
+---
+
+## Phase 7: Example Refactoring
+
+**Goal:** Ensure reference examples are fully compliant with the new API.
+
+* **Note:** This overlaps with Phase 4, but serves as a final consistency check for example patterns.
+
+---
+
 ## Execution Order for Development Agents
 
 1. **Agent 1 (Rust Core):** Implement `ext/ratatui_ruby/src/frame.rs` and update `lib.rs` to expose the `Frame` class and modify `draw` to accept a block.
@@ -190,12 +225,18 @@ end
 
 ## Definition of Done:
 
-* `RatatuiRuby.draw` accepts a block.
+* ✅ `RatatuiRuby.draw` accepts a block.
 
-* The block receives a `Frame` object.
+* ✅ The block receives a `Frame` object.
 
-* `frame.render_widget(widget, rect)` successfully draws to the screen.
+* ✅ `frame.render_widget(widget, rect)` successfully draws to the screen.
 
-* `frame.area` returns the correct terminal dimensions.
+* ✅ `frame.area` returns the correct terminal dimensions.
 
-* Backward compatibility for `RatatuiRuby.draw(tree)` is preserved.
+* ✅ Backward compatibility for `RatatuiRuby.draw(tree)` is preserved.
+
+* Documentation examples (`quickstart`, `readme`) use the Frame API.
+
+* `examples/frame_demo` exists and works.
+
+* `examples/hit_test` is refactored to use `Layout.split`.
