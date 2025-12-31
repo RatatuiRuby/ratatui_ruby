@@ -16,7 +16,7 @@ PROCESSES = [
   { pid: 3456, name: "redis", cpu: 12.4 },
   { pid: 7890, name: "sidekiq", cpu: 22.8 },
   { pid: 2345, name: "webpack", cpu: 45.3 },
-  { pid: 6789, name: "node", cpu: 18.9 }
+  { pid: 6789, name: "node", cpu: 18.9 },
 ].freeze
 
 class TableSelectApp
@@ -27,13 +27,13 @@ class TableSelectApp
     { name: "Red", style: RatatuiRuby::Style.new(fg: :red) },
     { name: "Green", style: RatatuiRuby::Style.new(fg: :green) },
     { name: "Blue on White", style: RatatuiRuby::Style.new(fg: :blue, bg: :white) },
-    { name: "Magenta", style: RatatuiRuby::Style.new(fg: :magenta, modifiers: [:bold]) }
+    { name: "Magenta", style: RatatuiRuby::Style.new(fg: :magenta, modifiers: [:bold]) },
   ].freeze
 
   HIGHLIGHT_SPACINGS = [
     { name: "When Selected", spacing: :when_selected },
     { name: "Always", spacing: :always },
-    { name: "Never", spacing: :never }
+    { name: "Never", spacing: :never },
   ].freeze
 
   def initialize
@@ -58,9 +58,7 @@ class TableSelectApp
     end
   end
 
-  private
-
-  def render
+  private def render
     # Create table rows from process data
     rows = PROCESSES.map { |p| [p[:pid].to_s, p[:name], "#{p[:cpu]}%"] }
 
@@ -68,7 +66,7 @@ class TableSelectApp
     widths = [
       RatatuiRuby::Constraint.length(8),
       RatatuiRuby::Constraint.length(15),
-      RatatuiRuby::Constraint.length(10)
+      RatatuiRuby::Constraint.length(10),
     ]
 
     # Create highlight style (yellow text)
@@ -81,11 +79,11 @@ class TableSelectApp
     # Main table
     table = RatatuiRuby::Table.new(
       header: ["PID", "Name", "CPU"],
-      rows: rows,
-      widths: widths,
+      rows:,
+      widths:,
       selected_row: @selected_index,
       selected_column: @selected_col,
-      highlight_style: highlight_style,
+      highlight_style:,
       highlight_symbol: "> ",
       highlight_spacing: current_spacing_entry[:spacing],
       column_highlight_style: @show_column_highlight ? @column_highlight_style : nil,
@@ -115,14 +113,14 @@ class TableSelectApp
               RatatuiRuby::Text::Span.new(content: "x", style: @hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Toggle Row (#{selection_label})  "),
               RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Quit")
+              RatatuiRuby::Text::Span.new(content: ": Quit"),
             ]),
             # Line 2: Table Controls
             RatatuiRuby::Text::Line.new(spans: [
               RatatuiRuby::Text::Span.new(content: "s", style: @hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Style (#{current_style_entry[:name]})  "),
               RatatuiRuby::Text::Span.new(content: "p", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Spacing (#{current_spacing_entry[:name]})  ")
+              RatatuiRuby::Text::Span.new(content: ": Spacing (#{current_spacing_entry[:name]})  "),
             ]),
             # Line 3: More Controls
             RatatuiRuby::Text::Line.new(spans: [
@@ -130,10 +128,10 @@ class TableSelectApp
               RatatuiRuby::Text::Span.new(content: "c", style: @hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Col Highlight (#{@show_column_highlight ? 'On' : 'Off'})  "),
               RatatuiRuby::Text::Span.new(content: "z", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Cell Highlight (#{@show_cell_highlight ? 'On' : 'Off'})")
-            ])
+              RatatuiRuby::Text::Span.new(content: ": Cell Highlight (#{@show_cell_highlight ? 'On' : 'Off'})"),
+            ]),
           ]
-        )
+        ),
       ]
     )
 
@@ -151,12 +149,12 @@ class TableSelectApp
     RatatuiRuby.draw(layout)
   end
 
-  def handle_input
+  private def handle_input
     event = RatatuiRuby.poll_event
     return unless event
 
     case event
-    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
+    in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit
     in type: :key, code: "down" | "j"
       @selected_index = ((@selected_index || -1) + 1) % PROCESSES.length

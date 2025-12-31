@@ -59,7 +59,7 @@ module RatatuiRuby
       # [text] Text content (String or Text::Line).
       # [style] Style (optional).
       def initialize(x:, y:, text:, style: nil)
-        super(x: Float(x), y: Float(y), text: text, style: style)
+        super(x: Float(x), y: Float(y), text:, style:)
       end
     end
   end

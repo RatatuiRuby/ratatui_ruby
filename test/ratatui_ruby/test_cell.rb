@@ -19,7 +19,7 @@ module RatatuiRuby
       assert_equal :red, cell.fg
       assert_equal :blue, cell.bg
       assert_equal ["bold", "italic"], cell.modifiers
-      
+
       assert_predicate cell, :bold?
       assert_predicate cell, :italic?
       refute_predicate cell, :dim?
@@ -41,7 +41,7 @@ module RatatuiRuby
     def test_cell_char
       cell = Cell.char("Z")
       assert_equal "Z", cell.char
-      assert_equal "Z", cell.symbol  # alias works too
+      assert_equal "Z", cell.symbol # alias works too
       assert_nil cell.fg
       assert_nil cell.bg
       assert_empty cell.modifiers
@@ -50,7 +50,7 @@ module RatatuiRuby
     def test_cell_symbol
       cell = Cell.symbol("Y")
       assert_equal "Y", cell.symbol
-      assert_equal "Y", cell.char  # alias works too
+      assert_equal "Y", cell.char # alias works too
       assert_nil cell.fg
       assert_nil cell.bg
       assert_empty cell.modifiers
@@ -93,14 +93,14 @@ module RatatuiRuby
 
     def test_pattern_matching
       cell = Cell.new(char: "X", fg: :red)
-      
+
       matched = case cell
       in { char: "X", fg: :red }
         true
       else
         false
       end
-      
+
       assert matched, "Cell should match pattern { char: 'X', fg: :red }"
 
       matched_partial = case cell
@@ -123,7 +123,7 @@ module RatatuiRuby
         cell = RatatuiRuby.get_cell_at(1, 0)
         assert_instance_of Cell, cell
         assert_equal "H", cell.char
-        
+
         # Checking underlying helper usage too
         assert_cell_style(1, 0, char: "H")
       end

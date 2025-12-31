@@ -60,7 +60,7 @@ class TestTestHelperModule < Minitest::Test
       end
     end
   end
-  
+
   def test_timeout_disabled
     # Should not raise error if timeout is disabled (nil)
     start_time = Time.now
@@ -73,7 +73,7 @@ class TestTestHelperModule < Minitest::Test
   def test_inject_keys_string
     with_test_terminal(20, 10) do
       inject_keys("a", "b")
-      
+
       event1 = RatatuiRuby.poll_event
       assert_equal "a", event1.code
       assert_empty event1.modifiers
@@ -87,7 +87,7 @@ class TestTestHelperModule < Minitest::Test
   def test_inject_keys_symbol
     with_test_terminal(20, 10) do
       inject_keys(:enter, :ctrl_c, :alt_shift_left)
-      
+
       event1 = RatatuiRuby.poll_event
       assert_equal "enter", event1.code
       assert_empty event1.modifiers
@@ -95,7 +95,7 @@ class TestTestHelperModule < Minitest::Test
       event2 = RatatuiRuby.poll_event
       assert_equal "c", event2.code
       assert_equal ["ctrl"], event2.modifiers
-      
+
       event3 = RatatuiRuby.poll_event
       assert_equal "left", event3.code
       assert_equal ["alt", "shift"], event3.modifiers
@@ -105,7 +105,7 @@ class TestTestHelperModule < Minitest::Test
   def test_inject_keys_hash
     with_test_terminal(20, 10) do
       inject_keys({ code: "x", modifiers: ["alt"] })
-      
+
       event = RatatuiRuby.poll_event
       assert_equal "x", event.code
       assert_equal ["alt"], event.modifiers
@@ -116,7 +116,7 @@ class TestTestHelperModule < Minitest::Test
     with_test_terminal(20, 10) do
       key = RatatuiRuby::Event::Key.new(code: "y")
       inject_keys(key)
-      
+
       event = RatatuiRuby.poll_event
       assert_equal key, event
     end

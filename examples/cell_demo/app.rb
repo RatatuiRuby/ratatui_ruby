@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 # frozen_string_literal: true
 
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
@@ -35,15 +39,15 @@ class CellDemoApp
         ["Cache", ok_cell],
         ["Worker", fail_cell],
         ["Analytics", pending_cell],
-        ["Web Server", RatatuiRuby::Cell.new(char: "RESTARTING", fg: :blue, modifiers: ["rapid_blink"])]
+        ["Web Server", RatatuiRuby::Cell.new(char: "RESTARTING", fg: :blue, modifiers: ["rapid_blink"])],
       ]
 
       table = RatatuiRuby::Table.new(
         header: ["Service", RatatuiRuby::Cell.new(char: "Status", modifiers: ["underlined"])],
-        rows: rows,
+        rows:,
         widths: [
           RatatuiRuby::Constraint.percentage(70),
-          RatatuiRuby::Constraint.percentage(30)
+          RatatuiRuby::Constraint.percentage(30),
         ],
         block: RatatuiRuby::Block.new(title: "System Status", borders: :all),
         column_spacing: 1
@@ -55,21 +59,21 @@ class CellDemoApp
         # We use a vertical layout:
         # Top: Custom CheckeredBackground with specific height
         # Bottom: Table using remaining space
-        
+
         # Note: CheckeredBackground renders to the area implicitly if passed as a child.
-        # However, to overlay the paragraph, we might need a more complex structure or 
+        # However, to overlay the paragraph, we might need a more complex structure or
         # wrapper. RatatuiRuby::Layout handles non-overlapping children.
         # To get the "Overlay" effect from my previous code (Paragraph over Background),
         # we would need to composite them. For now, let's just show them stacked or
         # using 'Overlay' widget if it exists.
-        
+
         # Checking schema: Overlay exists? Yes: require_relative "ratatui_ruby/schema/overlay" in lib/ratatui_ruby.rb
-        
+
         layout = RatatuiRuby::Layout.new(
           direction: :vertical,
           constraints: [
             RatatuiRuby::Constraint.length(10), # Top section
-            RatatuiRuby::Constraint.min(0)      # Bottom section
+            RatatuiRuby::Constraint.min(0), # Bottom section
           ],
           children: [
             # Top Child: An Overlay of Paragraph on top of CheckeredBackground
@@ -84,19 +88,19 @@ class CellDemoApp
                     alignment: :center,
                     block: RatatuiRuby::Block.new(borders: :all, title: "Overlay")
                   )
-                )
+                ),
               ]
             ),
             # Bottom Child: The Table
-            table
+            table,
           ]
         )
 
         tui.draw(layout)
 
         event = RatatuiRuby.poll_event
-        if event.is_a?(RatatuiRuby::Event::Key)
-          break if event.code == "q" || (event.code == "c" && event.modifiers.include?("ctrl"))
+        if event.is_a?(RatatuiRuby::Event::Key) && (event.code == "q" || (event.code == "c" && event.modifiers.include?("ctrl")))
+          break
         end
       end
     end

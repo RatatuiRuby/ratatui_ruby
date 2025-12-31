@@ -31,7 +31,7 @@ class PreviewCollection
 
     puts "\nHere we go!"
     failures = apps.count { |app| !capture_app(app) }
-    
+
     if failures.zero?
       puts "\n✨ All captures complete. Check doc/images/."
     else
@@ -39,13 +39,11 @@ class PreviewCollection
     end
   end
 
-  private
-
-  def count_stale_apps(apps)
+  private def count_stale_apps(apps)
     apps.count { |app| SavedScreenshot.for(app, @output_dir).stale? }
   end
 
-  def capture_app(app)
+  private def capture_app(app)
     saved = SavedScreenshot.for(app, @output_dir)
 
     if saved.stale?
@@ -57,4 +55,4 @@ class PreviewCollection
       true
     end
   end
-  end
+end

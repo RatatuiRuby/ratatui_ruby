@@ -18,7 +18,7 @@ class GaugeDemoApp
       { name: "Yellow", color: :yellow },
       { name: "Red", color: :red },
       { name: "Cyan", color: :cyan },
-      { name: "Blue", color: :blue }
+      { name: "Blue", color: :blue },
     ]
     @gauge_color_index = 0
 
@@ -26,7 +26,7 @@ class GaugeDemoApp
       { name: "None", style: nil },
       { name: "Dark Gray BG", style: RatatuiRuby::Style.new(fg: :dark_gray) },
       { name: "White on Black", style: RatatuiRuby::Style.new(fg: :white, bg: :black) },
-      { name: "Bold White", style: RatatuiRuby::Style.new(fg: :white, modifiers: [:bold]) }
+      { name: "Bold White", style: RatatuiRuby::Style.new(fg: :white, modifiers: [:bold]) },
     ]
     @bg_style_index = 1
 
@@ -34,10 +34,10 @@ class GaugeDemoApp
     @use_unicode_index = 0
 
     @label_modes = [
-      { name: "Percentage", template: ->(ratio) { "#{(ratio * 100).to_i}%" } },
-      { name: "Ratio (decimal)", template: ->(ratio) { format("%.2f", ratio) } },
-      { name: "Progress", template: ->(ratio) { "Progress: #{(ratio * 100).to_i}%" } },
-      { name: "None", template: ->(ratio) { nil } }
+      { name: "Percentage", template: -> (ratio) { "#{(ratio * 100).to_i}%" } },
+      { name: "Ratio (decimal)", template: -> (ratio) { format("%.2f", ratio) } },
+      { name: "Progress", template: -> (ratio) { "Progress: #{(ratio * 100).to_i}%" } },
+      { name: "None", template: -> (ratio) { nil } },
     ]
     @label_mode_index = 0
   end
@@ -51,9 +51,7 @@ class GaugeDemoApp
     end
   end
 
-  private
-
-  def render
+  private def render
     @ratio = @ratios[@ratio_index]
     gauge_color = @gauge_colors[@gauge_color_index][:color]
     bg_style = @bg_styles[@bg_style_index][:style]
@@ -67,7 +65,7 @@ class GaugeDemoApp
       direction: :vertical,
       constraints: [
         RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.length(6)
+        RatatuiRuby::Constraint.length(6),
       ],
       children: [
         # Main content area with multiple gauge examples
@@ -78,7 +76,7 @@ class GaugeDemoApp
             RatatuiRuby::Constraint.fill(1),
             RatatuiRuby::Constraint.fill(1),
             RatatuiRuby::Constraint.fill(1),
-            RatatuiRuby::Constraint.length(1)
+            RatatuiRuby::Constraint.length(1),
           ],
           children: [
             RatatuiRuby::Paragraph.new(
@@ -112,7 +110,7 @@ class GaugeDemoApp
               use_unicode:,
               block: RatatuiRuby::Block.new(title: "Min Threshold (Magenta)")
             ),
-            RatatuiRuby::Paragraph.new(text: "")
+            RatatuiRuby::Paragraph.new(text: ""),
           ]
         ),
         # Bottom controls panel
@@ -127,38 +125,38 @@ class GaugeDemoApp
                   RatatuiRuby::Text::Span.new(content: "←/→", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
                   RatatuiRuby::Text::Span.new(content: ": Adjust Ratio (#{format('%.2f', @ratio)})  "),
                   RatatuiRuby::Text::Span.new(content: "q", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
-                  RatatuiRuby::Text::Span.new(content: ": Quit")
+                  RatatuiRuby::Text::Span.new(content: ": Quit"),
                 ]),
                 # Styling
                 RatatuiRuby::Text::Line.new(spans: [
                   RatatuiRuby::Text::Span.new(content: "g", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
                   RatatuiRuby::Text::Span.new(content: ": Color (#{@gauge_colors[@gauge_color_index][:name]})  "),
                   RatatuiRuby::Text::Span.new(content: "b", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
-                  RatatuiRuby::Text::Span.new(content: ": Background (#{@bg_styles[@bg_style_index][:name]})")
+                  RatatuiRuby::Text::Span.new(content: ": Background (#{@bg_styles[@bg_style_index][:name]})"),
                 ]),
                 # Options
                 RatatuiRuby::Text::Line.new(spans: [
                   RatatuiRuby::Text::Span.new(content: "u", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
                   RatatuiRuby::Text::Span.new(content: ": Unicode (#{use_unicode ? 'On' : 'Off'})  "),
                   RatatuiRuby::Text::Span.new(content: "l", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
-                  RatatuiRuby::Text::Span.new(content: ": Label (#{@label_modes[@label_mode_index][:name]})")
-                ])
+                  RatatuiRuby::Text::Span.new(content: ": Label (#{@label_modes[@label_mode_index][:name]})"),
+                ]),
               ]
-            )
+            ),
           ]
-        )
+        ),
       ]
     )
 
     RatatuiRuby.draw(layout)
   end
 
-  def handle_input
+  private def handle_input
     event = RatatuiRuby.poll_event
     return unless event
 
     case event
-    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
+    in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit
     in type: :key, code: "right"
       @ratio_index = (@ratio_index + 1) % @ratios.length

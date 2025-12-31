@@ -17,11 +17,9 @@ class SafetyConfirmation
     wait_for_user
   end
 
-  private
-
-  def print_warning
+  private def print_warning
     unchanged_count = @total_count - @stale_count
-    puts "\n" + "=" * 60
+    puts "\n#{'=' * 60}"
     puts "  📸  NATIVE TERMINAL CAPTURE  📸"
     puts "=" * 60
     puts "This task will:"
@@ -41,7 +39,7 @@ class SafetyConfirmation
     puts
   end
 
-  def wait_for_user
+  private def wait_for_user
     loop do
       print "Continue? [Y/n]: "
       response = $stdin.gets.strip.downcase

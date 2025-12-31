@@ -14,14 +14,10 @@ module RatatuiRuby
       ##
       # :attr_reader: label
       # The label of the group (String).
-  
+
       ##
       # :attr_reader: bars
       # The bars in the group (Array of Bar).
-  
-      def initialize(label:, bars:)
-        super
-      end
     end
   end
 end

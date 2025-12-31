@@ -35,13 +35,15 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let mut data_storage: Vec<Vec<(f64, f64)>> = Vec::new();
 
     for i in 0..datasets_val.len() {
-        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let index = isize::try_from(i)
+            .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
         let ds_val: Value = datasets_val.entry(index)?;
         let data_array: magnus::RArray = ds_val.funcall("data", ())?;
 
         let mut points = Vec::new();
         for j in 0..data_array.len() {
-            let index = isize::try_from(j).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+            let index = isize::try_from(j)
+                .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
             let point_array_val: Value = data_array.entry(index)?;
             let point_array = magnus::RArray::from_value(point_array_val).ok_or_else(|| {
                 Error::new(ruby.exception_type_error(), "expected array for point")
@@ -54,7 +56,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     for (i, points) in data_storage.iter().enumerate() {
-        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let index = isize::try_from(i)
+            .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
         let ds_val: Value = datasets_val.entry(index)?;
         let name: String = ds_val.funcall("name", ())?;
         let marker_sym: Symbol = ds_val.funcall("marker", ())?;
@@ -112,7 +115,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     if !hidden_legend_constraints_val.is_nil() {
-        let constraints_array: magnus::RArray = hidden_legend_constraints_val.funcall("to_a", ())?;
+        let constraints_array: magnus::RArray =
+            hidden_legend_constraints_val.funcall("to_a", ())?;
         if constraints_array.len() == 2 {
             let width_val: Value = constraints_array.entry(0)?;
             let height_val: Value = constraints_array.entry(1)?;
@@ -138,7 +142,8 @@ fn parse_axis(axis_val: Value) -> Result<Axis<'static>, Error> {
 
     let mut labels = Vec::new();
     for i in 0..labels_val.len() {
-        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let index = isize::try_from(i)
+            .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
         let label: String = labels_val.entry(index)?;
         labels.push(Span::from(label));
     }
@@ -175,13 +180,15 @@ fn render_line_chart(frame: &mut Frame, area: Rect, node: Value) -> Result<(), E
     let mut data_storage: Vec<Vec<(f64, f64)>> = Vec::new();
 
     for i in 0..datasets_val.len() {
-        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let index = isize::try_from(i)
+            .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
         let ds_val: Value = datasets_val.entry(index)?;
         let data_array: magnus::RArray = ds_val.funcall("data", ())?;
 
         let mut points = Vec::new();
         for j in 0..data_array.len() {
-            let index = isize::try_from(j).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+            let index = isize::try_from(j)
+                .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
             let point_array_val: Value = data_array.entry(index)?;
             let point_array = magnus::RArray::from_value(point_array_val).ok_or_else(|| {
                 Error::new(ruby.exception_type_error(), "expected array for point")
@@ -194,7 +201,8 @@ fn render_line_chart(frame: &mut Frame, area: Rect, node: Value) -> Result<(), E
     }
 
     for (i, points) in data_storage.iter().enumerate() {
-        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let index = isize::try_from(i)
+            .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
         let ds_val: Value = datasets_val.entry(index)?;
         let name: String = ds_val.funcall("name", ())?;
 
@@ -214,14 +222,16 @@ fn render_line_chart(frame: &mut Frame, area: Rect, node: Value) -> Result<(), E
 
     let mut x_labels = Vec::new();
     for i in 0..x_labels_val.len() {
-        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let index = isize::try_from(i)
+            .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
         let label: String = x_labels_val.entry(index)?;
         x_labels.push(Span::from(label));
     }
 
     let mut y_labels = Vec::new();
     for i in 0..y_labels_val.len() {
-        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let index = isize::try_from(i)
+            .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
         let label: String = y_labels_val.entry(index)?;
         y_labels.push(Span::from(label));
     }

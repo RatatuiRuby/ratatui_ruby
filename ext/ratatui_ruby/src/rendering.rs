@@ -22,7 +22,8 @@ pub fn render_node(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Err
         if let Some(arr) = RArray::from_value(commands) {
             for i in 0..arr.len() {
                 let ruby = magnus::Ruby::get().unwrap();
-                let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+                let index = isize::try_from(i)
+                    .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
                 let cmd: Value = arr.entry(index)?;
                 process_draw_command(frame.buffer_mut(), cmd)?;
             }
@@ -54,8 +55,10 @@ pub fn render_node(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Err
         "RatatuiRuby::Chart" | "RatatuiRuby::LineChart" => {
             widgets::chart::render(frame, area, node)?;
         }
-        "RatatuiRuby::RatatuiLogo" => widgets::ratatui_logo::render(frame, area, node)?,
-        "RatatuiRuby::RatatuiMascot" => widgets::ratatui_mascot::render_ratatui_mascot(frame, area, node)?,
+        "RatatuiRuby::RatatuiLogo" => widgets::ratatui_logo::render(frame, area, node),
+        "RatatuiRuby::RatatuiMascot" => {
+            widgets::ratatui_mascot::render_ratatui_mascot(frame, area, node)?;
+        }
         _ => {}
     }
     Ok(())
@@ -105,7 +108,8 @@ fn process_draw_command(buffer: &mut Buffer, cmd: Value) -> Result<(), Error> {
 
             if let Some(mods_array) = RArray::from_value(modifiers_val) {
                 for i in 0..mods_array.len() {
-                    let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+                    let index = isize::try_from(i)
+                        .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
                     let mod_str: String = mods_array.entry::<String>(index)?;
                     if let Some(modifier) = parse_modifier_str(&mod_str) {
                         style = style.add_modifier(modifier);

@@ -16,9 +16,7 @@ class FlexLayoutApp
     end
   end
 
-  private
-
-  def render
+  private def render
     view_tree = RatatuiRuby::Layout.new(
       direction: :vertical,
       constraints: [
@@ -26,7 +24,7 @@ class FlexLayoutApp
         RatatuiRuby::Constraint.fill(1),
         RatatuiRuby::Constraint.fill(1),
         RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.fill(1)
+        RatatuiRuby::Constraint.fill(1),
       ],
       children: [
         RatatuiRuby::Paragraph.new(
@@ -36,19 +34,19 @@ class FlexLayoutApp
         fill_demo_row,
         space_between_demo_row,
         space_evenly_demo_row,
-        ratio_demo_row
+        ratio_demo_row,
       ]
     )
 
     RatatuiRuby.draw(view_tree)
   end
 
-  def fill_demo_row
+  private def fill_demo_row
     RatatuiRuby::Layout.new(
       direction: :horizontal,
       constraints: [
         RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.fill(3)
+        RatatuiRuby::Constraint.fill(3),
       ],
       children: [
         RatatuiRuby::Block.new(
@@ -60,19 +58,19 @@ class FlexLayoutApp
           title: "Fill(3)",
           borders: [:all],
           border_color: "blue"
-        )
+        ),
       ]
     )
   end
 
-  def space_between_demo_row
+  private def space_between_demo_row
     RatatuiRuby::Layout.new(
       direction: :horizontal,
       flex: :space_between,
       constraints: [
         RatatuiRuby::Constraint.length(12),
         RatatuiRuby::Constraint.length(12),
-        RatatuiRuby::Constraint.length(12)
+        RatatuiRuby::Constraint.length(12),
       ],
       children: [
         RatatuiRuby::Block.new(
@@ -89,19 +87,19 @@ class FlexLayoutApp
           title: "Block C",
           borders: [:all],
           border_color: "magenta"
-        )
+        ),
       ]
     )
   end
 
-  def space_evenly_demo_row
+  private def space_evenly_demo_row
     RatatuiRuby::Layout.new(
       direction: :horizontal,
       flex: :space_evenly,
       constraints: [
         RatatuiRuby::Constraint.length(12),
         RatatuiRuby::Constraint.length(12),
-        RatatuiRuby::Constraint.length(12)
+        RatatuiRuby::Constraint.length(12),
       ],
       children: [
         RatatuiRuby::Block.new(
@@ -118,17 +116,17 @@ class FlexLayoutApp
           title: "Even C",
           borders: [:all],
           border_color: "red"
-        )
+        ),
       ]
     )
   end
 
-  def ratio_demo_row
+  private def ratio_demo_row
     RatatuiRuby::Layout.new(
       direction: :horizontal,
       constraints: [
         RatatuiRuby::Constraint.ratio(1, 4),
-        RatatuiRuby::Constraint.ratio(3, 4)
+        RatatuiRuby::Constraint.ratio(3, 4),
       ],
       children: [
         RatatuiRuby::Block.new(
@@ -140,12 +138,12 @@ class FlexLayoutApp
           title: "Ratio(3, 4)",
           borders: [:all],
           border_color: "magenta"
-        )
+        ),
       ]
     )
   end
 
-  def handle_input
+  private def handle_input
     event = RatatuiRuby.poll_event
     return unless event
 

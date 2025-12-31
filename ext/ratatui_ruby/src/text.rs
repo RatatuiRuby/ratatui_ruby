@@ -23,7 +23,10 @@ pub fn parse_text(value: Value) -> Result<Vec<Line<'static>>, Error> {
     if let Ok(s) = String::try_convert(value) {
         // Split on newlines and create a Line for each.
         // We need to own the strings, so we convert each line string to a String
-        let lines: Vec<Line> = s.split('\n').map(|line| Line::from(line.to_string())).collect();
+        let lines: Vec<Line> = s
+            .split('\n')
+            .map(|line| Line::from(line.to_string()))
+            .collect();
         return if lines.is_empty() {
             Ok(vec![Line::from("")])
         } else {
@@ -36,7 +39,8 @@ pub fn parse_text(value: Value) -> Result<Vec<Line<'static>>, Error> {
         let mut lines = Vec::new();
         for i in 0..arr.len() {
             let ruby = magnus::Ruby::get().unwrap();
-            let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+            let index = isize::try_from(i)
+                .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
             let elem: Value = arr.entry(index)?;
 
             // Try to convert to String
@@ -68,7 +72,10 @@ pub fn parse_text(value: Value) -> Result<Vec<Line<'static>>, Error> {
     // Fallback: try to convert to string
     match String::try_convert(value) {
         Ok(s) => {
-            let lines: Vec<Line> = s.split('\n').map(|line| Line::from(line.to_string())).collect();
+            let lines: Vec<Line> = s
+                .split('\n')
+                .map(|line| Line::from(line.to_string()))
+                .collect();
             if lines.is_empty() {
                 Ok(vec![Line::from("")])
             } else {
@@ -139,7 +146,8 @@ pub fn parse_line(value: Value) -> Result<Line<'static>, Error> {
     let mut spans = Vec::new();
     for i in 0..spans_array.len() {
         let ruby = magnus::Ruby::get().unwrap();
-        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let index = isize::try_from(i)
+            .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
         let span_elem: Value = spans_array.entry(index)?;
 
         // If it's a string, convert to span without style
@@ -166,6 +174,5 @@ pub fn parse_line(value: Value) -> Result<Line<'static>, Error> {
 #[cfg(test)]
 mod tests {
     #[test]
-    fn test_parse_plain_string() {
-    }
+    fn test_parse_plain_string() {}
 }

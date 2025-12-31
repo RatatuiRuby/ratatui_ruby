@@ -1,19 +1,23 @@
+// SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+use bumpalo::Bump;
 use magnus::{prelude::*, Error, Symbol, Value};
 use ratatui::{
+    layout::Alignment,
     style::{Color, Modifier, Style},
+    symbols,
     text::Line,
     widgets::{Block, BorderType, Borders, Padding},
-    layout::Alignment,
-    symbols,
 };
-use bumpalo::Bump;
 
 pub fn parse_color(color_str: &str) -> Option<Color> {
     // Try standard ratatui parsing first (named colors, indexed, etc.)
     if let Ok(color) = color_str.parse::<Color>() {
         return Some(color);
     }
-    
+
     // Try hex parsing manually: #RRGGBB
     let hex_str = color_str.trim();
     if hex_str.starts_with('#') && hex_str.len() == 7 {
@@ -24,7 +28,7 @@ pub fn parse_color(color_str: &str) -> Option<Color> {
             return Some(Color::Rgb(r, g, b));
         }
     }
-    
+
     None
 }
 
@@ -61,9 +65,12 @@ pub fn parse_style(style_val: Value) -> Result<Style, Error> {
 
     let (fg, bg, modifiers_val) = if let Some(hash) = magnus::RHash::from_value(style_val) {
         (
-            hash.lookup(ruby.to_symbol("fg")).unwrap_or_else(|_| ruby.qnil().as_value()),
-            hash.lookup(ruby.to_symbol("bg")).unwrap_or_else(|_| ruby.qnil().as_value()),
-            hash.lookup(ruby.to_symbol("modifiers")).unwrap_or_else(|_| ruby.qnil().as_value()),
+            hash.lookup(ruby.to_symbol("fg"))
+                .unwrap_or_else(|_| ruby.qnil().as_value()),
+            hash.lookup(ruby.to_symbol("bg"))
+                .unwrap_or_else(|_| ruby.qnil().as_value()),
+            hash.lookup(ruby.to_symbol("modifiers"))
+                .unwrap_or_else(|_| ruby.qnil().as_value()),
         )
     } else {
         (
@@ -92,7 +99,8 @@ pub fn parse_style(style_val: Value) -> Result<Style, Error> {
     if !modifiers_val.is_nil() {
         if let Some(modifiers_array) = magnus::RArray::from_value(modifiers_val) {
             for i in 0..modifiers_array.len() {
-                let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+                let index = isize::try_from(i)
+                    .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
                 if let Ok(sym) = modifiers_array.entry::<Symbol>(index) {
                     if let Some(m) = parse_modifier_str(&sym.to_string()) {
                         style = style.add_modifier(m);
@@ -105,16 +113,22 @@ pub fn parse_style(style_val: Value) -> Result<Style, Error> {
     Ok(style)
 }
 
-pub fn parse_border_set<'a>(set_val: Value, bump: &'a Bump) -> Result<symbols::border::Set<'a>, Error> {
+pub fn parse_border_set<'a>(
+    set_val: Value,
+    bump: &'a Bump,
+) -> Result<symbols::border::Set<'a>, Error> {
     let ruby = magnus::Ruby::get().unwrap();
-    let hash = magnus::RHash::from_value(set_val).ok_or_else(|| {
-        Error::new(ruby.exception_type_error(), "expected hash for border_set")
-    })?;
+    let hash = magnus::RHash::from_value(set_val)
+        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected hash for border_set"))?;
 
     let get_char = |key: &str| -> Result<Option<&'a str>, Error> {
-        let mut val: Value = hash.lookup(ruby.to_symbol(key)).unwrap_or_else(|_| ruby.qnil().as_value());
+        let mut val: Value = hash
+            .lookup(ruby.to_symbol(key))
+            .unwrap_or_else(|_| ruby.qnil().as_value());
         if val.is_nil() {
-            val = hash.lookup(ruby.str_new(key)).unwrap_or_else(|_| ruby.qnil().as_value());
+            val = hash
+                .lookup(ruby.str_new(key))
+                .unwrap_or_else(|_| ruby.qnil().as_value());
         }
         if val.is_nil() {
             Ok(None)
@@ -125,28 +139,47 @@ pub fn parse_border_set<'a>(set_val: Value, bump: &'a Bump) -> Result<symbols::b
     };
 
     let mut set = symbols::border::Set::default();
-    if let Some(s) = get_char("top_left")? { set.top_left = s; }
-    if let Some(s) = get_char("top_right")? { set.top_right = s; }
-    if let Some(s) = get_char("bottom_left")? { set.bottom_left = s; }
-    if let Some(s) = get_char("bottom_right")? { set.bottom_right = s; }
-    if let Some(s) = get_char("vertical_left")? { set.vertical_left = s; }
-    if let Some(s) = get_char("vertical_right")? { set.vertical_right = s; }
-    if let Some(s) = get_char("horizontal_top")? { set.horizontal_top = s; }
-    if let Some(s) = get_char("horizontal_bottom")? { set.horizontal_bottom = s; }
+    if let Some(s) = get_char("top_left")? {
+        set.top_left = s;
+    }
+    if let Some(s) = get_char("top_right")? {
+        set.top_right = s;
+    }
+    if let Some(s) = get_char("bottom_left")? {
+        set.bottom_left = s;
+    }
+    if let Some(s) = get_char("bottom_right")? {
+        set.bottom_right = s;
+    }
+    if let Some(s) = get_char("vertical_left")? {
+        set.vertical_left = s;
+    }
+    if let Some(s) = get_char("vertical_right")? {
+        set.vertical_right = s;
+    }
+    if let Some(s) = get_char("horizontal_top")? {
+        set.horizontal_top = s;
+    }
+    if let Some(s) = get_char("horizontal_bottom")? {
+        set.horizontal_bottom = s;
+    }
 
     Ok(set)
 }
 
 pub fn parse_bar_set<'a>(set_val: Value, bump: &'a Bump) -> Result<symbols::bar::Set<'a>, Error> {
     let ruby = magnus::Ruby::get().unwrap();
-    let hash = magnus::RHash::from_value(set_val).ok_or_else(|| {
-        Error::new(ruby.exception_type_error(), "expected hash for bar_set")
-    })?;
+    let hash = magnus::RHash::from_value(set_val)
+        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected hash for bar_set"))?;
 
     let get_char = |key: &str| -> Result<Option<&'a str>, Error> {
-        let mut val: Value = hash.lookup(ruby.to_symbol(key)).unwrap_or_else(|_| ruby.qnil().as_value());
+        let mut val: Value = hash
+            .lookup(ruby.to_symbol(key))
+            .unwrap_or_else(|_| ruby.qnil().as_value());
         if val.is_nil() {
-            val = hash.lookup(ruby.str_new(key)).unwrap_or_else(|_| ruby.qnil().as_value());
+            val = hash
+                .lookup(ruby.str_new(key))
+                .unwrap_or_else(|_| ruby.qnil().as_value());
         }
         if val.is_nil() {
             Ok(None)
@@ -157,33 +190,57 @@ pub fn parse_bar_set<'a>(set_val: Value, bump: &'a Bump) -> Result<symbols::bar:
     };
 
     let mut set = symbols::bar::Set::default();
-    if let Some(s) = get_char("empty")? { set.empty = s; }
-    if let Some(s) = get_char("one_eighth")? { set.one_eighth = s; }
-    if let Some(s) = get_char("one_quarter")? { set.one_quarter = s; }
-    if let Some(s) = get_char("three_eighths")? { set.three_eighths = s; }
-    if let Some(s) = get_char("half")? { set.half = s; }
-    if let Some(s) = get_char("five_eighths")? { set.five_eighths = s; }
-    if let Some(s) = get_char("three_quarters")? { set.three_quarters = s; }
-    if let Some(s) = get_char("seven_eighths")? { set.seven_eighths = s; }
-    if let Some(s) = get_char("full")? { set.full = s; }
+    if let Some(s) = get_char("empty")? {
+        set.empty = s;
+    }
+    if let Some(s) = get_char("one_eighth")? {
+        set.one_eighth = s;
+    }
+    if let Some(s) = get_char("one_quarter")? {
+        set.one_quarter = s;
+    }
+    if let Some(s) = get_char("three_eighths")? {
+        set.three_eighths = s;
+    }
+    if let Some(s) = get_char("half")? {
+        set.half = s;
+    }
+    if let Some(s) = get_char("five_eighths")? {
+        set.five_eighths = s;
+    }
+    if let Some(s) = get_char("three_quarters")? {
+        set.three_quarters = s;
+    }
+    if let Some(s) = get_char("seven_eighths")? {
+        set.seven_eighths = s;
+    }
+    if let Some(s) = get_char("full")? {
+        set.full = s;
+    }
 
     Ok(set)
 }
 
 pub fn parse_block(block_val: Value, bump: &Bump) -> Result<Block<'_>, Error> {
-    if block_val.is_nil() { return Ok(Block::default()); }
+    if block_val.is_nil() {
+        return Ok(Block::default());
+    }
 
     let mut block = Block::default();
     if let Ok(v) = block_val.funcall::<&str, _, Value>("style", ()) {
-        if !v.is_nil() { block = block.style(parse_style(v)?); }
+        if !v.is_nil() {
+            block = block.style(parse_style(v)?);
+        }
     }
 
     if let Ok(v) = block_val.funcall::<&str, _, Value>("title_style", ()) {
-        if !v.is_nil() { block = block.title_style(parse_style(v)?); }
+        if !v.is_nil() {
+            block = block.title_style(parse_style(v)?);
+        }
     }
 
     if let Ok(title) = block_val.funcall::<&str, _, Value>("title", ()) {
-        if !title.is_nil() { 
+        if !title.is_nil() {
             let s: String = title.funcall("to_s", ())?;
             block = block.title(Line::from(s));
         }
@@ -208,11 +265,14 @@ pub fn parse_block(block_val: Value, bump: &Bump) -> Result<Block<'_>, Error> {
 
 fn parse_titles(block_val: Value, mut block: Block<'_>) -> Result<Block<'_>, Error> {
     if let Ok(titles_val) = block_val.funcall::<&str, _, Value>("titles", ()) {
-        if titles_val.is_nil() { return Ok(block); }
+        if titles_val.is_nil() {
+            return Ok(block);
+        }
         if let Some(titles_array) = magnus::RArray::from_value(titles_val) {
             for i in 0..titles_array.len() {
                 let ruby = magnus::Ruby::get().unwrap();
-                let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+                let index = isize::try_from(i)
+                    .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
                 let title_item: Value = titles_array.entry(index)?;
                 let mut content = String::new();
                 let mut alignment = Alignment::Left;
@@ -220,8 +280,10 @@ fn parse_titles(block_val: Value, mut block: Block<'_>) -> Result<Block<'_>, Err
                 let mut style = Style::default();
 
                 if let Some(hash) = magnus::RHash::from_value(title_item) {
-                    if let Ok(v) = hash.lookup::<_, Value>(ruby.to_symbol("content")) { 
-                        if !v.is_nil() { content = v.funcall("to_s", ())?; }
+                    if let Ok(v) = hash.lookup::<_, Value>(ruby.to_symbol("content")) {
+                        if !v.is_nil() {
+                            content = v.funcall("to_s", ())?;
+                        }
                     }
                     if let Ok(v) = hash.lookup::<_, Value>(ruby.to_symbol("alignment")) {
                         if let Some(s) = Symbol::from_value(v) {
@@ -234,25 +296,37 @@ fn parse_titles(block_val: Value, mut block: Block<'_>) -> Result<Block<'_>, Err
                     }
                     if let Ok(v) = hash.lookup::<_, Value>(ruby.to_symbol("position")) {
                         if let Some(s) = Symbol::from_value(v) {
-                            if s.to_string().as_str() == "bottom" { is_bottom = true; }
+                            if s.to_string().as_str() == "bottom" {
+                                is_bottom = true;
+                            }
                         }
                     }
-                    if let Ok(v) = hash.lookup::<_, Value>(ruby.to_symbol("style")) { 
-                        if !v.is_nil() { style = parse_style(v)?; }
+                    if let Ok(v) = hash.lookup::<_, Value>(ruby.to_symbol("style")) {
+                        if !v.is_nil() {
+                            style = parse_style(v)?;
+                        }
                     }
                 } else {
                     content = title_item.funcall("to_s", ())?;
                 }
 
                 let line = Line::from(content).alignment(alignment).style(style);
-                block = if is_bottom { block.title_bottom(line) } else { block.title_top(line) };
+                block = if is_bottom {
+                    block.title_bottom(line)
+                } else {
+                    block.title_top(line)
+                };
             }
         }
     }
     Ok(block)
 }
 
-fn parse_borders<'a>(block_val: Value, mut block: Block<'a>, bump: &'a Bump) -> Result<Block<'a>, Error> {
+fn parse_borders<'a>(
+    block_val: Value,
+    mut block: Block<'a>,
+    bump: &'a Bump,
+) -> Result<Block<'a>, Error> {
     if let Ok(borders_val) = block_val.funcall::<&str, _, Value>("borders", ()) {
         if !borders_val.is_nil() {
             let mut ratatui_borders = Borders::NONE;
@@ -268,7 +342,8 @@ fn parse_borders<'a>(block_val: Value, mut block: Block<'a>, bump: &'a Bump) -> 
             } else if let Some(arr) = magnus::RArray::from_value(borders_val) {
                 for i in 0..arr.len() {
                     let ruby = magnus::Ruby::get().unwrap();
-                    let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+                    let index = isize::try_from(i)
+                        .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
                     let sym: Symbol = arr.entry(index)?;
                     match sym.to_string().as_str() {
                         "all" => ratatui_borders |= Borders::ALL,
@@ -285,19 +360,23 @@ fn parse_borders<'a>(block_val: Value, mut block: Block<'a>, bump: &'a Bump) -> 
     }
 
     if let Ok(v) = block_val.funcall::<&str, _, Value>("border_style", ()) {
-        if !v.is_nil() { block = block.border_style(parse_style(v)?); }
-        else if let Ok(color_val) = block_val.funcall::<&str, _, Value>("border_color", ()) {
+        if !v.is_nil() {
+            block = block.border_style(parse_style(v)?);
+        } else if let Ok(color_val) = block_val.funcall::<&str, _, Value>("border_color", ()) {
             if !color_val.is_nil() {
                 if let Ok(s) = color_val.funcall::<&str, _, String>("to_s", ()) {
-                    if let Some(c) = parse_color(&s) { block = block.border_style(Style::default().fg(c)); }
+                    if let Some(c) = parse_color(&s) {
+                        block = block.border_style(Style::default().fg(c));
+                    }
                 }
             }
         }
     }
 
     if let Ok(v) = block_val.funcall::<&str, _, Value>("border_set", ()) {
-        if !v.is_nil() { block = block.border_set(parse_border_set(v, bump)?); }
-        else if let Ok(v) = block_val.funcall::<&str, _, Value>("border_type", ()) {
+        if !v.is_nil() {
+            block = block.border_set(parse_border_set(v, bump)?);
+        } else if let Ok(v) = block_val.funcall::<&str, _, Value>("border_type", ()) {
             if let Some(sym) = Symbol::from_value(v) {
                 match sym.to_string().as_str() {
                     "rounded" => block = block.border_type(BorderType::Rounded),
@@ -315,7 +394,9 @@ fn parse_borders<'a>(block_val: Value, mut block: Block<'a>, bump: &'a Bump) -> 
 
 fn parse_padding(block_val: Value, block: Block<'_>) -> Block<'_> {
     if let Ok(padding_val) = block_val.funcall::<&str, _, Value>("padding", ()) {
-        if padding_val.is_nil() { return block; }
+        if padding_val.is_nil() {
+            return block;
+        }
         if let Ok(p) = u16::try_convert(padding_val) {
             return block.padding(Padding::uniform(p));
         }

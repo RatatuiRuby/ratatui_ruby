@@ -26,29 +26,27 @@ class CrashReport < Data.define(:app, :error, :preamble)
     TEXT
   end
 
-  private
-
-  def box_top
-    "┌" + "─" * (width - 2) + "┐"
+  private def box_top
+    "┌#{'─' * (width - 2)}┐"
   end
 
-  def box_bottom
-    "└" + "─" * (width - 2) + "┘"
+  private def box_bottom
+    "└#{'─' * (width - 2)}┘"
   end
 
-  def border_top(title)
+  private def border_top(title)
     left = "┌─ #{title} "
     right = "┐"
     dashes = "─" * (width - left.length - right.length)
     left + dashes + right
   end
 
-  def format_line(line)
+  private def format_line(line)
     truncated = line[0...(width - 4)]
     "│ #{truncated.ljust(width - 4)} │"
   end
 
-  def width
+  private def width
     80
   end
 end

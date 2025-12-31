@@ -1,8 +1,7 @@
 # frozen_string_literal: true
+
 require "timeout"
 require "minitest/mock"
-
-
 
 # SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
@@ -45,25 +44,24 @@ module RatatuiRuby
     # +timeout+:: maximum execution time in seconds (default: 2). Pass nil to disable.
     #
     # If a block is given, it is executed within the test terminal context.
-    def with_test_terminal(width = 80, height = 24, timeout: 2)
+    def with_test_terminal(width = 80, height = 24, **opts)
       RatatuiRuby.init_test_terminal(width, height)
       # Flush any lingering events from previous tests
       while RatatuiRuby.poll_event; end
 
       RatatuiRuby.stub :init_terminal, nil do
         RatatuiRuby.stub :restore_terminal, nil do
-          begin
-            @_ratatui_test_terminal_active = true
-            if timeout
-              Timeout.timeout(timeout) do
-                yield
-              end
-            else
+          @_ratatui_test_terminal_active = true
+          timeout = opts.fetch(:timeout, 2)
+          if timeout
+            Timeout.timeout(timeout) do
               yield
             end
-          ensure
-            @_ratatui_test_terminal_active = false
+          else
+            yield
           end
+        ensure
+          @_ratatui_test_terminal_active = false
         end
       end
     ensure
@@ -121,8 +119,8 @@ module RatatuiRuby
     def inject_event(event)
       unless @_ratatui_test_terminal_active
         raise "Events must be injected inside a `with_test_terminal` block. " \
-              "Calling this method outside the block causes a race condition where the event " \
-              "is flushed before the application starts."
+          "Calling this method outside the block causes a race condition where the event " \
+          "is flushed before the application starts."
       end
 
       case event
@@ -134,7 +132,7 @@ module RatatuiRuby
           button: event.button,
           x: event.x,
           y: event.y,
-          modifiers: event.modifiers
+          modifiers: event.modifiers,
         })
       when RatatuiRuby::Event::Resize
         RatatuiRuby.inject_test_event("resize", { width: event.width, height: event.height })
@@ -176,14 +174,14 @@ module RatatuiRuby
                   parts = arg.to_s.split("_")
                   code = parts.pop
                   modifiers = parts
-                  RatatuiRuby::Event::Key.new(code: code, modifiers: modifiers)
+                  RatatuiRuby::Event::Key.new(code:, modifiers:)
                 when Hash
                   RatatuiRuby::Event::Key.new(**arg)
                 when RatatuiRuby::Event::Key
                   arg
                 else
                   raise ArgumentError, "Invalid key argument: #{arg.inspect}. Expected String, Symbol, Hash, or Key event."
-                end
+        end
         inject_event(event)
       end
     end
@@ -215,4 +213,3 @@ module RatatuiRuby
     end
   end
 end
-

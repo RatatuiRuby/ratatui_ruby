@@ -4,125 +4,125 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-    # Displays structured data in rows and columns.
+  # Displays structured data in rows and columns.
+  #
+  # Data is often multidimensional. You need to show relationships between fields (Name, Age, ID).
+  # Aligning columns manually in a monospaced environment is painful and error-prone.
+  #
+  # This widget creates a grid. It enforces column widths using constraints. It renders headers, rows, and footers aligned perfectly.
+  #
+  # Use it to display database records, logs, or file lists.
+  #
+  # === Examples
+  #
+  #   Table.new(
+  #     header: ["ID", "Name", "Status"],
+  #     rows: [
+  #       ["1", "Hideo", "Active"],
+  #       ["2", "Kojima", "Idle"]
+  #     ],
+  #     widths: [
+  #       Constraint.length(5),
+  #       Constraint.fill(1),
+  #       Constraint.length(10)
+  #     ]
+  #   )
+  class Table < Data.define(:header, :rows, :widths, :highlight_style, :highlight_symbol, :highlight_spacing, :column_highlight_style, :cell_highlight_style, :selected_row, :selected_column, :block, :footer, :flex, :style, :column_spacing)
+    ##
+    # :attr_reader: header
+    # Header row content (Array of Strings).
+
+    ##
+    # :attr_reader: rows
+    # Data rows (Array of Arrays of Strings).
+
+    ##
+    # :attr_reader: widths
+    # Column width constraints (Array of Constraint).
+
+    ##
+    # :attr_reader: highlight_style
+    # Style for the selected row.
+
+    ##
+    # :attr_reader: highlight_symbol
+    # Symbol for the selected row.
+
+    ##
+    # :attr_reader: highlight_spacing
+    # When to show the highlight symbol column (:always, :when_selected, :never).
+
+    ##
+    # :attr_reader: column_highlight_style
+    # Style for the selected column.
+
+    ##
+    # :attr_reader: cell_highlight_style
+    # Style for the selected cell (intersection of row and column).
+
+    ##
+    # :attr_reader: selected_row
+    # Index of the selected row (Integer or nil).
+
+    ##
+    # :attr_reader: selected_column
+    # Index of the selected column (Integer or nil).
+
+    ##
+    # :attr_reader: block
+    # Optional wrapping block.
+
+    ##
+    # :attr_reader: footer
+    # Footer row content (Array of Strings).
+
+    ##
+    # :attr_reader: flex
+    # Flex mode for column distribution.
+
+    ##
+    # :attr_reader: style
+    # Base style for the entire table.
+
+    ##
+    # :attr_reader: column_spacing
+    # Spacing between columns (Integer, default 1).
+
+    # Creates a new Table.
     #
-    # Data is often multidimensional. You need to show relationships between fields (Name, Age, ID).
-    # Aligning columns manually in a monospaced environment is painful and error-prone.
-    #
-    # This widget creates a grid. It enforces column widths using constraints. It renders headers, rows, and footers aligned perfectly.
-    #
-    # Use it to display database records, logs, or file lists.
-    #
-    # === Examples
-    #
-    #   Table.new(
-    #     header: ["ID", "Name", "Status"],
-    #     rows: [
-    #       ["1", "Hideo", "Active"],
-    #       ["2", "Kojima", "Idle"]
-    #     ],
-    #     widths: [
-    #       Constraint.length(5),
-    #       Constraint.fill(1),
-    #       Constraint.length(10)
-    #     ]
-    #   )
-    class Table < Data.define(:header, :rows, :widths, :highlight_style, :highlight_symbol, :highlight_spacing, :column_highlight_style, :cell_highlight_style, :selected_row, :selected_column, :block, :footer, :flex, :style, :column_spacing)
-      ##
-      # :attr_reader: header
-      # Header row content (Array of Strings).
-
-      ##
-      # :attr_reader: rows
-      # Data rows (Array of Arrays of Strings).
-
-      ##
-      # :attr_reader: widths
-      # Column width constraints (Array of Constraint).
-
-      ##
-      # :attr_reader: highlight_style
-      # Style for the selected row.
-
-      ##
-      # :attr_reader: highlight_symbol
-      # Symbol for the selected row.
-
-      ##
-      # :attr_reader: highlight_spacing
-      # When to show the highlight symbol column (:always, :when_selected, :never).
-
-      ##
-      # :attr_reader: column_highlight_style
-      # Style for the selected column.
-
-      ##
-      # :attr_reader: cell_highlight_style
-      # Style for the selected cell (intersection of row and column).
-
-      ##
-      # :attr_reader: selected_row
-      # Index of the selected row (Integer or nil).
-
-      ##
-      # :attr_reader: selected_column
-      # Index of the selected column (Integer or nil).
-
-      ##
-      # :attr_reader: block
-      # Optional wrapping block.
-
-      ##
-      # :attr_reader: footer
-      # Footer row content (Array of Strings).
-
-      ##
-      # :attr_reader: flex
-      # Flex mode for column distribution.
-
-      ##
-      # :attr_reader: style
-      # Base style for the entire table.
-
-      ##
-      # :attr_reader: column_spacing
-      # Spacing between columns (Integer, default 1).
-
-      # Creates a new Table.
-      #
-      # [header] Array of strings/paragraphs.
-      # [rows] 2D Array of strings/paragraphs.
-      # [widths] Array of Constraints.
-      # [highlight_style] Style object.
-      # [highlight_symbol] String.
-      # [highlight_spacing] Symbol (optional, default: <tt>:when_selected</tt>).
-      # [column_highlight_style] Style object.
-      # [cell_highlight_style] Style object.
-      # [selected_row] Integer (nullable).
-      # [selected_column] Integer (nullable).
-      # [block] Block (optional).
-      # [footer] Array of strings/paragraphs (optional).
-      # [flex] Symbol (optional, default: <tt>:legacy</tt>).
-      # [style] Style object or Hash (optional).
-      # [column_spacing] Integer (optional, default: 1).
-      def initialize(header: nil, rows: [], widths: [], highlight_style: nil, highlight_symbol: "> ", highlight_spacing: :when_selected, column_highlight_style: nil, cell_highlight_style: nil, selected_row: nil, selected_column: nil, block: nil, footer: nil, flex: :legacy, style: nil, column_spacing: 1)
-        super(
-          header: header,
-          rows: rows,
-          widths: widths,
-          highlight_style: highlight_style,
-          highlight_symbol: highlight_symbol,
-          highlight_spacing: highlight_spacing,
-          column_highlight_style: column_highlight_style,
-          cell_highlight_style: cell_highlight_style,
-          selected_row: selected_row.nil? ? nil : Integer(selected_row),
-          selected_column: selected_column.nil? ? nil : Integer(selected_column),
-          block: block,
-          footer: footer,
-          flex: flex,
-          style: style,
-          column_spacing: Integer(column_spacing)
-        )
-      end
+    # [header] Array of strings/paragraphs.
+    # [rows] 2D Array of strings/paragraphs.
+    # [widths] Array of Constraints.
+    # [highlight_style] Style object.
+    # [highlight_symbol] String.
+    # [highlight_spacing] Symbol (optional, default: <tt>:when_selected</tt>).
+    # [column_highlight_style] Style object.
+    # [cell_highlight_style] Style object.
+    # [selected_row] Integer (nullable).
+    # [selected_column] Integer (nullable).
+    # [block] Block (optional).
+    # [footer] Array of strings/paragraphs (optional).
+    # [flex] Symbol (optional, default: <tt>:legacy</tt>).
+    # [style] Style object or Hash (optional).
+    # [column_spacing] Integer (optional, default: 1).
+    def initialize(header: nil, rows: [], widths: [], highlight_style: nil, highlight_symbol: "> ", highlight_spacing: :when_selected, column_highlight_style: nil, cell_highlight_style: nil, selected_row: nil, selected_column: nil, block: nil, footer: nil, flex: :legacy, style: nil, column_spacing: 1)
+      super(
+        header:,
+        rows:,
+        widths:,
+        highlight_style:,
+        highlight_symbol:,
+        highlight_spacing:,
+        column_highlight_style:,
+        cell_highlight_style:,
+        selected_row: selected_row.nil? ? nil : Integer(selected_row),
+        selected_column: selected_column.nil? ? nil : Integer(selected_column),
+        block:,
+        footer:,
+        flex:,
+        style:,
+        column_spacing: Integer(column_spacing)
+      )
     end
+  end
 end

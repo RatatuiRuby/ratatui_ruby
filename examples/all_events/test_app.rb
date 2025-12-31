@@ -20,7 +20,7 @@ class TestAllEvents < Minitest::Test
     with_test_terminal do
       # Queue quit event
       inject_key(:q)
-      
+
       @app.run
 
       content = buffer_content.join("\n")
@@ -34,7 +34,7 @@ class TestAllEvents < Minitest::Test
   def test_key_event_updates_panel
     with_test_terminal do
       inject_keys(:a, :q)
-      
+
       @app.run
 
       assert_includes buffer_content.join("\n"), "Key: a"
@@ -44,7 +44,7 @@ class TestAllEvents < Minitest::Test
   def test_key_event_with_modifiers
     with_test_terminal do
       inject_keys(:ctrl_s, :q)
-      
+
       @app.run
 
       assert_includes buffer_content.join("\n"), "Key: s [ctrl]"
@@ -55,7 +55,7 @@ class TestAllEvents < Minitest::Test
     with_test_terminal do
       inject_event(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 10, y: 5))
       inject_key(:q)
-      
+
       @app.run
 
       assert_includes buffer_content.join("\n"), "down: left at (10, 5)"
@@ -66,7 +66,7 @@ class TestAllEvents < Minitest::Test
     with_test_terminal do
       inject_event(RatatuiRuby::Event::Resize.new(width: 120, height: 40))
       inject_key(:q)
-      
+
       @app.run
 
       assert_includes buffer_content.join("\n"), "120×40"
@@ -77,7 +77,7 @@ class TestAllEvents < Minitest::Test
     with_test_terminal do
       inject_event(RatatuiRuby::Event::Paste.new(content: "Hello, World!"))
       inject_key(:q)
-      
+
       @app.run
 
       assert_includes buffer_content.join("\n"), 'Pasted: "Hello, World!"'
@@ -88,7 +88,7 @@ class TestAllEvents < Minitest::Test
     with_test_terminal do
       inject_event(RatatuiRuby::Event::Paste.new(content: "This is a very long string that should be truncated"))
       inject_key(:q)
-      
+
       @app.run
 
       content = buffer_content.join("\n")
@@ -103,7 +103,7 @@ class TestAllEvents < Minitest::Test
       @app.instance_variable_set(:@focused, false)
       inject_event(RatatuiRuby::Event::FocusGained.new)
       inject_key(:q)
-      
+
       @app.run
 
       assert_includes buffer_content.join("\n"), "Focus gained! ✓"
@@ -114,7 +114,7 @@ class TestAllEvents < Minitest::Test
     with_test_terminal do
       inject_event(RatatuiRuby::Event::FocusLost.new)
       inject_key(:q)
-      
+
       @app.run
 
       assert_includes buffer_content.join("\n"), "Focus lost..."

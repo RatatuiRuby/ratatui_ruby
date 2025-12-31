@@ -1,3 +1,9 @@
+# frozen_string_literal: true
+
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 require "minitest/autorun"
 require "ratatui_ruby"
 require "ratatui_ruby/test_helper"
@@ -25,7 +31,7 @@ class TestCellDemoApp < Minitest::Test
       assert_includes buffer_content.join("\n"), "System Status"
       assert_includes buffer_content.join("\n"), "Database"
       assert_includes buffer_content.join("\n"), "Worker"
-      
+
       # We can't easily grep for "FAIL" with color in simple string content check,
       # but we can check the text presence.
       assert_includes buffer_content.join("\n"), "FAIL"

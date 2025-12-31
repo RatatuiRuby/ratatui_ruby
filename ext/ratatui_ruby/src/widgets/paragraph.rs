@@ -12,7 +12,7 @@ use ratatui::{
 
 use crate::text::parse_text;
 
-fn create_paragraph<'a>(node: Value, bump: &'a Bump) -> Result<Paragraph<'a>, Error> {
+fn create_paragraph(node: Value, bump: &Bump) -> Result<Paragraph<'_>, Error> {
     let text_val: Value = node.funcall("text", ())?;
     let style_val: Value = node.funcall("style", ())?;
     let block_val: Value = node.funcall("block", ())?;

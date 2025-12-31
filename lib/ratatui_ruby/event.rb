@@ -67,7 +67,6 @@ module RatatuiRuby
     def deconstruct_keys(keys)
       {}
     end
-
   end
 end
 

@@ -6,7 +6,7 @@
 module RatatuiRuby
   class BarChart
     # A bar in a grouped bar chart.
-    # 
+    #
     # === Examples
     #
     #   BarChart::Bar.new(value: 10, style: Style.new(fg: :red), label: "A")
@@ -14,30 +14,30 @@ module RatatuiRuby
       ##
       # :attr_reader: value
       # The value of the bar (Integer).
-  
+
       ##
       # :attr_reader: label
       # The label of the bar (optional String).
-  
+
       ##
       # :attr_reader: style
       # The style of the bar (optional Style).
-  
+
       ##
       # :attr_reader: value_style
       # The style of the value (optional Style).
-  
+
       ##
       # :attr_reader: text_value
       # The text to display as the value (optional String).
-  
+
       def initialize(value:, label: nil, style: nil, value_style: nil, text_value: nil)
         super(
           value: Integer(value),
-          label: label,
-          style: style,
-          value_style: value_style,
-          text_value: text_value
+          label:,
+          style:,
+          value_style:,
+          text_value:
         )
       end
     end

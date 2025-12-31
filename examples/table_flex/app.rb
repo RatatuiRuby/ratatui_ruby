@@ -23,7 +23,7 @@ class TableFlexApp
         RatatuiRuby::Constraint.length(3),
         RatatuiRuby::Constraint.fill(1),
         RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.fill(1)
+        RatatuiRuby::Constraint.fill(1),
       ],
       children: [
         tui.paragraph(
@@ -49,7 +49,7 @@ class TableFlexApp
           widths: [RatatuiRuby::Constraint.length(20), RatatuiRuby::Constraint.length(20)],
           block: tui.block(title: "Flex: :space_around", borders: [:all]),
           flex: :space_around
-        )
+        ),
       ]
     )
     tui.draw(layout)

@@ -10,13 +10,13 @@ class CustomWidget
     [
       RatatuiRuby::Draw.string(area.x, area.y, "X", { fg: :red }),
       # Stay within the 2-row height of the test layout
-      RatatuiRuby::Draw.string(area.x + 1, area.y, "Y", { fg: :blue })
+      RatatuiRuby::Draw.string(area.x + 1, area.y, "Y", { fg: :blue }),
     ]
   end
 end
 
 class TestEscapeHatch < Minitest::Test
-    include RatatuiRuby::TestHelper
+  include RatatuiRuby::TestHelper
   def test_custom_widget_render
     with_test_terminal(5, 5) do
       widget = CustomWidget.new

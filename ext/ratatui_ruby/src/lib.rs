@@ -59,8 +59,6 @@ fn init() -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let m = ruby.define_module("RatatuiRuby")?;
 
-
-
     m.define_module_function("_init_terminal", function!(init_terminal, 2))?;
     m.define_module_function("restore_terminal", function!(restore_terminal, 0))?;
     m.define_module_function("draw", function!(draw, 1))?;
@@ -81,19 +79,22 @@ fn init() -> Result<(), Error> {
         "get_cursor_position",
         function!(terminal::get_cursor_position, 0),
     )?;
-    m.define_module_function(
-        "_get_cell_at",
-        function!(terminal::get_cell_at, 2),
-    )?;
+    m.define_module_function("_get_cell_at", function!(terminal::get_cell_at, 2))?;
     m.define_module_function("resize_terminal", function!(terminal::resize_terminal, 2))?;
 
     // Register Layout.split on the Layout class
     let layout_class = m.const_get::<_, magnus::RClass>("Layout")?;
     layout_class.define_singleton_method("_split", function!(widgets::layout::split_layout, 4))?;
-    
+
     // Paragraph metrics
-    m.define_module_function("_paragraph_line_count", function!(widgets::paragraph::line_count, 2))?;
-    m.define_module_function("_paragraph_line_width", function!(widgets::paragraph::line_width, 1))?;
+    m.define_module_function(
+        "_paragraph_line_count",
+        function!(widgets::paragraph::line_count, 2),
+    )?;
+    m.define_module_function(
+        "_paragraph_line_width",
+        function!(widgets::paragraph::line_width, 1),
+    )?;
 
     // Tabs metrics
     m.define_module_function("_tabs_width", function!(widgets::tabs::width, 1))?;

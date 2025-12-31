@@ -13,30 +13,30 @@ class SparklineDemoApp
     @data_sets = [
       {
         name: "Steady Growth",
-        data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+        data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
       },
       {
         name: "With Gaps",
-        data: [5, nil, 8, nil, 6, nil, 9, nil, 7, nil, 10, nil]
+        data: [5, nil, 8, nil, 6, nil, 9, nil, 7, nil, 10, nil],
       },
       {
         name: "Random",
-        data: [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]
+        data: [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8],
       },
       {
         name: "Sawtooth",
-        data: [1, 2, 3, 4, 5, 4, 3, 2, 1, 2, 3, 4]
+        data: [1, 2, 3, 4, 5, 4, 3, 2, 1, 2, 3, 4],
       },
       {
         name: "Peaks",
-        data: [1, 5, 1, 8, 1, 6, 1, 9, 1, 7, 1, 10]
-      }
+        data: [1, 5, 1, 8, 1, 6, 1, 9, 1, 7, 1, 10],
+      },
     ]
     @data_index = 0
 
     @directions = [
       { name: "Left to Right", direction: :left_to_right },
-      { name: "Right to Left", direction: :right_to_left }
+      { name: "Right to Left", direction: :right_to_left },
     ]
     @direction_index = 0
 
@@ -45,7 +45,7 @@ class SparklineDemoApp
       { name: "Yellow", style: RatatuiRuby::Style.new(fg: :yellow) },
       { name: "Red", style: RatatuiRuby::Style.new(fg: :red) },
       { name: "Cyan", style: RatatuiRuby::Style.new(fg: :cyan) },
-      { name: "Magenta", style: RatatuiRuby::Style.new(fg: :magenta) }
+      { name: "Magenta", style: RatatuiRuby::Style.new(fg: :magenta) },
     ]
     @style_index = 0
 
@@ -54,7 +54,7 @@ class SparklineDemoApp
       { name: "Dot (·)", symbol: "·" },
       { name: "Square (▫)", symbol: "▫" },
       { name: "Dash (-)", symbol: "-" },
-      { name: "Underscore (_)", symbol: "_" }
+      { name: "Underscore (_)", symbol: "_" },
     ]
     @absent_symbol_index = 1
 
@@ -62,16 +62,19 @@ class SparklineDemoApp
       { name: "Default", style: nil },
       { name: "Dark Gray", style: RatatuiRuby::Style.new(fg: :dark_gray) },
       { name: "Dim Red", style: RatatuiRuby::Style.new(fg: :red, modifiers: [:dim]) },
-      { name: "Dim Yellow", style: RatatuiRuby::Style.new(fg: :yellow, modifiers: [:dim]) }
+      { name: "Dim Yellow", style: RatatuiRuby::Style.new(fg: :yellow, modifiers: [:dim]) },
     ]
     @absent_style_index = 0
 
     @bar_sets = [
       { name: "Default (Block)", set: nil },
-      { name: "Numbers (0-8)", set: {
+      {
+name: "Numbers (0-8)",
+set: {
         0 => "0", 1 => "1", 2 => "2", 3 => "3", 4 => "4", 5 => "5", 6 => "6", 7 => "7", 8 => "8"
-      }},
-      { name: "ASCII (Heights)", set: [" ", "_", ".", "-", "=", "+", "*", "#", "@"] }
+      },
+},
+      { name: "ASCII (Heights)", set: [" ", "_", ".", "-", "=", "+", "*", "#", "@"] },
     ]
     @bar_set_index = 0
 
@@ -88,9 +91,7 @@ class SparklineDemoApp
     end
   end
 
-  private
-
-  def render
+  private def render
     @counter += 1
 
     data_set = @data_sets[@data_index]
@@ -119,7 +120,7 @@ class SparklineDemoApp
             RatatuiRuby::Constraint.length(3),
             RatatuiRuby::Constraint.length(3),
             RatatuiRuby::Constraint.length(3),
-            RatatuiRuby::Constraint.fill(1)
+            RatatuiRuby::Constraint.fill(1),
           ],
           children: [
             RatatuiRuby::Paragraph.new(
@@ -163,7 +164,7 @@ class SparklineDemoApp
               bar_set:,
               block: RatatuiRuby::Block.new(title: "Gap Pattern (Responsive)")
             ),
-            RatatuiRuby::Paragraph.new(text: "")
+            RatatuiRuby::Paragraph.new(text: ""),
           ]
         ),
         # Bottom control panel
@@ -176,46 +177,45 @@ class SparklineDemoApp
                 # Line 1: Data
                 RatatuiRuby::Text::Line.new(spans: [
                   RatatuiRuby::Text::Span.new(content: "↑/↓", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Data (#{@data_sets[@data_index][:name]})")
+                  RatatuiRuby::Text::Span.new(content: ": Data (#{@data_sets[@data_index][:name]})"),
                 ]),
                 # Line 2: View
                 RatatuiRuby::Text::Line.new(spans: [
                   RatatuiRuby::Text::Span.new(content: "d", style: @hotkey_style),
                   RatatuiRuby::Text::Span.new(content: ": Direction (#{@directions[@direction_index][:name]})  "),
                   RatatuiRuby::Text::Span.new(content: "c", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Color (#{@styles[@style_index][:name]})")
+                  RatatuiRuby::Text::Span.new(content: ": Color (#{@styles[@style_index][:name]})"),
                 ]),
                 # Line 3: Markers
                 RatatuiRuby::Text::Line.new(spans: [
                   RatatuiRuby::Text::Span.new(content: "m", style: @hotkey_style),
                   RatatuiRuby::Text::Span.new(content: ": Absent Value Symbol (#{@absent_symbols[@absent_symbol_index][:name]})  "),
                   RatatuiRuby::Text::Span.new(content: "s", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Absent Value Style (#{@absent_styles[@absent_style_index][:name]})")
+                  RatatuiRuby::Text::Span.new(content: ": Absent Value Style (#{@absent_styles[@absent_style_index][:name]})"),
                 ]),
                 # Line 4: General
                 RatatuiRuby::Text::Line.new(spans: [
                   RatatuiRuby::Text::Span.new(content: "b", style: @hotkey_style),
                   RatatuiRuby::Text::Span.new(content: ": Bar Set (#{@bar_sets[@bar_set_index][:name]})  "),
                   RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Quit")
-                ])
+                  RatatuiRuby::Text::Span.new(content: ": Quit"),
+                ]),
               ]
-            )
+            ),
           ]
-        )
+        ),
       ]
     )
-
 
     RatatuiRuby.draw(layout)
   end
 
-  def handle_input
+  private def handle_input
     event = RatatuiRuby.poll_event
     return unless event
 
     case event
-    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
+    in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit
     in type: :key, code: "up"
       @data_index = (@data_index - 1) % @data_sets.length

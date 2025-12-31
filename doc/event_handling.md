@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 # Event Handling in RatatuiRuby
 
 `ratatui_ruby` provides a rich, object-oriented event system that supports multiple coding styles, from simple boolean predicates to modern Ruby pattern matching.

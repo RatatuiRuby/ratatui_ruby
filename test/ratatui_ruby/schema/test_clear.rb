@@ -6,7 +6,7 @@
 require "test_helper"
 
 class TestClear < Minitest::Test
-    include RatatuiRuby::TestHelper
+  include RatatuiRuby::TestHelper
   def test_clear_creation
     clear = RatatuiRuby::Clear.new
     assert_nil clear.block
@@ -14,7 +14,7 @@ class TestClear < Minitest::Test
 
   def test_clear_with_block
     block = RatatuiRuby::Block.new(title: "Test", borders: [:all])
-    clear = RatatuiRuby::Clear.new(block: block)
+    clear = RatatuiRuby::Clear.new(block:)
     assert_equal block, clear.block
   end
 
@@ -43,7 +43,7 @@ class TestClear < Minitest::Test
       ui = RatatuiRuby::Overlay.new(
         layers: [
           background,
-          RatatuiRuby::Clear.new
+          RatatuiRuby::Clear.new,
         ]
       )
       RatatuiRuby.draw(ui)

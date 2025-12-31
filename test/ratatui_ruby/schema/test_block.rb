@@ -6,7 +6,7 @@
 require "test_helper"
 
 class TestBlock < Minitest::Test
-    include RatatuiRuby::TestHelper
+  include RatatuiRuby::TestHelper
   def test_block_creation
     b = RatatuiRuby::Block.new(title: "Title", borders: [:top, :bottom], border_color: "red")
     assert_equal "Title", b.title
@@ -121,6 +121,7 @@ class TestBlock < Minitest::Test
       assert_equal "┗━━━━━━━━━━━━━━━━━━┛", buffer_content[2]
     end
   end
+
   def test_render_with_padding_uniform
     with_test_terminal(20, 5) do
       # 1px padding on all sides
@@ -151,6 +152,7 @@ class TestBlock < Minitest::Test
       assert_equal "└──────────────────┘", buffer_content[4]
     end
   end
+
   def test_render_titles
     with_test_terminal(20, 3) do
       b = RatatuiRuby::Block.new(
@@ -158,7 +160,7 @@ class TestBlock < Minitest::Test
         titles: [
           { content: "TopLeft", alignment: :left, position: :top },
           { content: "TopRight", alignment: :right, position: :top },
-          { content: "BottomCenter", alignment: :center, position: :bottom }
+          { content: "BottomCenter", alignment: :center, position: :bottom },
         ]
       )
       RatatuiRuby.draw(b)
@@ -173,7 +175,7 @@ class TestBlock < Minitest::Test
     b = RatatuiRuby::Block.new(
       titles: [
         { content: "Title 1", alignment: :left, position: :top },
-        { content: "Title 2", alignment: :right, position: :bottom }
+        { content: "Title 2", alignment: :right, position: :bottom },
       ]
     )
     assert_equal 2, b.titles.length
@@ -187,7 +189,7 @@ class TestBlock < Minitest::Test
         borders: [:all],
         titles: [
           { content: "Left", alignment: :left },
-          { content: "Right", alignment: :right }
+          { content: "Right", alignment: :right },
         ]
       )
       RatatuiRuby.draw(b)
@@ -208,7 +210,7 @@ class TestBlock < Minitest::Test
       b = RatatuiRuby::Block.new(
         borders: [:all],
         titles: [
-          { content: "Bot", alignment: :center, position: :bottom }
+          { content: "Bot", alignment: :center, position: :bottom },
         ]
       )
       RatatuiRuby.draw(b)
@@ -225,7 +227,7 @@ class TestBlock < Minitest::Test
         borders: [:all],
         titles: [
           "Top", # Default top-left string
-          { content: "Bot", alignment: :right, position: :bottom }
+          { content: "Bot", alignment: :right, position: :bottom },
         ]
       )
       RatatuiRuby.draw(b)
@@ -259,8 +261,14 @@ class TestBlock < Minitest::Test
     with_test_terminal(20, 3) do
       # Full custom set
       set = {
-        top_left: "1", top_right: "2", bottom_left: "3", bottom_right: "4",
-        vertical_left: "5", vertical_right: "6", horizontal_top: "7", horizontal_bottom: "8"
+        top_left: "1",
+        top_right: "2",
+        bottom_left: "3",
+        bottom_right: "4",
+        vertical_left: "5",
+        vertical_right: "6",
+        horizontal_top: "7",
+        horizontal_bottom: "8",
       }
       b = RatatuiRuby::Block.new(borders: [:all], border_set: set)
       RatatuiRuby.draw(b)

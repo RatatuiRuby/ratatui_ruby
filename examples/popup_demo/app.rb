@@ -24,9 +24,7 @@ class PopupDemoApp
     end
   end
 
-  private
-
-  def render
+  private def render
     # 1. Background: Loud Red Background
     # This demonstrates "Style Bleed" where the background color persists
     # unless explicitly cleared or overwritten.
@@ -39,10 +37,10 @@ class PopupDemoApp
     # 2. Popup Content: No specific background set (Style.default)
     # Without Clear, this will "inherit" the red background from underneath.
     popup_text = if @clear_enabled
-                   "✓ Clear is ENABLED\n\nResets background to default\n(Usually Black/Transparent)\n\nPress Space to toggle"
-                 else
-                   "✗ Clear is DISABLED\n\nStyle Bleed: Popup is RED!\n(Inherits background style)\n\nPress Space to toggle"
-                 end
+      "✓ Clear is ENABLED\n\nResets background to default\n(Usually Black/Transparent)\n\nPress Space to toggle"
+    else
+      "✗ Clear is DISABLED\n\nStyle Bleed: Popup is RED!\n(Inherits background style)\n\nPress Space to toggle"
+    end
 
     popup_content = RatatuiRuby::Paragraph.new(
       text: popup_text,
@@ -63,12 +61,12 @@ class PopupDemoApp
             child: RatatuiRuby::Overlay.new(
               layers: [
                 RatatuiRuby::Clear.new,
-                popup_content
+                popup_content,
               ]
             ),
             width_percent: 60,
             height_percent: 50
-          )
+          ),
         ]
       )
     else
@@ -80,7 +78,7 @@ class PopupDemoApp
             child: popup_content,
             width_percent: 60,
             height_percent: 50
-          )
+          ),
         ]
       )
     end
@@ -88,9 +86,9 @@ class PopupDemoApp
     RatatuiRuby.draw(ui)
   end
 
-  def handle_input
+  private def handle_input
     case RatatuiRuby.poll_event
-    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
+    in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit
     in type: :key, code: " "
       @clear_enabled = !@clear_enabled

@@ -33,7 +33,7 @@ class ScrollTextApp
 
   def handle_input
     case RatatuiRuby.poll_event
-    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
+    in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit
     in type: :key, code: "up"
       @scroll_y = [@scroll_y - 1, 0].max
@@ -48,14 +48,12 @@ class ScrollTextApp
     end
   end
 
-  private
-
-  def draw
+  private def draw
     text = @lines.join("\n")
-    
+
     # Main content
     main_paragraph = RatatuiRuby::Paragraph.new(
-      text: text,
+      text:,
       scroll: [@scroll_y, @scroll_x],
       block: RatatuiRuby::Block.new(
         title: "Scrollable Text (#{text.lines.count} lines)",
@@ -71,7 +69,7 @@ class ScrollTextApp
         RatatuiRuby::Paragraph.new(
           text: [
             RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "NAVIGATION (Size: #{main_paragraph.line_count(65535)}x#{main_paragraph.line_width})", style: RatatuiRuby::Style.new(modifiers: [:bold]))
+              RatatuiRuby::Text::Span.new(content: "NAVIGATION (Size: #{main_paragraph.line_count(65535)}x#{main_paragraph.line_width})", style: RatatuiRuby::Style.new(modifiers: [:bold])),
             ]),
             RatatuiRuby::Text::Line.new(spans: [
               RatatuiRuby::Text::Span.new(content: "↑/↓", style: @hotkey_style),
@@ -79,10 +77,10 @@ class ScrollTextApp
               RatatuiRuby::Text::Span.new(content: "←/→", style: @hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Horz Scroll (#{@scroll_x}/#{main_paragraph.line_width})  "),
               RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Quit")
-            ])
+              RatatuiRuby::Text::Span.new(content: ": Quit"),
+            ]),
           ]
-        )
+        ),
       ]
     )
 

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 # frozen_string_literal: true
 
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
@@ -13,7 +17,7 @@ class BlockTitlesApp
           tui.block(
             titles: [
               { content: "Top Left", alignment: :left, position: :top },
-              { content: "Top Right", alignment: :right, position: :top }
+              { content: "Top Right", alignment: :right, position: :top },
             ],
             borders: [:all],
             border_color: "cyan"
@@ -22,19 +26,19 @@ class BlockTitlesApp
             titles: [
               { content: "Bottom Left", alignment: :left, position: :bottom },
               { content: "Bottom Center", alignment: :center, position: :bottom },
-              { content: "Bottom Right", alignment: :right, position: :bottom }
+              { content: "Bottom Right", alignment: :right, position: :bottom },
             ],
             borders: [:all],
             border_color: "magenta"
           ),
           tui.block(
             titles: [
-                "Simple String Title (Top Left Default)",
-                { content: "Mixed Title", alignment: :center, position: :bottom }
+              "Simple String Title (Top Left Default)",
+              { content: "Mixed Title", alignment: :center, position: :bottom },
             ],
             borders: [:all],
             border_color: "green"
-          )
+          ),
         ]
 
         layout = tui.layout(
@@ -42,7 +46,7 @@ class BlockTitlesApp
           constraints: [
             tui.constraint(:length, 10),
             tui.constraint(:length, 10),
-            tui.constraint(:length, 10)
+            tui.constraint(:length, 10),
           ],
           children: blocks
         )

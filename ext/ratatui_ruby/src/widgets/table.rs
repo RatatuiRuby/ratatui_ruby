@@ -33,7 +33,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
     let mut rows = Vec::new();
     for i in 0..rows_array.len() {
-        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let index = isize::try_from(i)
+            .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
         let row_val: Value = rows_array.entry(index)?;
         rows.push(parse_row(row_val)?);
     }
@@ -120,7 +121,8 @@ fn parse_row(row_val: Value) -> Result<Row<'static>, Error> {
 
     let mut cells = Vec::new();
     for i in 0..row_array.len() {
-        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let index = isize::try_from(i)
+            .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
         let cell_val: Value = row_array.entry(index)?;
         cells.push(parse_cell(cell_val)?);
     }
@@ -159,7 +161,8 @@ fn parse_cell(cell_val: Value) -> Result<Cell<'static>, Error> {
         if let Some(mods_array) = magnus::RArray::from_value(modifiers_val) {
             let ruby = magnus::Ruby::get().unwrap();
             for i in 0..mods_array.len() {
-                let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+                let index = isize::try_from(i)
+                    .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
                 let mod_str: String = mods_array.entry::<String>(index)?;
                 if let Some(modifier) = crate::style::parse_modifier_str(&mod_str) {
                     style = style.add_modifier(modifier);
@@ -177,7 +180,8 @@ fn parse_constraints(widths_array: magnus::RArray) -> Result<Vec<Constraint>, Er
     let ruby = magnus::Ruby::get().unwrap();
     let mut constraints = Vec::new();
     for i in 0..widths_array.len() {
-        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let index = isize::try_from(i)
+            .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
         let constraint_obj: Value = widths_array.entry(index)?;
         let type_sym: Symbol = constraint_obj.funcall("type", ())?;
         let value_obj: Value = constraint_obj.funcall("value", ())?;

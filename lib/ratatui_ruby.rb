@@ -184,7 +184,7 @@ module RatatuiRuby
   #   end
   def self.run(focus_events: true, bracketed_paste: true)
     require_relative "ratatui_ruby/session"
-    init_terminal(focus_events: focus_events, bracketed_paste: bracketed_paste)
+    init_terminal(focus_events:, bracketed_paste:)
     yield Session.new
   ensure
     restore_terminal
@@ -224,6 +224,5 @@ module RatatuiRuby
   private_class_method :_get_cell_at
 
   # Hide native Layout._split helper
-  Layout.singleton_class.send(:private, :_split)
-
+  Layout.singleton_class.__send__(:private, :_split)
 end

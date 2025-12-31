@@ -6,7 +6,7 @@
 require "test_helper"
 
 class TestList < Minitest::Test
-    include RatatuiRuby::TestHelper
+  include RatatuiRuby::TestHelper
   def test_list_creation
     items = ["a", "b"]
     list = RatatuiRuby::List.new(items:, selected_index: 1)
@@ -131,4 +131,3 @@ class TestList < Minitest::Test
     end
   end
 end
-

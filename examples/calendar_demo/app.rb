@@ -26,8 +26,8 @@ class CalendarDemoApp
         events_map = if show_events
           {
             now => RatatuiRuby::Style.new(fg: "green", modifiers: [:bold]),
-            (now + 86400 * 2) => RatatuiRuby::Style.new(fg: "red", modifiers: [:underlined]),
-            (now - 86400 * 5) => RatatuiRuby::Style.new(fg: "blue", bg: "white"),
+            (now + (86400 * 2)) => RatatuiRuby::Style.new(fg: "red", modifiers: [:underlined]),
+            (now - (86400 * 5)) => RatatuiRuby::Style.new(fg: "blue", bg: "white"),
           }
         else
           {}
@@ -56,9 +56,9 @@ class CalendarDemoApp
           RatatuiRuby::Text::Line.new(
             spans: [
               RatatuiRuby::Text::Span.new(content: " Events: ", style: RatatuiRuby::Style.new(modifiers: [:bold])),
-              RatatuiRuby::Text::Span.new(content: "Today (Green), +2d (Red), -5d (Blue) (#{show_events ? "On" : "Off"})"),
+              RatatuiRuby::Text::Span.new(content: "Today (Green), +2d (Red), -5d (Blue) (#{show_events ? 'On' : 'Off'})"),
             ]
-          )
+          ),
         ]
         controls = RatatuiRuby::Paragraph.new(
           text: controls_text,
@@ -78,7 +78,7 @@ class CalendarDemoApp
 
         event = RatatuiRuby.poll_event
         case event
-        in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
+        in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
           break
         in type: :key, code: "h"
           show_header = !show_header

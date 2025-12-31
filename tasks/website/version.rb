@@ -10,9 +10,9 @@ class Version
   def self.all
     tags = `git tag`.split.grep(/^v\d/)
     sorted_versions = tags.map { |t| Tagged.new(t) }
-                          .sort_by { |v| v.semver }
-                          .reverse
-    
+      .sort_by(&:semver)
+      .reverse
+
     [Edge.new] + sorted_versions
   end
 
@@ -31,11 +31,11 @@ class Version
   def checkout(globs:, &block)
     raise NotImplementedError
   end
-  
+
   def latest?
     false
   end
-  
+
   def edge?
     false
   end
@@ -53,7 +53,7 @@ class Edge < Version
   def type
     :edge
   end
-  
+
   def edge?
     true
   end
@@ -64,14 +64,14 @@ class Edge < Version
       files = `git ls-files`.split("\n").select do |f|
         globs.any? { |glob| File.fnmatch(glob, f, File::FNM_PATHNAME) }
       end
-      
+
       files.each do |file|
         dest = File.join(path, file)
         next unless File.exist?(file) # Skip files that are in the index but deleted in the working tree
         FileUtils.mkdir_p(File.dirname(dest))
         FileUtils.cp(file, dest)
       end
-      
+
       yield path
     end
   end
@@ -99,9 +99,9 @@ class Tagged < Version
   def semver
     Gem::Version.new(@tag.sub(/^v/, ""))
   end
-  
+
   attr_accessor :is_latest
-  
+
   def latest?
     @is_latest
   end

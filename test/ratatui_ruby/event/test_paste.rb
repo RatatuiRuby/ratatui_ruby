@@ -25,7 +25,7 @@ module RatatuiRuby
     def test_deconstruct_keys
       event = Event::Paste.new(content: "hello")
       pattern = event.deconstruct_keys(nil)
-      
+
       assert_equal :paste, pattern[:type]
       assert_equal "hello", pattern[:content]
     end

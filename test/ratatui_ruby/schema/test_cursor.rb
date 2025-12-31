@@ -6,7 +6,7 @@
 require "test_helper"
 
 class TestCursor < Minitest::Test
-    include RatatuiRuby::TestHelper
+  include RatatuiRuby::TestHelper
   def test_cursor_creation
     cursor = RatatuiRuby::Cursor.new(x: 10, y: 5)
     assert_equal 10, cursor.x

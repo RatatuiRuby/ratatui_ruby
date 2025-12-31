@@ -6,7 +6,7 @@
 require "test_helper"
 
 class TestSparkline < Minitest::Test
-    include RatatuiRuby::TestHelper
+  include RatatuiRuby::TestHelper
   def test_sparkline_creation
     data = [1, 2, 3]
     sparkline = RatatuiRuby::Sparkline.new(data:, max: 10)
@@ -76,7 +76,7 @@ class TestSparkline < Minitest::Test
       )
       RatatuiRuby.draw(spark)
       content = buffer_content[0]
-      
+
       # Absent values (nil) should render as "-"
       # Non-absent values should render as sparkline bars
       assert_includes(content, "-", "Expected dashes for absent values")

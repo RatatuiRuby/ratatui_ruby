@@ -3,7 +3,7 @@
 
 use crate::style::{parse_bar_set, parse_block, parse_style};
 use bumpalo::Bump;
-use magnus::{prelude::*, Error, Symbol, Value, RArray};
+use magnus::{prelude::*, Error, RArray, Symbol, Value};
 use ratatui::{
     layout::{Direction, Rect},
     text::Line,
@@ -41,59 +41,61 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
     if let Some(array) = RArray::from_value(data_val) {
         for i in 0..array.len() {
-             let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
-             let group_obj: Value = array.entry(index)?;
-             
-             let label_val: Value = group_obj.funcall("label", ())?;
-             let label_str: String = if !label_val.is_nil() {
-                 label_val.funcall("to_s", ())?
-             } else {
-                 String::new()
-             };
-             let label_ref = bump.alloc_str(&label_str) as &str;
+            let index = isize::try_from(i)
+                .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+            let group_obj: Value = array.entry(index)?;
 
-             let bars_array: RArray = group_obj.funcall("bars", ())?;
-             let mut bars: Vec<Bar> = Vec::new();
+            let label_val: Value = group_obj.funcall("label", ())?;
+            let label_str: String = if label_val.is_nil() {
+                String::new()
+            } else {
+                label_val.funcall("to_s", ())?
+            };
+            let label_ref = bump.alloc_str(&label_str) as &str;
 
-             for j in 0..bars_array.len() {
-                  let bar_idx = isize::try_from(j).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
-                  let bar_obj: Value = bars_array.entry(bar_idx)?;
+            let bars_array: RArray = group_obj.funcall("bars", ())?;
+            let mut bars: Vec<Bar> = Vec::new();
 
-                  let value: u64 = bar_obj.funcall("value", ())?;
-                  let mut bar = Bar::default().value(value);
+            for j in 0..bars_array.len() {
+                let bar_idx = isize::try_from(j)
+                    .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+                let bar_obj: Value = bars_array.entry(bar_idx)?;
 
-                  let label_val: Value = bar_obj.funcall("label", ())?;
-                  if !label_val.is_nil() {
-                      let s: String = label_val.funcall("to_s", ())?;
-                      let s_ref = bump.alloc_str(&s) as &str;
-                      bar = bar.label(Line::from(s_ref));
-                  }
+                let value: u64 = bar_obj.funcall("value", ())?;
+                let mut bar = Bar::default().value(value);
 
-                   let text_val: Value = bar_obj.funcall("text_value", ())?;
-                  if !text_val.is_nil() {
-                      let s: String = text_val.funcall("to_s", ())?;
-                      let s_ref = bump.alloc_str(&s) as &str;
-                      bar = bar.text_value(s_ref);
-                  }
+                let label_val: Value = bar_obj.funcall("label", ())?;
+                if !label_val.is_nil() {
+                    let s: String = label_val.funcall("to_s", ())?;
+                    let s_ref = bump.alloc_str(&s) as &str;
+                    bar = bar.label(Line::from(s_ref));
+                }
 
-                  let style_val: Value = bar_obj.funcall("style", ())?;
-                  if !style_val.is_nil() {
-                      bar = bar.style(parse_style(style_val)?);
-                  }
+                let text_val: Value = bar_obj.funcall("text_value", ())?;
+                if !text_val.is_nil() {
+                    let s: String = text_val.funcall("to_s", ())?;
+                    let s_ref = bump.alloc_str(&s) as &str;
+                    bar = bar.text_value(s_ref);
+                }
 
-                  let val_style_val: Value = bar_obj.funcall("value_style", ())?;
-                  if !val_style_val.is_nil() {
-                      bar = bar.value_style(parse_style(val_style_val)?);
-                  }
-                  
-                  bars.push(bar);
-             }
-             
-             let mut group = BarGroup::new(bars);
-             if !label_ref.is_empty() {
-                 group = group.label(Line::from(label_ref));
-             }
-             bar_chart = bar_chart.data(group);
+                let style_val: Value = bar_obj.funcall("style", ())?;
+                if !style_val.is_nil() {
+                    bar = bar.style(parse_style(style_val)?);
+                }
+
+                let val_style_val: Value = bar_obj.funcall("value_style", ())?;
+                if !val_style_val.is_nil() {
+                    bar = bar.value_style(parse_style(val_style_val)?);
+                }
+
+                bars.push(bar);
+            }
+
+            let mut group = BarGroup::new(bars);
+            if !label_ref.is_empty() {
+                group = group.label(Line::from(label_ref));
+            }
+            bar_chart = bar_chart.data(group);
         }
     }
 

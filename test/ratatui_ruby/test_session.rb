@@ -7,7 +7,7 @@ require "test_helper"
 require "ratatui_ruby/session"
 
 class TestSession < Minitest::Test
-    include RatatuiRuby::TestHelper
+  include RatatuiRuby::TestHelper
   def test_session_delegation
     with_test_terminal(20, 1) do
       RatatuiRuby.run do |tui|

@@ -62,7 +62,7 @@ else
     # aggressively force UTF-8 to avoid "incompatible encoding regexp match" errors
     # when the log contains binary data or weird sequences from Cargo.
     raw_content = File.binread(LOG_FILE)
-    content = raw_content.encode('UTF-8', invalid: :replace, undef: :replace, replace: '?')
+    content = raw_content.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?")
 
     # Try to extract meaningful failure information
     if content.include?("Failure:") || content.include?("Error:")
@@ -71,7 +71,7 @@ else
       # Capture everything until the next "  N) Failure:" or End Of String (\Z).
       # /m (multiline) mode allows . to match newlines.
       failures = content.scan(/(?:^\s*\d+\) (?:Failure|Error):.*?(?=\n\s*\d+\) (?:Failure|Error):|\Z))/ms)
-      
+
       if failures.any?
         puts failures.join("\n")
       else
@@ -92,4 +92,3 @@ else
   puts "Use `grep` or run `cat #{LOG_FILE}` to see details."
   exit 1
 end
-

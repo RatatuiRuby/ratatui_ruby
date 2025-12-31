@@ -6,7 +6,7 @@
 require "test_helper"
 
 class TestLayout < Minitest::Test
-    include RatatuiRuby::TestHelper
+  include RatatuiRuby::TestHelper
   def test_layout_creation
     p = RatatuiRuby::Paragraph.new(text: "Hello")
     l = RatatuiRuby::Layout.new(direction: :vertical, constraints: [RatatuiRuby::Constraint.percentage(100)], children: [p])
@@ -33,8 +33,6 @@ class TestLayout < Minitest::Test
     assert_equal :center, l2.flex
   end
 
-
-
   def test_render_flex_space_evenly_2
     with_test_terminal(20, 3) do
       l = RatatuiRuby::Layout.new(
@@ -43,12 +41,12 @@ class TestLayout < Minitest::Test
         constraints: [
           RatatuiRuby::Constraint.length(2),
           RatatuiRuby::Constraint.length(2),
-          RatatuiRuby::Constraint.length(2)
+          RatatuiRuby::Constraint.length(2),
         ],
         children: [
           RatatuiRuby::Paragraph.new(text: "A"),
           RatatuiRuby::Paragraph.new(text: "B"),
-          RatatuiRuby::Paragraph.new(text: "C")
+          RatatuiRuby::Paragraph.new(text: "C"),
         ]
       )
 
@@ -121,12 +119,12 @@ class TestLayout < Minitest::Test
         constraints: [
           RatatuiRuby::Constraint.length(2),
           RatatuiRuby::Constraint.length(2),
-          RatatuiRuby::Constraint.length(2)
+          RatatuiRuby::Constraint.length(2),
         ],
         children: [
           RatatuiRuby::Paragraph.new(text: "A"),
           RatatuiRuby::Paragraph.new(text: "B"),
-          RatatuiRuby::Paragraph.new(text: "C")
+          RatatuiRuby::Paragraph.new(text: "C"),
         ]
       )
       RatatuiRuby.draw(l)
@@ -157,7 +155,7 @@ class TestLayout < Minitest::Test
       direction: :horizontal,
       constraints: [
         RatatuiRuby::Constraint.percentage(50),
-        RatatuiRuby::Constraint.percentage(50)
+        RatatuiRuby::Constraint.percentage(50),
       ]
     )
     assert_equal 2, rects.length
@@ -174,7 +172,7 @@ class TestLayout < Minitest::Test
       direction: :vertical,
       constraints: [
         RatatuiRuby::Constraint.length(5),
-        RatatuiRuby::Constraint.fill(1)
+        RatatuiRuby::Constraint.fill(1),
       ]
     )
     assert_equal 2, rects.length

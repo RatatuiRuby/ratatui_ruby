@@ -20,7 +20,7 @@ class TestRatatuiMascotDemoApp < Minitest::Test
     with_test_terminal do
       inject_key(:q)
       @app.run
-      
+
       content = buffer_content.join("\n")
       assert_includes content, "Ratatui Mascot" # Title implying block is on
       assert_includes content, "Toggle Block (On)"
@@ -39,7 +39,7 @@ class TestRatatuiMascotDemoApp < Minitest::Test
       assert_includes content, "Toggle Block (Off)"
       # Title should be gone if block is gone (unless internal rendering keeps it, but our logic removes the block)
       # Wait, if block is nil, no border/title.
-      refute_includes content, "Ratatui Mascot" 
+      refute_includes content, "Ratatui Mascot"
       # Mascot should still be there
       assert_includes content, "█"
     end

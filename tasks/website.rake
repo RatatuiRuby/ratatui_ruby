@@ -12,14 +12,14 @@ namespace :website do
   desc "Build documentation for main (current dir) and all git tags"
   task :build do
     require_relative "website/website"
-    
+
     spec = Gem::Specification.load(Dir["*.gemspec"].first)
     globs = RDocConfig::RDOC_FILES + ["*.gemspec", "doc/images/**/*"]
-    
+
     Website.new(
       at: "www",
       project_name: spec.name,
-      globs: globs,
+      globs:,
       assets: ["doc/images"] # directories to copy
     ).build
   end

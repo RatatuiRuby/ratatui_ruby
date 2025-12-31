@@ -26,16 +26,14 @@ class LauncherScript < Data.define(:app_path, :repo_root)
     File.join(Dir.tmpdir, "preview_launcher.pid")
   end
 
-  private
-
-  def cleanup
-    File.delete(path) if File.exist?(path)
-    File.delete(pid_file) if File.exist?(pid_file)
+  private def cleanup
+    FileUtils.rm_f(path)
+    FileUtils.rm_f(pid_file)
   rescue Errno::ENOENT
     # Already deleted
   end
 
-  def write
+  private def write
     File.open(path, "w") do |f|
       f.puts "#!/bin/zsh"
       f.puts "cd '#{repo_root}'"

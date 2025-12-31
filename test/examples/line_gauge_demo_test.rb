@@ -30,7 +30,7 @@ class LineGaugeDemoTest < Minitest::Test
   end
 
   def test_line_gauge_with_terminal
-    with_test_terminal(width: 40, height: 10) do
+    with_test_terminal(40, 10) do
       gauge = RatatuiRuby::LineGauge.new(
         ratio: 0.65,
         label: "65%",
@@ -42,11 +42,11 @@ class LineGaugeDemoTest < Minitest::Test
         direction: :vertical,
         constraints: [
           RatatuiRuby::Constraint.length(3),
-          RatatuiRuby::Constraint.min(0)
+          RatatuiRuby::Constraint.min(0),
         ],
         children: [
           gauge,
-          RatatuiRuby::Paragraph.new(text: "Done")
+          RatatuiRuby::Paragraph.new(text: "Done"),
         ]
       )
 
@@ -62,7 +62,7 @@ class LineGaugeDemoTest < Minitest::Test
     gauges = [
       RatatuiRuby::LineGauge.new(ratio: 0.3, label: "30%"),
       RatatuiRuby::LineGauge.new(ratio: 0.65, label: "65%"),
-      RatatuiRuby::LineGauge.new(ratio: 0.95, label: "95%")
+      RatatuiRuby::LineGauge.new(ratio: 0.95, label: "95%"),
     ]
 
     assert_equal 3, gauges.length

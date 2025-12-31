@@ -20,7 +20,7 @@ class TestBlockTitles < Minitest::Test
     with_test_terminal do
       inject_key(:q)
       @app.run
-      
+
       content = buffer_content.join("\n")
       assert_includes content, "Top Left"
       assert_includes content, "Top Right"

@@ -15,7 +15,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
 use crate::text::parse_line;
 
-fn create_tabs<'a>(node: Value, bump: &'a Bump) -> Result<Tabs<'a>, Error> {
+fn create_tabs(node: Value, bump: &Bump) -> Result<Tabs<'_>, Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let titles_val: Value = node.funcall("titles", ())?;
     let selected_index: usize = node.funcall("selected_index", ())?;
@@ -30,7 +30,8 @@ fn create_tabs<'a>(node: Value, bump: &'a Bump) -> Result<Tabs<'a>, Error> {
 
     let mut titles = Vec::new();
     for i in 0..titles_array.len() {
-        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let index = isize::try_from(i)
+            .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
         let val: Value = titles_array.entry(index)?;
         if let Ok(line) = parse_line(val) {
             titles.push(line);
@@ -81,10 +82,11 @@ pub fn width(node: Value) -> Result<usize, Error> {
         .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for titles"))?;
 
     let mut total_width = padding_left + padding_right;
-    
+
     let mut titles_count = 0;
     for i in 0..titles_array.len() {
-        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let index = isize::try_from(i)
+            .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
         let val: Value = titles_array.entry(index)?;
         let line_width = if let Ok(line) = parse_line(val) {
             line.width()
@@ -97,11 +99,11 @@ pub fn width(node: Value) -> Result<usize, Error> {
     }
 
     if titles_count > 1 {
-        let divider_width = if !divider_val.is_nil() {
+        let divider_width = if divider_val.is_nil() {
+            1 // Default divider is "|"
+        } else {
             let d: String = divider_val.funcall("to_s", ())?;
             ratatui::text::Span::raw(d).width()
-        } else {
-            1 // Default divider is "|"
         };
         total_width += (titles_count - 1) * divider_width;
     }
@@ -134,10 +136,8 @@ mod tests {
     fn test_tabs_highlight_style() {
         let titles = vec![Line::from("Tab1"), Line::from("Tab2")];
         let highlight_style = Style::default().fg(Color::Red).add_modifier(Modifier::BOLD);
-        let tabs = Tabs::new(titles)
-            .select(0)
-            .highlight_style(highlight_style);
-        
+        let tabs = Tabs::new(titles).select(0).highlight_style(highlight_style);
+
         let mut buf = Buffer::empty(Rect::new(0, 0, 15, 1));
         tabs.render(Rect::new(0, 0, 15, 1), &mut buf);
 

@@ -30,14 +30,12 @@ class HitTestApp
       loop do
         calculate_layout  # Phase 1: Layout calculation (once per frame)
         render            # Phase 2: Draw to terminal
-        break if handle_input == :quit  # Phase 3: Consume input using cached rects
+        break if handle_input == :quit # Phase 3: Consume input using cached rects
       end
     end
   end
 
-  private
-
-  def calculate_layout
+  private def calculate_layout
     # Single source of truth for layout geometry.
     # Calculated once per frame, then reused by render() and handle_input().
     full_area = RatatuiRuby::Rect.new(x: 0, y: 0, width: 80, height: 24)
@@ -58,12 +56,12 @@ class HitTestApp
       direction: :horizontal,
       constraints: [
         RatatuiRuby::Constraint.percentage(@left_ratio),
-        RatatuiRuby::Constraint.percentage(100 - @left_ratio)
+        RatatuiRuby::Constraint.percentage(100 - @left_ratio),
       ]
     )
   end
 
-  def render
+  private def render
     # Build UI with the pre-calculated regions
     left_panel = build_panel("Left Panel", @left_rect, @last_click == :left)
     right_panel = build_panel("Right Panel", @right_rect, @last_click == :right)
@@ -72,7 +70,7 @@ class HitTestApp
       direction: :horizontal,
       constraints: [
         RatatuiRuby::Constraint.percentage(@left_ratio),
-        RatatuiRuby::Constraint.percentage(100 - @left_ratio)
+        RatatuiRuby::Constraint.percentage(100 - @left_ratio),
       ],
       children: [left_panel, right_panel]
     )
@@ -85,7 +83,7 @@ class HitTestApp
         RatatuiRuby::Paragraph.new(
           text: [
             RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "RATIO", style: RatatuiRuby::Style.new(modifiers: [:bold]))
+              RatatuiRuby::Text::Span.new(content: "RATIO", style: RatatuiRuby::Style.new(modifiers: [:bold])),
             ]),
             RatatuiRuby::Text::Line.new(spans: [
               RatatuiRuby::Text::Span.new(content: "←", style: @hotkey_style),
@@ -93,15 +91,15 @@ class HitTestApp
               RatatuiRuby::Text::Span.new(content: "→", style: @hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Increase (#{@left_ratio}%)  "),
               RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Quit")
+              RatatuiRuby::Text::Span.new(content: ": Quit"),
             ]),
             RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "HIT TESTING", style: RatatuiRuby::Style.new(modifiers: [:bold]))
+              RatatuiRuby::Text::Span.new(content: "HIT TESTING", style: RatatuiRuby::Style.new(modifiers: [:bold])),
             ]),
             "Click panels above to detect hits.",
-            "Last Click: #{@last_click || 'None'} - #{@message}"
+            "Last Click: #{@last_click || 'None'} - #{@message}",
           ]
-        )
+        ),
       ]
     )
 
@@ -118,10 +116,10 @@ class HitTestApp
     RatatuiRuby.draw(full_layout)
   end
 
-  def build_panel(title, rect, active)
+  private def build_panel(title, rect, active)
     content = "#{title}\n\n" \
-              "Width: #{rect.width}, Height: #{rect.height}\n" \
-              "Position: (#{rect.x}, #{rect.y})"
+      "Width: #{rect.width}, Height: #{rect.height}\n" \
+      "Position: (#{rect.x}, #{rect.y})"
 
     RatatuiRuby::Paragraph.new(
       text: content,
@@ -134,7 +132,7 @@ class HitTestApp
     )
   end
 
-  def handle_input
+  private def handle_input
     event = RatatuiRuby.poll_event
     return unless event
 
@@ -158,7 +156,7 @@ class HitTestApp
     nil
   end
 
-  def handle_click(x, y)
+  private def handle_click(x, y)
     if @left_rect.contains?(x, y)
       @last_click = :left
       @message = "Left Panel clicked at (#{x}, #{y})"

@@ -14,43 +14,152 @@ class ListDemoApp
     @item_sets = [
       {
         name: "Large List",
-        items: (1..200).map { |i| "Item #{i}" }
+        items: (1..200).map { |i| "Item #{i}" },
       },
       {
         name: "Colors",
         items: [
-          "Red", "Orange", "Yellow", "Green", "Cyan", "Blue", "Indigo", "Violet",
-          "Scarlet", "Crimson", "Maroon", "Brown", "Tan", "Beige", "Khaki",
-          "Gold", "Silver", "White", "Gray", "Black", "Pink", "Magenta",
-          "Turquoise", "Teal", "Coral", "Salmon", "Peach", "Lavender", "Lilac",
-          "Olive", "Lime", "Navy", "Charcoal", "Ivory", "Azure"
-        ]
+          "Red",
+          "Orange",
+          "Yellow",
+          "Green",
+          "Cyan",
+          "Blue",
+          "Indigo",
+          "Violet",
+          "Scarlet",
+          "Crimson",
+          "Maroon",
+          "Brown",
+          "Tan",
+          "Beige",
+          "Khaki",
+          "Gold",
+          "Silver",
+          "White",
+          "Gray",
+          "Black",
+          "Pink",
+          "Magenta",
+          "Turquoise",
+          "Teal",
+          "Coral",
+          "Salmon",
+          "Peach",
+          "Lavender",
+          "Lilac",
+          "Olive",
+          "Lime",
+          "Navy",
+          "Charcoal",
+          "Ivory",
+          "Azure",
+        ],
       },
       {
         name: "Fruits",
         items: [
-          "Apple", "Apricot", "Avocado", "Banana", "Blueberry", "Blackberry",
-          "Cherry", "Cranberry", "Cucumber", "Date", "Dragonfruit", "Elderberry",
-          "Fig", "Grape", "Grapefruit", "Guava", "Honeydew", "Huckleberry",
-          "Jackfruit", "Kiwi", "Kumquat", "Lemon", "Lime", "Lychee",
-          "Mango", "Melon", "Mulberry", "Nectarine", "Olive", "Orange",
-          "Papaya", "Passion Fruit", "Peach", "Pear", "Persimmon", "Pineapple",
-          "Plum", "Pomegranate", "Prune", "Rambutan", "Raspberry", "Starfruit",
-          "Strawberry", "Tangerine", "Watermelon", "Ugli Fruit"
-        ]
+          "Apple",
+          "Apricot",
+          "Avocado",
+          "Banana",
+          "Blueberry",
+          "Blackberry",
+          "Cherry",
+          "Cranberry",
+          "Cucumber",
+          "Date",
+          "Dragonfruit",
+          "Elderberry",
+          "Fig",
+          "Grape",
+          "Grapefruit",
+          "Guava",
+          "Honeydew",
+          "Huckleberry",
+          "Jackfruit",
+          "Kiwi",
+          "Kumquat",
+          "Lemon",
+          "Lime",
+          "Lychee",
+          "Mango",
+          "Melon",
+          "Mulberry",
+          "Nectarine",
+          "Olive",
+          "Orange",
+          "Papaya",
+          "Passion Fruit",
+          "Peach",
+          "Pear",
+          "Persimmon",
+          "Pineapple",
+          "Plum",
+          "Pomegranate",
+          "Prune",
+          "Rambutan",
+          "Raspberry",
+          "Starfruit",
+          "Strawberry",
+          "Tangerine",
+          "Watermelon",
+          "Ugli Fruit",
+        ],
       },
       {
         name: "Programming",
         items: [
-          "Ruby", "Rust", "Python", "JavaScript", "Go", "C++", "C#", "Java",
-          "Kotlin", "Swift", "Objective-C", "PHP", "TypeScript", "Perl", "Lua",
-          "R", "Scala", "Haskell", "Elixir", "Clojure", "Groovy", "Closure",
-          "VB.NET", "F#", "Erlang", "Lisp", "Scheme", "Prolog", "Fortran",
-          "COBOL", "Pascal", "Delphi", "Ada", "Bash", "Sh", "Tcl",
-          "Awk", "sed", "Vim Script", "PowerShell", "Batch", "Assembly",
-          "Wasm", "WebAssembly", "Julia", "Matlab", "Octave", "BASIC"
-        ]
-      }
+          "Ruby",
+          "Rust",
+          "Python",
+          "JavaScript",
+          "Go",
+          "C++",
+          "C#",
+          "Java",
+          "Kotlin",
+          "Swift",
+          "Objective-C",
+          "PHP",
+          "TypeScript",
+          "Perl",
+          "Lua",
+          "R",
+          "Scala",
+          "Haskell",
+          "Elixir",
+          "Clojure",
+          "Groovy",
+          "Closure",
+          "VB.NET",
+          "F#",
+          "Erlang",
+          "Lisp",
+          "Scheme",
+          "Prolog",
+          "Fortran",
+          "COBOL",
+          "Pascal",
+          "Delphi",
+          "Ada",
+          "Bash",
+          "Sh",
+          "Tcl",
+          "Awk",
+          "sed",
+          "Vim Script",
+          "PowerShell",
+          "Batch",
+          "Assembly",
+          "Wasm",
+          "WebAssembly",
+          "Julia",
+          "Matlab",
+          "Octave",
+          "BASIC",
+        ],
+      },
     ]
     @item_set_index = 0
 
@@ -59,7 +168,7 @@ class ListDemoApp
       { name: "Yellow on Black", style: RatatuiRuby::Style.new(fg: :yellow, bg: :black) },
       { name: "Green Italic", style: RatatuiRuby::Style.new(fg: :green, modifiers: [:italic]) },
       { name: "White Reversed", style: RatatuiRuby::Style.new(fg: :white, modifiers: [:reversed]) },
-      { name: "Cyan Bold", style: RatatuiRuby::Style.new(fg: :cyan, modifiers: [:bold]) }
+      { name: "Cyan Bold", style: RatatuiRuby::Style.new(fg: :cyan, modifiers: [:bold]) },
     ]
     @highlight_style_index = 0
 
@@ -68,40 +177,40 @@ class ListDemoApp
       { name: "▶ ", symbol: "▶ " },
       { name: "→ ", symbol: "→ " },
       { name: "• ", symbol: "• " },
-      { name: "★ ", symbol: "★ " }
+      { name: "★ ", symbol: "★ " },
     ]
     @highlight_symbol_index = 0
 
     @directions = [
       { name: "Top to Bottom", direction: :top_to_bottom },
-      { name: "Bottom to Top", direction: :bottom_to_top }
+      { name: "Bottom to Top", direction: :bottom_to_top },
     ]
     @direction_index = 0
 
     @highlight_spacings = [
       { name: "When Selected", spacing: :when_selected },
       { name: "Always", spacing: :always },
-      { name: "Never", spacing: :never }
+      { name: "Never", spacing: :never },
     ]
     @highlight_spacing_index = 0
 
     @repeat_modes = [
       { name: "Off", repeat: false },
-      { name: "On", repeat: true }
+      { name: "On", repeat: true },
     ]
     @repeat_index = 0
 
     @base_styles = [
       { name: "None", style: nil },
       { name: "Dark Gray", style: RatatuiRuby::Style.new(fg: :dark_gray) },
-      { name: "White on Black", style: RatatuiRuby::Style.new(fg: :white, bg: :black) }
+      { name: "White on Black", style: RatatuiRuby::Style.new(fg: :white, bg: :black) },
     ]
     @base_style_index = 0
 
     @scroll_paddings = [
       { name: "None", padding: nil },
       { name: "1 item", padding: 1 },
-      { name: "2 items", padding: 2 }
+      { name: "2 items", padding: 2 },
     ]
     @scroll_padding_index = 0
   end
@@ -116,9 +225,7 @@ class ListDemoApp
     end
   end
 
-  private
-
-  def render
+  private def render
     items = @item_sets[@item_set_index][:items]
     selection_label = @selected_index.nil? ? "none" : @selected_index.to_s
     direction_config = @directions[@direction_index]
@@ -134,7 +241,7 @@ class ListDemoApp
       direction: :vertical,
       constraints: [
         RatatuiRuby::Constraint.length(1),
-        RatatuiRuby::Constraint.fill(1)
+        RatatuiRuby::Constraint.fill(1),
       ],
       children: [
         RatatuiRuby::Paragraph.new(
@@ -154,7 +261,7 @@ class ListDemoApp
             title: "#{@item_sets[@item_set_index][:name]} (Selection: #{selection_label})",
             borders: [:all]
           )
-        )
+        ),
       ]
     )
 
@@ -174,19 +281,19 @@ class ListDemoApp
               RatatuiRuby::Text::Span.new(content: "x", style: hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Select  "),
               RatatuiRuby::Text::Span.new(content: "h", style: hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Highlight (#{highlight_style_config[:name]})")
+              RatatuiRuby::Text::Span.new(content: ": Highlight (#{highlight_style_config[:name]})"),
             ]),
             RatatuiRuby::Text::Line.new(spans: [
               RatatuiRuby::Text::Span.new(content: "y", style: hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Symbol (#{highlight_symbol_config[:name]})  "),
               RatatuiRuby::Text::Span.new(content: "d", style: hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Direction (#{direction_config[:name]})")
+              RatatuiRuby::Text::Span.new(content: ": Direction (#{direction_config[:name]})"),
             ]),
             RatatuiRuby::Text::Line.new(spans: [
               RatatuiRuby::Text::Span.new(content: "s", style: hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Spacing (#{spacing_config[:name]})  "),
               RatatuiRuby::Text::Span.new(content: "p", style: hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Scroll Padding (#{scroll_padding_config[:name]})")
+              RatatuiRuby::Text::Span.new(content: ": Scroll Padding (#{scroll_padding_config[:name]})"),
             ]),
             RatatuiRuby::Text::Line.new(spans: [
               RatatuiRuby::Text::Span.new(content: "b", style: hotkey_style),
@@ -194,10 +301,10 @@ class ListDemoApp
               RatatuiRuby::Text::Span.new(content: "r", style: hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Repeat (#{repeat_config[:name]})  "),
               RatatuiRuby::Text::Span.new(content: "q", style: hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Quit")
-            ])
+              RatatuiRuby::Text::Span.new(content: ": Quit"),
+            ]),
           ]
-        )
+        ),
       ]
     )
 
@@ -206,7 +313,7 @@ class ListDemoApp
       direction: :vertical,
       constraints: [
         RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.length(7)
+        RatatuiRuby::Constraint.length(7),
       ],
       children: [main_content, control_panel]
     )
@@ -214,9 +321,9 @@ class ListDemoApp
     RatatuiRuby.draw(layout)
   end
 
-  def handle_input
+  private def handle_input
     case RatatuiRuby.poll_event
-    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
+    in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit
     in type: :key, code: "i"
       @item_set_index = (@item_set_index + 1) % @item_sets.size

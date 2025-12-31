@@ -24,9 +24,7 @@ class LoginFormApp
     end
   end
 
-  private
-
-  def render
+  private def render
     # 1. Base Layer Construction
     # We want a cursor relative to the paragraph.
     # So we wrap Paragraph and Cursor in an Overlay, and put that Overlay in a Center.
@@ -79,14 +77,14 @@ class LoginFormApp
     RatatuiRuby.draw(final_view)
   end
 
-  def handle_input
+  private def handle_input
     # 4. Event Handling
     event = RatatuiRuby.poll_event
     return unless event
 
     if event.key?
       if @show_popup
-        return :quit if event == "q" || event == :ctrl_c
+        :quit if event == "q" || event == :ctrl_c
       else
         # Login Form Input
         return :quit if event == :ctrl_c

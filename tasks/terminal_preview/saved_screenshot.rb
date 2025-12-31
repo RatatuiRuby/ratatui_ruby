@@ -16,13 +16,11 @@ class SavedScreenshot < Data.define(:app, :path)
     app_last_modified > screenshot_last_commit_time
   end
 
-  private
-
-  def exists?
+  private def exists?
     File.exist?(path)
   end
 
-  def app_last_modified
+  private def app_last_modified
     # If the file has staged or unstaged changes, it's definitely stale
     return Time.now.to_i if changed?
 
@@ -30,26 +28,26 @@ class SavedScreenshot < Data.define(:app, :path)
     app_last_commit_time
   end
 
-  def changed?
+  private def changed?
     system("git diff HEAD --quiet #{app.app_path} 2>/dev/null")
     !$?.success?
   end
 
-  def app_last_commit_time
+  private def app_last_commit_time
     output = `git log -1 --format=%cI "#{app.app_path}" 2>/dev/null`.strip
     return 0 if output.empty?
 
     Time.iso8601(output).to_i
-  rescue StandardError
+  rescue
     0
   end
 
-  def screenshot_last_commit_time
+  private def screenshot_last_commit_time
     output = `git log -1 --format=%cI "#{path}" 2>/dev/null`.strip
     return Time.now.to_i if output.empty?
 
     Time.iso8601(output).to_i
-  rescue StandardError
+  rescue
     Time.now.to_i
   end
 end

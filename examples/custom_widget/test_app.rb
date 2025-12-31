@@ -20,7 +20,7 @@ class TestCustomWidget < Minitest::Test
     with_test_terminal do
       inject_key(:q)
       @app.run
-      
+
       content = buffer_content.join("\n")
       assert_includes content, "Above custom widget"
       # The custom widget draws backslashes

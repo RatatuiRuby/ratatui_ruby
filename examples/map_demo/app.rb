@@ -37,12 +37,12 @@ class MapDemoApp
     end
 
     Canvas.new(
-      shapes: shapes,
+      shapes:,
       x_bounds: [-180.0, 180.0],
       y_bounds: [-90.0, 90.0],
-      marker: marker,
+      marker:,
       block: Block.new(title: "World Map ['b' bg, 'm' marker: #{marker}, 'l' labels: #{show_labels ? 'on' : 'off'}]", borders: :all),
-      background_color: background_color
+      background_color:
     )
   end
 
@@ -69,7 +69,7 @@ class MapDemoApp
 
         event = RatatuiRuby.poll_event
         case event
-        in {type: :key, code: "q"} | {type: :key, code: :ctrl_c}
+        in { type: :key, code: "q" } | { type: :key, code: :ctrl_c }
           break
         in type: :key, code: "b"
           bg_index = (bg_index + 1) % COLORS.size

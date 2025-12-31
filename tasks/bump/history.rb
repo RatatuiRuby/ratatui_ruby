@@ -8,7 +8,7 @@ class History
   # Extracts the history section from the given content, between unreleased and links.
   def self.parse(content, header_length, unreleased_length, links_text)
     start = header_length + unreleased_length
-    text = content[start...content.index(links_text)].strip + "\n"
+    text = "#{content[start...(content.index(links_text))].strip}\n"
     new(text)
   end
 
@@ -19,7 +19,7 @@ class History
 
   # Adds a new versioned section to the history.
   def add(section)
-    @content = "#{section}\n\n#{@content}".strip + "\n"
+    @content = "#{"#{section}\n\n#{@content}".strip}\n"
     nil
   end
 

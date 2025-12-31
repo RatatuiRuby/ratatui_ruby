@@ -12,7 +12,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for layers"))?;
 
     for i in 0..layers_array.len() {
-        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let index = isize::try_from(i)
+            .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
         let layer: Value = layers_array.entry(index)?;
         if let Err(e) = render_node(frame, area, layer) {
             eprintln!("Error rendering overlay layer {i}: {e:?}");

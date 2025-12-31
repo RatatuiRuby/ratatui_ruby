@@ -67,7 +67,7 @@ module RatatuiRuby
     #   Cell.symbol("X") # => #<RatatuiRuby::Cell symbol="X">
     #
     def self.symbol(symbol)
-      new(symbol: symbol, fg: nil, bg: nil, modifiers: [])
+      new(symbol:, fg: nil, bg: nil, modifiers: [])
     end
 
     # Alias for Rubyists who prefer a shorter name.
@@ -149,7 +149,7 @@ module RatatuiRuby
       parts << "fg=#{fg.inspect}" if fg
       parts << "bg=#{bg.inspect}" if bg
       parts << "modifiers=#{modifiers.inspect}" unless modifiers.empty?
-      "#<#{self.class} #{parts.join(" ")}>"
+      "#<#{self.class} #{parts.join(' ')}>"
     end
 
     # Returns the cell's character.
@@ -160,7 +160,7 @@ module RatatuiRuby
     # Support for pattern matching.
     # Supports both <tt>:symbol</tt> and <tt>:char</tt> keys.
     def deconstruct_keys(keys)
-      { symbol: symbol, char: symbol, fg: fg, bg: bg, modifiers: modifiers }
+      { symbol:, char: symbol, fg:, bg:, modifiers: }
     end
   end
 end

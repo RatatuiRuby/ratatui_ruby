@@ -22,9 +22,7 @@ class MouseEventsApp
     end
   end
 
-  private
-
-  def render
+  private def render
     # Create a centered block with the mouse event details
     block = RatatuiRuby::Block.new(
       title: "Mouse Event Plumbing",
@@ -56,12 +54,12 @@ class MouseEventsApp
     RatatuiRuby.draw(layout)
   end
 
-  def handle_input
+  private def handle_input
     event = RatatuiRuby.poll_event
     return unless event
 
     case event
-    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
+    in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       return :quit
     in type: :mouse, kind:, button:, x:, y:, modifiers:
       @color = "green"

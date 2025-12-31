@@ -44,7 +44,7 @@ class BlockPaddingApp
           constraints: [
             RatatuiRuby::Constraint.length(10), # Uniform Padding
             RatatuiRuby::Constraint.length(10), # Directional Padding
-            RatatuiRuby::Constraint.min(0)
+            RatatuiRuby::Constraint.min(0),
           ],
           children: [para1, para2, para3]
         )

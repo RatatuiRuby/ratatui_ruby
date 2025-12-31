@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 # Core Concepts
 
 This guide explains the core concepts and patterns available in `ratatui_ruby` for structuring your terminal applications.

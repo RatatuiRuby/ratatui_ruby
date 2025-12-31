@@ -51,7 +51,7 @@ class TestAnalytics < Minitest::Test
     with_test_terminal do
       # Move right to Traffic
       inject_keys(:a, :b, :c)
-      
+
       # Then queue quit
       inject_key(:q)
 
@@ -74,7 +74,7 @@ class TestAnalytics < Minitest::Test
       # Switch divider (d) then quit (q)
       inject_keys(:d, :q)
       @app.run
-      
+
       # Default is " | ", next is " • "
       assert buffer_content.any? { |line| line.include?(" • ") }
     end
@@ -85,8 +85,8 @@ class TestAnalytics < Minitest::Test
       # Switch style (space) then quit (q)
       inject_keys(:" ", :q)
       @app.run
-      
-      # Verify it runs without error. 
+
+      # Verify it runs without error.
       # Style visual verification is limited with simple string buffer checks,
       # but this ensures the event handling works.
     end

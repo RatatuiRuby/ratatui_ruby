@@ -140,7 +140,7 @@ class TestMapDemoApp < Minitest::Test
   def test_quit
     with_test_terminal do
       inject_key(:q)
-      
+
       @app.stub :sleep, nil do
         @app.run
       end

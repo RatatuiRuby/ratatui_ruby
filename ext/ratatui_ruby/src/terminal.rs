@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use magnus::Error;
 use magnus::value::ReprValue;
+use magnus::Error;
 use ratatui::{
     backend::{CrosstermBackend, TestBackend},
     Terminal,
@@ -121,15 +121,11 @@ pub fn resize_terminal(width: u16, height: u16) -> Result<(), Error> {
     let mut term_lock = TERMINAL.lock().unwrap();
     if let Some(wrapper) = term_lock.as_mut() {
         match wrapper {
-            TerminalWrapper::Crossterm(_) => {
-            }
+            TerminalWrapper::Crossterm(_) => {}
             TerminalWrapper::Test(terminal) => {
                 terminal.backend_mut().resize(width, height);
                 if let Err(e) = terminal.resize(ratatui::layout::Rect::new(0, 0, width, height)) {
-                    return Err(Error::new(
-                        ruby.exception_runtime_error(),
-                        e.to_string(),
-                    ));
+                    return Err(Error::new(ruby.exception_runtime_error(), e.to_string()));
                 }
             }
         }
@@ -195,7 +191,7 @@ fn color_to_value(color: ratatui::style::Color) -> Value {
 fn modifiers_to_value(modifier: ratatui::style::Modifier) -> Value {
     let ruby = magnus::Ruby::get().unwrap();
     let ary = ruby.ary_new();
-    
+
     if modifier.contains(ratatui::style::Modifier::BOLD) {
         let _ = ary.push(ruby.str_new("bold"));
     }
@@ -223,6 +219,6 @@ fn modifiers_to_value(modifier: ratatui::style::Modifier) -> Value {
     if modifier.contains(ratatui::style::Modifier::RAPID_BLINK) {
         let _ = ary.push(ruby.str_new("rapid_blink"));
     }
-    
+
     ary.as_value()
 }

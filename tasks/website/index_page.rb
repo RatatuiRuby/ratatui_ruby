@@ -8,17 +8,17 @@ require "erb"
 class IndexPage
   def initialize(versions)
     @versions = versions
-    
+
     latest_version = @versions.find { |v| v.is_a?(Tagged) }
     latest_version.is_latest = true if latest_version
   end
 
   def publish_to(path, project_name:)
     puts "Generating index page..."
-    
+
     template_path = File.expand_path("../resources/index.html.erb", __dir__)
     template = File.read(template_path)
-    
+
     versions = @versions
     # project_name is used in the ERB
     html_content = ERB.new(template).result(binding)

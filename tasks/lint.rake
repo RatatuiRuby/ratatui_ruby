@@ -9,9 +9,9 @@ require "inch/rake"
 
 RuboCop::RakeTask.new
 
-RubyCritic::RakeTask.new do |task|
-  task.options = "--no-browser"
-  task.paths = FileList.new.include("exe/**/*.rb", "lib/**/*.rb", "sig/**/*.rbs")
+# Run rubycritic in a shell to prevent it from exiting the rake process
+task :rubycritic do
+  sh "bundle exec rubycritic --no-browser exe lib sig"
 end
 
 Inch::Rake::Suggest.new("doc:suggest", "exe/**/*.rb", "lib/**/*.rb", "sig/**/*.rbs") do |suggest|
@@ -39,7 +39,11 @@ end
 task(:reuse) { Rake::Task["reuse:lint"].invoke }
 
 namespace :lint do
-  task docs: %w[rubycritic rdoc:coverage reuse:lint]
+  task :safe_rdoc_coverage do
+    sh "bundle exec rake rdoc:coverage"
+  end
+
+  task docs: %w[rubycritic safe_rdoc_coverage reuse:lint]
   task code: %w[rubocop rubycritic cargo:fmt cargo:clippy cargo:test]
   task licenses: %w[reuse:lint]
   task all: %w[docs code licenses]

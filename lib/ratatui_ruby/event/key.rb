@@ -108,7 +108,7 @@ module RatatuiRuby
         if mods.empty?
           @code.to_sym
         else
-          "#{mods}_#{@code}".to_sym
+          :"#{mods}_#{@code}"
         end
       end
 

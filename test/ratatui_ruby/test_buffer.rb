@@ -37,7 +37,7 @@ class TestDraw < Minitest::Test
     def render(area)
       [
         RatatuiRuby::Draw.cell(0, 0, RatatuiRuby::Cell.char("A")),
-        RatatuiRuby::Draw.cell(0, 0, RatatuiRuby::Cell.char("B"))
+        RatatuiRuby::Draw.cell(0, 0, RatatuiRuby::Cell.char("B")),
       ]
     end
   end
@@ -64,4 +64,3 @@ class TestDraw < Minitest::Test
     end
   end
 end
-

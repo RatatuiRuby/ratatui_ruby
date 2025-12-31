@@ -18,8 +18,5 @@ module RatatuiRuby
     # :call-seq: new -> RatatuiLogo
     #
     # Creates a new RatatuiLogo.
-    def initialize
-      super
-    end
   end
 end

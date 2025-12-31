@@ -6,17 +6,17 @@
 require "test_helper"
 
 class TestBarChart < Minitest::Test
-    include RatatuiRuby::TestHelper
+  include RatatuiRuby::TestHelper
   def test_bar_chart_creation
     data = { "a" => 1, "b" => 2 }
     chart = RatatuiRuby::BarChart.new(data:, bar_width: 5)
     assert_equal 2, chart.data.size
-    
+
     group_a = chart.data[0]
     assert_kind_of RatatuiRuby::BarChart::BarGroup, group_a
     assert_equal "a", group_a.label
     assert_equal 1, group_a.bars.first.value
-    
+
     group_b = chart.data[1]
     assert_equal "b", group_b.label
     assert_equal 2, group_b.bars.first.value

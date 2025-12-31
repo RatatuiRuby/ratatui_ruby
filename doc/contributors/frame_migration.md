@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 # Migration Plan: Adopting the Frame-Based API
 
 Status: Approved  

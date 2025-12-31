@@ -27,7 +27,7 @@ class TestTableFlexApp < Minitest::Test
       assert_includes content, "Table Flex Layout"
       assert_includes content, "Flex: :space_between"
       assert_includes content, "Flex: :space_around"
-      
+
       # Verify some table content
       assert_includes content, "Legacy (Default)"
       assert_includes content, "Item 1"

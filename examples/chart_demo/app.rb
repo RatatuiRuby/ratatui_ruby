@@ -13,7 +13,7 @@ class ChartDemoApp
       { name: "Dot (·)", marker: :dot },
       { name: "Braille", marker: :braille },
       { name: "Block (█)", marker: :block },
-      { name: "Bar", marker: :bar }
+      { name: "Bar", marker: :bar },
     ]
     @marker_index = 0
 
@@ -26,21 +26,21 @@ class ChartDemoApp
       { name: "Bold Blue", style: RatatuiRuby::Style.new(fg: :blue, modifiers: [:bold]) },
       { name: "Dim White", style: RatatuiRuby::Style.new(fg: :white, modifiers: [:dim]) },
       { name: "Italic Green", style: RatatuiRuby::Style.new(fg: :green, modifiers: [:italic]) },
-      { name: "Alert (Red/White/Bar)", style: RatatuiRuby::Style.new(fg: :white, bg: :red, modifiers: [:bold]) }
+      { name: "Alert (Red/White/Bar)", style: RatatuiRuby::Style.new(fg: :white, bg: :red, modifiers: [:bold]) },
     ]
     @dataset_style_index = 0
 
     @x_alignments = [
       { name: "Left", alignment: :left },
       { name: "Center", alignment: :center },
-      { name: "Right", alignment: :right }
+      { name: "Right", alignment: :right },
     ]
     @x_alignment_index = 1
 
     @y_alignments = [
       { name: "Left", alignment: :left },
       { name: "Center", alignment: :center },
-      { name: "Right", alignment: :right }
+      { name: "Right", alignment: :right },
     ]
     @y_alignment_index = 2
 
@@ -48,7 +48,7 @@ class ChartDemoApp
       { name: "Top Right", position: :top_right },
       { name: "Top Left", position: :top_left },
       { name: "Bottom Right", position: :bottom_right },
-      { name: "Bottom Left", position: :bottom_left }
+      { name: "Bottom Left", position: :bottom_left },
     ]
     @legend_position_index = 0
 
@@ -65,9 +65,7 @@ class ChartDemoApp
     end
   end
 
-  private
-
-  def render
+  private def render
     # Static sample data: sine wave with wider range for better visibility
     line_data = (0..50).map do |i|
       x = i / 5.0
@@ -88,16 +86,16 @@ class ChartDemoApp
         name: "Line",
         data: line_data,
         style:,
-        marker: style.modifiers.include?(:bold) && style.bg ? :bar : @markers[@marker_index][:marker],
+        marker: (style.modifiers.include?(:bold) && style.bg) ? :bar : @markers[@marker_index][:marker],
         graph_type: :line
       ),
       RatatuiRuby::Dataset.new(
         name: "Scatter",
         data: scatter_data,
         style: scatter_style,
-        marker: scatter_style.modifiers.include?(:bold) && scatter_style.bg ? :bar : @markers[@marker_index][:marker],
+        marker: (scatter_style.modifiers.include?(:bold) && scatter_style.bg) ? :bar : @markers[@marker_index][:marker],
         graph_type: :scatter
-      )
+      ),
     ]
 
     x_alignment = @x_alignments[@x_alignment_index][:alignment]
@@ -127,7 +125,7 @@ class ChartDemoApp
       legend_position:,
       hidden_legend_constraints: [
         RatatuiRuby::Constraint.min(20),
-        RatatuiRuby::Constraint.min(10)
+        RatatuiRuby::Constraint.min(10),
       ]
     )
 
@@ -135,7 +133,7 @@ class ChartDemoApp
       direction: :vertical,
       constraints: [
         RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.length(5)
+        RatatuiRuby::Constraint.length(5),
       ],
       children: [
         chart,
@@ -151,7 +149,7 @@ class ChartDemoApp
                   RatatuiRuby::Text::Span.new(content: "m", style: @hotkey_style),
                   RatatuiRuby::Text::Span.new(content: ": Marker (#{@markers[@marker_index][:name]})  "),
                   RatatuiRuby::Text::Span.new(content: "s", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Style (#{@dataset_styles[@dataset_style_index][:name]})")
+                  RatatuiRuby::Text::Span.new(content: ": Style (#{@dataset_styles[@dataset_style_index][:name]})"),
                 ]),
                 # Line 2: Axis alignments
                 RatatuiRuby::Text::Line.new(spans: [
@@ -160,29 +158,29 @@ class ChartDemoApp
                   RatatuiRuby::Text::Span.new(content: "y", style: @hotkey_style),
                   RatatuiRuby::Text::Span.new(content: ": Y Align (#{@y_alignments[@y_alignment_index][:name]})  "),
                   RatatuiRuby::Text::Span.new(content: "l", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Legend (#{@legend_positions[@legend_position_index][:name]})")
+                  RatatuiRuby::Text::Span.new(content: ": Legend (#{@legend_positions[@legend_position_index][:name]})"),
                 ]),
                 # Line 3: Quit
                 RatatuiRuby::Text::Line.new(spans: [
                   RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Quit")
-                ])
+                  RatatuiRuby::Text::Span.new(content: ": Quit"),
+                ]),
               ]
-            )
+            ),
           ]
-        )
+        ),
       ]
     )
 
     RatatuiRuby.draw(layout)
   end
 
-  def handle_input
+  private def handle_input
     event = RatatuiRuby.poll_event
     return unless event
 
     case event
-    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
+    in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit
     in type: :key, code: "m"
       @marker_index = (@marker_index + 1) % @markers.length

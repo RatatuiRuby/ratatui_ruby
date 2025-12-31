@@ -17,20 +17,20 @@ class ListStylesApp
 
     @directions = [
       { name: "Top to Bottom", direction: :top_to_bottom },
-      { name: "Bottom to Top", direction: :bottom_to_top }
+      { name: "Bottom to Top", direction: :bottom_to_top },
     ]
     @direction_index = 0
 
     @highlight_spacings = [
       { name: "When Selected", spacing: :when_selected },
       { name: "Always", spacing: :always },
-      { name: "Never", spacing: :never }
+      { name: "Never", spacing: :never },
     ]
     @highlight_spacing_index = 0
 
     @repeat_modes = [
       { name: "Off", repeat: false },
-      { name: "On", repeat: true }
+      { name: "On", repeat: true },
     ]
     @repeat_index = 0
 
@@ -47,9 +47,7 @@ class ListStylesApp
     end
   end
 
-  private
-
-  def render
+  private def render
     selection_label = @selected_index.nil? ? "none" : @selected_index.to_s
     direction_config = @directions[@direction_index]
     spacing_config = @highlight_spacings[@highlight_spacing_index]
@@ -84,20 +82,20 @@ class ListStylesApp
               RatatuiRuby::Text::Span.new(content: "x", style: @hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Toggle Selection  "),
               RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Quit")
+              RatatuiRuby::Text::Span.new(content: ": Quit"),
             ]),
             RatatuiRuby::Text::Line.new(spans: [
               RatatuiRuby::Text::Span.new(content: "d", style: @hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Direction (#{direction_config[:name]})  "),
               RatatuiRuby::Text::Span.new(content: "s", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Spacing (#{spacing_config[:name]})")
+              RatatuiRuby::Text::Span.new(content: ": Spacing (#{spacing_config[:name]})"),
             ]),
             RatatuiRuby::Text::Line.new(spans: [
               RatatuiRuby::Text::Span.new(content: "r", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Repeat Symbol (#{repeat_config[:name]})")
-            ])
+              RatatuiRuby::Text::Span.new(content: ": Repeat Symbol (#{repeat_config[:name]})"),
+            ]),
           ]
-        )
+        ),
       ]
     )
 
@@ -114,9 +112,9 @@ class ListStylesApp
     RatatuiRuby.draw(layout)
   end
 
-  def handle_input
+  private def handle_input
     case RatatuiRuby.poll_event
-    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
+    in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit
     in type: :key, code: "up"
       @selected_index = (@selected_index || 0) - 1

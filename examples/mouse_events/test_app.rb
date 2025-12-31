@@ -20,7 +20,7 @@ class TestMouseEvents < Minitest::Test
     with_test_terminal do
       inject_key(:q)
       @app.run
-      
+
       content = buffer_content.join("\n")
       assert_includes content, "Mouse Event Plumbing"
       assert_includes content, "Waiting for Mouse..."
@@ -33,7 +33,7 @@ class TestMouseEvents < Minitest::Test
       inject_event(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 10, y: 5))
       inject_key(:q)
       @app.run
-      
+
       content = buffer_content.join("\n")
       assert_includes content, "Left Click at [10, 5]"
     end
@@ -44,7 +44,7 @@ class TestMouseEvents < Minitest::Test
       inject_event(RatatuiRuby::Event::Mouse.new(kind: "scroll_down", button: "none", x: 20, y: 15))
       inject_key(:q)
       @app.run
-      
+
       content = buffer_content.join("\n")
       assert_includes content, "Scrolled Down"
       assert_includes content, "Position: [20, 15]"

@@ -36,7 +36,7 @@ module RatatuiRuby
       assert_predicate Event::Key.new(code: "a"), :text?
       assert_predicate Event::Key.new(code: "1"), :text?
       assert_predicate Event::Key.new(code: " "), :text?
-      
+
       refute_predicate Event::Key.new(code: "enter"), :text?
       refute_predicate Event::Key.new(code: "tab"), :text?
       refute_predicate Event::Key.new(code: "f1"), :text?
@@ -78,7 +78,7 @@ module RatatuiRuby
     def test_deconstruct_keys
       event = Event::Key.new(code: "q", modifiers: ["ctrl"])
       pattern = event.deconstruct_keys(nil)
-      
+
       assert_equal :key, pattern[:type]
       assert_equal "q", pattern[:code]
       assert_equal ["ctrl"], pattern[:modifiers]

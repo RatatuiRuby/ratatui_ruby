@@ -65,7 +65,7 @@ module RatatuiRuby
       # [y2] End Y (Numeric).
       # [color] Line color (Symbol).
       def initialize(x1:, y1:, x2:, y2:, color:)
-        super(x1: Float(x1), y1: Float(y1), x2: Float(x2), y2: Float(y2), color: color)
+        super(x1: Float(x1), y1: Float(y1), x2: Float(x2), y2: Float(y2), color:)
       end
     end
 
@@ -105,7 +105,7 @@ module RatatuiRuby
       # [height] Height (Numeric).
       # [color] Color (Symbol).
       def initialize(x:, y:, width:, height:, color:)
-        super(x: Float(x), y: Float(y), width: Float(width), height: Float(height), color: color)
+        super(x: Float(x), y: Float(y), width: Float(width), height: Float(height), color:)
       end
     end
 
@@ -139,7 +139,7 @@ module RatatuiRuby
       # [radius] Radius (Numeric).
       # [color] Color (Symbol).
       def initialize(x:, y:, radius:, color:)
-        super(x: Float(x), y: Float(y), radius: Float(radius), color: color)
+        super(x: Float(x), y: Float(y), radius: Float(radius), color:)
       end
     end
 
@@ -158,72 +158,72 @@ module RatatuiRuby
     end
   end
 
-    # Provides a drawing surface for custom shapes.
+  # Provides a drawing surface for custom shapes.
+  #
+  # Standard widgets cover standard cases. Sometimes you need to draw a map, a custom diagram, or a game.
+  # Character grids are too coarse for fine detail.
+  #
+  # This widget increases the resolution. It uses Braille patterns or block characters to create a "sub-pixel" drawing surface.
+  #
+  # Use it to implement free-form graphics, high-resolution plots, or geographic maps.
+  #
+  # === Examples
+  #
+  #   Canvas.new(
+  #     x_bounds: [-180, 180],
+  #     y_bounds: [-90, 90],
+  #     shapes: [
+  #       Shape::Map.new(color: :green, resolution: :high),
+  #       Shape::Circle.new(x: 0, y: 0, radius: 10, color: :red),
+  #       Shape::Label.new(x: -122.4, y: 37.8, text: "San Francisco")
+  #     ]
+  #   )
+  class Canvas < Data.define(:shapes, :x_bounds, :y_bounds, :marker, :block, :background_color)
+    ##
+    # :attr_reader: shapes
+    # Array of shapes to render.
     #
-    # Standard widgets cover standard cases. Sometimes you need to draw a map, a custom diagram, or a game.
-    # Character grids are too coarse for fine detail.
+    # Includes {Shape::Line}, {Shape::Circle}, {Shape::Map}, etc.
+
+    ##
+    # :attr_reader: x_bounds
+    # [min, max] range for the x-axis.
+
+    ##
+    # :attr_reader: y_bounds
+    # [min, max] range for the y-axis.
+
+    ##
+    # :attr_reader: marker
+    # The marker type used for drawing.
     #
-    # This widget increases the resolution. It uses Braille patterns or block characters to create a "sub-pixel" drawing surface.
+    # <tt>:braille</tt> (high res), <tt>:half_block</tt>, <tt>:dot</tt>, <tt>:block</tt>, <tt>:bar</tt>.
+
+    ##
+    # :attr_reader: block
+    # Optional wrapping block.
+
+    ##
+    # :attr_reader: background_color
+    # The background color of the canvas.
+
+    # Creates a new Canvas.
     #
-    # Use it to implement free-form graphics, high-resolution plots, or geographic maps.
-    #
-    # === Examples
-    #
-    #   Canvas.new(
-    #     x_bounds: [-180, 180],
-    #     y_bounds: [-90, 90],
-    #     shapes: [
-    #       Shape::Map.new(color: :green, resolution: :high),
-    #       Shape::Circle.new(x: 0, y: 0, radius: 10, color: :red),
-    #       Shape::Label.new(x: -122.4, y: 37.8, text: "San Francisco")
-    #     ]
-    #   )
-    class Canvas < Data.define(:shapes, :x_bounds, :y_bounds, :marker, :block, :background_color)
-      ##
-      # :attr_reader: shapes
-      # Array of shapes to render.
-      #
-      # Includes {Shape::Line}, {Shape::Circle}, {Shape::Map}, etc.
-
-      ##
-      # :attr_reader: x_bounds
-      # [min, max] range for the x-axis.
-
-      ##
-      # :attr_reader: y_bounds
-      # [min, max] range for the y-axis.
-
-      ##
-      # :attr_reader: marker
-      # The marker type used for drawing.
-      #
-      # <tt>:braille</tt> (high res), <tt>:half_block</tt>, <tt>:dot</tt>, <tt>:block</tt>, <tt>:bar</tt>.
-
-      ##
-      # :attr_reader: block
-      # Optional wrapping block.
-
-      ##
-      # :attr_reader: background_color
-      # The background color of the canvas.
-
-      # Creates a new Canvas.
-      #
-      # [shapes] Array of Shapes.
-      # [x_bounds] Array of [min, max] (Numeric, duck-typed via +to_f+).
-      # [y_bounds] Array of [min, max] (Numeric, duck-typed via +to_f+).
-      # [marker] Symbol (default: <tt>:braille</tt>).
-      # [block] Block (optional).
-      # [background_color] Color (optional).
-      def initialize(shapes: [], x_bounds: [0.0, 100.0], y_bounds: [0.0, 100.0], marker: :braille, block: nil, background_color: nil)
-        super(
-          shapes: shapes,
-          x_bounds: [Float(x_bounds[0]), Float(x_bounds[1])],
-          y_bounds: [Float(y_bounds[0]), Float(y_bounds[1])],
-          marker: marker,
-          block: block,
-          background_color: background_color
-        )
-      end
+    # [shapes] Array of Shapes.
+    # [x_bounds] Array of [min, max] (Numeric, duck-typed via +to_f+).
+    # [y_bounds] Array of [min, max] (Numeric, duck-typed via +to_f+).
+    # [marker] Symbol (default: <tt>:braille</tt>).
+    # [block] Block (optional).
+    # [background_color] Color (optional).
+    def initialize(shapes: [], x_bounds: [0.0, 100.0], y_bounds: [0.0, 100.0], marker: :braille, block: nil, background_color: nil)
+      super(
+        shapes:,
+        x_bounds: [Float(x_bounds[0]), Float(x_bounds[1])],
+        y_bounds: [Float(y_bounds[0]), Float(y_bounds[1])],
+        marker:,
+        block:,
+        background_color:
+      )
     end
+  end
 end

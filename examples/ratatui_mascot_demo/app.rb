@@ -20,21 +20,19 @@ class RatatuiMascotDemoApp
     end
   end
 
-  private
-
-  def render(tui)
+  private def render(tui)
     # Layout: Top (Mascot), Bottom (Controls)
     # Mascot Widget
     block = if @show_block
-              tui.block(
-                title: "Ratatui Mascot",
-                borders: [:all],
-                border_type: :rounded,
-                border_style: { fg: :green }
-              )
-            end
+      tui.block(
+        title: "Ratatui Mascot",
+        borders: [:all],
+        border_type: :rounded,
+        border_style: { fg: :green }
+      )
+    end
 
-    mascot = tui.ratatui_mascot(block: block)
+    mascot = tui.ratatui_mascot(block:)
 
     # Controls
     controls_text = [
@@ -42,7 +40,7 @@ class RatatuiMascotDemoApp
       tui.text_span(content: " Quit"),
       tui.text_span(content: "   "),
       tui.text_span(content: "b", style: tui.style(modifiers: [:bold, :underlined])),
-      tui.text_span(content: " Toggle Block #{@show_block ? '(On)' : '(Off)'}")
+      tui.text_span(content: " Toggle Block #{@show_block ? '(On)' : '(Off)'}"),
     ]
 
     controls_paragraph = tui.paragraph(
@@ -55,28 +53,28 @@ class RatatuiMascotDemoApp
       direction: :vertical,
       constraints: [
         RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.length(4)
+        RatatuiRuby::Constraint.length(4),
       ],
       children: [
         mascot,
-        controls_paragraph
+        controls_paragraph,
       ]
     )
 
     tui.draw(layout)
   end
 
-  def handle_input(tui)
+  private def handle_input(tui)
     event = tui.poll_event
     return unless event
 
     if event.key?
       case event.char
-      when "q" then return :quit
+      when "q" then :quit
       when "b" then @show_block = !@show_block
       end
     elsif event.ctrl_c?
-      return :quit
+      :quit
     end
   end
 end

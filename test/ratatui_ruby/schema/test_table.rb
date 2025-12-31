@@ -6,7 +6,7 @@
 require "test_helper"
 
 class TestTable < Minitest::Test
-    include RatatuiRuby::TestHelper
+  include RatatuiRuby::TestHelper
   def test_table_creation
     header = ["A", "B"]
     rows = [["1", "2"], ["3", "4"]]
@@ -21,7 +21,7 @@ class TestTable < Minitest::Test
 
   def test_table_creation_with_style
     style = RatatuiRuby::Style.new(fg: :red)
-    t = RatatuiRuby::Table.new(rows: [], widths: [], style: style, highlight_spacing: :always)
+    t = RatatuiRuby::Table.new(rows: [], widths: [], style:, highlight_spacing: :always)
     assert_equal style, t.style
     assert_equal :always, t.highlight_spacing
   end
@@ -57,6 +57,7 @@ class TestTable < Minitest::Test
       assert_equal "> Val3     Val4     ", buffer_content[2]
     end
   end
+
   def test_footer_rendering
     rows = [["Row 1"]]
     widths = [RatatuiRuby::Constraint.length(10)]
@@ -64,10 +65,10 @@ class TestTable < Minitest::Test
     footer = ["Footer"]
 
     table = RatatuiRuby::Table.new(
-      header: header,
-      rows: rows,
-      widths: widths,
-      footer: footer,
+      header:,
+      rows:,
+      widths:,
+      footer:,
       block: RatatuiRuby::Block.new(borders: :all)
     )
 
@@ -79,7 +80,7 @@ class TestTable < Minitest::Test
       assert_includes content.join("\n"), "Header"
       # Check for footer
       assert_includes content.join("\n"), "Footer"
-      
+
       # Visual check (borders + content)
       # Line 0: top border
       # Line 1: Header
@@ -94,13 +95,13 @@ class TestTable < Minitest::Test
     rows = [["Row 1"]]
     widths = [RatatuiRuby::Constraint.length(20)]
     footer = [
-      RatatuiRuby::Paragraph.new(text: "Styled Footer", style: RatatuiRuby::Style.new(fg: :red))
+      RatatuiRuby::Paragraph.new(text: "Styled Footer", style: RatatuiRuby::Style.new(fg: :red)),
     ]
 
     table = RatatuiRuby::Table.new(
-      rows: rows,
-      widths: widths,
-      footer: footer
+      rows:,
+      widths:,
+      footer:
     )
 
     with_test_terminal(20, 5) do
@@ -119,9 +120,9 @@ class TestTable < Minitest::Test
     style = RatatuiRuby::Style.new(fg: :blue, bg: :white)
 
     table = RatatuiRuby::Table.new(
-      rows: rows,
-      widths: widths,
-      style: style
+      rows:,
+      widths:,
+      style:
     )
 
     with_test_terminal(20, 5) do
@@ -138,9 +139,9 @@ class TestTable < Minitest::Test
     style = { fg: :red }
 
     table = RatatuiRuby::Table.new(
-      rows: rows,
-      widths: widths,
-      style: style
+      rows:,
+      widths:,
+      style:
     )
 
     with_test_terminal(20, 5) do
@@ -156,8 +157,8 @@ class TestTable < Minitest::Test
 
     # SpaceBetween should push columns to edges.
     table = RatatuiRuby::Table.new(
-      rows: rows,
-      widths: widths,
+      rows:,
+      widths:,
       flex: :space_between
     )
 
@@ -176,8 +177,8 @@ class TestTable < Minitest::Test
 
     # Start should push columns to left
     table = RatatuiRuby::Table.new(
-      rows: rows,
-      widths: widths,
+      rows:,
+      widths:,
       flex: :start
     )
 
@@ -196,8 +197,8 @@ class TestTable < Minitest::Test
 
     # column_spacing: 5
     table = RatatuiRuby::Table.new(
-      rows: rows,
-      widths: widths,
+      rows:,
+      widths:,
       column_spacing: 5
     )
 
@@ -208,14 +209,15 @@ class TestTable < Minitest::Test
       assert_match(/A\s{5}B/, line)
     end
   end
+
   def test_highlight_spacing_always
     rows = [["A"]]
     widths = [RatatuiRuby::Constraint.length(1)]
 
     # :always means we should see the spacing even if not selected
     table = RatatuiRuby::Table.new(
-      rows: rows,
-      widths: widths,
+      rows:,
+      widths:,
       highlight_spacing: :always,
       highlight_symbol: "> "
     )
@@ -234,8 +236,8 @@ class TestTable < Minitest::Test
 
     # :never means no reserved space. "A" starts at col 0.
     table = RatatuiRuby::Table.new(
-      rows: rows,
-      widths: widths,
+      rows:,
+      widths:,
       highlight_spacing: :never,
       highlight_symbol: "> "
     )
@@ -253,8 +255,8 @@ class TestTable < Minitest::Test
 
     # :when_selected (default) + Not selected -> No spacing (like :never)
     table = RatatuiRuby::Table.new(
-      rows: rows,
-      widths: widths,
+      rows:,
+      widths:,
       highlight_spacing: :when_selected,
       highlight_symbol: "> "
     )
@@ -271,8 +273,8 @@ class TestTable < Minitest::Test
 
     # :when_selected (default) + Selected -> Spacing (like :always) + Symbol
     table = RatatuiRuby::Table.new(
-      rows: rows,
-      widths: widths,
+      rows:,
+      widths:,
       highlight_spacing: :when_selected,
       highlight_symbol: "> ",
       selected_row: 0
@@ -284,6 +286,7 @@ class TestTable < Minitest::Test
       assert_equal ["> A  "], buffer_content
     end
   end
+
   def test_mixed_cell_content
     # Verify we can mix Strings and Cells in the same row
     cell = RatatuiRuby::Cell.new(char: "X", fg: :red)
@@ -294,13 +297,13 @@ class TestTable < Minitest::Test
 
     with_test_terminal(5, 1) do
       RatatuiRuby.draw(table)
-      
+
       # Check content
       assert_equal "A", RatatuiRuby.get_cell_at(0, 0).char
-      
+
       rendered_cell = RatatuiRuby.get_cell_at(1, 0) # Spacing? default column_spacing is 1
       # A (0) + space (1) + X (2)
-      
+
       rendered_cell = RatatuiRuby.get_cell_at(2, 0)
       assert_equal "X", rendered_cell.char
       assert_equal :red, rendered_cell.fg
@@ -310,7 +313,7 @@ class TestTable < Minitest::Test
   def test_header_footer_cells
     header_cell = RatatuiRuby::Cell.new(char: "H", fg: :blue)
     footer_cell = RatatuiRuby::Cell.new(char: "F", fg: :green)
-    
+
     table = RatatuiRuby::Table.new(
       rows: [],
       widths: [RatatuiRuby::Constraint.length(1)],
@@ -328,7 +331,7 @@ class TestTable < Minitest::Test
       # Check footer (row 1 or 2 depending on render height. with 0 rows and 3 height...
       # Usually header take 1, body takes rest, footer takes 1.
       # Let's search for "F"
-      
+
       found_f = false
       3.times do |y|
         c = RatatuiRuby.get_cell_at(0, y)

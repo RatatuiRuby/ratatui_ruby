@@ -6,7 +6,7 @@
 require "test_helper"
 
 class TestCenter < Minitest::Test
-    include RatatuiRuby::TestHelper
+  include RatatuiRuby::TestHelper
   def test_center_creation
     p = RatatuiRuby::Paragraph.new(text: "Hello")
     center = RatatuiRuby::Center.new(child: p, width_percent: 50, height_percent: 50)

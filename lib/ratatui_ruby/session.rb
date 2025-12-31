@@ -113,9 +113,9 @@ module RatatuiRuby
       next unless klass.is_a?(Class)
 
       method_name = const_name.to_s
-                              .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
-                              .gsub(/([a-z\d])([A-Z])/, '\1_\2')
-                              .downcase
+        .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+        .gsub(/([a-z\d])([A-Z])/, '\1_\2')
+        .downcase
 
       define_method(method_name) do |*args, **kwargs, &block|
         klass.new(*args, **kwargs, &block)
@@ -132,9 +132,9 @@ module RatatuiRuby
         next unless klass.is_a?(Class)
 
         class_snake = const_name.to_s
-                                .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
-                                .gsub(/([a-z\d])([A-Z])/, '\1_\2')
-                                .downcase
+          .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+          .gsub(/([a-z\d])([A-Z])/, '\1_\2')
+          .downcase
         method_name = "#{prefix}_#{class_snake}"
 
         define_method(method_name) do |*args, **kwargs, &block|

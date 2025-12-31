@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 # frozen_string_literal: true
 
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
@@ -13,12 +17,10 @@ class RatatuiLogoDemoApp
     end
   end
 
-  private
-
-  def render
+  private def render
     # Main content: The Logo
     logo = RatatuiRuby::RatatuiLogo.new
-    
+
     # Center the logo using nested Layouts
     # Logo is roughly 47x8
     centered_logo = RatatuiRuby::Layout.new(
@@ -31,14 +33,14 @@ class RatatuiLogoDemoApp
           flex: :center,
           constraints: [RatatuiRuby::Constraint.length(50)], # Width + margin
           children: [logo]
-        )
+        ),
       ]
     )
 
     # Control Panel
     control_text = RatatuiRuby::Text::Line.new(spans: [
       RatatuiRuby::Text::Span.new(content: "q", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
-      RatatuiRuby::Text::Span.new(content: ": Quit")
+      RatatuiRuby::Text::Span.new(content: ": Quit"),
     ])
 
     control_panel = RatatuiRuby::Paragraph.new(
@@ -55,20 +57,20 @@ class RatatuiLogoDemoApp
       direction: :vertical,
       constraints: [
         RatatuiRuby::Constraint.fill(1), # Fill remaining space
-        RatatuiRuby::Constraint.length(3)
+        RatatuiRuby::Constraint.length(3),
       ],
       children: [
         centered_logo,
-        control_panel
+        control_panel,
       ]
     )
 
     RatatuiRuby.draw(layout)
   end
 
-  def handle_input
+  private def handle_input
     case RatatuiRuby.poll_event
-    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
+    in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit
     else
       nil

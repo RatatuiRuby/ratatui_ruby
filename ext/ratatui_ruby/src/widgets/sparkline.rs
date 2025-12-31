@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use crate::style::{parse_block, parse_style, parse_bar_set};
+use crate::style::{parse_bar_set, parse_block, parse_style};
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, RString, Value};
-use ratatui::{layout::Rect, widgets::Sparkline, widgets::RenderDirection, Frame};
+use ratatui::{layout::Rect, widgets::RenderDirection, widgets::Sparkline, Frame};
 
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let bump = Bump::new();
@@ -20,7 +20,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
     let mut data_vec = Vec::new();
     for i in 0..data_val.len() {
-        let index = isize::try_from(i).map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let index = isize::try_from(i)
+            .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
         let val: Value = data_val.entry(index)?;
         if val.is_nil() {
             data_vec.push(None);
@@ -100,22 +101,24 @@ mod tests {
     fn test_sparkline_absent_value_symbol() {
         // Data with absent (None) and present values: [Some(5), None, Some(8), None]
         let data = vec![Some(5), None, Some(8), None];
-        let sparkline = Sparkline::default()
-            .data(&data)
-            .absent_value_symbol("-");
+        let sparkline = Sparkline::default().data(&data).absent_value_symbol("-");
         let mut buf = Buffer::empty(Rect::new(0, 0, 4, 1));
         sparkline.render(Rect::new(0, 0, 4, 1), &mut buf);
-        
+
         // Collect all rendered symbols
         let symbols: Vec<&str> = buf.content().iter().map(|c| c.symbol()).collect();
-        
+
         // Check that we have 4 cells rendered
-        assert_eq!(symbols.len(), 4, "Should have 4 cells rendered for 4 data points");
-        
+        assert_eq!(
+            symbols.len(),
+            4,
+            "Should have 4 cells rendered for 4 data points"
+        );
+
         // Absent values (None) should render as "-"
         assert_eq!(symbols[1], "-", "Second value (None) should render as dash");
         assert_eq!(symbols[3], "-", "Fourth value (None) should render as dash");
-        
+
         // Present values should not be dashes
         assert_ne!(symbols[0], "-", "First value (Some(5)) should not be dash");
         assert_ne!(symbols[2], "-", "Third value (Some(8)) should not be dash");

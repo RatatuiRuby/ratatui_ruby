@@ -6,7 +6,7 @@
 require "test_helper"
 
 class TestParagraph < Minitest::Test
-    include RatatuiRuby::TestHelper
+  include RatatuiRuby::TestHelper
   def test_paragraph_creation
     p = RatatuiRuby::Paragraph.new(text: "Hello", fg: "red", bg: "black")
     assert_equal "Hello", p.text
@@ -36,7 +36,7 @@ class TestParagraph < Minitest::Test
     # Temporarily enable warnings for this test
     RatatuiRuby.experimental_warnings = true
     RatatuiRuby.instance_variable_set(:@warned_features, {})
-    
+
     p = RatatuiRuby::Paragraph.new(text: "Hello")
     assert_output(nil, /WARNING: Paragraph#line_count is an experimental feature/) do
       p.line_count(100)
@@ -47,7 +47,7 @@ class TestParagraph < Minitest::Test
 
   def test_metrics_unwrapped
     p = RatatuiRuby::Paragraph.new(text: "Hello World")
-    
+
     # 1 line, 11 wide
     assert_equal 1, p.line_count(100)
     assert_equal 11, p.line_width
@@ -58,7 +58,7 @@ class TestParagraph < Minitest::Test
     # "Hello" (5) fits. " " (1) fits. "World" (5) -> next line?
     # Usually "Hello " (6) fits. "World" (5) fits.
     p = RatatuiRuby::Paragraph.new(text: "Hello World", wrap: { trim: true })
-    
+
     assert_equal 2, p.line_count(6)
   end
 
@@ -70,7 +70,7 @@ class TestParagraph < Minitest::Test
       text: "Hello",
       block: RatatuiRuby::Block.new(borders: [:all])
     )
-    
+
     # Text: 1 line, 5 wide.
     # Total: 1+2 = 3 lines. 5+2 = 7 wide.
     assert_equal 3, p.line_count(100)

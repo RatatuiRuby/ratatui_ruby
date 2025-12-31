@@ -16,14 +16,14 @@ module RatatuiRuby
     def test_equality
       e1 = Event::FocusGained.new
       e2 = Event::FocusGained.new
-      
+
       assert_equal e1, e2
     end
 
     def test_deconstruct_keys
       event = Event::FocusGained.new
       pattern = event.deconstruct_keys(nil)
-      
+
       assert_equal :focus_gained, pattern[:type]
     end
 

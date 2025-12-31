@@ -19,7 +19,7 @@ class ScrollbarDemoApp
       :vertical_left,
       :horizontal,
       :horizontal_bottom,
-      :horizontal_top
+      :horizontal_top,
     ]
     @theme_index = 0
     @themes = [
@@ -30,7 +30,7 @@ class ScrollbarDemoApp
         track_style: nil,
         thumb_style: nil,
         begin_symbol: nil,
-        end_symbol: nil
+        end_symbol: nil,
       },
       {
         name: "Rounded",
@@ -39,7 +39,7 @@ class ScrollbarDemoApp
         track_style: { fg: "dark_gray" },
         thumb_style: { fg: "cyan" },
         begin_symbol: "▲",
-        end_symbol: "▼"
+        end_symbol: "▼",
       },
       {
         name: "ASCII",
@@ -48,7 +48,7 @@ class ScrollbarDemoApp
         track_style: { fg: "white" },
         thumb_style: { fg: "red" },
         begin_symbol: "^",
-        end_symbol: "v"
+        end_symbol: "v",
       },
       {
         name: "Minimal",
@@ -57,8 +57,8 @@ class ScrollbarDemoApp
         track_style: nil,
         thumb_style: { fg: "yellow" },
         begin_symbol: nil,
-        end_symbol: nil
-      }
+        end_symbol: nil,
+      },
     ]
   end
 
@@ -110,7 +110,7 @@ class ScrollbarDemoApp
       block: RatatuiRuby::Block.new(
         titles: [
           { content: "Scroll with Mouse Wheel | Theme: #{theme[:name]} | Orientation: #{orientation}" },
-          { content: "Press 's' to cycle theme, 'o' to cycle orientation", position: :bottom, alignment: :center }
+          { content: "Press 's' to cycle theme, 'o' to cycle orientation", position: :bottom, alignment: :center },
         ],
         borders: [:all]
       )
@@ -120,7 +120,7 @@ class ScrollbarDemoApp
     s = RatatuiRuby::Scrollbar.new(
       content_length: @content_length,
       position: @scroll_position,
-      orientation: orientation,
+      orientation:,
       track_symbol: theme[:track_symbol],
       thumb_symbol: theme[:thumb_symbol],
       track_style: theme[:track_style],

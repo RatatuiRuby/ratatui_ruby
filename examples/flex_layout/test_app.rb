@@ -20,7 +20,7 @@ class TestFlexLayout < Minitest::Test
     with_test_terminal do
       # Queue quit
       inject_key(:q)
-      
+
       @app.run
 
       assert_includes buffer_content[0], "Header"
@@ -32,7 +32,7 @@ class TestFlexLayout < Minitest::Test
     with_test_terminal do
       # Queue quit
       inject_key(:q)
-      
+
       @app.run
 
       # Fill(1) and Fill(3) should split horizontally in a 1:3 ratio

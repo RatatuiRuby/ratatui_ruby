@@ -14,7 +14,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let content_length: usize = node.funcall("content_length", ())?;
     let position: usize = node.funcall("position", ())?;
     let orientation_sym: Symbol = node.funcall("orientation", ())?;
-    
+
     let thumb_symbol_val: Value = node.funcall("thumb_symbol", ())?;
     let thumb_style_val: Value = node.funcall("thumb_style", ())?;
     let track_symbol_val: Value = node.funcall("track_symbol", ())?;
@@ -32,7 +32,9 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
     scrollbar = match orientation_sym.to_string().as_str() {
         "vertical_left" => scrollbar.orientation(ScrollbarOrientation::VerticalLeft),
-        "horizontal_bottom" | "horizontal" => scrollbar.orientation(ScrollbarOrientation::HorizontalBottom),
+        "horizontal_bottom" | "horizontal" => {
+            scrollbar.orientation(ScrollbarOrientation::HorizontalBottom)
+        }
         "horizontal_top" => scrollbar.orientation(ScrollbarOrientation::HorizontalTop),
         _ => scrollbar.orientation(ScrollbarOrientation::VerticalRight),
     };

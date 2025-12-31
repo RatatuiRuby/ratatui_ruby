@@ -17,7 +17,7 @@ class AnalyticsApp
       { name: "Yellow Bold", style: RatatuiRuby::Style.new(fg: :yellow, modifiers: [:bold]) },
       { name: "Italic Blue on White", style: RatatuiRuby::Style.new(fg: :blue, bg: :white, modifiers: [:italic]) },
       { name: "Underlined Red", style: RatatuiRuby::Style.new(fg: :red, modifiers: [:underlined]) },
-      { name: "Reversed", style: RatatuiRuby::Style.new(modifiers: [:reversed]) }
+      { name: "Reversed", style: RatatuiRuby::Style.new(modifiers: [:reversed]) },
     ]
     @style_index = 0
     @divider_index = 0
@@ -26,7 +26,7 @@ class AnalyticsApp
       { name: "Default", style: nil },
       { name: "White on Gray", style: RatatuiRuby::Style.new(fg: :white, bg: :dark_gray) },
       { name: "White on Blue", style: RatatuiRuby::Style.new(fg: :white, bg: :blue) },
-      { name: "Italic", style: RatatuiRuby::Style.new(modifiers: [:italic]) }
+      { name: "Italic", style: RatatuiRuby::Style.new(modifiers: [:italic]) },
     ]
     @base_style_index = 0
     @padding_left = 0
@@ -38,7 +38,7 @@ class AnalyticsApp
       { name: "Default", set: nil },
       { name: "Numbers (Short)", set: { 8 => "8", 7 => "7", 6 => "6", 5 => "5", 4 => "4", 3 => "3", 2 => "2", 1 => "1", 0 => "0" } },
       { name: "Letters (Long)", set: { full: "H", seven_eighths: "G", three_quarters: "F", five_eighths: "E", half: "D", three_eighths: "C", one_quarter: "B", one_eighth: "A", empty: " " } },
-      { name: "ASCII (Heights)", set: [" ", "_", ".", "-", "=", "+", "*", "#", "@"] }
+      { name: "ASCII (Heights)", set: [" ", "_", ".", "-", "=", "+", "*", "#", "@"] },
     ]
     @bar_set_index = 0
     @height_mode = :full # :full or :mini
@@ -56,22 +56,29 @@ class AnalyticsApp
     end
   end
 
-  private
-
-  def render
+  private def render
     # Data for different tabs
     data = case @selected_tab
            when 0 # Revenue
              {
-               "Q1" => 50, "Q2" => 80, "Q3" => 45, "Q4" => 60,
-               "Q1'" => 55, "Q2'" => 85, "Q3'" => 50, "Q4'" => 65
+               "Q1" => 50,
+               "Q2" => 80,
+               "Q3" => 45,
+               "Q4" => 60,
+               "Q1'" => 55,
+               "Q2'" => 85,
+               "Q3'" => 50,
+               "Q4'" => 65,
              }
            when 1 # Traffic
              [
-               ["Mon", 120], ["Tue", 150], ["Wed", 130], ["Thu", 160],
+               ["Mon", 120],
+               ["Tue", 150],
+               ["Wed", 130],
+               ["Thu", 160],
                ["Fri", 140],
                ["Sat", 110, RatatuiRuby::Style.new(fg: :red)],
-               ["Sun", 100, RatatuiRuby::Style.new(fg: :red)]
+               ["Sun", 100, RatatuiRuby::Style.new(fg: :red)],
              ]
            when 2 # Errors
              { DB: 5, UI: 2, API: 8, Auth: 3, Net: 4, "I/O": 1, Mem: 6, CPU: 7 }
@@ -81,14 +88,14 @@ class AnalyticsApp
                  RatatuiRuby::BarChart::Bar.new(value: 40, label: "Q1"),
                  RatatuiRuby::BarChart::Bar.new(value: 45, label: "Q2"),
                  RatatuiRuby::BarChart::Bar.new(value: 50, label: "Q3"),
-                 RatatuiRuby::BarChart::Bar.new(value: 55, label: "Q4")
+                 RatatuiRuby::BarChart::Bar.new(value: 55, label: "Q4"),
                ]),
                RatatuiRuby::BarChart::BarGroup.new(label: "2025", bars: [
                  RatatuiRuby::BarChart::Bar.new(value: 60, label: "Q1", style: RatatuiRuby::Style.new(fg: :yellow)),
                  RatatuiRuby::BarChart::Bar.new(value: 65, label: "Q2", style: RatatuiRuby::Style.new(fg: :yellow)),
                  RatatuiRuby::BarChart::Bar.new(value: 70, label: "Q3", style: RatatuiRuby::Style.new(fg: :yellow)),
-                 RatatuiRuby::BarChart::Bar.new(value: 75, label: "Q4", style: RatatuiRuby::Style.new(fg: :yellow))
-               ])
+                 RatatuiRuby::BarChart::Bar.new(value: 75, label: "Q4", style: RatatuiRuby::Style.new(fg: :yellow)),
+               ]),
              ]
     end
 
@@ -102,7 +109,7 @@ class AnalyticsApp
     # Define the BarChart widget
     bar_chart = RatatuiRuby::BarChart.new(
       data:,
-      bar_width: @direction == :vertical ? 8 : 1,
+      bar_width: (@direction == :vertical) ? 8 : 1,
       style: bar_style,
       bar_gap: 1,
       group_gap: @group_gap,
@@ -118,12 +125,12 @@ class AnalyticsApp
 
     # Wrap chart in a layout to control height if in mini mode
     chart_area = if @height_mode == :mini
-       # Height 3: 1 row content + 2 borders
-       RatatuiRuby::Layout.new(
-         direction: :vertical,
-         constraints: [RatatuiRuby::Constraint.length(3), RatatuiRuby::Constraint.fill(1)],
-         children: [bar_chart, RatatuiRuby::Block.new] # Empty block to fill rest
-       )
+      # Height 3: 1 row content + 2 borders
+      RatatuiRuby::Layout.new(
+        direction: :vertical,
+        constraints: [RatatuiRuby::Constraint.length(3), RatatuiRuby::Constraint.fill(1)],
+        children: [bar_chart, RatatuiRuby::Block.new] # Empty block to fill rest
+      )
     else
       bar_chart
     end
@@ -154,7 +161,7 @@ class AnalyticsApp
               padding_left: @padding_left,
               padding_right: @padding_right
             ),
-            chart_area
+            chart_area,
           ]
         ),
         # Bottom control panel
@@ -171,7 +178,7 @@ class AnalyticsApp
                   RatatuiRuby::Text::Span.new(content: "v", style: @hotkey_style),
                   RatatuiRuby::Text::Span.new(content: ": Direction (#{@direction})  "),
                   RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Quit")
+                  RatatuiRuby::Text::Span.new(content: ": Quit"),
                 ]),
                 # Line 2: Padding & Divider
                 RatatuiRuby::Text::Line.new(spans: [
@@ -181,7 +188,7 @@ class AnalyticsApp
                   RatatuiRuby::Text::Span.new(content: ": Pad Right (#{@padding_right})  "),
                   RatatuiRuby::Text::Span.new(content: "d", style: @hotkey_style),
                   RatatuiRuby::Text::Span.new(content: ": Divider (#{@dividers[@divider_index]})  "),
-                  RatatuiRuby::Text::Span.new(content: "Width: #{tabs.width}")
+                  RatatuiRuby::Text::Span.new(content: "Width: #{tabs.width}"),
                 ]),
                 # Line 3: Styles
                 RatatuiRuby::Text::Line.new(spans: [
@@ -192,7 +199,7 @@ class AnalyticsApp
                   RatatuiRuby::Text::Span.new(content: "space", style: @hotkey_style),
                   RatatuiRuby::Text::Span.new(content: ": Highlight (#{@styles[@style_index][:name]})  "),
                   RatatuiRuby::Text::Span.new(content: "x", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Label (#{@styles[@label_style_index][:name]})")
+                  RatatuiRuby::Text::Span.new(content: ": Label (#{@styles[@label_style_index][:name]})"),
                 ]),
                 # Line 4: More Styles
                 RatatuiRuby::Text::Line.new(spans: [
@@ -201,23 +208,23 @@ class AnalyticsApp
                   RatatuiRuby::Text::Span.new(content: "b", style: @hotkey_style),
                   RatatuiRuby::Text::Span.new(content: ": Bar Set (#{@bar_sets[@bar_set_index][:name]})  "),
                   RatatuiRuby::Text::Span.new(content: "m", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Mode (#{@height_mode == :full ? 'Full' : 'Mini'})  "),
+                  RatatuiRuby::Text::Span.new(content: ": Mode (#{(@height_mode == :full) ? 'Full' : 'Mini'})  "),
                   RatatuiRuby::Text::Span.new(content: "g", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Group Gap (#{@group_gap})")
-                ])
+                  RatatuiRuby::Text::Span.new(content: ": Group Gap (#{@group_gap})"),
+                ]),
               ]
-            )
+            ),
           ]
-        )
+        ),
       ]
     )
 
     RatatuiRuby.draw(ui)
   end
 
-  def handle_input
+  private def handle_input
     case RatatuiRuby.poll_event
-    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
+    in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit
     in type: :key, code: "right"
       @selected_tab = (@selected_tab + 1) % @tabs.size
@@ -234,7 +241,7 @@ class AnalyticsApp
     in type: :key, code: "l"
       @padding_left += 1
     in type: :key, code: "v"
-      @direction = @direction == :vertical ? :horizontal : :vertical
+      @direction = (@direction == :vertical) ? :horizontal : :vertical
     in type: :key, code: "j"
       @padding_right = [@padding_right - 1, 0].max
     in type: :key, code: "k"
@@ -246,7 +253,7 @@ class AnalyticsApp
     in type: :key, code: "b"
       @bar_set_index = (@bar_set_index + 1) % @bar_sets.size
     in type: :key, code: "m"
-      @height_mode = @height_mode == :full ? :mini : :full
+      @height_mode = (@height_mode == :full) ? :mini : :full
     in type: :key, code: "g"
       @group_gap = (@group_gap + 1) % 4
     else

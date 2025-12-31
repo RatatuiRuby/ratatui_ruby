@@ -15,7 +15,7 @@ class BoxDemoApp
       { name: "Double", type: :double },
       { name: "Thick", type: :thick },
       { name: "Quadrant Inside", type: :quadrant_inside },
-      { name: "Quadrant Outside", type: :quadrant_outside }
+      { name: "Quadrant Outside", type: :quadrant_outside },
     ]
     @border_type_index = 0
 
@@ -23,14 +23,32 @@ class BoxDemoApp
     # NOTE: We define these ONCE in initialize for efficiency.
     @border_sets = [
       { name: "None", set: nil },
-      { name: "Digits (Short)", set: {
-        tl: "1", tr: "2", bl: "3", br: "4",
-        vl: "5", vr: "6", ht: "7", hb: "8"
-      }},
-      { name: "Letters (Long)", set: {
-        top_left: "A", top_right: "B", bottom_left: "C", bottom_right: "D",
-        vertical_left: "E", vertical_right: "F", horizontal_top: "G", horizontal_bottom: "H"
-      }}
+      {
+name: "Digits (Short)",
+set: {
+        tl: "1",
+        tr: "2",
+        bl: "3",
+        br: "4",
+        vl: "5",
+        vr: "6",
+        ht: "7",
+        hb: "8",
+      },
+},
+      {
+name: "Letters (Long)",
+set: {
+        top_left: "A",
+        top_right: "B",
+        bottom_left: "C",
+        bottom_right: "D",
+        vertical_left: "E",
+        vertical_right: "F",
+        horizontal_top: "G",
+        horizontal_bottom: "H",
+      },
+},
     ]
     @border_set_index = 0
 
@@ -39,26 +57,26 @@ class BoxDemoApp
       { name: "Red", color: "red" },
       { name: "Blue", color: "blue" },
       { name: "Yellow", color: "yellow" },
-      { name: "Magenta", color: "magenta" }
+      { name: "Magenta", color: "magenta" },
     ]
     @color_index = 0
 
     @title_alignments = [
       { name: "Left", alignment: :left },
       { name: "Center", alignment: :center },
-      { name: "Right", alignment: :right }
+      { name: "Right", alignment: :right },
     ]
     @title_alignment_index = 0
 
     @styles = [
       { name: "Default", style: nil },
-      { name: "Blue on White", style: { fg: "blue", bg: "white", modifiers: [:bold] } }
+      { name: "Blue on White", style: { fg: "blue", bg: "white", modifiers: [:bold] } },
     ]
     @style_index = 0
 
     @title_styles = [
       { name: "Default", style: nil },
-      { name: "Yellow Bold Underlined", style: { fg: "yellow", modifiers: [:bold, :underlined] } }
+      { name: "Yellow Bold Underlined", style: { fg: "yellow", modifiers: [:bold, :underlined] } },
     ]
     @title_style_index = 0
 
@@ -66,7 +84,7 @@ class BoxDemoApp
       { name: "Default (no border style)", style: nil },
       { name: "Bold Red", style: { fg: "red", modifiers: [:bold] } },
       { name: "Cyan Italic", style: { fg: "cyan", modifiers: [:italic] } },
-      { name: "Magenta Dim", style: { fg: "magenta", modifiers: [:dim] } }
+      { name: "Magenta Dim", style: { fg: "magenta", modifiers: [:dim] } },
     ]
     @border_style_index = 0
 
@@ -82,13 +100,11 @@ class BoxDemoApp
     end
   end
 
-  private
-
-  def render
+  private def render
     # Get current values
     border_type_config = @border_types[@border_type_index]
     border_set_config = @border_sets[@border_set_index]
-    
+
     color_config = @colors[@color_index]
     title_alignment_config = @title_alignments[@title_alignment_index]
     style_config = @styles[@style_index]
@@ -121,7 +137,7 @@ class BoxDemoApp
     # Main content
     main_panel = RatatuiRuby::Paragraph.new(
       text: "Arrow Keys: Change Color\n\nCurrent Color: #{color_config[:name]}",
-      block: block,
+      block:,
       fg: style_config[:style] ? nil : color_config[:color],
       style: style_config[:style],
       alignment: :center
@@ -139,31 +155,31 @@ class BoxDemoApp
               RatatuiRuby::Text::Span.new(content: "↑↓←→", style: @hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Color (#{color_config[:name]})  "),
               RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Quit")
+              RatatuiRuby::Text::Span.new(content: ": Quit"),
             ]),
             # Line 2: Borders
             RatatuiRuby::Text::Line.new(spans: [
               RatatuiRuby::Text::Span.new(content: "space", style: @hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Border Type (#{type_display})  "),
               RatatuiRuby::Text::Span.new(content: "c", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Border Set (#{border_set_config[:name]})")
+              RatatuiRuby::Text::Span.new(content: ": Border Set (#{border_set_config[:name]})"),
             ]),
             # Line 3: Styles
             RatatuiRuby::Text::Line.new(spans: [
               RatatuiRuby::Text::Span.new(content: "s", style: @hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Style (#{style_config[:name]})  "),
               RatatuiRuby::Text::Span.new(content: "b", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Border Style (#{border_style_config[:name]})")
+              RatatuiRuby::Text::Span.new(content: ": Border Style (#{border_style_config[:name]})"),
             ]),
             # Line 4: Title
             RatatuiRuby::Text::Line.new(spans: [
               RatatuiRuby::Text::Span.new(content: "enter", style: @hotkey_style),
               RatatuiRuby::Text::Span.new(content: ": Align Title (#{title_alignment_config[:name]})  "),
               RatatuiRuby::Text::Span.new(content: "t", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Title Style (#{title_style_config[:name]})")
-            ])
+              RatatuiRuby::Text::Span.new(content: ": Title Style (#{title_style_config[:name]})"),
+            ]),
           ]
-        )
+        ),
       ]
     )
 
@@ -181,10 +197,10 @@ class BoxDemoApp
     RatatuiRuby.draw(layout)
   end
 
-  def handle_input
+  private def handle_input
     # 3. Events
     case RatatuiRuby.poll_event
-    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
+    in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit
     in type: :key, code: "up"
       @color_index = (@color_index - 1) % @colors.size
@@ -213,4 +229,3 @@ class BoxDemoApp
 end
 
 BoxDemoApp.new.run if __FILE__ == $0
-

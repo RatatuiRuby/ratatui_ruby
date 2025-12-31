@@ -42,7 +42,7 @@ class TestRichTextApp < Minitest::Test
   def test_simple_line
     spans = [
       RatatuiRuby::Text::Span.new(content: "hello", style: nil),
-      RatatuiRuby::Text::Span.new(content: " world", style: nil)
+      RatatuiRuby::Text::Span.new(content: " world", style: nil),
     ]
     line = RatatuiRuby::Text::Line.new(spans:)
     assert_equal spans, line.spans
@@ -82,7 +82,7 @@ class TestRichTextApp < Minitest::Test
     line = RatatuiRuby::Text::Line.new(
       spans: [
         RatatuiRuby::Text::Span.new(content: "hello ", style: nil),
-        RatatuiRuby::Text::Span.new(content: "world", style: RatatuiRuby::Style.new(fg: :green))
+        RatatuiRuby::Text::Span.new(content: "world", style: RatatuiRuby::Style.new(fg: :green)),
       ]
     )
     para = RatatuiRuby::Paragraph.new(text: line)
@@ -96,7 +96,7 @@ class TestRichTextApp < Minitest::Test
       ),
       RatatuiRuby::Text::Line.new(
         spans: [RatatuiRuby::Text::Span.new(content: "line 2", style: RatatuiRuby::Style.new(fg: :red))]
-      )
+      ),
     ]
     para = RatatuiRuby::Paragraph.new(text: lines)
     assert_equal lines, para.text
@@ -109,7 +109,7 @@ class TestRichTextApp < Minitest::Test
         spans: [
           RatatuiRuby::Text::Span.new(content: "normal ", style: nil),
           RatatuiRuby::Text::Span.new(content: "bold", style: RatatuiRuby::Style.new(modifiers: [:bold])),
-          RatatuiRuby::Text::Span.new(content: " text", style: nil)
+          RatatuiRuby::Text::Span.new(content: " text", style: nil),
         ]
       )
       para = RatatuiRuby::Paragraph.new(
@@ -127,15 +127,15 @@ class TestRichTextApp < Minitest::Test
         RatatuiRuby::Text::Line.new(
           spans: [
             RatatuiRuby::Text::Span.new(content: "✓ ", style: RatatuiRuby::Style.new(fg: :green, modifiers: [:bold])),
-            RatatuiRuby::Text::Span.new(content: "Complete", style: nil)
+            RatatuiRuby::Text::Span.new(content: "Complete", style: nil),
           ]
         ),
         RatatuiRuby::Text::Line.new(
           spans: [
             RatatuiRuby::Text::Span.new(content: "✗ ", style: RatatuiRuby::Style.new(fg: :red, modifiers: [:bold])),
-            RatatuiRuby::Text::Span.new(content: "Failed", style: nil)
+            RatatuiRuby::Text::Span.new(content: "Failed", style: nil),
           ]
-        )
+        ),
       ]
       para = RatatuiRuby::Paragraph.new(text: lines)
       # Should not raise an error when rendering
@@ -143,8 +143,6 @@ class TestRichTextApp < Minitest::Test
     end
   end
 end
-
-require_relative "app"
 
 class TestRichTextApp < Minitest::Test
   include RatatuiRuby::TestHelper
@@ -155,12 +153,9 @@ class TestRichTextApp < Minitest::Test
     with_test_terminal do
       inject_key(:q)
       RichTextApp.new.run
-      
+
       assert buffer_content.any? { |line| line.include?("Simple Rich Text") }
       assert buffer_content.any? { |line| line.include?("Status Report") }
     end
   end
 end
-
-
-

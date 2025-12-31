@@ -11,6 +11,7 @@ use ratatui::{
     Frame,
 };
 
+#[allow(clippy::too_many_lines)]
 pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Result<(), Error> {
     let bump = Bump::new();
     let shapes_val: RArray = node.funcall("shapes", ())?;
@@ -64,7 +65,13 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
                     let color_val: Value = shape_val.funcall("color", ()).unwrap();
                     let color =
                         parse_color(&color_val.to_string()).unwrap_or(ratatui::style::Color::Reset);
-                    ctx.draw(&Line { x1, y1, x2, y2, color });
+                    ctx.draw(&Line {
+                        x1,
+                        y1,
+                        x2,
+                        y2,
+                        color,
+                    });
                 }
                 "RatatuiRuby::Shape::Rectangle" => {
                     let x: f64 = shape_val.funcall("x", ()).unwrap_or(0.0);
@@ -74,7 +81,13 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
                     let color_val: Value = shape_val.funcall("color", ()).unwrap();
                     let color =
                         parse_color(&color_val.to_string()).unwrap_or(ratatui::style::Color::Reset);
-                    ctx.draw(&Rectangle { x, y, width, height, color });
+                    ctx.draw(&Rectangle {
+                        x,
+                        y,
+                        width,
+                        height,
+                        color,
+                    });
                 }
                 "RatatuiRuby::Shape::Circle" => {
                     let x: f64 = shape_val.funcall("x", ()).unwrap_or(0.0);
@@ -83,7 +96,12 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
                     let color_val: Value = shape_val.funcall("color", ()).unwrap();
                     let color =
                         parse_color(&color_val.to_string()).unwrap_or(ratatui::style::Color::Reset);
-                    ctx.draw(&Circle { x, y, radius, color });
+                    ctx.draw(&Circle {
+                        x,
+                        y,
+                        radius,
+                        color,
+                    });
                 }
                 "RatatuiRuby::Shape::Map" => {
                     let color_val: Value = shape_val.funcall("color", ()).unwrap();

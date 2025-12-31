@@ -27,9 +27,7 @@ class AppScreenshot < Data.define(:app, :output_path)
     false
   end
 
-  private
-
-  def take_snapshot(window_id)
+  private def take_snapshot(window_id)
     system("screencapture -l #{window_id} -o -x '#{output_path}'")
   end
 end

@@ -25,11 +25,11 @@ class TestScrollTextApp < Minitest::Test
     with_test_terminal do
       # Queue quit
       inject_key(:q)
-      
+
       @app.run
 
       content = buffer_content
-      
+
       # Should show Line 1 somewhere in the output
       assert content.any? { |line| line.include?("Line 1") }
       # Should show controls
@@ -46,7 +46,7 @@ class TestScrollTextApp < Minitest::Test
       @app.run
 
       content = buffer_content
-      
+
       # Should show controls with updated Y position
       assert content.any? { |line| line.include?("Vert Scroll (1/102)") }
     end
@@ -60,7 +60,7 @@ class TestScrollTextApp < Minitest::Test
       @app.run
 
       content = buffer_content
-      
+
       # Should render without error
       assert content.any? { |line| line.include?("Controls") }
     end
@@ -74,7 +74,7 @@ class TestScrollTextApp < Minitest::Test
       @app.run
 
       content = buffer_content
-      
+
       # Should still show the controls
       assert content.any? { |line| line.include?("Vert Scroll") }
     end
@@ -88,7 +88,7 @@ class TestScrollTextApp < Minitest::Test
       @app.run
 
       content = buffer_content
-      
+
       # Should still show the controls
       assert content.any? { |line| line.include?("Controls") }
     end
@@ -102,7 +102,7 @@ class TestScrollTextApp < Minitest::Test
       @app.run
 
       content = buffer_content
-      
+
       # Should render without error
       assert content.any? { |line| line.include?("Scrollable Text") }
     end

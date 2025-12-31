@@ -31,17 +31,15 @@ class AllEventsApp
     end
   end
 
-  private
-
-  def terminal_width
+  private def terminal_width
     80 # Approximation; actual size comes from Resize events
   end
 
-  def terminal_height
+  private def terminal_height
     24
   end
 
-  def render
+  private def render
     border_color = @focused ? "green" : "gray"
 
     key_panel = RatatuiRuby::Paragraph.new(
@@ -50,7 +48,7 @@ class AllEventsApp
       block: RatatuiRuby::Block.new(
         title: "⌨️  Key Events",
         borders: [:all],
-        border_color: border_color
+        border_color:
       )
     )
 
@@ -60,7 +58,7 @@ class AllEventsApp
       block: RatatuiRuby::Block.new(
         title: "🖱️  Mouse Events",
         borders: [:all],
-        border_color: border_color
+        border_color:
       )
     )
 
@@ -70,7 +68,7 @@ class AllEventsApp
       block: RatatuiRuby::Block.new(
         title: "📐 Resize Events",
         borders: [:all],
-        border_color: border_color
+        border_color:
       )
     )
 
@@ -80,7 +78,7 @@ class AllEventsApp
       block: RatatuiRuby::Block.new(
         title: "✨ Paste & Focus Events",
         borders: [:all],
-        border_color: border_color
+        border_color:
       )
     )
 
@@ -89,7 +87,7 @@ class AllEventsApp
       direction: :horizontal,
       constraints: [
         RatatuiRuby::Constraint.percentage(50),
-        RatatuiRuby::Constraint.percentage(50)
+        RatatuiRuby::Constraint.percentage(50),
       ],
       children: [key_panel, mouse_panel]
     )
@@ -98,7 +96,7 @@ class AllEventsApp
       direction: :horizontal,
       constraints: [
         RatatuiRuby::Constraint.percentage(50),
-        RatatuiRuby::Constraint.percentage(50)
+        RatatuiRuby::Constraint.percentage(50),
       ],
       children: [resize_panel, special_panel]
     )
@@ -115,7 +113,7 @@ class AllEventsApp
       constraints: [
         RatatuiRuby::Constraint.length(1),
         RatatuiRuby::Constraint.percentage(50),
-        RatatuiRuby::Constraint.percentage(50)
+        RatatuiRuby::Constraint.percentage(50),
       ],
       children: [header, top_row, bottom_row]
     )
@@ -123,13 +121,13 @@ class AllEventsApp
     RatatuiRuby.draw(layout)
   end
 
-  def handle_input
+  private def handle_input
     event = RatatuiRuby.poll_event
     return unless event
 
     case event
     # Quit
-    in {type: :key, code: "q"} | {type: :key, code: "c", modifiers: ["ctrl"]}
+    in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       return :quit
 
     # Key events
@@ -147,7 +145,7 @@ class AllEventsApp
 
     # Paste events
     in type: :paste, content:
-      display_content = content.length > 30 ? "#{content[0..27]}..." : content
+      display_content = (content.length > 30) ? "#{content[0..27]}..." : content
       @special_info = "Pasted: #{display_content.inspect}"
 
     # Focus events

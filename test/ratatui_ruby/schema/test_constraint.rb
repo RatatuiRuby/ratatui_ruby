@@ -6,7 +6,7 @@
 require "test_helper"
 
 class TestConstraint < Minitest::Test
-    include RatatuiRuby::TestHelper
+  include RatatuiRuby::TestHelper
   def test_constraint_creation
     c1 = RatatuiRuby::Constraint.length(10)
     assert_equal :length, c1.type
@@ -79,11 +79,11 @@ class TestConstraint < Minitest::Test
         direction: :horizontal,
         constraints: [
           RatatuiRuby::Constraint.fill(1),
-          RatatuiRuby::Constraint.fill(3)
+          RatatuiRuby::Constraint.fill(3),
         ],
         children: [
           RatatuiRuby::Paragraph.new(text: "A"),
-          RatatuiRuby::Paragraph.new(text: "B")
+          RatatuiRuby::Paragraph.new(text: "B"),
         ]
       )
       RatatuiRuby.draw(l)
@@ -98,11 +98,11 @@ class TestConstraint < Minitest::Test
         direction: :horizontal,
         constraints: [
           RatatuiRuby::Constraint.max(8),
-          RatatuiRuby::Constraint.fill(1)
+          RatatuiRuby::Constraint.fill(1),
         ],
         children: [
           RatatuiRuby::Paragraph.new(text: "Max"),
-          RatatuiRuby::Paragraph.new(text: "Fill")
+          RatatuiRuby::Paragraph.new(text: "Fill"),
         ]
       )
       RatatuiRuby.draw(l)
@@ -117,11 +117,11 @@ class TestConstraint < Minitest::Test
         direction: :horizontal,
         constraints: [
           RatatuiRuby::Constraint.ratio(1, 4),
-          RatatuiRuby::Constraint.ratio(3, 4)
+          RatatuiRuby::Constraint.ratio(3, 4),
         ],
         children: [
           RatatuiRuby::Paragraph.new(text: "A"),
-          RatatuiRuby::Paragraph.new(text: "B")
+          RatatuiRuby::Paragraph.new(text: "B"),
         ]
       )
       RatatuiRuby.draw(l)

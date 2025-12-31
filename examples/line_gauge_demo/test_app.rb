@@ -122,8 +122,8 @@ class TestLineGaugeDemo < Minitest::Test
 
       content = buffer_content.join("\n")
       # Verify some of the changes took effect
-      assert_includes content, "65%"  # ratio changed
-      assert_includes content, "Dark Shade"  # filled_symbol changed
+      assert_includes content, "65%" # ratio changed
+      assert_includes content, "Dark Shade" # filled_symbol changed
     end
   end
 end

@@ -41,9 +41,7 @@ class TerminalWindow
     @window_id
   end
 
-  private
-
-  def close
+  private def close
     try_graceful_shutdown
     kill_process if process_still_alive?
 
@@ -60,7 +58,7 @@ class TerminalWindow
     system("osascript", "-e", delay_script, out: File::NULL, err: File::NULL)
   end
 
-  def wait_for_startup
+  private def wait_for_startup
     sleep PreviewTiming.window_startup
 
     unless @window_id.valid?
@@ -73,7 +71,7 @@ class TerminalWindow
     end
   end
 
-  def try_graceful_shutdown
+  private def try_graceful_shutdown
     shutdown_script = <<~APPLESCRIPT
       tell application "Terminal"
         try
@@ -86,7 +84,7 @@ class TerminalWindow
     sleep 0.2
   end
 
-  def process_still_alive?
+  private def process_still_alive?
     return false unless @pid_file && File.exist?(@pid_file)
 
     pid = File.read(@pid_file).strip.to_i
@@ -96,7 +94,7 @@ class TerminalWindow
     false
   end
 
-  def kill_process
+  private def kill_process
     return unless @pid_file && File.exist?(@pid_file)
 
     pid = File.read(@pid_file).strip.to_i
@@ -105,7 +103,7 @@ class TerminalWindow
     # Process already gone or PID file doesn't exist
   end
 
-  def process_running?
+  private def process_running?
     check_script = <<~APPLESCRIPT
       tell application "Terminal"
         try
@@ -121,7 +119,7 @@ class TerminalWindow
     result == "true"
   end
 
-  def contents
+  private def contents
     read_script = <<~APPLESCRIPT
       tell application "Terminal"
         try

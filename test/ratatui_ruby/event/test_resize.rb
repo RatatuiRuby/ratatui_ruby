@@ -26,7 +26,7 @@ module RatatuiRuby
     def test_deconstruct_keys
       event = Event::Resize.new(width: 80, height: 24)
       pattern = event.deconstruct_keys(nil)
-      
+
       assert_equal :resize, pattern[:type]
       assert_equal 80, pattern[:width]
       assert_equal 24, pattern[:height]

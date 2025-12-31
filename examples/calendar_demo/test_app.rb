@@ -26,7 +26,7 @@ class TestCalendarDemoApp < Minitest::Test
       rendered_text = content.join("\n")
 
       # Verify the bottom controls are present
-      assert_match(/h\/w\/s\/e: Toggle Header\/Weekdays\/Surrounding\/Events/, rendered_text)
+      assert_match(%r{h/w/s/e: Toggle Header/Weekdays/Surrounding/Events}, rendered_text)
       assert_match(/q: Quit/, rendered_text)
 
       # Verify the calendar content is present
@@ -64,7 +64,7 @@ class TestCalendarDemoApp < Minitest::Test
 
       # The app should render successfully with header toggled (hidden)
       refute_match(/#{Time.now.year}/, rendered_text)
- 
+
       # Inject h again to show it (h -> off, h -> on)
       inject_keys("h", "h", :q)
       @app.run
@@ -100,7 +100,7 @@ class TestCalendarDemoApp < Minitest::Test
       # exposing the underlying buffer cells' style.
       # But we can at least assert the content is still correct.
       assert_match(/#{Time.now.year}/, content.join("\n"))
-      
+
       # Verify the legend is present and shows Off status after toggle
       assert_match(/Events: .* \(Off\)/, content.join("\n"))
     end

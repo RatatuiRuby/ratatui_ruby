@@ -37,7 +37,7 @@ class TestChartDemo < Minitest::Test
 
   def test_marker_cycling
     with_test_terminal do
-      inject_key("m")  # Cycle marker
+      inject_key("m") # Cycle marker
       inject_key(:q)
       @app.run
 
