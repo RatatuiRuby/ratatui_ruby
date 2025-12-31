@@ -209,11 +209,7 @@ These examples showcase the full power of **ratatui_ruby**. You can find their s
 
 Full-featured examples demonstrating complex layouts and real-world TUI patterns.
 
-#### [Analytics](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/app_analytics/app.rb)
 
-Demonstrates the use of `Tabs` and `BarChart` widgets. Features custom highlight styles, base styles, dividers for the tabs, and dynamic width calculation. The `BarChart` showcases both standard and grouped bars (Quarterly view), highlighting features like `group_gap` spacing, toggling `BarChart::direction`, customizing label/value styles, cycling custom `BarChart::bar_set` characters, and switching between Full and Mini height modes.
-
-![analytics](./images/app_analytics.png)
 
 #### [All Events](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/app_all_events/app.rb)
 
@@ -261,6 +257,12 @@ Demonstrates interactive row selection in the `Table` widget with keyboard navig
 ### Widget Demos
 
 Single-widget examples that exhaustively demonstrate a widget's configuration options.
+
+#### [BarChart Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_barchart_demo/app.rb)
+
+Demonstrates the `BarChart` widget with interactive dataset cycling (Simple Hash, Styled Array, Groups) and attribute controls (width, gap, styles).
+
+![widget_barchart_demo](./images/widget_barchart_demo.png)
 
 #### [Block Padding](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_block_padding/app.rb)
 
@@ -351,6 +353,12 @@ Demonstrates the `Sparkline` widget with interactive attribute cycling. Features
 Demonstrates different flex modes in the `Table` widget, such as `:space_between` and `:space_around`, allowing for modern, responsive table layouts.
 
 ![table_flex](./images/widget_table_flex.png)
+
+#### [Tabs Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_tabs_demo/app.rb)
+
+Demonstrates the `Tabs` widget interactive style cycling, dividers, and padding customization.
+
+![widget_tabs_demo](./images/widget_tabs_demo.png)
 
 #### [Widget Style Colors](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_style_colors/app.rb)
 
