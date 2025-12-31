@@ -250,16 +250,6 @@ pub fn draw(node: Value) -> Result<Value, Error> {
 }
 ```
 
-### Backward Compatibility
-
-**No breaking changes:**
-- `layout_id` is optional on all widgets.
-- `RatatuiRuby.draw()` continues to render correctly.
-- **Behavior**: If `layout_id` is omitted, that region is simply not included in the returned Hash.
-- **Return value**: If no widgets have `layout_id`, returns an empty Hash (or `nil` if we want to preserve existing return type).
-
-**Recommendation**: Return `nil` if `layout_id` is not used anywhere in the tree (preserves current behavior of returning nothing). Return a Hash if any widget has a `layout_id`.
-
 ## Example: Before and After
 
 ### Before (Current)
@@ -517,18 +507,6 @@ Provide a declarative hit testing layer separate from rendering. **Rejected** be
 - **Unit tests (Rust)**: Verify that rects are collected and returned correctly.
 - **Integration tests (Ruby)**: Verify hit testing works with returned layout info.
 - **Example app**: Ensure the color picker and hit test examples demonstrate the pattern.
-
-## Timeline & Scope
-
-**Scope**: Pre-1.0 feature. Fits RatatuiRuby's design philosophy and solves a real pain point.
-
-**Estimated effort**:
-- Rust backend: 4–6 hours (add `layout_id` extraction, rect collection, Hash construction)
-- Ruby side: 2–3 hours (add parameter to widget classes, update `.rbs`, docs)
-- Testing & examples: 2–3 hours
-- **Total**: ~10 hours
-
-**Risk**: Low. The change is additive (optional parameter, new return value). Backward compatible.
 
 ## Recommendation
 
