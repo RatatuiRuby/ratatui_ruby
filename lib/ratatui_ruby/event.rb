@@ -41,6 +41,21 @@ module RatatuiRuby
       false
     end
 
+    # Responds to dynamic predicate methods for key checks.
+    # All non-Key events return false for any key predicate.
+    def method_missing(name, *args, &block)
+      if name.to_s.end_with?("?")
+        false
+      else
+        super
+      end
+    end
+
+    # Declares that this class responds to dynamic predicate methods.
+    def respond_to_missing?(name, *args)
+      name.to_s.end_with?("?") || super
+    end
+
     # Deconstructs the event for pattern matching.
     #
     # Keys argument is unused but required by the protocol.

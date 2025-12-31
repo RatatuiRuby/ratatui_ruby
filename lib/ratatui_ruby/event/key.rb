@@ -158,6 +158,45 @@ module RatatuiRuby
         @code.length == 1
       end
 
+      # Returns the key as a printable character (if applicable).
+      #
+      # [Printable Characters]
+      #   Returns the character itself (e.g., <tt>"a"</tt>, <tt>"1"</tt>, <tt>" "</tt>).
+      # [Special Keys]
+      #   Returns an empty string (e.g., <tt>"enter"</tt>, <tt>"up"</tt>, <tt>"f1"</tt>).
+      #
+      # This is equivalent to +to_s+.
+      #
+      #   RatatuiRuby::Event::Key.new(code: "a").char      # => "a"
+      #   RatatuiRuby::Event::Key.new(code: "enter").char  # => ""
+      def char
+        to_s
+      end
+
+      # Supports dynamic key predicate methods via method_missing.
+      #
+      # Allows convenient checking for specific keys or key combinations:
+      #
+      #   event.ctrl_c?     # => true if Ctrl+C
+      #   event.enter?      # => true if Enter
+      #   event.shift_up?   # => true if Shift+Up
+      #   event.q?          # => true if "q"
+      #
+      # The method name is converted to a symbol and compared against the event.
+      # This works for any key code or modifier+key combination.
+      def method_missing(name, *args, &block)
+        if name.to_s.end_with?("?")
+          key_sym = name.to_s[0...-1].to_sym
+          return self == key_sym
+        end
+        super
+      end
+
+      # Declares that this class responds to dynamic predicate methods.
+      def respond_to_missing?(name, *args)
+        name.to_s.end_with?("?") || super
+      end
+
       # Deconstructs the event for pattern matching.
       #
       #   case event

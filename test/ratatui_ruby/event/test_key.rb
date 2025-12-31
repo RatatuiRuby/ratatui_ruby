@@ -108,5 +108,43 @@ module RatatuiRuby
       event = Event::Key.new(code: "a", modifiers: ["ctrl"])
       assert_match(/#<RatatuiRuby::Event::Key code="a" modifiers=\["ctrl"\]>/, event.inspect)
     end
-  end
-end
+
+    def test_char_method
+      # Printable character
+      event_a = Event::Key.new(code: "a")
+      assert_equal "a", event_a.char
+
+      # Special key
+      event_enter = Event::Key.new(code: "enter")
+      assert_equal "", event_enter.char
+
+      # Space
+      event_space = Event::Key.new(code: " ")
+      assert_equal " ", event_space.char
+    end
+
+    def test_dynamic_predicates
+      # Single character
+      event_q = Event::Key.new(code: "q")
+      assert_predicate event_q, :q?
+      refute_predicate event_q, :p?
+
+      # Special keys
+      event_enter = Event::Key.new(code: "enter")
+      assert_predicate event_enter, :enter?
+      refute_predicate event_enter, :tab?
+
+      # With modifiers
+      event_ctrl_c = Event::Key.new(code: "c", modifiers: ["ctrl"])
+      assert_predicate event_ctrl_c, :ctrl_c?
+      refute_predicate event_ctrl_c, :c?
+      refute_predicate event_ctrl_c, :ctrl_d?
+
+      # Multiple modifiers
+      event_alt_shift_up = Event::Key.new(code: "up", modifiers: ["alt", "shift"])
+      assert_predicate event_alt_shift_up, :alt_shift_up?
+      refute_predicate event_alt_shift_up, :alt_up?
+      refute_predicate event_alt_shift_up, :shift_up?
+    end
+   end
+ end
