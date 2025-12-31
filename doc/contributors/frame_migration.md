@@ -150,11 +150,13 @@ end
 
 ---
 
-## Phase 4: Migration & Verification
+## Phase 4: Migration & Verification ✅
 
 **Goal:** Prove the new API works by refactoring an example.
 
-### Step 4.1: Create `examples/frame_demo.rb`
+**Status:** DONE (2025-12-31)
+
+### Step 4.1: Create `examples/frame_demo.rb` ✅
 
 * **Action:** Create a new demo app that uses the new block syntax.
 
@@ -168,7 +170,9 @@ end
 
     * **Hit Test Verification:** Store left rect in an instance variable. In `handle_input`, check if `@left_rect.contains?(mouse)`.
 
-### Step 4.2: Update `examples/hit_test.rb`
+### Step 4.2: Update `examples/hit_test.rb` ✅
+
+* **Status:** DONE (2025-12-31)
 
 * **Action:** Refactor the existing "Hit Test" example (which currently manually calculates layout) to use the `Frame` API.
 

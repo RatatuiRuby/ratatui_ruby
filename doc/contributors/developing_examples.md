@@ -33,8 +33,12 @@ class MyExampleApp
   private
 
   def render
-    # Build and draw UI
-    RatatuiRuby.draw(layout)
+    RatatuiRuby.draw do |frame|
+      # 1. Split layout
+      layout = RatatuiRuby::Layout.split(frame.area, constraints: [RatatuiRuby::Constraint.fill(1)])
+      # 2. Render widgets
+      frame.render_widget(widget, layout[0])
+    end
   end
 
   def handle_input
@@ -118,9 +122,15 @@ When documenting hotkeys and cycling options in the UI, use consistent naming:
 
 This keeps the UI self-documenting and users can see exact parameter names when they read the hotkey help.
 
-### Hit Testing with the Cached Layout Pattern
+### Hit Testing
 
-Examples with mouse interaction should implement the **Cached Layout Pattern** documented in `doc/interactive_design.md`. The `hit_test` example demonstrates this pattern.
+Examples with mouse interaction should use the **Frame API**. By calling `Layout.split` inside `RatatuiRuby.draw`, you obtain the exact `Rect`s used for rendering. Store these rects in instance variables (e.g., `@sidebar_rect`) to use them in your `handle_input` method for hit testing:
+
+```ruby
+if @sidebar_rect&.contains?(event.x, event.y)
+  # Handle click
+end
+```
 
 ## Testing Examples
 
@@ -163,13 +173,25 @@ class TestMyExampleApp < Minitest::Test
       assert_includes content, "Changed State"
     end
   end
+
+  def test_mouse_interaction
+    with_test_terminal do
+      # Click at (10, 5)
+      inject_click(x: 10, y: 5)
+      inject_key(:q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      assert_includes content, "Clicked at (10, 5)"
+    end
+  end
 end
 ```
 
 ### Testing Guidelines
 
 1. **Inject events, observe buffer.** Tests should only interact through:
-   - `inject_key` / `inject_keys` / `inject_event` for input
+   - `inject_key`, `inject_click`, `inject_event`, etc. for input
    - `buffer_content` for output verification
 
 2. **Never call internal methods.** Don't call `render`, `handle_input`, `__send__`, or access instance variables with `instance_variable_get`. Tests verify behavior through the public `run` method.

@@ -30,7 +30,7 @@ class TestHitTestExample < Minitest::Test
   def test_left_panel_click
     with_test_terminal do
       # Click in left half at x=10, then quit
-      inject_event(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 10, y: 12))
+      inject_click(x: 10, y: 12)
       inject_key(:q)
 
       @app.run
@@ -45,7 +45,7 @@ class TestHitTestExample < Minitest::Test
   def test_right_panel_click
     with_test_terminal do
       # Click in right half at x=50, then quit
-      inject_event(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 50, y: 12))
+      inject_click(x: 50, y: 12)
       inject_key(:q)
 
       @app.run

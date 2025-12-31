@@ -28,92 +28,77 @@ class HitTestApp
   def run
     RatatuiRuby.run do
       loop do
-        calculate_layout  # Phase 1: Layout calculation (once per frame)
-        render            # Phase 2: Draw to terminal
-        break if handle_input == :quit # Phase 3: Consume input using cached rects
+        render
+        break if handle_input == :quit
       end
     end
   end
 
-  private def calculate_layout
-    # Single source of truth for layout geometry.
-    # Calculated once per frame, then reused by render() and handle_input().
-    full_area = RatatuiRuby::Rect.new(x: 0, y: 0, width: 80, height: 24)
-
-    # First split: main content vs bottom controls.
-    @main_area, @control_area = RatatuiRuby::Layout.split(
-      full_area,
-      direction: :vertical,
-      constraints: [
-        RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.length(7),
-      ]
-    )
-
-    # Second split: within main content, left vs right panels.
-    @left_rect, @right_rect = RatatuiRuby::Layout.split(
-      @main_area,
-      direction: :horizontal,
-      constraints: [
-        RatatuiRuby::Constraint.percentage(@left_ratio),
-        RatatuiRuby::Constraint.percentage(100 - @left_ratio),
-      ]
-    )
-  end
-
   private def render
-    # Build UI with the pre-calculated regions
-    left_panel = build_panel("Left Panel", @left_rect, @last_click == :left)
-    right_panel = build_panel("Right Panel", @right_rect, @last_click == :right)
+    RatatuiRuby.draw do |frame|
+      # Phase 1: Layout calculation (using Frame API)
+      # We calculate layout directly from the frame area and cache the rects
+      # for use in hit-testing (handle_input).
 
-    layout = RatatuiRuby::Layout.new(
-      direction: :horizontal,
-      constraints: [
-        RatatuiRuby::Constraint.percentage(@left_ratio),
-        RatatuiRuby::Constraint.percentage(100 - @left_ratio),
-      ],
-      children: [left_panel, right_panel]
-    )
+      # First split: main content vs bottom controls.
+      @main_area, @control_area = RatatuiRuby::Layout.split(
+        frame.area,
+        direction: :vertical,
+        constraints: [
+          RatatuiRuby::Constraint.fill(1),
+          RatatuiRuby::Constraint.length(7),
+        ]
+      )
 
-    # Bottom control panel
-    control_panel = RatatuiRuby::Block.new(
-      title: "Controls",
-      borders: [:all],
-      children: [
-        RatatuiRuby::Paragraph.new(
-          text: [
-            RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "RATIO", style: RatatuiRuby::Style.new(modifiers: [:bold])),
-            ]),
-            RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "←", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Decrease (#{@left_ratio}%)  "),
-              RatatuiRuby::Text::Span.new(content: "→", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Increase (#{@left_ratio}%)  "),
-              RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Quit"),
-            ]),
-            RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "HIT TESTING", style: RatatuiRuby::Style.new(modifiers: [:bold])),
-            ]),
-            "Click panels above to detect hits.",
-            "Last Click: #{@last_click || 'None'} - #{@message}",
-          ]
-        ),
-      ]
-    )
+      # Second split: within main content, left vs right panels.
+      @left_rect, @right_rect = RatatuiRuby::Layout.split(
+        @main_area,
+        direction: :horizontal,
+        constraints: [
+          RatatuiRuby::Constraint.percentage(@left_ratio),
+          RatatuiRuby::Constraint.percentage(100 - @left_ratio),
+        ]
+      )
 
-    # Full layout with bottom controls
-    full_layout = RatatuiRuby::Layout.new(
-      direction: :vertical,
-      constraints: [
-        RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.length(7),
-      ],
-      children: [layout, control_panel]
-    )
+      # Phase 2: Render widgets using the calculated regions
 
-    RatatuiRuby.draw(full_layout)
+      # Build and render left/right panels
+      left_panel = build_panel("Left Panel", @left_rect, @last_click == :left)
+      right_panel = build_panel("Right Panel", @right_rect, @last_click == :right)
+
+      frame.render_widget(left_panel, @left_rect)
+      frame.render_widget(right_panel, @right_rect)
+
+      # Build and render control panel
+      control_panel = RatatuiRuby::Block.new(
+        title: "Controls",
+        borders: [:all],
+        children: [
+          RatatuiRuby::Paragraph.new(
+            text: [
+              RatatuiRuby::Text::Line.new(spans: [
+                RatatuiRuby::Text::Span.new(content: "RATIO", style: RatatuiRuby::Style.new(modifiers: [:bold])),
+              ]),
+              RatatuiRuby::Text::Line.new(spans: [
+                RatatuiRuby::Text::Span.new(content: "←", style: @hotkey_style),
+                RatatuiRuby::Text::Span.new(content: ": Decrease (#{@left_ratio}%)  "),
+                RatatuiRuby::Text::Span.new(content: "→", style: @hotkey_style),
+                RatatuiRuby::Text::Span.new(content: ": Increase (#{@left_ratio}%)  "),
+                RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
+                RatatuiRuby::Text::Span.new(content: ": Quit"),
+              ]),
+              RatatuiRuby::Text::Line.new(spans: [
+                RatatuiRuby::Text::Span.new(content: "HIT TESTING", style: RatatuiRuby::Style.new(modifiers: [:bold])),
+              ]),
+              "Click panels above to detect hits.",
+              "Last Click: #{@last_click || 'None'} - #{@message}",
+            ]
+          ),
+        ]
+      )
+
+      frame.render_widget(control_panel, @control_area)
+    end
   end
 
   private def build_panel(title, rect, active)
