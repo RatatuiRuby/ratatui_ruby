@@ -1,0 +1,894 @@
+diff --git a/examples/_app_color_picker/app.rb b/examples/_app_color_picker/app.rb
+new file mode 100644
+index 0000000..c5518e0
+--- /dev/null
++++ b/examples/_app_color_picker/app.rb
+@@ -0,0 +1,592 @@
++# frozen_string_literal: true
++
++# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
++# SPDX-License-Identifier: AGPL-3.0-or-later
++
++# WIP: This example is under active development and should NOT be used as a reference.
++# See doc/contributors/frame_proposal.md for the design discussion.
++# This will be restructured once layout_id feature is implemented.
++
++$LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
++require "ratatui_ruby"
++
++begin
++  require "chroma"
++rescue LoadError
++  # Fallback if chroma is not installed; define a minimal color parser
++  module Chroma
++    def self.paint(color_string)
++      Color.from_string(color_string)
++    end
++
++    class Color
++      attr_reader :r, :g, :b
++
++      def self.from_string(str)
++        str = str.to_s.strip
++        case str
++        when /^#([0-9a-fA-F]{6})$/
++          hex = $1
++          r = hex[0, 2].to_i(16)
++          g = hex[2, 2].to_i(16)
++          b = hex[4, 2].to_i(16)
++          new(r, g, b)
++        when /^rgb\((\d+)[,\s]+(\d+)[,\s]+(\d+)\)$/
++          new($1.to_i, $2.to_i, $3.to_i)
++        when /^(red|green|blue|yellow|cyan|magenta|white|black)$/i
++          colors = {
++            "red" => [255, 0, 0],
++            "green" => [0, 128, 0],
++            "blue" => [0, 0, 255],
++            "yellow" => [255, 255, 0],
++            "cyan" => [0, 255, 255],
++            "magenta" => [255, 0, 255],
++            "white" => [255, 255, 255],
++            "black" => [0, 0, 0]
++          }
++          r, g, b = colors[str.downcase]
++          new(r, g, b)
++        else
++          new(100, 100, 100) # Default gray
++        end
++      end
++
++      def initialize(r, g, b)
++        @r = [[r.to_i, 0].max, 255].min
++        @g = [[g.to_i, 0].max, 255].min
++        @b = [[b.to_i, 0].max, 255].min
++      end
++
++      def lighten(amount = 10)
++        h, s, l = to_hsl
++        l = [[l + amount / 100.0, 0].max, 1].min
++        Color.from_hsl(h, s, l)
++      end
++
++      def darken(amount = 10)
++        lighten(-amount)
++      end
++
++      def spin(degrees)
++        h, s, l = to_hsl
++        h = (h + degrees) % 360
++        Color.from_hsl(h, s, l)
++      end
++
++      def to_hex
++        "#%02x%02x%02x" % [@r, @g, @b]
++      end
++
++      def to_rgb
++        "rgb(#{@r}, #{@g}, #{@b})"
++      end
++
++      def to_hsl
++        r = @r / 255.0
++        g = @g / 255.0
++        b = @b / 255.0
++        max = [r, g, b].max
++        min = [r, g, b].min
++        l = (max + min) / 2
++
++        if max == min
++          h = s = 0
++        else
++          d = max - min
++          s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
++          h = case max
++              when r then ((g - b) / d + (g < b ? 6 : 0)) / 6
++              when g then ((b - r) / d + 2) / 6
++              when b then ((r - g) / d + 4) / 6
++              end
++        end
++
++        [h * 360, s, l]
++      end
++
++      def self.from_hsl(h, s, l)
++        h = (h % 360) / 360.0
++
++        c = (1 - (2 * l - 1).abs) * s
++        x = c * (1 - ((h * 6) % 2 - 1).abs)
++        m = l - c / 2
++
++        r, g, b = case h * 6
++                  when 0...1 then [c, x, 0]
++                  when 1...2 then [x, c, 0]
++                  when 2...3 then [0, c, x]
++                  when 3...4 then [0, x, c]
++                  when 4...5 then [x, 0, c]
++                  else [c, 0, x]
++                  end
++
++        Color.new((r + m) * 255, (g + m) * 255, (b + m) * 255)
++      end
++    end
++  end
++end
++
++begin
++  require "wcag_color_contrast"
++rescue LoadError
++  # Fallback if wcag_color_contrast is not installed
++  module WCAGColorContrast
++    def self.ratio(color1, color2)
++      # Simplified fallback: just compare luminance
++      # Remove # if present and convert to luminance
++      l1 = luminance_from_hex(color1)
++      l2 = luminance_from_hex(color2)
++      lighter = [l1, l2].max
++      darker = [l1, l2].min
++      (lighter + 0.05) / (darker + 0.05)
++    end
++
++    def self.luminance_from_hex(hex_str)
++      hex = hex_str.to_s.sub(/^#/, '')
++      r = hex[0, 2].to_i(16) / 255.0
++      g = hex[2, 2].to_i(16) / 255.0
++      b = hex[4, 2].to_i(16) / 255.0
++      r = r <= 0.03928 ? r / 12.92 : ((r + 0.055) / 1.055) ** 2.4
++      g = g <= 0.03928 ? g / 12.92 : ((g + 0.055) / 1.055) ** 2.4
++      b = b <= 0.03928 ? b / 12.92 : ((b + 0.055) / 1.055) ** 2.4
++      0.2126 * r + 0.7152 * g + 0.0722 * b
++    end
++  end
++end
++
++# Color Picker Application
++# An interactive color converter and explorer.
++# Paste CSS colors in any format, preview them, and view color harmonies.
++
++module ContrastHelper
++  # Choose black or white for best contrast using WCAG 2.0 calculation.
++  # Returns :white or :black based on which has higher contrast ratio with the background.
++  def self.text_color(background_hex)
++    # WCAGColorContrast expects hex without # prefix
++    hex = background_hex.to_s.sub(/^#/, '')
++
++    white_contrast = WCAGColorContrast.ratio(hex, "ffffff")
++    black_contrast = WCAGColorContrast.ratio(hex, "000000")
++
++    white_contrast > black_contrast ? :white : :black
++  end
++end
++
++class AppColorPickerApp
++  def initialize
++    @input = "#F96302"
++    @current_color = parse_color(@input)
++    @error_message = ""
++    @clipboard_message = ""
++    @clipboard_timer = 0
++    @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
++    @copy_dialog_active = false
++    @copy_dialog_text = ""
++    @copy_dialog_selected = :yes
++    @export_area_rect = nil # Cached rectangle for export formats section
++  end
++
++  def run
++    RatatuiRuby.run do
++      loop do
++        calculate_layout
++        render
++        result = handle_input
++        break if result == :quit
++      end
++    end
++  end
++
++  def calculate_layout
++    # Pre-calculate layout regions for hit testing
++    # The hex codes are in the Export Formats section
++    terminal_size = RatatuiRuby.terminal_size
++
++    full_area = RatatuiRuby::Rect.new(x: 0, y: 0, width: terminal_size.width, height: terminal_size.height)
++    
++    # Split into: input (length 3), color section (length 14), controls (length 7)
++    input_area, rest = RatatuiRuby::Layout.split(full_area, 
++      direction: :vertical,
++      constraints: [
++        RatatuiRuby::Constraint.length(3),
++        RatatuiRuby::Constraint.fill(1)
++      ]
++    )
++    
++    color_area, control_area = RatatuiRuby::Layout.split(rest,
++      direction: :vertical,
++      constraints: [
++        RatatuiRuby::Constraint.length(14),
++        RatatuiRuby::Constraint.fill(1)
++      ]
++    )
++    
++    # Within color section, split into harmony blocks and export formats
++    harmony_area, @export_area_rect = RatatuiRuby::Layout.split(color_area,
++      direction: :vertical,
++      constraints: [
++        RatatuiRuby::Constraint.length(7),
++        RatatuiRuby::Constraint.fill(1)
++      ]
++    )
++  end
++
++  private
++
++  def parse_color(input_str)
++    input_str = input_str.to_s.strip
++    return nil if input_str.empty?
++
++    begin
++      Chroma.paint(input_str)
++    rescue StandardError
++      nil
++    end
++  end
++
++  def render
++    @clipboard_timer -= 1 if @clipboard_timer > 0
++    @clipboard_message = "" if @clipboard_timer <= 0
++
++    # Build UI layout
++    main_ui = RatatuiRuby::Layout.new(
++      direction: :vertical,
++      constraints: [
++        RatatuiRuby::Constraint.length(3),  # Input box
++        RatatuiRuby::Constraint.length(14), # Color preview & formats
++        RatatuiRuby::Constraint.length(7),  # Controls
++      ],
++      children: [
++        build_input_section,
++        build_color_section,
++        build_controls_section,
++      ]
++    )
++
++    ui = if @copy_dialog_active
++           RatatuiRuby::Overlay.new(
++             layers: [
++               main_ui,
++               RatatuiRuby::Clear.new,  # Clear background behind dialog
++               RatatuiRuby::Center.new(
++                 child: build_copy_dialog
++               )
++             ]
++           )
++         else
++           main_ui
++         end
++
++    RatatuiRuby.draw(ui)
++  end
++
++  def build_input_section
++    input_lines = [
++      RatatuiRuby::Text::Line.new(spans: [
++        RatatuiRuby::Text::Span.new(content: @input),
++        RatatuiRuby::Text::Span.new(content: "_", style: RatatuiRuby::Style.new(modifiers: [:reversed]))
++      ])
++    ]
++
++    unless @error_message.empty?
++      input_lines << RatatuiRuby::Text::Line.new(spans: [
++        RatatuiRuby::Text::Span.new(content: @error_message, style: RatatuiRuby::Style.new(fg: :red))
++      ])
++    end
++
++    RatatuiRuby::Block.new(
++      title: "Color Input",
++      borders: [:all],
++      children: [
++        RatatuiRuby::Paragraph.new(text: input_lines)
++      ]
++    )
++  end
++
++  def build_color_section
++    if @current_color.nil?
++      return RatatuiRuby::Block.new(
++        title: "Color Preview",
++        borders: [:all],
++        children: [
++          RatatuiRuby::Paragraph.new(
++            text: RatatuiRuby::Text::Line.new(spans: [
++              RatatuiRuby::Text::Span.new(content: "Enter a color to see preview")
++            ])
++          )
++        ]
++      )
++    end
++
++    # Create preview color blocks and format list
++    hex = @current_color.to_hex.upcase
++    rgb = @current_color.to_rgb
++    h, s, l = @current_color.to_hsl
++    hsl = format("hsl(%.0f, %.1f%%, %.1f%%)", h, s * 100, l * 100)
++
++    # Generate color harmonies
++    shade = @current_color.darken(20)
++    tint = @current_color.lighten(20)
++    complement = @current_color.spin(180)
++    triadic1 = @current_color.spin(120)
++    triadic2 = @current_color.spin(240)
++    analogous1 = @current_color.spin(30)
++    analogous2 = @current_color.spin(-30)
++    
++    # Build helper to create contrast-aware colors and frames
++    def build_color_pair(color, label)
++      hex = color.to_hex.upcase
++      text_color = ContrastHelper.text_color(hex)
++      frame_color = text_color == :white ? "#000000" : "#ffffff"
++      { hex: hex, text_color: text_color, frame_color: frame_color, label: label }
++    end
++    
++    colors = [
++      build_color_pair(@current_color, "Main"),
++      build_color_pair(shade, "Shade"),
++      build_color_pair(tint, "Tint"),
++      build_color_pair(complement, "Comp"),
++      build_color_pair(triadic1, "Tri 1"),
++      build_color_pair(triadic2, "Tri 2"),
++      build_color_pair(analogous1, "Ana+"),
++    ]
++
++    # Build 8 color harmony blocks in a layout
++    harmony_blocks = colors.map do |color|
++      RatatuiRuby::Block.new(
++        title: color[:label],
++        borders: [:all],
++        children: [
++          RatatuiRuby::Paragraph.new(
++            text: [
++              RatatuiRuby::Text::Line.new(spans: [
++                RatatuiRuby::Text::Span.new(content: " ", style: RatatuiRuby::Style.new(bg: color[:frame_color])),
++                RatatuiRuby::Text::Span.new(content: " ", style: RatatuiRuby::Style.new(bg: color[:frame_color])),
++                RatatuiRuby::Text::Span.new(content: " ", style: RatatuiRuby::Style.new(bg: color[:frame_color])),
++                RatatuiRuby::Text::Span.new(content: " ", style: RatatuiRuby::Style.new(bg: color[:frame_color])),
++                RatatuiRuby::Text::Span.new(content: " ", style: RatatuiRuby::Style.new(bg: color[:frame_color])),
++                RatatuiRuby::Text::Span.new(content: " ", style: RatatuiRuby::Style.new(bg: color[:frame_color])),
++                RatatuiRuby::Text::Span.new(content: " ", style: RatatuiRuby::Style.new(bg: color[:frame_color])),
++              ]),
++              RatatuiRuby::Text::Line.new(spans: [
++                RatatuiRuby::Text::Span.new(content: " ", style: RatatuiRuby::Style.new(bg: color[:frame_color])),
++                RatatuiRuby::Text::Span.new(content: " ", style: RatatuiRuby::Style.new(bg: color[:frame_color])),
++                RatatuiRuby::Text::Span.new(content: " ", style: RatatuiRuby::Style.new(bg: color[:frame_color])),
++                RatatuiRuby::Text::Span.new(content: " ", style: RatatuiRuby::Style.new(bg: color[:hex], fg: color[:text_color])),
++                RatatuiRuby::Text::Span.new(content: " ", style: RatatuiRuby::Style.new(bg: color[:frame_color])),
++                RatatuiRuby::Text::Span.new(content: " ", style: RatatuiRuby::Style.new(bg: color[:frame_color])),
++                RatatuiRuby::Text::Span.new(content: " ", style: RatatuiRuby::Style.new(bg: color[:frame_color])),
++              ]),
++              RatatuiRuby::Text::Line.new(spans: [
++                RatatuiRuby::Text::Span.new(content: " ", style: RatatuiRuby::Style.new(bg: color[:frame_color])),
++                RatatuiRuby::Text::Span.new(content: " ", style: RatatuiRuby::Style.new(bg: color[:frame_color])),
++                RatatuiRuby::Text::Span.new(content: " ", style: RatatuiRuby::Style.new(bg: color[:frame_color])),
++                RatatuiRuby::Text::Span.new(content: " ", style: RatatuiRuby::Style.new(bg: color[:frame_color])),
++                RatatuiRuby::Text::Span.new(content: " ", style: RatatuiRuby::Style.new(bg: color[:frame_color])),
++                RatatuiRuby::Text::Span.new(content: " ", style: RatatuiRuby::Style.new(bg: color[:frame_color])),
++                RatatuiRuby::Text::Span.new(content: " ", style: RatatuiRuby::Style.new(bg: color[:frame_color])),
++              ]),
++              RatatuiRuby::Text::Line.new(spans: [
++                RatatuiRuby::Text::Span.new(content: color[:hex], style: RatatuiRuby::Style.new(fg: :white))
++              ])
++            ]
++          )
++        ]
++      )
++    end
++
++    RatatuiRuby::Layout.new(
++      direction: :vertical,
++      constraints: [
++        RatatuiRuby::Constraint.length(7),  # 8 harmony blocks (each with title + 4 lines = 5 lines, minus 1 for overlap = 7)
++        RatatuiRuby::Constraint.fill(1),   # Formats
++      ],
++      children: [
++        # Color harmonies in a horizontal layout
++        RatatuiRuby::Layout.new(
++          direction: :horizontal,
++          constraints: Array.new(7) { RatatuiRuby::Constraint.fill(1) },
++          children: harmony_blocks
++        ),
++        # Export formats with contrast-aware styling (using the chosen/main color)
++         RatatuiRuby::Block.new(
++           title: "Export Formats",
++           borders: [:all],
++           style: RatatuiRuby::Style.new(bg: colors[0][:hex], fg: colors[0][:text_color]),
++           children: [
++            RatatuiRuby::Paragraph.new(
++              text: [
++                RatatuiRuby::Text::Line.new(spans: [
++                  RatatuiRuby::Text::Span.new(content: "HEX: ", style: RatatuiRuby::Style.new(bg: colors[0][:hex], fg: colors[0][:text_color])),
++                  RatatuiRuby::Text::Span.new(content: colors[0][:hex], style: RatatuiRuby::Style.new(bg: colors[0][:hex], fg: colors[0][:text_color], modifiers: [:underlined]))
++                ]),
++                RatatuiRuby::Text::Line.new(spans: [
++                  RatatuiRuby::Text::Span.new(content: "RGB: ", style: RatatuiRuby::Style.new(bg: colors[0][:hex], fg: colors[0][:text_color])),
++                  RatatuiRuby::Text::Span.new(content: rgb, style: RatatuiRuby::Style.new(bg: colors[0][:hex], fg: colors[0][:text_color], modifiers: [:underlined]))
++                ]),
++                RatatuiRuby::Text::Line.new(spans: [
++                  RatatuiRuby::Text::Span.new(content: "HSL: ", style: RatatuiRuby::Style.new(bg: colors[0][:hex], fg: colors[0][:text_color])),
++                  RatatuiRuby::Text::Span.new(content: hsl, style: RatatuiRuby::Style.new(bg: colors[0][:hex], fg: colors[0][:text_color], modifiers: [:underlined]))
++                ])
++              ]
++            )
++          ]
++        )
++      ]
++    )
++  end
++
++  def build_copy_dialog
++    # Create a centered dialog overlay with yes/no buttons
++    yes_style = if @copy_dialog_selected == :yes
++                   RatatuiRuby::Style.new(bg: :cyan, fg: :black, modifiers: [:bold])
++                 else
++                   RatatuiRuby::Style.new(fg: :gray)
++                 end
++
++    no_style = if @copy_dialog_selected == :no
++                  RatatuiRuby::Style.new(bg: :cyan, fg: :black, modifiers: [:bold])
++                else
++                  RatatuiRuby::Style.new(fg: :gray)
++                end
++
++    RatatuiRuby::Block.new(
++      title: "Copy to Clipboard",
++      borders: [:all],
++      border_type: :rounded,
++      style: RatatuiRuby::Style.new(bg: :black, fg: :white),
++      children: [
++        RatatuiRuby::Paragraph.new(
++          text: [
++            RatatuiRuby::Text::Line.new(spans: [
++              RatatuiRuby::Text::Span.new(content: "Copy #{@copy_dialog_text}?", style: RatatuiRuby::Style.new(fg: :white))
++            ]),
++            RatatuiRuby::Text::Line.new(spans: []),
++            RatatuiRuby::Text::Line.new(spans: [
++              RatatuiRuby::Text::Span.new(content: "[", style: RatatuiRuby::Style.new(fg: :white)),
++              RatatuiRuby::Text::Span.new(content: "Yes", style: yes_style),
++              RatatuiRuby::Text::Span.new(content: "]  [", style: RatatuiRuby::Style.new(fg: :white)),
++              RatatuiRuby::Text::Span.new(content: "No", style: no_style),
++              RatatuiRuby::Text::Span.new(content: "]", style: RatatuiRuby::Style.new(fg: :white))
++            ]),
++            RatatuiRuby::Text::Line.new(spans: [
++              RatatuiRuby::Text::Span.new(content: "Use ←/→ or h/l to select, Enter to confirm", style: RatatuiRuby::Style.new(fg: :gray, modifiers: [:italic]))
++            ])
++          ]
++        )
++      ]
++    )
++  end
++
++  def build_controls_section
++    control_lines = [
++      RatatuiRuby::Text::Line.new(spans: [
++        RatatuiRuby::Text::Span.new(content: "a-z/0-9", style: @hotkey_style),
++        RatatuiRuby::Text::Span.new(content: ": Type  "),
++        RatatuiRuby::Text::Span.new(content: "enter", style: @hotkey_style),
++        RatatuiRuby::Text::Span.new(content: ": Parse  "),
++        RatatuiRuby::Text::Span.new(content: "bksp", style: @hotkey_style),
++        RatatuiRuby::Text::Span.new(content: ": Erase  "),
++        RatatuiRuby::Text::Span.new(content: "esc", style: @hotkey_style),
++        RatatuiRuby::Text::Span.new(content: ": Quit")
++      ])
++    ]
++
++    unless @clipboard_message.empty?
++      control_lines << RatatuiRuby::Text::Line.new(spans: [
++        RatatuiRuby::Text::Span.new(content: @clipboard_message, style: RatatuiRuby::Style.new(fg: :green, modifiers: [:bold]))
++      ])
++    end
++
++    RatatuiRuby::Block.new(
++      title: "Controls",
++      borders: [:all],
++      children: [
++        RatatuiRuby::Paragraph.new(text: control_lines)
++      ]
++    )
++  end
++
++  def handle_input
++    @error_message = "" unless @copy_dialog_active
++
++    if @copy_dialog_active
++      event = RatatuiRuby.poll_event
++      case event
++      in {type: :key, code: "q"} | {type: :key, code: "esc"} | {type: :key, code: "c", modifiers: ["ctrl"]}
++        :quit
++      in {type: :key, code: "left"} | {type: :key, code: "h"}
++        @copy_dialog_selected = :yes
++      in {type: :key, code: "right"} | {type: :key, code: "l"}
++        @copy_dialog_selected = :no
++      in {type: :key, code: "enter"}
++        if @copy_dialog_selected == :yes
++          copy_to_clipboard(@copy_dialog_text)
++          @clipboard_message = "Copied!"
++          @clipboard_timer = 60
++        end
++        @copy_dialog_active = false
++      in {type: :key, code: "y"}
++        copy_to_clipboard(@copy_dialog_text)
++        @clipboard_message = "Copied!"
++        @clipboard_timer = 60
++        @copy_dialog_active = false
++      in {type: :key, code: "n"}
++        @copy_dialog_active = false
++      else
++        # Other events during dialog are ignored
++        nil
++      end
++    else
++      event = RatatuiRuby.poll_event
++      case event
++      in {type: :key, code: "q"} | {type: :key, code: "esc"} | {type: :key, code: "c", modifiers: ["ctrl"]}
++        :quit
++      in {type: :key, code: "enter"}
++        color = parse_color(@input)
++        if color
++          @current_color = color
++          @error_message = ""
++        else
++          @error_message = "Invalid color format. Try: #ff0000, rgb(255,0,0), red"
++        end
++      in {type: :key, code: "backspace"}
++        @input = @input[0...-1]
++      in {type: :paste, content:}
++        # Handle paste events by replacing the input and parsing automatically
++        @input = content
++        color = parse_color(@input)
++        if color
++          @current_color = color
++          @error_message = ""
++        else
++          @error_message = "Invalid color format. Try: #ff0000, rgb(255,0,0), red"
++        end
++      in {type: :key, code:}
++        # Append printable characters
++        @input += code if code.length == 1 && code.match?(/[\w#,().\s%]/)
++      in {type: :mouse, kind: "down", button: "left", x:, y:}
++        # Check if click is in the Export Formats section
++        if @export_area_rect&.contains?(x, y)
++          @copy_dialog_text = @current_color.to_hex.upcase
++          @copy_dialog_active = true
++          @copy_dialog_selected = :yes
++        end
++      else
++        # Ignore other events
++      end
++    end
++  end
++
++  def copy_to_clipboard(text)
++    if `which pbcopy 2>/dev/null`.strip.length > 0
++      IO.popen("pbcopy", "w") { |io| io.write(text) }
++    elsif `which xclip 2>/dev/null`.strip.length > 0
++      IO.popen("xclip -selection clipboard", "w") { |io| io.write(text) }
++    elsif `which xsel 2>/dev/null`.strip.length > 0
++      IO.popen("xsel --clipboard --input", "w") { |io| io.write(text) }
++    end
++  end
++end
++
++AppColorPickerApp.new.run if __FILE__ == $PROGRAM_NAME
+diff --git a/examples/_app_color_picker/app.rbs b/examples/_app_color_picker/app.rbs
+new file mode 100644
+index 0000000..5f40f5c
+--- /dev/null
++++ b/examples/_app_color_picker/app.rbs
+@@ -0,0 +1,12 @@
++# frozen_string_literal: true
++
++# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
++# SPDX-License-Identifier: AGPL-3.0-or-later
++
++class AppColorPickerApp
++  # @public
++  def self.new: () -> AppColorPickerApp
++
++  # @public
++  def run: () -> void
++end
+diff --git a/examples/_app_color_picker/debug_colors.rb b/examples/_app_color_picker/debug_colors.rb
+new file mode 100644
+index 0000000..8a34993
+--- /dev/null
++++ b/examples/_app_color_picker/debug_colors.rb
+@@ -0,0 +1,16 @@
++#!/usr/bin/env ruby
++# frozen_string_literal: true
++
++$LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
++require "ratatui_ruby"
++require_relative "app"
++
++# Create a color and check its hex output
++color = Chroma.paint("rgb(128, 0, 128)")
++puts "Color: #{color.inspect}"
++puts "Hex: #{color.to_hex.inspect}"
++puts "Hex class: #{color.to_hex.class}"
++
++# Try creating a style with the hex color
++style = RatatuiRuby::Style.new(bg: color.to_hex, fg: :white)
++puts "Style created: #{style.inspect}"
+diff --git a/examples/_app_color_picker/test_app.rb b/examples/_app_color_picker/test_app.rb
+new file mode 100644
+index 0000000..ec28826
+--- /dev/null
++++ b/examples/_app_color_picker/test_app.rb
+@@ -0,0 +1,160 @@
++# frozen_string_literal: true
++
++# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
++# SPDX-License-Identifier: AGPL-3.0-or-later
++
++# WIP: Tests for work-in-progress example. Skipped until layout_id feature is implemented.
++# See doc/contributors/frame_proposal.md for design discussion.
++
++$LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
++require "ratatui_ruby"
++require "ratatui_ruby/test_helper"
++require "minitest/autorun"
++require_relative "app"
++
++class TestAppColorPickerApp < Minitest::Test
++  include RatatuiRuby::TestHelper
++
++  def setup
++    skip "WIP: App color picker example is under active development. Will be restructured with layout_id feature."
++    @app = AppColorPickerApp.new
++  end
++
++  def test_initial_render
++    with_test_terminal do
++      inject_key(:q)
++      @app.run
++
++      content = buffer_content.join("\n")
++      assert_includes content, "Color Input"
++      assert_includes content, "Main"
++    end
++  end
++
++  def test_renders_input_section
++    with_test_terminal do
++      inject_key(:q)
++      @app.run
++
++      content = buffer_content.join("\n")
++      assert_includes content, "Color Input"
++    end
++  end
++
++  def test_renders_controls
++    with_test_terminal do
++      inject_key(:q)
++      @app.run
++
++      content = buffer_content.join("\n")
++      assert_includes content, "Controls"
++    end
++  end
++
++  def test_color_grid_renders_with_valid_color
++    with_test_terminal do
++      inject_key("#", "f", "f", "0", "0", "0", "0", :enter)
++      inject_key(:q)
++      @app.run
++
++      content = buffer_content.join("\n")
++      assert_includes content, "Main"
++      assert_includes content, "Shade"
++      assert_includes content, "Tint"
++      assert_includes content, "Comp"
++      assert_includes content, "#ff0000"
++    end
++  end
++
++  def test_esc_quits_application
++    with_test_terminal do
++      inject_key(:esc)
++      @app.run
++
++      content = buffer_content.join("\n")
++      assert_includes content, "Color Input"
++    end
++  end
++
++  def test_paste_input_color
++    with_test_terminal do
++      inject_key("#", "f", "9", "6", "3", "0", "2")
++      inject_event(RatatuiRuby::Event::Paste.new(content: "#ff0000"))
++      inject_key(:q)
++      @app.run
++
++      content = buffer_content.join("\n")
++      # Paste should replace the existing input and parse automatically
++      assert_includes content, "#FF0000"
++      refute_includes content, "#f96302"
++    end
++  end
++
++  def test_hex_codes_display_uppercase
++    with_test_terminal do
++      # Clear initial input and type new color
++      inject_key(:backspace, :backspace, :backspace, :backspace, :backspace, :backspace, :backspace)
++      inject_key("#", "f", "f", "0", "0", "0", "0", :enter)
++      inject_key(:q)
++      @app.run
++
++      content = buffer_content.join("\n")
++      # Hex codes in export and color blocks should be uppercase
++      assert_includes content, "HEX: #FF0000"
++      # The input field itself shows user input which may be lowercase, so we check the blocks
++      assert_includes content, "#FF0000" # in Main color block
++    end
++  end
++
++  def test_click_hex_opens_copy_dialog
++    with_test_terminal do
++      # Clear initial input and type new color
++      inject_key(:backspace, :backspace, :backspace, :backspace, :backspace, :backspace, :backspace)
++      inject_key("#", "f", "f", "0", "0", "0", "0", :enter)
++      # Click on the HEX: line in Export Formats (y=11)
++      inject_event(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 30, y: 11))
++      inject_key(:q)
++      @app.run
++
++      content = buffer_content.join("\n")
++      # Dialog should appear after click
++      assert_includes content, "Copy to Clipboard"
++      assert_includes content, "#FF0000"
++    end
++  end
++
++  def test_copy_dialog_yes_copies_to_clipboard
++    with_test_terminal do
++      # Clear initial input and type new color
++      inject_key(:backspace, :backspace, :backspace, :backspace, :backspace, :backspace, :backspace)
++      inject_key("#", "f", "f", "0", "0", "0", "0", :enter)
++      # Click on the HEX: line in Export Formats (y=11)
++      inject_event(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 30, y: 11))
++      inject_key(:y)
++      inject_key(:q)
++      @app.run
++
++      content = buffer_content.join("\n")
++      # "Copied!" message should appear
++      assert_includes content, "Copied!"
++    end
++  end
++
++  def test_copy_dialog_navigation
++    with_test_terminal do
++      # Clear initial input and type new color
++      inject_key(:backspace, :backspace, :backspace, :backspace, :backspace, :backspace, :backspace)
++      inject_key("#", "f", "f", "0", "0", "0", "0", :enter)
++      # Click on the HEX: line in Export Formats (y=11)
++      inject_event(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 30, y: 11))
++      inject_key(:right)
++      inject_key(:enter)
++      inject_key(:q)
++      @app.run
++
++      content = buffer_content.join("\n")
++      # Dialog should close when No is selected and Enter is pressed
++      refute_includes content, "Copy to Clipboard"
++    end
++  end
++end
+diff --git a/ext/ratatui_ruby/src/lib.rs b/ext/ratatui_ruby/src/lib.rs
+index ff6e9bb..5029454 100644
+--- a/ext/ratatui_ruby/src/lib.rs
++++ b/ext/ratatui_ruby/src/lib.rs
+@@ -62,6 +62,7 @@ fn init() -> Result<(), Error> {
+ 
+ 
+     m.define_module_function("_init_terminal", function!(init_terminal, 2))?;
++    m.define_module_function("_terminal_size", function!(terminal::terminal_size, 0))?;
+     m.define_module_function("restore_terminal", function!(restore_terminal, 0))?;
+     m.define_module_function("draw", function!(draw, 1))?;
+     m.define_module_function("_poll_event", function!(events::poll_event, 0))?;
+diff --git a/ext/ratatui_ruby/src/terminal.rs b/ext/ratatui_ruby/src/terminal.rs
+index 083752f..73c7ee9 100644
+--- a/ext/ratatui_ruby/src/terminal.rs
++++ b/ext/ratatui_ruby/src/terminal.rs
+@@ -137,6 +137,30 @@ pub fn resize_terminal(width: u16, height: u16) -> Result<(), Error> {
+     Ok(())
+ }
+ 
++pub fn terminal_size() -> Result<(u16, u16), Error> {
++    let ruby = magnus::Ruby::get().unwrap();
++    let term_lock = TERMINAL.lock().unwrap();
++    if let Some(wrapper) = term_lock.as_ref() {
++        match wrapper {
++            TerminalWrapper::Crossterm(terminal) => {
++                terminal.size()
++                    .map(|size| (size.width, size.height))
++                    .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))
++            }
++            TerminalWrapper::Test(terminal) => {
++                terminal.size()
++                    .map(|size| (size.width, size.height))
++                    .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))
++            }
++        }
++    } else {
++        Err(Error::new(
++            ruby.exception_runtime_error(),
++            "Terminal is not initialized",
++        ))
++    }
++}
++
+ use magnus::Value;
+ 
+ pub fn get_cell_at(x: u16, y: u16) -> Result<magnus::RHash, Error> {
+diff --git a/lib/ratatui_ruby.rb b/lib/ratatui_ruby.rb
+index b370024..7dbb4ec 100644
+--- a/lib/ratatui_ruby.rb
++++ b/lib/ratatui_ruby.rb
+@@ -90,6 +90,18 @@ module RatatuiRuby
+   # (Native method _init_terminal implemented in Rust)
+   private_class_method :_init_terminal
+ 
++  ##
++  # :method: terminal_size
++  # :call-seq: terminal_size() -> Rect
++  #
++  # Returns the current size of the terminal.
++  def self.terminal_size
++    width, height = _terminal_size
++    Rect.new(x: 0, y: 0, width: width, height: height)
++  end
++  # (Native method _terminal_size implemented in Rust)
++  private_class_method :_terminal_size
++
+   ##
+   # :method: restore_terminal
+   # :call-seq: restore_terminal() -> nil
+diff --git a/lib/ratatui_ruby/schema/layout.rb b/lib/ratatui_ruby/schema/layout.rb
+index 4ad909e..ea0ba10 100644
+--- a/lib/ratatui_ruby/schema/layout.rb
++++ b/lib/ratatui_ruby/schema/layout.rb
+@@ -100,5 +100,15 @@ module RatatuiRuby
+         raw_rects = _split(area, direction, constraints, flex)
+         raw_rects.map { |r| Rect.new(x: r[:x], y: r[:y], width: r[:width], height: r[:height]) }
+       end
++
++      # Splits an area into multiple rectangles using this layout's configuration.
++      #
++      #   layout = Layout.new(constraints: [Constraint.percentage(50), Constraint.percentage(50)])
++      #   left, right = layout.split(area)
++      #
++      # [area] The area to split.
++      def split(area)
++        self.class.split(area, direction: direction, constraints: constraints, flex: flex)
++      end
+     end
+ end
