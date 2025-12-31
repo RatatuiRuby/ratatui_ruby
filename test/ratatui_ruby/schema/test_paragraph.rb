@@ -31,20 +31,9 @@ class TestParagraph < Minitest::Test
       assert_equal "                    ", buffer_content[1]
     end
   end
-  def setup
-    super
-    # Disable warnings by default for clean testing of functionality
-    RatatuiRuby.experimental_warnings = false
-  end
-
-  def teardown
-    super
-    # Always reset to true to avoid side effects
-    RatatuiRuby.experimental_warnings = true
-  end
 
   def test_metrics_experimental_warning
-    # Explicitly enable for this test
+    # Temporarily enable warnings for this test
     RatatuiRuby.experimental_warnings = true
     RatatuiRuby.instance_variable_set(:@warned_features, {})
     
@@ -52,6 +41,8 @@ class TestParagraph < Minitest::Test
     assert_output(nil, /WARNING: Paragraph#line_count is an experimental feature/) do
       p.line_count(100)
     end
+  ensure
+    RatatuiRuby.experimental_warnings = false
   end
 
   def test_metrics_unwrapped

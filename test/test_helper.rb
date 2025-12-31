@@ -22,6 +22,10 @@ end
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 require "ratatui_ruby"
 
+# Disable experimental warnings for library tests - we already know these features are experimental.
+# Application developers' tests are not affected by this setting.
+RatatuiRuby.experimental_warnings = false
+
 require "minitest/autorun"
 
 require "ratatui_ruby/test_helper"
