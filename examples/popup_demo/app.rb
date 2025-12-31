@@ -15,26 +15,55 @@ class PopupDemoApp
   end
 
   def run
-    RatatuiRuby.run do
+    RatatuiRuby.run do |tui|
       loop do
-        render
-        break if handle_input == :quit
+        tui.draw do |frame|
+          render(tui, frame)
+        end
+        break if handle_input(tui) == :quit
         sleep 0.05
       end
     end
   end
 
-  private def render
+  private def render(tui, frame)
+    area = frame.area
+
     # 1. Background: Loud Red Background
     # This demonstrates "Style Bleed" where the background color persists
     # unless explicitly cleared or overwritten.
-    background = RatatuiRuby::Paragraph.new(
+    background = tui.paragraph(
       text: "BACKGROUND RED " * 100,
-      style: RatatuiRuby::Style.new(bg: :red, fg: :white),
+      style: tui.style(bg: :red, fg: :white),
       wrap: true
     )
+    frame.render_widget(background, area)
 
-    # 2. Popup Content: No specific background set (Style.default)
+    # 2. Popup Area Calculation
+    # Center the popup vertically and horizontally
+    vertical_layout = tui.layout_split(
+      area,
+      direction: :vertical,
+      constraints: [
+        tui.constraint_percentage(25),
+        tui.constraint_percentage(50), # 50% height
+        tui.constraint_percentage(25),
+      ]
+    )
+    popup_area_vertical = vertical_layout[1]
+
+    horizontal_layout = tui.layout_split(
+      popup_area_vertical,
+      direction: :horizontal,
+      constraints: [
+        tui.constraint_percentage(20),
+        tui.constraint_percentage(60), # 60% width
+        tui.constraint_percentage(20),
+      ]
+    )
+    popup_area = horizontal_layout[1]
+
+    # 3. Popup Content
     # Without Clear, this will "inherit" the red background from underneath.
     popup_text = if @clear_enabled
       "✓ Clear is ENABLED\n\nResets background to default\n(Usually Black/Transparent)\n\nPress Space to toggle"
@@ -42,52 +71,26 @@ class PopupDemoApp
       "✗ Clear is DISABLED\n\nStyle Bleed: Popup is RED!\n(Inherits background style)\n\nPress Space to toggle"
     end
 
-    popup_content = RatatuiRuby::Paragraph.new(
+    popup_content = tui.paragraph(
       text: popup_text,
       alignment: :center,
-      block: RatatuiRuby::Block.new(
+      block: tui.block(
         title: "Popup Demo (q to quit, space to toggle)",
         borders: [:all]
       )
     )
 
-    # Build the UI with or without Clear
+    # 4. Render Popup
     if @clear_enabled
       # With Clear: Resets the style in the popup area before rendering content
-      ui = RatatuiRuby::Overlay.new(
-        layers: [
-          background,
-          RatatuiRuby::Center.new(
-            child: RatatuiRuby::Overlay.new(
-              layers: [
-                RatatuiRuby::Clear.new,
-                popup_content,
-              ]
-            ),
-            width_percent: 60,
-            height_percent: 50
-          ),
-        ]
-      )
-    else
-      # Without Clear: Background style (RED) bleeds through the popup
-      ui = RatatuiRuby::Overlay.new(
-        layers: [
-          background,
-          RatatuiRuby::Center.new(
-            child: popup_content,
-            width_percent: 60,
-            height_percent: 50
-          ),
-        ]
-      )
+      frame.render_widget(tui.clear, popup_area)
     end
 
-    RatatuiRuby.draw(ui)
+    frame.render_widget(popup_content, popup_area)
   end
 
-  private def handle_input
-    case RatatuiRuby.poll_event
+  private def handle_input(tui)
+    case tui.poll_event
     in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit
     in type: :key, code: " "

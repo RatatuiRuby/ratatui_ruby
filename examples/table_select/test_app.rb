@@ -35,7 +35,7 @@ class TestTableSelectApp < Minitest::Test
   end
 
   def test_style_switching
-    second_style_name = TableSelectApp::STYLES[1][:name]
+    second_style_name = "Red"
 
     with_test_terminal do
       inject_keys(:s, :q)

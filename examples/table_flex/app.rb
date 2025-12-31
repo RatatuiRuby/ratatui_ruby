@@ -17,42 +17,58 @@ class TableFlexApp
   end
 
   def render(tui)
-    layout = tui.layout(
-      direction: :vertical,
-      constraints: [
-        RatatuiRuby::Constraint.length(3),
-        RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.fill(1),
-      ],
-      children: [
+    tui.draw do |frame|
+      chunks = tui.layout_split(
+        frame.area,
+        direction: :vertical,
+        constraints: [
+          tui.constraint_length(3),
+          tui.constraint_fill(1),
+          tui.constraint_fill(1),
+          tui.constraint_fill(1),
+        ]
+      )
+
+      frame.render_widget(
         tui.paragraph(
           text: "Table Flex Layout (press 'q' to quit)",
           block: tui.block(title: "Header", borders: [:all])
         ),
+        chunks[0]
+      )
+
+      frame.render_widget(
         tui.table(
           header: ["Legacy (Default)", "Table"],
           rows: [["Item 1", "Item 2"], ["Item 3", "Item 4"]],
-          widths: [RatatuiRuby::Constraint.length(20), RatatuiRuby::Constraint.length(20)],
+          widths: [tui.constraint_length(20), tui.constraint_length(20)],
           block: tui.block(title: "Flex: :legacy (Default)", borders: [:all])
         ),
+        chunks[1]
+      )
+
+      frame.render_widget(
         tui.table(
           header: ["Space", "Between"],
           rows: [["A", "B"], ["C", "D"]],
-          widths: [RatatuiRuby::Constraint.length(20), RatatuiRuby::Constraint.length(20)],
+          widths: [tui.constraint_length(20), tui.constraint_length(20)],
           block: tui.block(title: "Flex: :space_between", borders: [:all]),
           flex: :space_between
         ),
+        chunks[2]
+      )
+
+      frame.render_widget(
         tui.table(
           header: ["Space", "Around"],
           rows: [["E", "F"], ["G", "H"]],
-          widths: [RatatuiRuby::Constraint.length(20), RatatuiRuby::Constraint.length(20)],
+          widths: [tui.constraint_length(20), tui.constraint_length(20)],
           block: tui.block(title: "Flex: :space_around", borders: [:all]),
           flex: :space_around
         ),
-      ]
-    )
-    tui.draw(layout)
+        chunks[3]
+      )
+    end
   end
 
   def handle_input(tui)

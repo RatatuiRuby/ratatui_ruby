@@ -88,11 +88,14 @@ set: {
     ]
     @border_style_index = 0
 
-    @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
+    @hotkey_style = nil # Initialized in run when tui is available
   end
 
   def run
-    RatatuiRuby.run do
+    RatatuiRuby.run do |tui|
+      @tui = tui
+      @hotkey_style = tui.style(modifiers: [:bold, :underlined])
+
       loop do
         render
         break if handle_input == :quit
@@ -122,7 +125,7 @@ set: {
       type_display += " (Overridden)"
     end
 
-    block = RatatuiRuby::Block.new(
+    block = @tui.block(
       title: "Box Demo",
       title_alignment: title_alignment_config[:alignment],
       title_style: title_style_config[:style],
@@ -135,7 +138,7 @@ set: {
     )
 
     # Main content
-    main_panel = RatatuiRuby::Paragraph.new(
+    main_panel = @tui.paragraph(
       text: "Arrow Keys: Change Color\n\nCurrent Color: #{color_config[:name]}",
       block:,
       fg: style_config[:style] ? nil : color_config[:color],
@@ -144,62 +147,63 @@ set: {
     )
 
     # Bottom control panel
-    control_panel = RatatuiRuby::Block.new(
+    control_panel = @tui.block(
       title: "Controls",
       borders: [:all],
       children: [
-        RatatuiRuby::Paragraph.new(
+        @tui.paragraph(
           text: [
             # Line 1: Main Controls
-            RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "↑↓←→", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Color (#{color_config[:name]})  "),
-              RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Quit"),
+            @tui.text_line(spans: [
+              @tui.text_span(content: "↑↓←→", style: @hotkey_style),
+              @tui.text_span(content: ": Color (#{color_config[:name]})  "),
+              @tui.text_span(content: "q", style: @hotkey_style),
+              @tui.text_span(content: ": Quit"),
             ]),
             # Line 2: Borders
-            RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "space", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Border Type (#{type_display})  "),
-              RatatuiRuby::Text::Span.new(content: "c", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Border Set (#{border_set_config[:name]})"),
+            @tui.text_line(spans: [
+              @tui.text_span(content: "space", style: @hotkey_style),
+              @tui.text_span(content: ": Border Type (#{type_display})  "),
+              @tui.text_span(content: "c", style: @hotkey_style),
+              @tui.text_span(content: ": Border Set (#{border_set_config[:name]})"),
             ]),
             # Line 3: Styles
-            RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "s", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Style (#{style_config[:name]})  "),
-              RatatuiRuby::Text::Span.new(content: "b", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Border Style (#{border_style_config[:name]})"),
+            @tui.text_line(spans: [
+              @tui.text_span(content: "s", style: @hotkey_style),
+              @tui.text_span(content: ": Style (#{style_config[:name]})  "),
+              @tui.text_span(content: "b", style: @hotkey_style),
+              @tui.text_span(content: ": Border Style (#{border_style_config[:name]})"),
             ]),
             # Line 4: Title
-            RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "enter", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Align Title (#{title_alignment_config[:name]})  "),
-              RatatuiRuby::Text::Span.new(content: "t", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Title Style (#{title_style_config[:name]})"),
+            @tui.text_line(spans: [
+              @tui.text_span(content: "enter", style: @hotkey_style),
+              @tui.text_span(content: ": Align Title (#{title_alignment_config[:name]})  "),
+              @tui.text_span(content: "t", style: @hotkey_style),
+              @tui.text_span(content: ": Title Style (#{title_style_config[:name]})"),
             ]),
           ]
         ),
       ]
     )
 
-    # Vertical Layout
-    layout = RatatuiRuby::Layout.new(
-      direction: :vertical,
-      constraints: [
-        RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.length(6),
-      ],
-      children: [main_panel, control_panel]
-    )
-
-    # 2. Render
-    RatatuiRuby.draw(layout)
+    # 2. Render with Frame API
+    @tui.draw do |frame|
+      main_rect, control_rect = @tui.layout_split(
+        frame.area,
+        direction: :vertical,
+        constraints: [
+          @tui.constraint_fill(1),
+          @tui.constraint_length(6),
+        ]
+      )
+      frame.render_widget(main_panel, main_rect)
+      frame.render_widget(control_panel, control_rect)
+    end
   end
 
   private def handle_input
     # 3. Events
-    case RatatuiRuby.poll_event
+    case @tui.poll_event
     in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit
     in type: :key, code: "up"

@@ -22,12 +22,7 @@ class GaugeDemoApp
     ]
     @gauge_color_index = 0
 
-    @bg_styles = [
-      { name: "None", style: nil },
-      { name: "Dark Gray BG", style: RatatuiRuby::Style.new(fg: :dark_gray) },
-      { name: "White on Black", style: RatatuiRuby::Style.new(fg: :white, bg: :black) },
-      { name: "Bold White", style: RatatuiRuby::Style.new(fg: :white, modifiers: [:bold]) },
-    ]
+    @bg_styles = nil # Initialized in run when @tui is available
     @bg_style_index = 1
 
     @use_unicode_options = [true, false]
@@ -37,13 +32,25 @@ class GaugeDemoApp
       { name: "Percentage", template: -> (ratio) { "#{(ratio * 100).to_i}%" } },
       { name: "Ratio (decimal)", template: -> (ratio) { format("%.2f", ratio) } },
       { name: "Progress", template: -> (ratio) { "Progress: #{(ratio * 100).to_i}%" } },
-      { name: "None", template: -> (ratio) { nil } },
+      { name: "None", template: -> (_ratio) { nil } },
     ]
     @label_mode_index = 0
+    @hotkey_style = nil # Initialized in run when @tui is available
   end
 
   def run
-    RatatuiRuby.run do
+    RatatuiRuby.run do |tui|
+      @tui = tui
+
+      # Initialize styles using tui helpers
+      @bg_styles = [
+        { name: "None", style: nil },
+        { name: "Dark Gray BG", style: tui.style(fg: :dark_gray) },
+        { name: "White on Black", style: tui.style(fg: :white, bg: :black) },
+        { name: "Bold White", style: tui.style(fg: :white, modifiers: [:bold]) },
+      ]
+      @hotkey_style = tui.style(modifiers: [:bold, :underlined])
+
       loop do
         render
         break if handle_input == :quit
@@ -58,104 +65,115 @@ class GaugeDemoApp
     use_unicode = @use_unicode_options[@use_unicode_index]
     label_template = @label_modes[@label_mode_index][:template]
 
-    gauge_style = RatatuiRuby::Style.new(fg: gauge_color)
+    gauge_style = @tui.style(fg: gauge_color)
     label = label_template.call(@ratio)
 
-    layout = RatatuiRuby::Layout.new(
-      direction: :vertical,
-      constraints: [
-        RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.length(6),
-      ],
-      children: [
-        # Main content area with multiple gauge examples
-        RatatuiRuby::Layout.new(
-          direction: :vertical,
-          constraints: [
-            RatatuiRuby::Constraint.length(1),
-            RatatuiRuby::Constraint.fill(1),
-            RatatuiRuby::Constraint.fill(1),
-            RatatuiRuby::Constraint.fill(1),
-            RatatuiRuby::Constraint.length(1),
-          ],
-          children: [
-            RatatuiRuby::Paragraph.new(
-              text: "Gauge Widget Demo",
-              style: RatatuiRuby::Style.new(modifiers: [:bold])
-            ),
-            # Gauge 1: Main interactive gauge
-            RatatuiRuby::Gauge.new(
-              ratio: @ratio,
-              label:,
-              style: bg_style,
-              gauge_style:,
-              use_unicode:,
-              block: RatatuiRuby::Block.new(title: "Interactive Gauge")
-            ),
-            # Gauge 2: Inverse ratio for comparison
-            RatatuiRuby::Gauge.new(
-              ratio: 1.0 - @ratio,
-              label: label_template.call(1.0 - @ratio),
-              style: bg_style,
-              gauge_style:,
-              use_unicode:,
-              block: RatatuiRuby::Block.new(title: "Inverse (1.0 - ratio)")
-            ),
-            # Gauge 3: Fixed at different stages
-            RatatuiRuby::Gauge.new(
-              ratio: [@ratio, 0.5].max,
-              label: "Min 50%",
-              style: RatatuiRuby::Style.new(fg: :dark_gray),
-              gauge_style: RatatuiRuby::Style.new(fg: :magenta),
-              use_unicode:,
-              block: RatatuiRuby::Block.new(title: "Min Threshold (Magenta)")
-            ),
-            RatatuiRuby::Paragraph.new(text: ""),
-          ]
-        ),
-        # Bottom controls panel
-        RatatuiRuby::Block.new(
-          title: "Controls",
-          borders: [:all],
-          children: [
-            RatatuiRuby::Paragraph.new(
-              text: [
-                # Navigation & General
-                RatatuiRuby::Text::Line.new(spans: [
-                  RatatuiRuby::Text::Span.new(content: "←/→", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
-                  RatatuiRuby::Text::Span.new(content: ": Adjust Ratio (#{format('%.2f', @ratio)})  "),
-                  RatatuiRuby::Text::Span.new(content: "q", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
-                  RatatuiRuby::Text::Span.new(content: ": Quit"),
-                ]),
-                # Styling
-                RatatuiRuby::Text::Line.new(spans: [
-                  RatatuiRuby::Text::Span.new(content: "g", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
-                  RatatuiRuby::Text::Span.new(content: ": Color (#{@gauge_colors[@gauge_color_index][:name]})  "),
-                  RatatuiRuby::Text::Span.new(content: "b", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
-                  RatatuiRuby::Text::Span.new(content: ": Background (#{@bg_styles[@bg_style_index][:name]})"),
-                ]),
-                # Options
-                RatatuiRuby::Text::Line.new(spans: [
-                  RatatuiRuby::Text::Span.new(content: "u", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
-                  RatatuiRuby::Text::Span.new(content: ": Unicode (#{use_unicode ? 'On' : 'Off'})  "),
-                  RatatuiRuby::Text::Span.new(content: "l", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
-                  RatatuiRuby::Text::Span.new(content: ": Label (#{@label_modes[@label_mode_index][:name]})"),
-                ]),
-              ]
-            ),
-          ]
-        ),
-      ]
-    )
+    @tui.draw do |frame|
+      # Split into main content and control panel
+      main_area, controls_area = @tui.layout_split(
+        frame.area,
+        direction: :vertical,
+        constraints: [
+          @tui.constraint_fill(1),
+          @tui.constraint_length(6),
+        ]
+      )
 
-    RatatuiRuby.draw(layout)
+      # Split main area into title, gauges, and spacer
+      title_area, gauge1_area, gauge2_area, gauge3_area, spacer_area = @tui.layout_split(
+        main_area,
+        direction: :vertical,
+        constraints: [
+          @tui.constraint_length(1),
+          @tui.constraint_fill(1),
+          @tui.constraint_fill(1),
+          @tui.constraint_fill(1),
+          @tui.constraint_length(1),
+        ]
+      )
+
+      # Render title
+      title = @tui.paragraph(
+        text: "Gauge Widget Demo",
+        style: @tui.style(modifiers: [:bold])
+      )
+      frame.render_widget(title, title_area)
+
+      # Gauge 1: Main interactive gauge
+      gauge1 = @tui.gauge(
+        ratio: @ratio,
+        label:,
+        style: bg_style,
+        gauge_style:,
+        use_unicode:,
+        block: @tui.block(title: "Interactive Gauge")
+      )
+      frame.render_widget(gauge1, gauge1_area)
+
+      # Gauge 2: Inverse ratio for comparison
+      gauge2 = @tui.gauge(
+        ratio: 1.0 - @ratio,
+        label: label_template.call(1.0 - @ratio),
+        style: bg_style,
+        gauge_style:,
+        use_unicode:,
+        block: @tui.block(title: "Inverse (1.0 - ratio)")
+      )
+      frame.render_widget(gauge2, gauge2_area)
+
+      # Gauge 3: Fixed at different stages
+      gauge3 = @tui.gauge(
+        ratio: [@ratio, 0.5].max,
+        label: "Min 50%",
+        style: @tui.style(fg: :dark_gray),
+        gauge_style: @tui.style(fg: :magenta),
+        use_unicode:,
+        block: @tui.block(title: "Min Threshold (Magenta)")
+      )
+      frame.render_widget(gauge3, gauge3_area)
+
+      # Render empty spacer
+      spacer = @tui.paragraph(text: "")
+      frame.render_widget(spacer, spacer_area)
+
+      # Bottom controls panel
+      controls = @tui.block(
+        title: "Controls",
+        borders: [:all],
+        children: [
+          @tui.paragraph(
+            text: [
+              # Navigation & General
+              @tui.text_line(spans: [
+                @tui.text_span(content: "←/→", style: @hotkey_style),
+                @tui.text_span(content: ": Adjust Ratio (#{format('%.2f', @ratio)})  "),
+                @tui.text_span(content: "q", style: @hotkey_style),
+                @tui.text_span(content: ": Quit"),
+              ]),
+              # Styling
+              @tui.text_line(spans: [
+                @tui.text_span(content: "g", style: @hotkey_style),
+                @tui.text_span(content: ": Color (#{@gauge_colors[@gauge_color_index][:name]})  "),
+                @tui.text_span(content: "b", style: @hotkey_style),
+                @tui.text_span(content: ": Background (#{@bg_styles[@bg_style_index][:name]})"),
+              ]),
+              # Options
+              @tui.text_line(spans: [
+                @tui.text_span(content: "u", style: @hotkey_style),
+                @tui.text_span(content: ": Unicode (#{use_unicode ? 'On' : 'Off'})  "),
+                @tui.text_span(content: "l", style: @hotkey_style),
+                @tui.text_span(content: ": Label (#{@label_modes[@label_mode_index][:name]})"),
+              ]),
+            ]
+          ),
+        ]
+      )
+      frame.render_widget(controls, controls_area)
+    end
   end
 
   private def handle_input
-    event = RatatuiRuby.poll_event
-    return unless event
-
-    case event
+    case @tui.poll_event
     in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit
     in type: :key, code: "right"

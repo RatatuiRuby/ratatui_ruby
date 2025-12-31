@@ -18,11 +18,12 @@ require "ratatui_ruby"
 
 class MyExampleApp
   def initialize
-    # Initialize state
+    # Initialize state (styles must be initialized in run when @tui is available)
   end
 
   def run
-    RatatuiRuby.run do
+    RatatuiRuby.run do |tui|
+      @tui = tui  # Store for use in private methods
       loop do
         render
         break if handle_input == :quit
@@ -33,21 +34,23 @@ class MyExampleApp
   private
 
   def render
-    RatatuiRuby.draw do |frame|
-      # 1. Split layout
-      layout = RatatuiRuby::Layout.split(frame.area, constraints: [RatatuiRuby::Constraint.fill(1)])
-      # 2. Render widgets
-      frame.render_widget(widget, layout[0])
+    @tui.draw do |frame|
+      # 1. Split layout using Session helpers
+      areas = @tui.layout_split(frame.area, constraints: [@tui.constraint_fill(1)])
+      # 2. Create and render widgets
+      widget = @tui.paragraph(text: "Hello", block: @tui.block(borders: [:all]))
+      frame.render_widget(widget, areas[0])
     end
   end
 
   def handle_input
-    event = RatatuiRuby.poll_event
-    case event
+    case @tui.poll_event
     in { type: :key, code: "q" }
       :quit
     in { type: :key, code: code }
       # Handle other keys
+    else
+      # Ignore unhandled events
     end
   end
 end
@@ -99,21 +102,33 @@ end
 
 2. **Use `RatatuiRuby.run` for terminal management.** Never call `init_terminal` or `restore_terminal` directly. The `run` block handles terminal setup/teardown automatically and safely, even if an exception occurs.
 
-3. **Event handling must include a catch-all pattern.** When using pattern matching in `handle_input`, always include an `else` clause at the end to catch unmatched events (mouse events, resize events, focus events, etc.). Without it, unmatched events will raise `NoMatchingPatternError`:
+3. **Use the Session API (`tui`) for cleaner code.** Accept the `tui` block parameter from `RatatuiRuby.run` and use it throughout your app:
+   - `@tui.draw { |frame| ... }` instead of `RatatuiRuby.draw`
+   - `@tui.poll_event` instead of `RatatuiRuby.poll_event`
+   - `@tui.style(...)` instead of `RatatuiRuby::Style.new(...)`
+   - `@tui.paragraph(...)` instead of `RatatuiRuby::Paragraph.new(...)`
+   - `@tui.block(...)` instead of `RatatuiRuby::Block.new(...)`
+   - `@tui.layout_split(...)` instead of `RatatuiRuby::Layout.split(...)`
+   - `@tui.constraint_fill(...)` instead of `RatatuiRuby::Constraint.fill(...)`
+   - `@tui.text_line(...)` instead of `RatatuiRuby::Text::Line.new(...)`
+   - `@tui.text_span(...)` instead of `RatatuiRuby::Text::Span.new(...)`
+
+4. **Event handling must include a catch-all pattern.** When using pattern matching in `handle_input`, always include an `else` clause at the end to catch unmatched events (mouse events, resize events, focus events, etc.). Without it, unmatched events will raise `NoMatchingPatternError`:
 
    ```ruby
    def handle_input
-     event = RatatuiRuby.poll_event
-     case event
+     case @tui.poll_event
      in { type: :key, code: "q" }
        :quit
      in { type: :mouse, kind: "down", x:, y: }
        handle_click(x, y)
+     else
+       # Ignore other events
      end
    end
    ```
 
-4. **Use keyboard keys to cycle through widget attributes.** Users should be able to interactively explore all widget options. Common patterns:
+5. **Use keyboard keys to cycle through widget attributes.** Users should be able to interactively explore all widget options. Common patterns:
     - Arrow keys: Navigate or adjust values
     - Letter keys: Cycle through styles, modes, or variants. Prefer all lowercase keys to avoid confusion and simplify the UI description.
     - Space: Toggle or select
@@ -128,11 +143,12 @@ When documenting hotkeys and cycling options in the UI, use consistent naming:
   - Use "Highlight Style" (not "Highlight") for the `highlight_style:` parameter
   - Use "Repeat Symbol" (not "Repeat") for the `repeat_highlight_symbol:` parameter
   
-- **Display names for cycled values:** Create a `name` field in your options hash to keep display names paired with values:
+- **Display names for cycled values:** Create a `name` field in your options hash to keep display names paired with values. Initialize style arrays inside `run` when `@tui` is available:
   ```ruby
+  # In run method, after @tui = tui:
   @styles = [
-    { name: "Yellow Bold", style: RatatuiRuby::Style.new(fg: :yellow, modifiers: [:bold]) },
-    { name: "Blue on White", style: RatatuiRuby::Style.new(fg: :blue, bg: :white) }
+    { name: "Yellow Bold", style: @tui.style(fg: :yellow, modifiers: [:bold]) },
+    { name: "Blue on White", style: @tui.style(fg: :blue, bg: :white) }
   ]
   
   # In controls: "h: Highlight Style (#{@styles[@style_index][:name]})"
@@ -141,9 +157,9 @@ When documenting hotkeys and cycling options in the UI, use consistent naming:
 
 This keeps the UI self-documenting and users can see exact parameter names when they read the hotkey help.
 
-6. **Hit Testing**
+7. **Hit Testing**
 
-Examples with mouse interaction should use the **Frame API**. By calling `Layout.split` inside `RatatuiRuby.draw`, you obtain the exact `Rect`s used for rendering. Store these rects in instance variables (e.g., `@sidebar_rect`) to use them in your `handle_input` method for hit testing:
+Examples with mouse interaction should use the **Frame API**. By calling `@tui.layout_split` inside `@tui.draw`, you obtain the exact `Rect`s used for rendering. Store these rects in instance variables (e.g., `@sidebar_rect`) to use them in your `handle_input` method for hit testing:
 
 ```ruby
 if @sidebar_rect&.contains?(event.x, event.y)

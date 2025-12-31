@@ -6,9 +6,12 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
+# Demonstrates Fill & Flex layout constraints with various flex modes.
 class FlexLayoutApp
   def run
-    RatatuiRuby.run do
+    RatatuiRuby.run do |tui|
+      @tui = tui
+
       loop do
         render
         break if handle_input == :quit
@@ -17,138 +20,128 @@ class FlexLayoutApp
   end
 
   private def render
-    view_tree = RatatuiRuby::Layout.new(
-      direction: :vertical,
-      constraints: [
-        RatatuiRuby::Constraint.length(3),
-        RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.fill(1),
-      ],
-      children: [
-        RatatuiRuby::Paragraph.new(
-          text: "Fill & Flex Layout Demo (press 'q' to quit)",
-          block: RatatuiRuby::Block.new(title: "Header", borders: [:all])
-        ),
-        fill_demo_row,
-        space_between_demo_row,
-        space_evenly_demo_row,
-        ratio_demo_row,
-      ]
+    header = @tui.paragraph(
+      text: "Fill & Flex Layout Demo (press 'q' to quit)",
+      block: @tui.block(title: "Header", borders: [:all])
     )
 
-    RatatuiRuby.draw(view_tree)
+    fill_blocks = build_fill_blocks
+    space_between_blocks = build_space_between_blocks
+    space_evenly_blocks = build_space_evenly_blocks
+    ratio_blocks = build_ratio_blocks
+
+    @tui.draw do |frame|
+      header_area, fill_area, space_between_area, space_evenly_area, ratio_area = @tui.layout_split(
+        frame.area,
+        direction: :vertical,
+        constraints: [
+          @tui.constraint_length(3),
+          @tui.constraint_fill(1),
+          @tui.constraint_fill(1),
+          @tui.constraint_fill(1),
+          @tui.constraint_fill(1),
+        ]
+      )
+
+      frame.render_widget(header, header_area)
+
+      # Fill demo row: 1:3 ratio
+      fill_1_area, fill_3_area = @tui.layout_split(
+        fill_area,
+        direction: :horizontal,
+        constraints: [
+          @tui.constraint_fill(1),
+          @tui.constraint_fill(3),
+        ]
+      )
+      frame.render_widget(fill_blocks[0], fill_1_area)
+      frame.render_widget(fill_blocks[1], fill_3_area)
+
+      # Space between demo row
+      block_a_area, block_b_area, block_c_area = @tui.layout_split(
+        space_between_area,
+        direction: :horizontal,
+        flex: :space_between,
+        constraints: [
+          @tui.constraint_length(12),
+          @tui.constraint_length(12),
+          @tui.constraint_length(12),
+        ]
+      )
+      frame.render_widget(space_between_blocks[0], block_a_area)
+      frame.render_widget(space_between_blocks[1], block_b_area)
+      frame.render_widget(space_between_blocks[2], block_c_area)
+
+      # Space evenly demo row
+      even_a_area, even_b_area, even_c_area = @tui.layout_split(
+        space_evenly_area,
+        direction: :horizontal,
+        flex: :space_evenly,
+        constraints: [
+          @tui.constraint_length(12),
+          @tui.constraint_length(12),
+          @tui.constraint_length(12),
+        ]
+      )
+      frame.render_widget(space_evenly_blocks[0], even_a_area)
+      frame.render_widget(space_evenly_blocks[1], even_b_area)
+      frame.render_widget(space_evenly_blocks[2], even_c_area)
+
+      # Ratio demo row: 1:4 and 3:4
+      ratio_1_area, ratio_3_area = @tui.layout_split(
+        ratio_area,
+        direction: :horizontal,
+        constraints: [
+          @tui.constraint_ratio(1, 4),
+          @tui.constraint_ratio(3, 4),
+        ]
+      )
+      frame.render_widget(ratio_blocks[0], ratio_1_area)
+      frame.render_widget(ratio_blocks[1], ratio_3_area)
+    end
   end
 
-  private def fill_demo_row
-    RatatuiRuby::Layout.new(
-      direction: :horizontal,
-      constraints: [
-        RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.fill(3),
-      ],
-      children: [
-        RatatuiRuby::Block.new(
-          title: "Fill(1)",
-          borders: [:all],
-          border_color: "red"
-        ),
-        RatatuiRuby::Block.new(
-          title: "Fill(3)",
-          borders: [:all],
-          border_color: "blue"
-        ),
-      ]
-    )
+  private def build_fill_blocks
+    [
+      @tui.block(title: "Fill(1)", borders: [:all], border_color: "red"),
+      @tui.block(title: "Fill(3)", borders: [:all], border_color: "blue"),
+    ]
   end
 
-  private def space_between_demo_row
-    RatatuiRuby::Layout.new(
-      direction: :horizontal,
-      flex: :space_between,
-      constraints: [
-        RatatuiRuby::Constraint.length(12),
-        RatatuiRuby::Constraint.length(12),
-        RatatuiRuby::Constraint.length(12),
-      ],
-      children: [
-        RatatuiRuby::Block.new(
-          title: "Block A",
-          borders: [:all],
-          border_color: "green"
-        ),
-        RatatuiRuby::Block.new(
-          title: "Block B",
-          borders: [:all],
-          border_color: "yellow"
-        ),
-        RatatuiRuby::Block.new(
-          title: "Block C",
-          borders: [:all],
-          border_color: "magenta"
-        ),
-      ]
-    )
+  private def build_space_between_blocks
+    [
+      @tui.block(title: "Block A", borders: [:all], border_color: "green"),
+      @tui.block(title: "Block B", borders: [:all], border_color: "yellow"),
+      @tui.block(title: "Block C", borders: [:all], border_color: "magenta"),
+    ]
   end
 
-  private def space_evenly_demo_row
-    RatatuiRuby::Layout.new(
-      direction: :horizontal,
-      flex: :space_evenly,
-      constraints: [
-        RatatuiRuby::Constraint.length(12),
-        RatatuiRuby::Constraint.length(12),
-        RatatuiRuby::Constraint.length(12),
-      ],
-      children: [
-        RatatuiRuby::Block.new(
-          title: "Even A",
-          borders: [:all],
-          border_color: "cyan"
-        ),
-        RatatuiRuby::Block.new(
-          title: "Even B",
-          borders: [:all],
-          border_color: "blue"
-        ),
-        RatatuiRuby::Block.new(
-          title: "Even C",
-          borders: [:all],
-          border_color: "red"
-        ),
-      ]
-    )
+  private def build_space_evenly_blocks
+    [
+      @tui.block(title: "Even A", borders: [:all], border_color: "cyan"),
+      @tui.block(title: "Even B", borders: [:all], border_color: "blue"),
+      @tui.block(title: "Even C", borders: [:all], border_color: "red"),
+    ]
   end
 
-  private def ratio_demo_row
-    RatatuiRuby::Layout.new(
-      direction: :horizontal,
-      constraints: [
-        RatatuiRuby::Constraint.ratio(1, 4),
-        RatatuiRuby::Constraint.ratio(3, 4),
-      ],
-      children: [
-        RatatuiRuby::Block.new(
-          title: "Ratio(1, 4)",
-          borders: [:all],
-          border_color: "green"
-        ),
-        RatatuiRuby::Block.new(
-          title: "Ratio(3, 4)",
-          borders: [:all],
-          border_color: "magenta"
-        ),
-      ]
-    )
+  private def build_ratio_blocks
+    [
+      @tui.block(title: "Ratio(1, 4)", borders: [:all], border_color: "green"),
+      @tui.block(title: "Ratio(3, 4)", borders: [:all], border_color: "magenta"),
+    ]
   end
 
   private def handle_input
-    event = RatatuiRuby.poll_event
+    event = @tui.poll_event
     return unless event
 
-    :quit if event == "q" || event == :ctrl_c
+    case event
+    in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
+      :quit
+    else
+      nil
+    end
   end
 end
 
-FlexLayoutApp.new.run if __FILE__ == $0
+FlexLayoutApp.new.run if __FILE__ == $PROGRAM_NAME

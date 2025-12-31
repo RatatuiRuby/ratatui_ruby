@@ -14,54 +14,51 @@ class RatatuiMascotDemoApp
   def run
     RatatuiRuby.run do |tui|
       loop do
-        render(tui)
+        tui.draw do |frame|
+          # Layout: Top (Mascot), Bottom (Controls)
+          layout = tui.layout_split(
+            frame.area,
+            direction: :vertical,
+            constraints: [
+              tui.constraint_fill(1),
+              tui.constraint_length(4),
+            ]
+          )
+
+          mascot_area = layout[0]
+          controls_area = layout[1]
+
+          # Mascot Widget
+          block = if @show_block
+            tui.block(
+              title: "Ratatui Mascot",
+              borders: [:all],
+              border_type: :rounded,
+              border_style: { fg: :green }
+            )
+          end
+
+          mascot = tui.ratatui_mascot(block:)
+          frame.render_widget(mascot, mascot_area)
+
+          # Controls
+          controls_text = [
+            tui.text_span(content: "q", style: tui.style(modifiers: [:bold, :underlined])),
+            tui.text_span(content: " Quit"),
+            tui.text_span(content: "   "),
+            tui.text_span(content: "b", style: tui.style(modifiers: [:bold, :underlined])),
+            tui.text_span(content: " Toggle Block #{@show_block ? '(On)' : '(Off)'}"),
+          ]
+
+          controls_paragraph = tui.paragraph(
+            text: tui.text_line(spans: controls_text),
+            block: tui.block(borders: [:top], title: "Controls")
+          )
+          frame.render_widget(controls_paragraph, controls_area)
+        end
         break if handle_input(tui) == :quit
       end
     end
-  end
-
-  private def render(tui)
-    # Layout: Top (Mascot), Bottom (Controls)
-    # Mascot Widget
-    block = if @show_block
-      tui.block(
-        title: "Ratatui Mascot",
-        borders: [:all],
-        border_type: :rounded,
-        border_style: { fg: :green }
-      )
-    end
-
-    mascot = tui.ratatui_mascot(block:)
-
-    # Controls
-    controls_text = [
-      tui.text_span(content: "q", style: tui.style(modifiers: [:bold, :underlined])),
-      tui.text_span(content: " Quit"),
-      tui.text_span(content: "   "),
-      tui.text_span(content: "b", style: tui.style(modifiers: [:bold, :underlined])),
-      tui.text_span(content: " Toggle Block #{@show_block ? '(On)' : '(Off)'}"),
-    ]
-
-    controls_paragraph = tui.paragraph(
-      text: tui.text_line(spans: controls_text),
-      block: tui.block(borders: [:top], title: "Controls")
-    )
-
-    # Layout: Top (Mascot), Bottom (Controls)
-    layout = tui.layout(
-      direction: :vertical,
-      constraints: [
-        RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.length(4),
-      ],
-      children: [
-        mascot,
-        controls_paragraph,
-      ]
-    )
-
-    tui.draw(layout)
   end
 
   private def handle_input(tui)

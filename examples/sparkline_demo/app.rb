@@ -8,7 +8,18 @@ require "ratatui_ruby"
 
 # Demonstrates Sparkline widget with interactive attribute cycling.
 class SparklineDemoApp
-  def initialize
+  def run
+    RatatuiRuby.run do |tui|
+      @tui = tui
+      setup
+      loop do
+        render
+        break if handle_input == :quit
+      end
+    end
+  end
+
+  private def setup
     # Data sets with different characteristics
     @data_sets = [
       {
@@ -41,11 +52,11 @@ class SparklineDemoApp
     @direction_index = 0
 
     @styles = [
-      { name: "Green", style: RatatuiRuby::Style.new(fg: :green) },
-      { name: "Yellow", style: RatatuiRuby::Style.new(fg: :yellow) },
-      { name: "Red", style: RatatuiRuby::Style.new(fg: :red) },
-      { name: "Cyan", style: RatatuiRuby::Style.new(fg: :cyan) },
-      { name: "Magenta", style: RatatuiRuby::Style.new(fg: :magenta) },
+      { name: "Green", style: @tui.style(fg: :green) },
+      { name: "Yellow", style: @tui.style(fg: :yellow) },
+      { name: "Red", style: @tui.style(fg: :red) },
+      { name: "Cyan", style: @tui.style(fg: :cyan) },
+      { name: "Magenta", style: @tui.style(fg: :magenta) },
     ]
     @style_index = 0
 
@@ -60,158 +71,168 @@ class SparklineDemoApp
 
     @absent_styles = [
       { name: "Default", style: nil },
-      { name: "Dark Gray", style: RatatuiRuby::Style.new(fg: :dark_gray) },
-      { name: "Dim Red", style: RatatuiRuby::Style.new(fg: :red, modifiers: [:dim]) },
-      { name: "Dim Yellow", style: RatatuiRuby::Style.new(fg: :yellow, modifiers: [:dim]) },
+      { name: "Dark Gray", style: @tui.style(fg: :dark_gray) },
+      { name: "Dim Red", style: @tui.style(fg: :red, modifiers: [:dim]) },
+      { name: "Dim Yellow", style: @tui.style(fg: :yellow, modifiers: [:dim]) },
     ]
     @absent_style_index = 0
 
     @bar_sets = [
       { name: "Default (Block)", set: nil },
       {
-name: "Numbers (0-8)",
-set: {
-        0 => "0", 1 => "1", 2 => "2", 3 => "3", 4 => "4", 5 => "5", 6 => "6", 7 => "7", 8 => "8"
+        name: "Numbers (0-8)",
+        set: {
+          0 => "0", 1 => "1", 2 => "2", 3 => "3", 4 => "4", 5 => "5", 6 => "6", 7 => "7", 8 => "8"
+        },
       },
-},
       { name: "ASCII (Heights)", set: [" ", "_", ".", "-", "=", "+", "*", "#", "@"] },
     ]
     @bar_set_index = 0
 
-    @counter = 0
-    @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
-  end
-
-  def run
-    RatatuiRuby.run do
-      loop do
-        render
-        break if handle_input == :quit
-      end
-    end
+    @hotkey_style = @tui.style(modifiers: [:bold, :underlined])
   end
 
   private def render
-    @counter += 1
+    @tui.draw do |frame|
+      data_set = @data_sets[@data_index]
+      direction = @directions[@direction_index][:direction]
+      style = @styles[@style_index][:style]
+      absent_symbol = @absent_symbols[@absent_symbol_index][:symbol]
+      absent_value_style = @absent_styles[@absent_style_index][:style]
+      bar_set = @bar_sets[@bar_set_index][:set]
 
-    data_set = @data_sets[@data_index]
-    direction = @directions[@direction_index][:direction]
-    style = @styles[@style_index][:style]
-    absent_symbol = @absent_symbols[@absent_symbol_index][:symbol]
-    absent_value_style = @absent_styles[@absent_style_index][:style]
-    bar_set = @bar_sets[@bar_set_index][:set]
+      # Use static data for clarity when cycling options
+      current_data = data_set[:data]
 
-    # Use static data for clarity when cycling options
-    current_data = data_set[:data]
+      layout = @tui.layout_split(
+        frame.area,
+        direction: :vertical,
+        constraints: [
+          @tui.constraint_fill(1),
+          @tui.constraint_length(6),
+        ]
+      )
 
-    layout = RatatuiRuby::Layout.new(
-      direction: :vertical,
-      constraints: [
-        RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.length(6),
-      ],
-      children: [
-        # Main content area with multiple sparkline examples
-        RatatuiRuby::Layout.new(
-          direction: :vertical,
-          constraints: [
-            RatatuiRuby::Constraint.length(1),
-            RatatuiRuby::Constraint.length(3),
-            RatatuiRuby::Constraint.length(3),
-            RatatuiRuby::Constraint.length(3),
-            RatatuiRuby::Constraint.length(3),
-            RatatuiRuby::Constraint.fill(1),
-          ],
-          children: [
-            RatatuiRuby::Paragraph.new(
-              text: "Sparkline Widget Demo - Cycle attributes with hotkeys"
-            ),
-            # Sparkline 1: Main interactive sparkline
-            RatatuiRuby::Sparkline.new(
-              data: current_data,
-              direction:,
-              style:,
-              absent_value_symbol: absent_symbol,
-              absent_value_style:,
-              bar_set:,
-              block: RatatuiRuby::Block.new(title: "Interactive Sparkline")
-            ),
-            # Sparkline 2: Same data, opposite direction
-            RatatuiRuby::Sparkline.new(
-              data: current_data.reverse,
-              direction:,
-              style:,
-              absent_value_symbol: absent_symbol,
-              absent_value_style:,
-              bar_set:,
-              block: RatatuiRuby::Block.new(title: "Reversed Data")
-            ),
-            # Sparkline 3: Without absent value symbol (for comparison)
-            RatatuiRuby::Sparkline.new(
-              data: current_data,
-              direction:,
-              style:,
-              bar_set:,
-              block: RatatuiRuby::Block.new(title: "Without Absent Marker")
-            ),
-            # Sparkline 4: Gap pattern responsive to absent marker controls
-            RatatuiRuby::Sparkline.new(
-              data: [5, nil, 8, nil, 6, nil, 9, nil, 7, nil, 10, nil],
-              direction:,
-              style: RatatuiRuby::Style.new(fg: :blue),
-              absent_value_symbol: absent_symbol,
-              absent_value_style:,
-              bar_set:,
-              block: RatatuiRuby::Block.new(title: "Gap Pattern (Responsive)")
-            ),
-            RatatuiRuby::Paragraph.new(text: ""),
-          ]
+      # Main content area with multiple sparkline examples
+      main_content_area = layout[0]
+      main_layout = @tui.layout_split(
+        main_content_area,
+        direction: :vertical,
+        constraints: [
+          @tui.constraint_length(1),
+          @tui.constraint_length(3),
+          @tui.constraint_length(3),
+          @tui.constraint_length(3),
+          @tui.constraint_length(3),
+          @tui.constraint_fill(1),
+        ]
+      )
+
+      frame.render_widget(
+        @tui.paragraph(text: "Sparkline Widget Demo - Cycle attributes with hotkeys"),
+        main_layout[0]
+      )
+
+      # Sparkline 1: Main interactive sparkline
+      frame.render_widget(
+        @tui.sparkline(
+          data: current_data,
+          direction:,
+          style:,
+          absent_value_symbol: absent_symbol,
+          absent_value_style:,
+          bar_set:,
+          block: @tui.block(title: "Interactive Sparkline")
         ),
-        # Bottom control panel
-        RatatuiRuby::Block.new(
+        main_layout[1]
+      )
+
+      # Sparkline 2: Same data, opposite direction
+      frame.render_widget(
+        @tui.sparkline(
+          data: current_data.reverse,
+          direction:,
+          style:,
+          absent_value_symbol: absent_symbol,
+          absent_value_style:,
+          bar_set:,
+          block: @tui.block(title: "Reversed Data")
+        ),
+        main_layout[2]
+      )
+
+      # Sparkline 3: Without absent value symbol (for comparison)
+      frame.render_widget(
+        @tui.sparkline(
+          data: current_data,
+          direction:,
+          style:,
+          bar_set:,
+          block: @tui.block(title: "Without Absent Marker")
+        ),
+        main_layout[3]
+      )
+
+      # Sparkline 4: Gap pattern responsive to absent marker controls
+      frame.render_widget(
+        @tui.sparkline(
+          data: [5, nil, 8, nil, 6, nil, 9, nil, 7, nil, 10, nil],
+          direction:,
+          style: @tui.style(fg: :blue),
+          absent_value_symbol: absent_symbol,
+          absent_value_style:,
+          bar_set:,
+          block: @tui.block(title: "Gap Pattern (Responsive)")
+        ),
+        main_layout[4]
+      )
+
+      # Bottom control panel
+      control_area = layout[1]
+      frame.render_widget(
+        @tui.block(
           title: "Controls",
           borders: [:all],
           children: [
-            RatatuiRuby::Paragraph.new(
+            @tui.paragraph(
               text: [
                 # Line 1: Data
-                RatatuiRuby::Text::Line.new(spans: [
-                  RatatuiRuby::Text::Span.new(content: "↑/↓", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Data (#{@data_sets[@data_index][:name]})"),
+                @tui.text_line(spans: [
+                  @tui.text_span(content: "↑/↓", style: @hotkey_style),
+                  @tui.text_span(content: ": Data (#{@data_sets[@data_index][:name]})"),
                 ]),
                 # Line 2: View
-                RatatuiRuby::Text::Line.new(spans: [
-                  RatatuiRuby::Text::Span.new(content: "d", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Direction (#{@directions[@direction_index][:name]})  "),
-                  RatatuiRuby::Text::Span.new(content: "c", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Color (#{@styles[@style_index][:name]})"),
+                @tui.text_line(spans: [
+                  @tui.text_span(content: "d", style: @hotkey_style),
+                  @tui.text_span(content: ": Direction (#{@directions[@direction_index][:name]})  "),
+                  @tui.text_span(content: "c", style: @hotkey_style),
+                  @tui.text_span(content: ": Color (#{@styles[@style_index][:name]})"),
                 ]),
                 # Line 3: Markers
-                RatatuiRuby::Text::Line.new(spans: [
-                  RatatuiRuby::Text::Span.new(content: "m", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Absent Value Symbol (#{@absent_symbols[@absent_symbol_index][:name]})  "),
-                  RatatuiRuby::Text::Span.new(content: "s", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Absent Value Style (#{@absent_styles[@absent_style_index][:name]})"),
+                @tui.text_line(spans: [
+                  @tui.text_span(content: "m", style: @hotkey_style),
+                  @tui.text_span(content: ": Absent Value Symbol (#{@absent_symbols[@absent_symbol_index][:name]})  "),
+                  @tui.text_span(content: "s", style: @hotkey_style),
+                  @tui.text_span(content: ": Absent Value Style (#{@absent_styles[@absent_style_index][:name]})"),
                 ]),
                 # Line 4: General
-                RatatuiRuby::Text::Line.new(spans: [
-                  RatatuiRuby::Text::Span.new(content: "b", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Bar Set (#{@bar_sets[@bar_set_index][:name]})  "),
-                  RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Quit"),
+                @tui.text_line(spans: [
+                  @tui.text_span(content: "b", style: @hotkey_style),
+                  @tui.text_span(content: ": Bar Set (#{@bar_sets[@bar_set_index][:name]})  "),
+                  @tui.text_span(content: "q", style: @hotkey_style),
+                  @tui.text_span(content: ": Quit"),
                 ]),
               ]
             ),
           ]
         ),
-      ]
-    )
-
-    RatatuiRuby.draw(layout)
+        control_area
+      )
+    end
   end
 
   private def handle_input
-    event = RatatuiRuby.poll_event
+    event = @tui.poll_event
     return unless event
 
     case event

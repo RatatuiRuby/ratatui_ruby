@@ -46,18 +46,24 @@ class LineGaugeDemoApp
     ]
     @unfilled_color_index = 1
 
-    @base_styles = [
-      { name: "None", style: nil },
-      { name: "Bold White", style: RatatuiRuby::Style.new(fg: :white, modifiers: [:bold]) },
-      { name: "White on Blue", style: RatatuiRuby::Style.new(fg: :white, bg: :blue) },
-      { name: "Italic Cyan", style: RatatuiRuby::Style.new(fg: :cyan, modifiers: [:italic]) },
-    ]
+    @base_styles = nil # Initialized in run when @tui is available
     @base_style_index = 0
-    @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
+    @hotkey_style = nil # Initialized in run when @tui is available
   end
 
   def run
-    RatatuiRuby.run do
+    RatatuiRuby.run do |tui|
+      @tui = tui
+
+      # Initialize styles using tui helpers
+      @base_styles = [
+        { name: "None", style: nil },
+        { name: "Bold White", style: tui.style(fg: :white, modifiers: [:bold]) },
+        { name: "White on Blue", style: tui.style(fg: :white, bg: :blue) },
+        { name: "Italic Cyan", style: tui.style(fg: :cyan, modifiers: [:italic]) },
+      ]
+      @hotkey_style = tui.style(modifiers: [:bold, :underlined])
+
       loop do
         render
         break if handle_input == :quit
@@ -72,98 +78,105 @@ class LineGaugeDemoApp
     filled_color = @filled_colors[@filled_color_index][:color]
     unfilled_color = @unfilled_colors[@unfilled_color_index][:color]
 
-    filled_style = filled_color ? RatatuiRuby::Style.new(fg: filled_color) : RatatuiRuby::Style.new(fg: :white)
-    unfilled_style = unfilled_color ? RatatuiRuby::Style.new(fg: unfilled_color) : RatatuiRuby::Style.new(fg: :dark_gray)
+    filled_style = filled_color ? @tui.style(fg: filled_color) : @tui.style(fg: :white)
+    unfilled_style = unfilled_color ? @tui.style(fg: unfilled_color) : @tui.style(fg: :dark_gray)
 
-    layout = RatatuiRuby::Layout.new(
-      direction: :vertical,
-      constraints: [
-        RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.length(5),
-      ],
-      children: [
-        # Main content area
-        RatatuiRuby::Layout.new(
-          direction: :vertical,
-          constraints: [
-            RatatuiRuby::Constraint.length(1),
-            RatatuiRuby::Constraint.length(4),
-            RatatuiRuby::Constraint.length(4),
-            RatatuiRuby::Constraint.fill(1),
-          ],
-          children: [
-            RatatuiRuby::Paragraph.new(
-              text: "LineGauge Widget Demo - Cycle attributes with hotkeys"
-            ),
-            # Example 1: Static gauge showing all features
-            RatatuiRuby::LineGauge.new(
-              ratio: @ratio,
-              label: "#{(@ratio * 100).to_i}%",
-              style: @base_styles[@base_style_index][:style],
-              filled_style:,
-              unfilled_style:,
-              filled_symbol: @filled_symbols[@filled_symbol_index][:symbol],
-              unfilled_symbol: @unfilled_symbols[@unfilled_symbol_index][:symbol],
-              block: RatatuiRuby::Block.new(title: "Interactive Gauge")
-            ),
-            # Example 2: Inverted colors for contrast demonstration
-            RatatuiRuby::LineGauge.new(
-              ratio: 1.0 - @ratio,
-              label: "#{((1.0 - @ratio) * 100).to_i}%",
-              filled_style: RatatuiRuby::Style.new(fg: :black, bg: :yellow),
-              unfilled_style: RatatuiRuby::Style.new(fg: :white, bg: :dark_gray),
-              filled_symbol: @filled_symbols[@filled_symbol_index][:symbol],
-              unfilled_symbol: @unfilled_symbols[@unfilled_symbol_index][:symbol],
-              block: RatatuiRuby::Block.new(title: "Inverse (100% - ratio)")
-            ),
-            RatatuiRuby::Paragraph.new(text: ""),
-          ]
-        ),
-        # Bottom control panel
-        RatatuiRuby::Block.new(
-          title: "Controls",
-          borders: [:all],
-          children: [
-            RatatuiRuby::Paragraph.new(
-              text: [
-                # Line 1: General
-                RatatuiRuby::Text::Line.new(spans: [
-                  RatatuiRuby::Text::Span.new(content: "←/→", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Ratio (#{(@ratio * 100).to_i}%)  "),
-                  RatatuiRuby::Text::Span.new(content: "b", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Base Style (#{@base_styles[@base_style_index][:name]})  "),
-                  RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Quit"),
-                ]),
-                # Line 2: Filled
-                RatatuiRuby::Text::Line.new(spans: [
-                  RatatuiRuby::Text::Span.new(content: "f", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Filled Symbol (#{@filled_symbols[@filled_symbol_index][:name]})  "),
-                  RatatuiRuby::Text::Span.new(content: "c", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Filled Color (#{@filled_colors[@filled_color_index][:name]})"),
-                ]),
-                # Line 3: Unfilled
-                RatatuiRuby::Text::Line.new(spans: [
-                  RatatuiRuby::Text::Span.new(content: "u", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Unfilled Symbol (#{@unfilled_symbols[@unfilled_symbol_index][:name]})  "),
-                  RatatuiRuby::Text::Span.new(content: "x", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Unfilled Color (#{@unfilled_colors[@unfilled_color_index][:name]})"),
-                ]),
-              ]
-            ),
-          ]
-        ),
-      ]
-    )
+    @tui.draw do |frame|
+      # Split into main content and control panel
+      main_area, controls_area = @tui.layout_split(
+        frame.area,
+        direction: :vertical,
+        constraints: [
+          @tui.constraint_fill(1),
+          @tui.constraint_length(5),
+        ]
+      )
 
-    RatatuiRuby.draw(layout)
+      # Split main area into title, gauges, and spacer
+      title_area, gauge1_area, gauge2_area, spacer_area = @tui.layout_split(
+        main_area,
+        direction: :vertical,
+        constraints: [
+          @tui.constraint_length(1),
+          @tui.constraint_length(4),
+          @tui.constraint_length(4),
+          @tui.constraint_fill(1),
+        ]
+      )
+
+      # Render title
+      title = @tui.paragraph(text: "LineGauge Widget Demo - Cycle attributes with hotkeys")
+      frame.render_widget(title, title_area)
+
+      # Example 1: Static gauge showing all features
+      gauge1 = @tui.line_gauge(
+        ratio: @ratio,
+        label: "#{(@ratio * 100).to_i}%",
+        style: @base_styles[@base_style_index][:style],
+        filled_style:,
+        unfilled_style:,
+        filled_symbol: @filled_symbols[@filled_symbol_index][:symbol],
+        unfilled_symbol: @unfilled_symbols[@unfilled_symbol_index][:symbol],
+        block: @tui.block(title: "Interactive Gauge")
+      )
+      frame.render_widget(gauge1, gauge1_area)
+
+      # Example 2: Inverted colors for contrast demonstration
+      gauge2 = @tui.line_gauge(
+        ratio: 1.0 - @ratio,
+        label: "#{((1.0 - @ratio) * 100).to_i}%",
+        filled_style: @tui.style(fg: :black, bg: :yellow),
+        unfilled_style: @tui.style(fg: :white, bg: :dark_gray),
+        filled_symbol: @filled_symbols[@filled_symbol_index][:symbol],
+        unfilled_symbol: @unfilled_symbols[@unfilled_symbol_index][:symbol],
+        block: @tui.block(title: "Inverse (100% - ratio)")
+      )
+      frame.render_widget(gauge2, gauge2_area)
+
+      # Render empty spacer
+      spacer = @tui.paragraph(text: "")
+      frame.render_widget(spacer, spacer_area)
+
+      # Bottom control panel
+      controls = @tui.block(
+        title: "Controls",
+        borders: [:all],
+        children: [
+          @tui.paragraph(
+            text: [
+              # Line 1: General
+              @tui.text_line(spans: [
+                @tui.text_span(content: "←/→", style: @hotkey_style),
+                @tui.text_span(content: ": Ratio (#{(@ratio * 100).to_i}%)  "),
+                @tui.text_span(content: "b", style: @hotkey_style),
+                @tui.text_span(content: ": Base Style (#{@base_styles[@base_style_index][:name]})  "),
+                @tui.text_span(content: "q", style: @hotkey_style),
+                @tui.text_span(content: ": Quit"),
+              ]),
+              # Line 2: Filled
+              @tui.text_line(spans: [
+                @tui.text_span(content: "f", style: @hotkey_style),
+                @tui.text_span(content: ": Filled Symbol (#{@filled_symbols[@filled_symbol_index][:name]})  "),
+                @tui.text_span(content: "c", style: @hotkey_style),
+                @tui.text_span(content: ": Filled Color (#{@filled_colors[@filled_color_index][:name]})"),
+              ]),
+              # Line 3: Unfilled
+              @tui.text_line(spans: [
+                @tui.text_span(content: "u", style: @hotkey_style),
+                @tui.text_span(content: ": Unfilled Symbol (#{@unfilled_symbols[@unfilled_symbol_index][:name]})  "),
+                @tui.text_span(content: "x", style: @hotkey_style),
+                @tui.text_span(content: ": Unfilled Color (#{@unfilled_colors[@unfilled_color_index][:name]})"),
+              ]),
+            ]
+          ),
+        ]
+      )
+      frame.render_widget(controls, controls_area)
+    end
   end
 
   private def handle_input
-    event = RatatuiRuby.poll_event
-    return unless event
-
-    case event
+    case @tui.poll_event
     in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit
     in type: :key, code: "right"
@@ -180,6 +193,9 @@ class LineGaugeDemoApp
       @unfilled_symbol_index = (@unfilled_symbol_index + 1) % @unfilled_symbols.length
     in type: :key, code: "x"
       @unfilled_color_index = (@unfilled_color_index + 1) % @unfilled_colors.length
+    else
+      # Ignore other events
+      nil
     end
   end
 end

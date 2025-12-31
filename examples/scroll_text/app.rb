@@ -9,17 +9,22 @@ require "ratatui_ruby"
 
 # Demo: Scrollable Paragraph
 # Shows how to scroll through long text content using arrow keys
+#
+# Helper: Disable experimental warnings since we use line_count/line_width
+RatatuiRuby.experimental_warnings = false
+
 class ScrollTextApp
-  def initialize
-    @scroll_x = 0
-    @scroll_y = 0
-
-    @lines = (1..100).map { |i| "Line #{i}: This is a long line of text that can be scrolled horizontally" }
-    @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
-  end
-
   def run
-    RatatuiRuby.run do
+    RatatuiRuby.run do |tui|
+      @tui = tui
+      @scroll_x = 0
+      @scroll_y = 0
+
+      @lines = (1..100).map do |i|
+        "Line #{i}: " + ("This is a long line of text that can be scrolled horizontally. " * 3) + "End of line #{i}"
+      end
+      @hotkey_style = @tui.style(modifiers: [:bold, :underlined])
+
       loop do
         draw
         break if handle_input == :quit
@@ -28,11 +33,12 @@ class ScrollTextApp
   end
 
   def render
+    # No-op for compatibility if needed, or alias to draw, but draw now uses @tui
     draw
   end
 
   def handle_input
-    case RatatuiRuby.poll_event
+    case @tui.poll_event
     in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit
     in type: :key, code: "up"
@@ -49,52 +55,53 @@ class ScrollTextApp
   end
 
   private def draw
-    text = @lines.join("\n")
-
-    # Main content
-    main_paragraph = RatatuiRuby::Paragraph.new(
-      text:,
-      scroll: [@scroll_y, @scroll_x],
-      block: RatatuiRuby::Block.new(
-        title: "Scrollable Text (#{text.lines.count} lines)",
-        borders: [:all]
+    @tui.draw do |frame|
+      layout = @tui.layout_split(
+        frame.area,
+        direction: :vertical,
+        constraints: [
+          @tui.constraint_fill(1),
+          @tui.constraint_length(5),
+        ]
       )
-    )
 
-    # Bottom control panel
-    control_panel = RatatuiRuby::Block.new(
-      title: "Controls",
-      borders: [:all],
-      children: [
-        RatatuiRuby::Paragraph.new(
-          text: [
-            RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "NAVIGATION (Size: #{main_paragraph.line_count(65535)}x#{main_paragraph.line_width})", style: RatatuiRuby::Style.new(modifiers: [:bold])),
-            ]),
-            RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "↑/↓", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Vert Scroll (#{@scroll_y}/#{main_paragraph.line_count(65535)})  "),
-              RatatuiRuby::Text::Span.new(content: "←/→", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Horz Scroll (#{@scroll_x}/#{main_paragraph.line_width})  "),
-              RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Quit"),
-            ]),
-          ]
-        ),
+      text = @lines.join("\n")
+
+      # Main content
+      main_paragraph = @tui.paragraph(
+        text:,
+        scroll: [@scroll_y, @scroll_x],
+        block: @tui.block(
+          title: "Scrollable Text (#{text.lines.count} lines)",
+          borders: [:all]
+        )
+      )
+      frame.render_widget(main_paragraph, layout[0])
+
+      # Bottom control panel
+      control_text = [
+        @tui.text_line(spans: [
+          @tui.text_span(content: "NAVIGATION (Size: #{main_paragraph.line_count(65535)}x#{main_paragraph.line_width})", style: @tui.style(modifiers: [:bold])),
+        ]),
+        @tui.text_line(spans: [
+          @tui.text_span(content: "↑/↓", style: @hotkey_style),
+          @tui.text_span(content: ": Vert Scroll (#{@scroll_y}/#{main_paragraph.line_count(65535)})  "),
+          @tui.text_span(content: "←/→", style: @hotkey_style),
+          @tui.text_span(content: ": Horz Scroll (#{@scroll_x}/#{main_paragraph.line_width})  "),
+          @tui.text_span(content: "q", style: @hotkey_style),
+          @tui.text_span(content: ": Quit"),
+        ]),
       ]
-    )
 
-    # Vertical Layout
-    layout = RatatuiRuby::Layout.new(
-      direction: :vertical,
-      constraints: [
-        RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.length(5),
-      ],
-      children: [main_paragraph, control_panel]
-    )
-
-    RatatuiRuby.draw(layout)
+      control_paragraph = @tui.paragraph(
+        text: control_text,
+        block: @tui.block(
+          title: "Controls",
+          borders: [:all]
+        )
+      )
+      frame.render_widget(control_paragraph, layout[1])
+    end
   end
 end
 

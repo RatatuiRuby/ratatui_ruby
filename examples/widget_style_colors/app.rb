@@ -15,7 +15,9 @@ class ColorGradientDemo
   def run
     RatatuiRuby.run do |tui|
       loop do
-        render(tui)
+        tui.draw do |frame|
+          frame.render_widget(render(tui), frame.area)
+        end
         event = tui.poll_event
         break if event&.key? && (event.ctrl_c? || event == :q)
       end
@@ -44,7 +46,7 @@ class ColorGradientDemo
       lines << tui.text_line(spans:)
     end
 
-    paragraph = tui.paragraph(
+    tui.paragraph(
       text: lines,
       block: tui.block(
         title: "Hex Color Gradient (Press 'q' or Ctrl+C to exit)",
@@ -52,8 +54,6 @@ class ColorGradientDemo
         border_type: :rounded
       )
     )
-
-    tui.draw(paragraph)
   end
 
   private def hsl_to_rgb(hue, saturation, lightness)

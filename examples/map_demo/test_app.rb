@@ -60,7 +60,8 @@ class TestMapDemoApp < Minitest::Test
       end
 
       # Verify the background color is set on the view (Unit test of the view method)
-      view = @app.view(0.0, :braille, nil)
+      session = RatatuiRuby::Session.new
+      view = @app.view(session, 0.0, :braille, nil)
       assert_nil view.background_color
 
       # Verify labels are included in the shapes (default show_labels: true)

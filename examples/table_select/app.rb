@@ -22,14 +22,6 @@ PROCESSES = [
 class TableSelectApp
   attr_reader :selected_index, :selected_col, :current_style_index, :column_spacing, :highlight_spacing, :column_highlight_style, :cell_highlight_style
 
-  STYLES = [
-    { name: "Cyan", style: RatatuiRuby::Style.new(fg: :cyan) },
-    { name: "Red", style: RatatuiRuby::Style.new(fg: :red) },
-    { name: "Green", style: RatatuiRuby::Style.new(fg: :green) },
-    { name: "Blue on White", style: RatatuiRuby::Style.new(fg: :blue, bg: :white) },
-    { name: "Magenta", style: RatatuiRuby::Style.new(fg: :magenta, modifiers: [:bold]) },
-  ].freeze
-
   HIGHLIGHT_SPACINGS = [
     { name: "When Selected", spacing: :when_selected },
     { name: "Always", spacing: :always },
@@ -42,42 +34,56 @@ class TableSelectApp
     @current_style_index = 0
     @column_spacing = 1
     @highlight_spacing_index = 0
-    @column_highlight_style = RatatuiRuby::Style.new(fg: :magenta)
     @show_column_highlight = true
-    @cell_highlight_style = RatatuiRuby::Style.new(fg: :white, bg: :red, modifiers: [:bold])
     @show_cell_highlight = true
-    @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
   end
 
   def run
-    RatatuiRuby.run do
+    RatatuiRuby.run do |tui|
+      @tui = tui
+      setup_styles
       loop do
-        render
+        @tui.draw do |frame|
+          render(frame)
+        end
         break if handle_input == :quit
       end
     end
   end
 
-  private def render
+  private def setup_styles
+    @styles = [
+      { name: "Cyan", style: @tui.style(fg: :cyan) },
+      { name: "Red", style: @tui.style(fg: :red) },
+      { name: "Green", style: @tui.style(fg: :green) },
+      { name: "Blue on White", style: @tui.style(fg: :blue, bg: :white) },
+      { name: "Magenta", style: @tui.style(fg: :magenta, modifiers: [:bold]) },
+    ]
+    @column_highlight_style = @tui.style(fg: :magenta)
+    @cell_highlight_style = @tui.style(fg: :white, bg: :red, modifiers: [:bold])
+    @hotkey_style = @tui.style(modifiers: [:bold, :underlined])
+  end
+
+  private def render(frame)
     # Create table rows from process data
     rows = PROCESSES.map { |p| [p[:pid].to_s, p[:name], "#{p[:cpu]}%"] }
 
     # Define column widths
     widths = [
-      RatatuiRuby::Constraint.length(8),
-      RatatuiRuby::Constraint.length(15),
-      RatatuiRuby::Constraint.length(10),
+      @tui.constraint_length(8),
+      @tui.constraint_length(15),
+      @tui.constraint_length(10),
     ]
 
     # Create highlight style (yellow text)
-    highlight_style = RatatuiRuby::Style.new(fg: :yellow)
+    highlight_style = @tui.style(fg: :yellow)
 
-    current_style_entry = STYLES[@current_style_index]
+    current_style_entry = @styles[@current_style_index]
     current_spacing_entry = HIGHLIGHT_SPACINGS[@highlight_spacing_index]
     selection_label = @selected_index.nil? ? "none" : @selected_index.to_s
 
     # Main table
-    table = RatatuiRuby::Table.new(
+    table = @tui.table(
       header: ["PID", "Name", "CPU"],
       rows:,
       widths:,
@@ -90,7 +96,7 @@ class TableSelectApp
       cell_highlight_style: @show_cell_highlight ? @cell_highlight_style : nil,
       style: current_style_entry[:style],
       column_spacing: @column_spacing,
-      block: RatatuiRuby::Block.new(
+      block: @tui.block(
         title: "Processes",
         borders: :all
       ),
@@ -98,37 +104,37 @@ class TableSelectApp
     )
 
     # Bottom control panel
-    control_panel = RatatuiRuby::Block.new(
+    control_panel = @tui.block(
       title: "Controls",
       borders: [:all],
       children: [
-        RatatuiRuby::Paragraph.new(
+        @tui.paragraph(
           text: [
             # Line 1: Navigation
-            RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "↑/↓", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Nav Row  "),
-              RatatuiRuby::Text::Span.new(content: "←/→", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Nav Col  "),
-              RatatuiRuby::Text::Span.new(content: "x", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Toggle Row (#{selection_label})  "),
-              RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Quit"),
+            @tui.text_line(spans: [
+              @tui.text_span(content: "↑/↓", style: @hotkey_style),
+              @tui.text_span(content: ": Nav Row  "),
+              @tui.text_span(content: "←/→", style: @hotkey_style),
+              @tui.text_span(content: ": Nav Col  "),
+              @tui.text_span(content: "x", style: @hotkey_style),
+              @tui.text_span(content: ": Toggle Row (#{selection_label})  "),
+              @tui.text_span(content: "q", style: @hotkey_style),
+              @tui.text_span(content: ": Quit"),
             ]),
             # Line 2: Table Controls
-            RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "s", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Style (#{current_style_entry[:name]})  "),
-              RatatuiRuby::Text::Span.new(content: "p", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Spacing (#{current_spacing_entry[:name]})  "),
+            @tui.text_line(spans: [
+              @tui.text_span(content: "s", style: @hotkey_style),
+              @tui.text_span(content: ": Style (#{current_style_entry[:name]})  "),
+              @tui.text_span(content: "p", style: @hotkey_style),
+              @tui.text_span(content: ": Spacing (#{current_spacing_entry[:name]})  "),
             ]),
             # Line 3: More Controls
-            RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: ": Col Space (#{@column_spacing})  "),
-              RatatuiRuby::Text::Span.new(content: "c", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Col Highlight (#{@show_column_highlight ? 'On' : 'Off'})  "),
-              RatatuiRuby::Text::Span.new(content: "z", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Cell Highlight (#{@show_cell_highlight ? 'On' : 'Off'})"),
+            @tui.text_line(spans: [
+              @tui.text_span(content: ": Col Space (#{@column_spacing})  "),
+              @tui.text_span(content: "c", style: @hotkey_style),
+              @tui.text_span(content: ": Col Highlight (#{@show_column_highlight ? 'On' : 'Off'})  "),
+              @tui.text_span(content: "z", style: @hotkey_style),
+              @tui.text_span(content: ": Cell Highlight (#{@show_cell_highlight ? 'On' : 'Off'})"),
             ]),
           ]
         ),
@@ -136,21 +142,21 @@ class TableSelectApp
     )
 
     # Layout
-    layout = RatatuiRuby::Layout.new(
+    layout = @tui.layout_split(
+      frame.area,
       direction: :vertical,
       constraints: [
-        RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.length(5),
-      ],
-      children: [table, control_panel]
+        @tui.constraint_fill(1),
+        @tui.constraint_length(5),
+      ]
     )
 
-    # Draw the table
-    RatatuiRuby.draw(layout)
+    frame.render_widget(table, layout[0])
+    frame.render_widget(control_panel, layout[1])
   end
 
   private def handle_input
-    event = RatatuiRuby.poll_event
+    event = @tui.poll_event
     return unless event
 
     case event
@@ -172,7 +178,7 @@ class TableSelectApp
       @selected_col = (@selected_col || 0) - 1
       @selected_col = 2 if @selected_col.negative?
     in type: :key, code: "s"
-      @current_style_index = (@current_style_index + 1) % STYLES.length
+      @current_style_index = (@current_style_index + 1) % @styles.length
     in type: :key, code: "+"
       @column_spacing += 1
     in type: :key, code: "-"

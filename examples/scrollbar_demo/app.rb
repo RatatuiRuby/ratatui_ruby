@@ -7,6 +7,7 @@ $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
 # Simple Scrollbar Demo
+# Simple Scrollbar Demo
 class ScrollbarDemoApp
   def initialize
     @scroll_position = 0
@@ -63,10 +64,11 @@ class ScrollbarDemoApp
   end
 
   def run
-    RatatuiRuby.run do
+    RatatuiRuby.run do |tui|
+      @tui = tui
       loop do
         draw
-        event = RatatuiRuby.poll_event
+        event = @tui.poll_event
         break if event == "q" || event == :ctrl_c
 
         handle_event(event)
@@ -96,47 +98,44 @@ class ScrollbarDemoApp
   end
 
   private def draw
-    # Calculate visible lines based on scroll position
-    # In a real app, you'd want to know the height of the available area.
-    # For this demo, we'll just show all lines but offset the text.
-    visible_lines = @lines[@scroll_position..-1] || []
+    @tui.draw do |frame|
+      # Calculate visible lines based on scroll position
+      # In a real app, you'd want to know the height of the available area.
+      # For this demo, we'll just show all lines but offset the text.
+      visible_lines = @lines[@scroll_position..-1] || []
 
-    # Paragraph with content
-    theme = @themes[@theme_index]
-    orientation = @orientations[@orientation_index]
+      # Paragraph with content
+      theme = @themes[@theme_index]
+      orientation = @orientations[@orientation_index]
 
-    p = RatatuiRuby::Paragraph.new(
-      text: visible_lines.join("\n"),
-      block: RatatuiRuby::Block.new(
-        titles: [
-          { content: "Scroll with Mouse Wheel | Theme: #{theme[:name]} | Orientation: #{orientation}" },
-          { content: "Press 's' to cycle theme, 'o' to cycle orientation", position: :bottom, alignment: :center },
-        ],
-        borders: [:all]
+      p = @tui.paragraph(
+        text: visible_lines.join("\n"),
+        block: @tui.block(
+          titles: [
+            { content: "Scroll with Mouse Wheel | Theme: #{theme[:name]} | Orientation: #{orientation}" },
+            { content: "Press 's' to cycle theme, 'o' to cycle orientation", position: :bottom, alignment: :center },
+          ],
+          borders: [:all]
+        )
       )
-    )
 
-    # Scrollbar
-    s = RatatuiRuby::Scrollbar.new(
-      content_length: @content_length,
-      position: @scroll_position,
-      orientation:,
-      track_symbol: theme[:track_symbol],
-      thumb_symbol: theme[:thumb_symbol],
-      track_style: theme[:track_style],
-      thumb_style: theme[:thumb_style],
-      begin_symbol: theme[:begin_symbol],
-      end_symbol: theme[:end_symbol]
-    )
+      # Scrollbar
+      s = @tui.scrollbar(
+        content_length: @content_length,
+        position: @scroll_position,
+        orientation:,
+        track_symbol: theme[:track_symbol],
+        thumb_symbol: theme[:thumb_symbol],
+        track_style: theme[:track_style],
+        thumb_style: theme[:thumb_style],
+        begin_symbol: theme[:begin_symbol],
+        end_symbol: theme[:end_symbol]
+      )
 
-    # Use Overlay to stack Scrollbar on top of Paragraph.
-    # The Scrollbar will position itself on the correct edge (top/bottom/left/right)
-    # based on its orientation, demonstrating that the property works independently of layout.
-    overlay = RatatuiRuby::Overlay.new(
-      layers: [p, s]
-    )
-
-    RatatuiRuby.draw(overlay)
+      # Render paragraph first, then scrollbar on top
+      frame.render_widget(p, frame.area)
+      frame.render_widget(s, frame.area)
+    end
   end
 end
 

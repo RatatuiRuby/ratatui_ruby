@@ -9,67 +9,74 @@ require "ratatui_ruby"
 
 class RatatuiLogoDemoApp
   def run
-    RatatuiRuby.run do
+    RatatuiRuby.run do |tui|
       loop do
-        render
-        break if handle_input == :quit
+        render(tui)
+        break if handle_input(tui) == :quit
       end
     end
   end
 
-  private def render
-    # Main content: The Logo
-    logo = RatatuiRuby::RatatuiLogo.new
-
-    # Center the logo using nested Layouts
-    # Logo is roughly 47x8
-    centered_logo = RatatuiRuby::Layout.new(
-      direction: :vertical,
-      flex: :center,
-      constraints: [RatatuiRuby::Constraint.length(10)], # Height + margin
-      children: [
-        RatatuiRuby::Layout.new(
-          direction: :horizontal,
-          flex: :center,
-          constraints: [RatatuiRuby::Constraint.length(50)], # Width + margin
-          children: [logo]
-        ),
-      ]
-    )
-
-    # Control Panel
-    control_text = RatatuiRuby::Text::Line.new(spans: [
-      RatatuiRuby::Text::Span.new(content: "q", style: RatatuiRuby::Style.new(modifiers: [:bold, :underlined])),
-      RatatuiRuby::Text::Span.new(content: ": Quit"),
-    ])
-
-    control_panel = RatatuiRuby::Paragraph.new(
-      text: [control_text],
-      block: RatatuiRuby::Block.new(
-        title: "Controls",
-        borders: [:top],
-        style: RatatuiRuby::Style.new(fg: :dark_gray)
+  private def render(tui)
+    tui.draw do |frame|
+      # Layout
+      layout = tui.layout_split(
+        frame.area,
+        direction: :vertical,
+        constraints: [
+          tui.constraint_fill(1), # Fill remaining space
+          tui.constraint_length(3),
+        ]
       )
-    )
 
-    # Layout
-    layout = RatatuiRuby::Layout.new(
-      direction: :vertical,
-      constraints: [
-        RatatuiRuby::Constraint.fill(1), # Fill remaining space
-        RatatuiRuby::Constraint.length(3),
-      ],
-      children: [
-        centered_logo,
-        control_panel,
-      ]
-    )
+      # Main Area
+      main_area = layout[0]
 
-    RatatuiRuby.draw(layout)
+      # Center the logo using nested Layouts
+      # Logo is roughly 47x8
+      # Vertical Center
+      v_center_layout = tui.layout_split(
+        main_area,
+        direction: :vertical,
+        flex: :center,
+        constraints: [tui.constraint_length(10)] # Height + margin
+      )
+
+      # Horizontal Center
+      h_center_layout = tui.layout_split(
+        v_center_layout[0],
+        direction: :horizontal,
+        flex: :center,
+        constraints: [tui.constraint_length(50)] # Width + margin
+      )
+
+      # Main content: The Logo
+      logo = RatatuiRuby::RatatuiLogo.new
+      frame.render_widget(logo, h_center_layout[0])
+
+      # Control Panel
+      control_area = layout[1]
+
+      control_text = tui.text_line(spans: [
+        tui.text_span(content: "q", style: tui.style(modifiers: [:bold, :underlined])),
+        tui.text_span(content: ": Quit"),
+      ])
+
+      control_panel = tui.paragraph(
+        text: [control_text],
+        block: tui.block(
+          title: "Controls",
+          borders: [:top],
+          style: tui.style(fg: :dark_gray)
+        )
+      )
+
+      frame.render_widget(control_panel, control_area)
+    end
   end
 
-  private def handle_input
-    case RatatuiRuby.poll_event
+  private def handle_input(tui)
+    case tui.poll_event
     in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit
     else

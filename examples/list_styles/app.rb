@@ -33,12 +33,13 @@ class ListStylesApp
       { name: "On", repeat: true },
     ]
     @repeat_index = 0
-
-    @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
   end
 
   def run
-    RatatuiRuby.run do
+    RatatuiRuby.run do |tui|
+      @tui = tui
+      @hotkey_style = @tui.style(modifiers: [:bold, :underlined])
+
       loop do
         render
         break if handle_input == :quit
@@ -53,67 +54,69 @@ class ListStylesApp
     spacing_config = @highlight_spacings[@highlight_spacing_index]
     repeat_config = @repeat_modes[@repeat_index]
 
-    # Main content
-    main_list = RatatuiRuby::List.new(
-      items: @items,
-      selected_index: @selected_index,
-      style: RatatuiRuby::Style.new(fg: :white, bg: :black),
-      highlight_style: RatatuiRuby::Style.new(fg: :blue, bg: :white, modifiers: [:bold]),
-      highlight_symbol: ">> ",
-      repeat_highlight_symbol: repeat_config[:repeat],
-      highlight_spacing: spacing_config[:spacing],
-      direction: direction_config[:direction],
-      block: RatatuiRuby::Block.new(
-        title: "Items",
-        borders: [:all]
+    @tui.draw do |frame|
+      # Split into main content and control panel
+      main_area, control_area = @tui.layout_split(
+        frame.area,
+        direction: :vertical,
+        constraints: [
+          @tui.constraint_fill(1),
+          @tui.constraint_length(5),
+        ]
       )
-    )
 
-    # Bottom control panel
-    control_panel = RatatuiRuby::Block.new(
-      title: "Controls",
-      borders: [:all],
-      children: [
-        RatatuiRuby::Paragraph.new(
-          text: [
-            RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "↑/↓", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Select (#{selection_label})  "),
-              RatatuiRuby::Text::Span.new(content: "x", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Toggle Selection  "),
-              RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Quit"),
-            ]),
-            RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "d", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Direction (#{direction_config[:name]})  "),
-              RatatuiRuby::Text::Span.new(content: "s", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Spacing (#{spacing_config[:name]})"),
-            ]),
-            RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "r", style: @hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Repeat Symbol (#{repeat_config[:name]})"),
-            ]),
-          ]
-        ),
-      ]
-    )
+      # Render list
+      main_list = @tui.list(
+        items: @items,
+        selected_index: @selected_index,
+        style: @tui.style(fg: :white, bg: :black),
+        highlight_style: @tui.style(fg: :blue, bg: :white, modifiers: [:bold]),
+        highlight_symbol: ">> ",
+        repeat_highlight_symbol: repeat_config[:repeat],
+        highlight_spacing: spacing_config[:spacing],
+        direction: direction_config[:direction],
+        block: @tui.block(
+          title: "Items",
+          borders: [:all]
+        )
+      )
+      frame.render_widget(main_list, main_area)
 
-    # Vertical Layout
-    layout = RatatuiRuby::Layout.new(
-      direction: :vertical,
-      constraints: [
-        RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.length(5),
-      ],
-      children: [main_list, control_panel]
-    )
-
-    RatatuiRuby.draw(layout)
+      # Render control panel
+      control_panel = @tui.block(
+        title: "Controls",
+        borders: [:all],
+        children: [
+          @tui.paragraph(
+            text: [
+              @tui.text_line(spans: [
+                @tui.text_span(content: "↑/↓", style: @hotkey_style),
+                @tui.text_span(content: ": Select (#{selection_label})  "),
+                @tui.text_span(content: "x", style: @hotkey_style),
+                @tui.text_span(content: ": Toggle Selection  "),
+                @tui.text_span(content: "q", style: @hotkey_style),
+                @tui.text_span(content: ": Quit"),
+              ]),
+              @tui.text_line(spans: [
+                @tui.text_span(content: "d", style: @hotkey_style),
+                @tui.text_span(content: ": Direction (#{direction_config[:name]})  "),
+                @tui.text_span(content: "s", style: @hotkey_style),
+                @tui.text_span(content: ": Spacing (#{spacing_config[:name]})"),
+              ]),
+              @tui.text_line(spans: [
+                @tui.text_span(content: "r", style: @hotkey_style),
+                @tui.text_span(content: ": Repeat Symbol (#{repeat_config[:name]})"),
+              ]),
+            ]
+          ),
+        ]
+      )
+      frame.render_widget(control_panel, control_area)
+    end
   end
 
   private def handle_input
-    case RatatuiRuby.poll_event
+    case @tui.poll_event
     in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit
     in type: :key, code: "up"

@@ -11,13 +11,13 @@ class DiagonalWidget
   def render(area)
     # Draw a diagonal line within the area
     (0..10).filter_map do |i|
-      next if area.x + i >= area.x + area.width || area.y + i >= area.y + area.height
+      next if i >= area.width || i >= area.height
 
       RatatuiRuby::Draw.string(
         area.x + i,
         area.y + i,
         "\\",
-        { fg: :red, modifiers: [:bold] }
+        RatatuiRuby::Style.new(fg: :red, modifiers: [:bold])
       )
     end
   end
@@ -27,21 +27,21 @@ class CustomWidgetApp
   def run
     RatatuiRuby.run do |tui|
       loop do
-        tui.draw(
-          RatatuiRuby::Layout.new(
+        tui.draw do |frame|
+          layout = tui.layout_split(
+            frame.area,
             direction: :vertical,
             constraints: [
-              RatatuiRuby::Constraint.percentage(50),
-              RatatuiRuby::Constraint.percentage(50),
-            ],
-            children: [
-              RatatuiRuby::Paragraph.new(text: "Above custom widget"),
-              DiagonalWidget.new,
+              tui.constraint_percentage(50),
+              tui.constraint_percentage(50),
             ]
           )
-        )
 
-        event = RatatuiRuby.poll_event
+          frame.render_widget(tui.paragraph(text: "Above custom widget"), layout[0])
+          frame.render_widget(DiagonalWidget.new, layout[1])
+        end
+
+        event = tui.poll_event
         break if event == "q" || event == :ctrl_c
       end
     end

@@ -117,7 +117,9 @@ class TestRichTextApp < Minitest::Test
         block: RatatuiRuby::Block.new(title: "Test", borders: [:all])
       )
       # Should not raise an error when rendering
-      RatatuiRuby.draw(para)
+      RatatuiRuby.draw do |frame|
+        frame.render_widget(para, frame.area)
+      end
     end
   end
 
@@ -139,7 +141,9 @@ class TestRichTextApp < Minitest::Test
       ]
       para = RatatuiRuby::Paragraph.new(text: lines)
       # Should not raise an error when rendering
-      RatatuiRuby.draw(para)
+      RatatuiRuby.draw do |frame|
+        frame.render_widget(para, frame.area)
+      end
     end
   end
 end

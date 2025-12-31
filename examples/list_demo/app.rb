@@ -163,31 +163,16 @@ class ListDemoApp
     ]
     @item_set_index = 0
 
-    @highlight_styles = [
-      { name: "Blue Bold", style: RatatuiRuby::Style.new(fg: :blue, modifiers: [:bold]) },
-      { name: "Yellow on Black", style: RatatuiRuby::Style.new(fg: :yellow, bg: :black) },
-      { name: "Green Italic", style: RatatuiRuby::Style.new(fg: :green, modifiers: [:italic]) },
-      { name: "White Reversed", style: RatatuiRuby::Style.new(fg: :white, modifiers: [:reversed]) },
-      { name: "Cyan Bold", style: RatatuiRuby::Style.new(fg: :cyan, modifiers: [:bold]) },
-    ]
-    @highlight_style_index = 0
-
-    @highlight_symbols = [
-      { name: ">> ", symbol: ">> " },
-      { name: "▶ ", symbol: "▶ " },
-      { name: "→ ", symbol: "→ " },
-      { name: "• ", symbol: "• " },
-      { name: "★ ", symbol: "★ " },
-    ]
+    @highlight_symbol_names = [">> ", "▶ ", "→ ", "• ", "★ "]
     @highlight_symbol_index = 0
 
-    @directions = [
+    @direction_configs = [
       { name: "Top to Bottom", direction: :top_to_bottom },
       { name: "Bottom to Top", direction: :bottom_to_top },
     ]
     @direction_index = 0
 
-    @highlight_spacings = [
+    @highlight_spacing_configs = [
       { name: "When Selected", spacing: :when_selected },
       { name: "Always", spacing: :always },
       { name: "Never", spacing: :never },
@@ -200,14 +185,7 @@ class ListDemoApp
     ]
     @repeat_index = 0
 
-    @base_styles = [
-      { name: "None", style: nil },
-      { name: "Dark Gray", style: RatatuiRuby::Style.new(fg: :dark_gray) },
-      { name: "White on Black", style: RatatuiRuby::Style.new(fg: :white, bg: :black) },
-    ]
-    @base_style_index = 0
-
-    @scroll_paddings = [
+    @scroll_padding_configs = [
       { name: "None", padding: nil },
       { name: "1 item", padding: 1 },
       { name: "2 items", padding: 2 },
@@ -216,10 +194,31 @@ class ListDemoApp
   end
 
   def run
-    RatatuiRuby.run do
+    RatatuiRuby.run do |tui|
+      @tui = tui
+      # Initialize styles that require @tui
+      @highlight_styles = [
+        { name: "Blue Bold", style: @tui.style(fg: :blue, modifiers: [:bold]) },
+        { name: "Yellow on Black", style: @tui.style(fg: :yellow, bg: :black) },
+        { name: "Green Italic", style: @tui.style(fg: :green, modifiers: [:italic]) },
+        { name: "White Reversed", style: @tui.style(fg: :white, modifiers: [:reversed]) },
+        { name: "Cyan Bold", style: @tui.style(fg: :cyan, modifiers: [:bold]) },
+      ]
+      @highlight_style_index = 0
+
+      @base_styles = [
+        { name: "None", style: nil },
+        { name: "Dark Gray", style: @tui.style(fg: :dark_gray) },
+        { name: "White on Black", style: @tui.style(fg: :white, bg: :black) },
+      ]
+      @base_style_index = 0
+
+      @hotkey_style = @tui.style(modifiers: [:bold, :underlined])
+
       loop do
         render
         break if handle_input == :quit
+
         sleep 0.05
       end
     end
@@ -228,101 +227,104 @@ class ListDemoApp
   private def render
     items = @item_sets[@item_set_index][:items]
     selection_label = @selected_index.nil? ? "none" : @selected_index.to_s
-    direction_config = @directions[@direction_index]
-    spacing_config = @highlight_spacings[@highlight_spacing_index]
+    direction_config = @direction_configs[@direction_index]
+    spacing_config = @highlight_spacing_configs[@highlight_spacing_index]
     repeat_config = @repeat_modes[@repeat_index]
     highlight_style_config = @highlight_styles[@highlight_style_index]
-    highlight_symbol_config = @highlight_symbols[@highlight_symbol_index]
+    highlight_symbol = @highlight_symbol_names[@highlight_symbol_index]
     base_style_config = @base_styles[@base_style_index]
-    scroll_padding_config = @scroll_paddings[@scroll_padding_index]
+    scroll_padding_config = @scroll_padding_configs[@scroll_padding_index]
 
-    # Main list area
-    main_content = RatatuiRuby::Layout.new(
-      direction: :vertical,
-      constraints: [
-        RatatuiRuby::Constraint.length(1),
-        RatatuiRuby::Constraint.fill(1),
-      ],
-      children: [
-        RatatuiRuby::Paragraph.new(
-          text: "List Widget Demo - Interactive Attribute Cycling"
-        ),
-        RatatuiRuby::List.new(
-          items:,
-          selected_index: @selected_index,
-          style: base_style_config[:style],
-          highlight_style: highlight_style_config[:style],
-          highlight_symbol: highlight_symbol_config[:symbol],
-          repeat_highlight_symbol: repeat_config[:repeat],
-          highlight_spacing: spacing_config[:spacing],
-          direction: direction_config[:direction],
-          scroll_padding: scroll_padding_config[:padding],
-          block: RatatuiRuby::Block.new(
-            title: "#{@item_sets[@item_set_index][:name]} (Selection: #{selection_label})",
-            borders: [:all]
-          )
-        ),
-      ]
-    )
+    @tui.draw do |frame|
+      # Split into main content and control panel
+      main_area, control_area = @tui.layout_split(
+        frame.area,
+        direction: :vertical,
+        constraints: [
+          @tui.constraint_fill(1),
+          @tui.constraint_length(7),
+        ]
+      )
 
-    # Bottom control panel with full width
-    hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
-    control_panel = RatatuiRuby::Block.new(
-      title: "Controls",
-      borders: [:all],
-      children: [
-        RatatuiRuby::Paragraph.new(
-          text: [
-            RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "i", style: hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Items  "),
-              RatatuiRuby::Text::Span.new(content: "↑/↓", style: hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Navigate  "),
-              RatatuiRuby::Text::Span.new(content: "x", style: hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Select  "),
-              RatatuiRuby::Text::Span.new(content: "h", style: hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Highlight (#{highlight_style_config[:name]})"),
-            ]),
-            RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "y", style: hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Symbol (#{highlight_symbol_config[:name]})  "),
-              RatatuiRuby::Text::Span.new(content: "d", style: hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Direction (#{direction_config[:name]})"),
-            ]),
-            RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "s", style: hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Spacing (#{spacing_config[:name]})  "),
-              RatatuiRuby::Text::Span.new(content: "p", style: hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Scroll Padding (#{scroll_padding_config[:name]})"),
-            ]),
-            RatatuiRuby::Text::Line.new(spans: [
-              RatatuiRuby::Text::Span.new(content: "b", style: hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Base (#{base_style_config[:name]})  "),
-              RatatuiRuby::Text::Span.new(content: "r", style: hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Repeat (#{repeat_config[:name]})  "),
-              RatatuiRuby::Text::Span.new(content: "q", style: hotkey_style),
-              RatatuiRuby::Text::Span.new(content: ": Quit"),
-            ]),
-          ]
-        ),
-      ]
-    )
+      # Split main content into title and list
+      title_area, list_area = @tui.layout_split(
+        main_area,
+        direction: :vertical,
+        constraints: [
+          @tui.constraint_length(1),
+          @tui.constraint_fill(1),
+        ]
+      )
 
-    # Combine layouts vertically
-    layout = RatatuiRuby::Layout.new(
-      direction: :vertical,
-      constraints: [
-        RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.length(7),
-      ],
-      children: [main_content, control_panel]
-    )
+      # Render title
+      title = @tui.paragraph(text: "List Widget Demo - Interactive Attribute Cycling")
+      frame.render_widget(title, title_area)
 
-    RatatuiRuby.draw(layout)
+      # Render list
+      list = @tui.list(
+        items:,
+        selected_index: @selected_index,
+        style: base_style_config[:style],
+        highlight_style: highlight_style_config[:style],
+        highlight_symbol:,
+        repeat_highlight_symbol: repeat_config[:repeat],
+        highlight_spacing: spacing_config[:spacing],
+        direction: direction_config[:direction],
+        scroll_padding: scroll_padding_config[:padding],
+        block: @tui.block(
+          title: "#{@item_sets[@item_set_index][:name]} (Selection: #{selection_label})",
+          borders: [:all]
+        )
+      )
+      frame.render_widget(list, list_area)
+
+      # Render control panel
+      control_panel = @tui.block(
+        title: "Controls",
+        borders: [:all],
+        children: [
+          @tui.paragraph(
+            text: [
+              @tui.text_line(spans: [
+                @tui.text_span(content: "i", style: @hotkey_style),
+                @tui.text_span(content: ": Items  "),
+                @tui.text_span(content: "↑/↓", style: @hotkey_style),
+                @tui.text_span(content: ": Navigate  "),
+                @tui.text_span(content: "x", style: @hotkey_style),
+                @tui.text_span(content: ": Select  "),
+                @tui.text_span(content: "h", style: @hotkey_style),
+                @tui.text_span(content: ": Highlight (#{highlight_style_config[:name]})"),
+              ]),
+              @tui.text_line(spans: [
+                @tui.text_span(content: "y", style: @hotkey_style),
+                @tui.text_span(content: ": Symbol (#{highlight_symbol})  "),
+                @tui.text_span(content: "d", style: @hotkey_style),
+                @tui.text_span(content: ": Direction (#{direction_config[:name]})"),
+              ]),
+              @tui.text_line(spans: [
+                @tui.text_span(content: "s", style: @hotkey_style),
+                @tui.text_span(content: ": Spacing (#{spacing_config[:name]})  "),
+                @tui.text_span(content: "p", style: @hotkey_style),
+                @tui.text_span(content: ": Scroll Padding (#{scroll_padding_config[:name]})"),
+              ]),
+              @tui.text_line(spans: [
+                @tui.text_span(content: "b", style: @hotkey_style),
+                @tui.text_span(content: ": Base (#{base_style_config[:name]})  "),
+                @tui.text_span(content: "r", style: @hotkey_style),
+                @tui.text_span(content: ": Repeat (#{repeat_config[:name]})  "),
+                @tui.text_span(content: "q", style: @hotkey_style),
+                @tui.text_span(content: ": Quit"),
+              ]),
+            ]
+          ),
+        ]
+      )
+      frame.render_widget(control_panel, control_area)
+    end
   end
 
   private def handle_input
-    case RatatuiRuby.poll_event
+    case @tui.poll_event
     in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit
     in type: :key, code: "i"
@@ -340,17 +342,17 @@ class ListDemoApp
     in type: :key, code: "h"
       @highlight_style_index = (@highlight_style_index + 1) % @highlight_styles.size
     in type: :key, code: "y"
-      @highlight_symbol_index = (@highlight_symbol_index + 1) % @highlight_symbols.size
+      @highlight_symbol_index = (@highlight_symbol_index + 1) % @highlight_symbol_names.size
     in type: :key, code: "d"
-      @direction_index = (@direction_index + 1) % @directions.size
+      @direction_index = (@direction_index + 1) % @direction_configs.size
     in type: :key, code: "s"
-      @highlight_spacing_index = (@highlight_spacing_index + 1) % @highlight_spacings.size
+      @highlight_spacing_index = (@highlight_spacing_index + 1) % @highlight_spacing_configs.size
     in type: :key, code: "b"
       @base_style_index = (@base_style_index + 1) % @base_styles.size
     in type: :key, code: "r"
       @repeat_index = (@repeat_index + 1) % @repeat_modes.size
     in type: :key, code: "p"
-      @scroll_padding_index = (@scroll_padding_index + 1) % @scroll_paddings.size
+      @scroll_padding_index = (@scroll_padding_index + 1) % @scroll_padding_configs.size
     else
       nil
     end

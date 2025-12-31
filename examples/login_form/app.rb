@@ -16,7 +16,8 @@ class LoginFormApp
   end
 
   def run
-    RatatuiRuby.run do
+    RatatuiRuby.run do |tui|
+      @tui = tui
       loop do
         render
         break if handle_input == :quit
@@ -37,17 +38,17 @@ class LoginFormApp
     cursor_y = 1
 
     # The content of the base form
-    form_content = RatatuiRuby::Overlay.new(layers: [
-      RatatuiRuby::Paragraph.new(
+    form_content = @tui.overlay(layers: [
+      @tui.paragraph(
         text: "#{PREFIX}#{@username}#{SUFFIX}",
-        block: RatatuiRuby::Block.new(borders: :all, title: "Login Form"),
+        block: @tui.block(borders: :all, title: "Login Form"),
         alignment: :left
       ),
-      RatatuiRuby::Cursor.new(x: cursor_x, y: cursor_y),
+      @tui.cursor(x: cursor_x, y: cursor_y),
     ])
 
     # Center the form on screen
-    base_layer = RatatuiRuby::Center.new(
+    base_layer = @tui.center(
       child: form_content,
       width_percent: 50,
       height_percent: 20
@@ -55,11 +56,11 @@ class LoginFormApp
 
     # 2. Popup Layer Construction
     final_view = if @show_popup
-      popup_message = RatatuiRuby::Center.new(
-        child: RatatuiRuby::Paragraph.new(
+      popup_message = @tui.center(
+        child: @tui.paragraph(
           text: "Login Successful!\nPress 'q' to quit.",
-          style: RatatuiRuby::Style.new(fg: :green, bg: :black),
-          block: RatatuiRuby::Block.new(borders: :all),
+          style: @tui.style(fg: :green, bg: :black),
+          block: @tui.block(borders: :all),
           alignment: :center,
           wrap: true
         ),
@@ -68,40 +69,38 @@ class LoginFormApp
       )
 
       # Render Base Layer (background) THEN Popup Layer
-      RatatuiRuby::Overlay.new(layers: [base_layer, popup_message])
+      @tui.overlay(layers: [base_layer, popup_message])
     else
       base_layer
     end
 
     # 3. Draw
-    RatatuiRuby.draw(final_view)
+    @tui.draw do |frame|
+      frame.render_widget(final_view, frame.area)
+    end
   end
 
   private def handle_input
-    # 4. Event Handling
-    event = RatatuiRuby.poll_event
-    return unless event
-
-    if event.key?
-      if @show_popup
-        :quit if event == "q" || event == :ctrl_c
-      else
-        # Login Form Input
-        return :quit if event == :ctrl_c
-        case event.code
-        when "enter"
-          @show_popup = true
-        when "backspace"
-          @username.chop!
-        when "esc"
-          :quit
-        else
-          # Simple text input
-          if event.text? && !event.ctrl? && !event.alt?
-            @username += event.code
-          end
-        end
-      end
+    case @tui.poll_event
+    in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
+      return :quit if @show_popup
+      nil
+    in { type: :key, code: "c", modifiers: ["ctrl"] }
+      :quit
+    in { type: :key, code: "enter" }
+      @show_popup ||= true
+      nil
+    in { type: :key, code: "backspace" }
+      @username.chop! unless @show_popup
+      nil
+    in { type: :key, code: "esc" }
+      :quit unless @show_popup
+    in { type: :key, code:, modifiers: [] }
+      # Simple text input (single character, no modifiers)
+      @username += code if !@show_popup && code.length == 1
+      nil
+    else
+      nil
     end
   end
 end

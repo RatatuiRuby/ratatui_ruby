@@ -8,61 +8,64 @@ require "ratatui_ruby"
 
 # Demonstrates Chart widget with interactive attribute cycling.
 class ChartDemoApp
-  def initialize
-    @markers = [
-      { name: "Dot (·)", marker: :dot },
-      { name: "Braille", marker: :braille },
-      { name: "Block (█)", marker: :block },
-      { name: "Bar", marker: :bar },
-    ]
-    @marker_index = 0
+  MARKERS = [
+    { name: "Dot (·)", marker: :dot },
+    { name: "Braille", marker: :braille },
+    { name: "Block (█)", marker: :block },
+    { name: "Bar", marker: :bar },
+  ].freeze
 
-    @dataset_styles = [
-      { name: "Yellow", style: RatatuiRuby::Style.new(fg: :yellow) },
-      { name: "Green", style: RatatuiRuby::Style.new(fg: :green) },
-      { name: "Cyan", style: RatatuiRuby::Style.new(fg: :cyan) },
-      { name: "Red", style: RatatuiRuby::Style.new(fg: :red) },
-      { name: "Magenta", style: RatatuiRuby::Style.new(fg: :magenta) },
-      { name: "Bold Blue", style: RatatuiRuby::Style.new(fg: :blue, modifiers: [:bold]) },
-      { name: "Dim White", style: RatatuiRuby::Style.new(fg: :white, modifiers: [:dim]) },
-      { name: "Italic Green", style: RatatuiRuby::Style.new(fg: :green, modifiers: [:italic]) },
-      { name: "Alert (Red/White/Bar)", style: RatatuiRuby::Style.new(fg: :white, bg: :red, modifiers: [:bold]) },
-    ]
-    @dataset_style_index = 0
+  X_ALIGNMENTS = [
+    { name: "Left", alignment: :left },
+    { name: "Center", alignment: :center },
+    { name: "Right", alignment: :right },
+  ].freeze
 
-    @x_alignments = [
-      { name: "Left", alignment: :left },
-      { name: "Center", alignment: :center },
-      { name: "Right", alignment: :right },
-    ]
-    @x_alignment_index = 1
+  Y_ALIGNMENTS = [
+    { name: "Left", alignment: :left },
+    { name: "Center", alignment: :center },
+    { name: "Right", alignment: :right },
+  ].freeze
 
-    @y_alignments = [
-      { name: "Left", alignment: :left },
-      { name: "Center", alignment: :center },
-      { name: "Right", alignment: :right },
-    ]
-    @y_alignment_index = 2
-
-    @legend_positions = [
-      { name: "Top Right", position: :top_right },
-      { name: "Top Left", position: :top_left },
-      { name: "Bottom Right", position: :bottom_right },
-      { name: "Bottom Left", position: :bottom_left },
-    ]
-    @legend_position_index = 0
-
-    @hotkey_style = RatatuiRuby::Style.new(modifiers: [:bold, :underlined])
-  end
+  LEGEND_POSITIONS = [
+    { name: "Top Right", position: :top_right },
+    { name: "Top Left", position: :top_left },
+    { name: "Bottom Right", position: :bottom_right },
+    { name: "Bottom Left", position: :bottom_left },
+  ].freeze
 
   def run
-    RatatuiRuby.run do
+    RatatuiRuby.run do |tui|
+      @tui = tui
+      init_styles
+
+      @marker_index = 0
+      @dataset_style_index = 0
+      @x_alignment_index = 1
+      @y_alignment_index = 2
+      @legend_position_index = 0
+
       loop do
         render
         break if handle_input == :quit
         sleep 0.05
       end
     end
+  end
+
+  private def init_styles
+    @hotkey_style = @tui.style(modifiers: [:bold, :underlined])
+    @dataset_styles = [
+      { name: "Yellow", style: @tui.style(fg: :yellow) },
+      { name: "Green", style: @tui.style(fg: :green) },
+      { name: "Cyan", style: @tui.style(fg: :cyan) },
+      { name: "Red", style: @tui.style(fg: :red) },
+      { name: "Magenta", style: @tui.style(fg: :magenta) },
+      { name: "Bold Blue", style: @tui.style(fg: :blue, modifiers: [:bold]) },
+      { name: "Dim White", style: @tui.style(fg: :white, modifiers: [:dim]) },
+      { name: "Italic Green", style: @tui.style(fg: :green, modifiers: [:italic]) },
+      { name: "Alert (Red/White/Bar)", style: @tui.style(fg: :white, bg: :red, modifiers: [:bold]) },
+    ]
   end
 
   private def render
@@ -82,116 +85,112 @@ class ChartDemoApp
     scatter_style = @dataset_styles[(@dataset_style_index + 2) % @dataset_styles.length][:style]
 
     datasets = [
-      RatatuiRuby::Dataset.new(
+      @tui.dataset(
         name: "Line",
         data: line_data,
         style:,
-        marker: (style.modifiers.include?(:bold) && style.bg) ? :bar : @markers[@marker_index][:marker],
+        marker: (style.modifiers.include?(:bold) && style.bg) ? :bar : MARKERS[@marker_index][:marker],
         graph_type: :line
       ),
-      RatatuiRuby::Dataset.new(
+      @tui.dataset(
         name: "Scatter",
         data: scatter_data,
         style: scatter_style,
-        marker: (scatter_style.modifiers.include?(:bold) && scatter_style.bg) ? :bar : @markers[@marker_index][:marker],
+        marker: (scatter_style.modifiers.include?(:bold) && scatter_style.bg) ? :bar : MARKERS[@marker_index][:marker],
         graph_type: :scatter
       ),
     ]
 
-    x_alignment = @x_alignments[@x_alignment_index][:alignment]
-    y_alignment = @y_alignments[@y_alignment_index][:alignment]
-    legend_position = @legend_positions[@legend_position_index][:position]
-
-    chart = RatatuiRuby::Chart.new(
+    chart = @tui.chart(
       datasets:,
-      x_axis: RatatuiRuby::Axis.new(
+      x_axis: @tui.axis(
         title: "Time",
         bounds: [0.0, 10.0],
         labels: %w[0 5 10],
-        style: RatatuiRuby::Style.new(fg: :yellow),
-        labels_alignment: x_alignment
+        style: @tui.style(fg: :yellow),
+        labels_alignment: X_ALIGNMENTS[@x_alignment_index][:alignment]
       ),
-      y_axis: RatatuiRuby::Axis.new(
+      y_axis: @tui.axis(
         title: "Amplitude",
         bounds: [-1.0, 1.0],
         labels: %w[-1 0 1],
-        style: RatatuiRuby::Style.new(fg: :cyan),
-        labels_alignment: y_alignment
+        style: @tui.style(fg: :cyan),
+        labels_alignment: Y_ALIGNMENTS[@y_alignment_index][:alignment]
       ),
-      block: RatatuiRuby::Block.new(
+      block: @tui.block(
         title: "Chart Widget Demo",
         borders: [:all]
       ),
-      legend_position:,
+      legend_position: LEGEND_POSITIONS[@legend_position_index][:position],
       hidden_legend_constraints: [
-        RatatuiRuby::Constraint.min(20),
-        RatatuiRuby::Constraint.min(10),
+        @tui.constraint_min(20),
+        @tui.constraint_min(10),
       ]
     )
 
-    layout = RatatuiRuby::Layout.new(
-      direction: :vertical,
-      constraints: [
-        RatatuiRuby::Constraint.fill(1),
-        RatatuiRuby::Constraint.length(5),
-      ],
+    controls = @tui.block(
+      title: "Controls",
+      borders: [:all],
       children: [
-        chart,
-        # Bottom control panel
-        RatatuiRuby::Block.new(
-          title: "Controls",
-          borders: [:all],
-          children: [
-            RatatuiRuby::Paragraph.new(
-              text: [
-                # Line 1: Markers & Colors
-                RatatuiRuby::Text::Line.new(spans: [
-                  RatatuiRuby::Text::Span.new(content: "m", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Marker (#{@markers[@marker_index][:name]})  "),
-                  RatatuiRuby::Text::Span.new(content: "s", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Style (#{@dataset_styles[@dataset_style_index][:name]})"),
-                ]),
-                # Line 2: Axis alignments
-                RatatuiRuby::Text::Line.new(spans: [
-                  RatatuiRuby::Text::Span.new(content: "x", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": X Align (#{@x_alignments[@x_alignment_index][:name]})  "),
-                  RatatuiRuby::Text::Span.new(content: "y", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Y Align (#{@y_alignments[@y_alignment_index][:name]})  "),
-                  RatatuiRuby::Text::Span.new(content: "l", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Legend (#{@legend_positions[@legend_position_index][:name]})"),
-                ]),
-                # Line 3: Quit
-                RatatuiRuby::Text::Line.new(spans: [
-                  RatatuiRuby::Text::Span.new(content: "q", style: @hotkey_style),
-                  RatatuiRuby::Text::Span.new(content: ": Quit"),
-                ]),
-              ]
-            ),
+        @tui.paragraph(
+          text: [
+            # Line 1: Markers & Colors
+            @tui.text_line(spans: [
+              @tui.text_span(content: "m", style: @hotkey_style),
+              @tui.text_span(content: ": Marker (#{MARKERS[@marker_index][:name]})  "),
+              @tui.text_span(content: "s", style: @hotkey_style),
+              @tui.text_span(content: ": Style (#{@dataset_styles[@dataset_style_index][:name]})"),
+            ]),
+            # Line 2: Axis alignments
+            @tui.text_line(spans: [
+              @tui.text_span(content: "x", style: @hotkey_style),
+              @tui.text_span(content: ": X Align (#{X_ALIGNMENTS[@x_alignment_index][:name]})  "),
+              @tui.text_span(content: "y", style: @hotkey_style),
+              @tui.text_span(content: ": Y Align (#{Y_ALIGNMENTS[@y_alignment_index][:name]})  "),
+              @tui.text_span(content: "l", style: @hotkey_style),
+              @tui.text_span(content: ": Legend (#{LEGEND_POSITIONS[@legend_position_index][:name]})"),
+            ]),
+            # Line 3: Quit
+            @tui.text_line(spans: [
+              @tui.text_span(content: "q", style: @hotkey_style),
+              @tui.text_span(content: ": Quit"),
+            ]),
           ]
         ),
       ]
     )
 
-    RatatuiRuby.draw(layout)
+    @tui.draw do |frame|
+      chart_area, controls_area = @tui.layout_split(
+        frame.area,
+        direction: :vertical,
+        constraints: [
+          @tui.constraint_fill(1),
+          @tui.constraint_length(5),
+        ]
+      )
+      frame.render_widget(chart, chart_area)
+      frame.render_widget(controls, controls_area)
+    end
   end
 
   private def handle_input
-    event = RatatuiRuby.poll_event
+    event = @tui.poll_event
     return unless event
 
     case event
     in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit
     in type: :key, code: "m"
-      @marker_index = (@marker_index + 1) % @markers.length
+      @marker_index = (@marker_index + 1) % MARKERS.length
     in type: :key, code: "s"
       @dataset_style_index = (@dataset_style_index + 1) % @dataset_styles.length
     in type: :key, code: "x"
-      @x_alignment_index = (@x_alignment_index + 1) % @x_alignments.length
+      @x_alignment_index = (@x_alignment_index + 1) % X_ALIGNMENTS.length
     in type: :key, code: "y"
-      @y_alignment_index = (@y_alignment_index + 1) % @y_alignments.length
+      @y_alignment_index = (@y_alignment_index + 1) % Y_ALIGNMENTS.length
     in type: :key, code: "l"
-      @legend_position_index = (@legend_position_index + 1) % @legend_positions.length
+      @legend_position_index = (@legend_position_index + 1) % LEGEND_POSITIONS.length
     else
       nil
     end

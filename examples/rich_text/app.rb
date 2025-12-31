@@ -15,7 +15,8 @@ class RichTextApp
   end
 
   def run
-    RatatuiRuby.run do
+    RatatuiRuby.run do |tui|
+      @tui = tui
       loop do
         render
         event = handle_input
@@ -26,57 +27,56 @@ class RichTextApp
   end
 
   private def render
-    RatatuiRuby.draw(
-      RatatuiRuby::Layout.new(
+    @tui.draw do |frame|
+      layout = @tui.layout_split(
+        frame.area,
         direction: :vertical,
         constraints: [
-          RatatuiRuby::Constraint.percentage(50),
-          RatatuiRuby::Constraint.percentage(50),
-        ],
-        children: [
-          simple_text_line_example,
-          complex_example,
+          @tui.constraint_percentage(50),
+          @tui.constraint_percentage(50),
         ]
       )
-    )
+      frame.render_widget(simple_text_line_example, layout[0])
+      frame.render_widget(complex_example, layout[1])
+    end
   end
 
   private def simple_text_line_example
     # Example 1: A line with mixed styles
-    RatatuiRuby::Paragraph.new(
-      text: RatatuiRuby::Text::Line.new(
+    @tui.paragraph(
+      text: @tui.text_line(
         spans: [
-          RatatuiRuby::Text::Span.new(
+          @tui.text_span(
             content: "Normal text, ",
             style: nil
           ),
-          RatatuiRuby::Text::Span.new(
+          @tui.text_span(
             content: "Bold Text",
-            style: RatatuiRuby::Style.new(modifiers: [:bold])
+            style: @tui.style(modifiers: [:bold])
           ),
-          RatatuiRuby::Text::Span.new(
+          @tui.text_span(
             content: ", ",
             style: nil
           ),
-          RatatuiRuby::Text::Span.new(
+          @tui.text_span(
             content: "Italic Text",
-            style: RatatuiRuby::Style.new(modifiers: [:italic])
+            style: @tui.style(modifiers: [:italic])
           ),
-          RatatuiRuby::Text::Span.new(
+          @tui.text_span(
             content: ", ",
             style: nil
           ),
-          RatatuiRuby::Text::Span.new(
+          @tui.text_span(
             content: "Red Text",
-            style: RatatuiRuby::Style.new(fg: :red)
+            style: @tui.style(fg: :red)
           ),
-          RatatuiRuby::Text::Span.new(
+          @tui.text_span(
             content: ".",
             style: nil
           ),
         ]
       ),
-      block: RatatuiRuby::Block.new(
+      block: @tui.block(
         title: "Simple Rich Text",
         borders: [:all]
       )
@@ -85,39 +85,39 @@ class RichTextApp
 
   private def complex_example
     # Example 2: Multiple lines with different styles
-    RatatuiRuby::Paragraph.new(
+    @tui.paragraph(
       text: [
-        RatatuiRuby::Text::Line.new(
+        @tui.text_line(
           spans: [
-            RatatuiRuby::Text::Span.new(content: "✓ ", style: RatatuiRuby::Style.new(fg: :green, modifiers: [:bold])),
-            RatatuiRuby::Text::Span.new(content: "Feature Complete", style: nil),
-            RatatuiRuby::Text::Span.new(content: " - All tests passing", style: RatatuiRuby::Style.new(fg: :gray)),
+            @tui.text_span(content: "✓ ", style: @tui.style(fg: :green, modifiers: [:bold])),
+            @tui.text_span(content: "Feature Complete", style: nil),
+            @tui.text_span(content: " - All tests passing", style: @tui.style(fg: :gray)),
           ]
         ),
-        RatatuiRuby::Text::Line.new(
+        @tui.text_line(
           spans: [
-            RatatuiRuby::Text::Span.new(content: "⚠ ", style: RatatuiRuby::Style.new(fg: :yellow, modifiers: [:bold])),
-            RatatuiRuby::Text::Span.new(content: "Warning", style: nil),
-            RatatuiRuby::Text::Span.new(content: " - Documentation pending", style: RatatuiRuby::Style.new(fg: :gray)),
+            @tui.text_span(content: "⚠ ", style: @tui.style(fg: :yellow, modifiers: [:bold])),
+            @tui.text_span(content: "Warning", style: nil),
+            @tui.text_span(content: " - Documentation pending", style: @tui.style(fg: :gray)),
           ]
         ),
-        RatatuiRuby::Text::Line.new(
+        @tui.text_line(
           spans: [
-            RatatuiRuby::Text::Span.new(content: "✗ ", style: RatatuiRuby::Style.new(fg: :red, modifiers: [:bold])),
-            RatatuiRuby::Text::Span.new(content: "Not Started", style: nil),
-            RatatuiRuby::Text::Span.new(content: " - Performance benchmarks", style: RatatuiRuby::Style.new(fg: :gray)),
+            @tui.text_span(content: "✗ ", style: @tui.style(fg: :red, modifiers: [:bold])),
+            @tui.text_span(content: "Not Started", style: nil),
+            @tui.text_span(content: " - Performance benchmarks", style: @tui.style(fg: :gray)),
           ]
         ),
-        RatatuiRuby::Text::Line.new(spans: []),
-        RatatuiRuby::Text::Line.new(
+        @tui.text_line(spans: []),
+        @tui.text_line(
           spans: [
-            RatatuiRuby::Text::Span.new(content: "Press ", style: nil),
-            RatatuiRuby::Text::Span.new(content: "Q", style: RatatuiRuby::Style.new(modifiers: [:bold])),
-            RatatuiRuby::Text::Span.new(content: " to quit", style: nil),
+            @tui.text_span(content: "Press ", style: nil),
+            @tui.text_span(content: "Q", style: @tui.style(modifiers: [:bold])),
+            @tui.text_span(content: " to quit", style: nil),
           ]
         ),
       ],
-      block: RatatuiRuby::Block.new(
+      block: @tui.block(
         title: "Status Report",
         borders: [:all]
       )
@@ -125,7 +125,7 @@ class RichTextApp
   end
 
   private def handle_input
-    event = RatatuiRuby.poll_event
+    event = @tui.poll_event
     return nil unless event
 
     return :quit if event == "q" || event == :esc || event == :ctrl_c

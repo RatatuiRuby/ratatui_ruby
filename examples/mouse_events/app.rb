@@ -14,48 +14,48 @@ class MouseEventsApp
   end
 
   def run
-    RatatuiRuby.run do
+    RatatuiRuby.run do |tui|
       loop do
-        render
-        break if handle_input == :quit
+        tui.draw do |frame|
+          render(tui, frame)
+        end
+        break if handle_input(tui) == :quit
       end
     end
   end
 
-  private def render
+  private def render(tui, frame)
     # Create a centered block with the mouse event details
-    block = RatatuiRuby::Block.new(
+    block = tui.block(
       title: "Mouse Event Plumbing",
       borders: [:all],
-      border_color: @color
+      border_type: :rounded,
+      border_style: tui.style(fg: @color)
     )
 
-    content = RatatuiRuby::Paragraph.new(
+    content = tui.paragraph(
       text: "#{@message}\n#{@details}",
       alignment: :center,
       block:
     )
 
     # Use a layout to center the content
-    layout = RatatuiRuby::Layout.new(
+    _top, center, _bottom = tui.layout_split(
+      frame.area,
       direction: :vertical,
       constraints: [
-        RatatuiRuby::Constraint.percentage(25),
-        RatatuiRuby::Constraint.percentage(50),
-        RatatuiRuby::Constraint.percentage(25),
-      ],
-      children: [
-        RatatuiRuby::Paragraph.new(text: ""),
-        content,
-        RatatuiRuby::Paragraph.new(text: ""),
+        tui.constraint_percentage(25),
+        tui.constraint_percentage(50),
+        tui.constraint_percentage(25),
       ]
     )
 
-    RatatuiRuby.draw(layout)
+    frame.render_widget(tui.paragraph(text: ""), frame.area)
+    frame.render_widget(content, center)
   end
 
-  private def handle_input
-    event = RatatuiRuby.poll_event
+  private def handle_input(tui)
+    event = tui.poll_event
     return unless event
 
     case event

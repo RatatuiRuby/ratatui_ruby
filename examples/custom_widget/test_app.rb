@@ -18,7 +18,7 @@ class TestCustomWidget < Minitest::Test
 
   def test_render
     with_test_terminal do
-      inject_key(:q)
+      inject_key("q") # Using string "q" to match typical poll_event return
       @app.run
 
       content = buffer_content.join("\n")
