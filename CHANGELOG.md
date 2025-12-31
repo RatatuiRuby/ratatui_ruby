@@ -25,6 +25,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 25: - **`RatatuiRuby::TestHelper#inject_right_click`**: Helper for right-click events.
 26: - **`RatatuiRuby::TestHelper#inject_drag`**: Helper for mouse drag events.
 
+#### Session API
+
+- **Convenience Methods**: `Session` now wraps class methods from `Layout`, `Constraint`, and other schema classes as instance methods (e.g., `layout_split` delegates to `Layout.split`, `constraint_percentage` to `Constraint.percentage`). This enables a more fluent API in `RatatuiRuby.run` blocks.
+
 ### Changed
 
 ### Fixed

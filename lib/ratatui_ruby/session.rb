@@ -120,6 +120,20 @@ module RatatuiRuby
       define_method(method_name) do |*args, **kwargs, &block|
         klass.new(*args, **kwargs, &block)
       end
+
+      # Wrap class methods (factories/helpers) as [class_snake]_[method]
+      # e.g. Layout.split -> layout_split
+      # e.g. Constraint.percentage -> constraint_percentage
+      klass.singleton_methods(false).each do |class_method|
+        session_method_name = "#{method_name}_#{class_method}"
+        if method_name == "layout" && class_method == :split
+          # Special case: layout_split is a clearer name than layout_split
+        end
+
+        define_method(session_method_name) do |*args, **kwargs, &block|
+          klass.public_send(class_method, *args, **kwargs, &block)
+        end
+      end
     end
 
     # Wrap nested module classes with prefixed names (e.g., shape_line, text_span)

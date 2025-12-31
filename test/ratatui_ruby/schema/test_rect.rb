@@ -19,7 +19,17 @@ class TestRect < Minitest::Test
     assert_equal 0, r.x
     assert_equal 0, r.y
     assert_equal 0, r.width
+    assert_equal 0, r.width
     assert_equal 0, r.height
+  end
+
+  def test_equality
+    r1 = RatatuiRuby::Rect.new(x: 1, y: 2, width: 3, height: 4)
+    r2 = RatatuiRuby::Rect.new(x: 1, y: 2, width: 3, height: 4)
+    r3 = RatatuiRuby::Rect.new(x: 5, y: 6, width: 7, height: 8)
+
+    assert_equal r1, r2
+    refute_equal r1, r3
   end
 
   def test_contains_inside

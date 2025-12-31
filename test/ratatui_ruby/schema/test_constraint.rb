@@ -33,6 +33,16 @@ class TestConstraint < Minitest::Test
     assert_equal 1, c6.value
   end
 
+  def test_equality
+    # Data classes implement value-based equality by default
+    c1 = RatatuiRuby::Constraint.percentage(50)
+    c2 = RatatuiRuby::Constraint.percentage(50)
+    c3 = RatatuiRuby::Constraint.percentage(25)
+
+    assert_equal c1, c2
+    refute_equal c1, c3
+  end
+
   def test_render
     with_test_terminal(20, 10) do
       # Test Length and Percentage

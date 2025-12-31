@@ -55,4 +55,26 @@ class TestSession < Minitest::Test
     assert_instance_of RatatuiRuby::Text::Line, line
     assert_equal [span], line.spans
   end
+
+  def test_session_class_method_wrapping
+    tui = RatatuiRuby::Session.new
+
+    # Test Layout.split -> layout_split
+    # We pass a mock or simple rect to avoid complex setup, just asserting delegation works
+    area = RatatuiRuby::Rect.new(x: 0, y: 0, width: 10, height: 10)
+    constraints = [RatatuiRuby::Constraint.percentage(50), RatatuiRuby::Constraint.percentage(50)]
+
+    rects = tui.layout_split(area, direction: :horizontal, constraints:)
+    assert_kind_of Array, rects
+    assert_equal 2, rects.size
+    expected_first = RatatuiRuby::Rect.new(x: 0, y: 0, width: 5, height: 10)
+    assert_equal expected_first, rects.first
+
+    expected_second = RatatuiRuby::Rect.new(x: 5, y: 0, width: 5, height: 10)
+    assert_equal expected_second, rects.last
+
+    # Test Constraint.percentage -> constraint_percentage
+    constraint = tui.constraint_percentage(50)
+    assert_equal RatatuiRuby::Constraint.percentage(50), constraint
+  end
 end
