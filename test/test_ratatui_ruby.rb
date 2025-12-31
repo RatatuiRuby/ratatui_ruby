@@ -73,10 +73,11 @@ class TestRatatuiRuby < Minitest::Test
   end
 
   def test_poll_event
-    # Verify poll_event returns nil when no input is available (timeout is 16ms in Rust)
+    # Verify poll_event returns Event::None when no input is available (timeout is 16ms in Rust)
     with_test_terminal(10, 5) do
       event = RatatuiRuby.poll_event
-      assert_nil event
+      assert_instance_of RatatuiRuby::Event::None, event
+      assert_predicate event, :none?
     end
   end
 end

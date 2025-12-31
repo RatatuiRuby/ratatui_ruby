@@ -21,8 +21,6 @@ class AllEventsApp
 
   def run
     RatatuiRuby.run do
-      # Capture initial terminal size
-      @resize_info = "#{terminal_width}×#{terminal_height}"
       loop do
         render
         break if handle_input == :quit
@@ -31,94 +29,111 @@ class AllEventsApp
     end
   end
 
-  private def terminal_width
-    80 # Approximation; actual size comes from Resize events
-  end
-
-  private def terminal_height
-    24
-  end
-
   private def render
-    border_color = @focused ? "green" : "gray"
+    RatatuiRuby.draw do |frame|
+      border_color = @focused ? "green" : "gray"
 
-    key_panel = RatatuiRuby::Paragraph.new(
-      text: @key_info,
-      alignment: :center,
-      block: RatatuiRuby::Block.new(
-        title: "⌨️  Key Events",
-        borders: [:all],
-        border_color:
+      # Set initial resize info from frame dimensions if needed
+      if @resize_info == "Resize the terminal..."
+        @resize_info = "#{frame.area.width}×#{frame.area.height}"
+      end
+
+      # Split into header and content area
+      header_area, content_area = RatatuiRuby::Layout.split(
+        frame.area,
+        direction: :vertical,
+        constraints: [
+          RatatuiRuby::Constraint.length(1),
+          RatatuiRuby::Constraint.fill(1),
+        ]
       )
-    )
 
-    mouse_panel = RatatuiRuby::Paragraph.new(
-      text: @mouse_info,
-      alignment: :center,
-      block: RatatuiRuby::Block.new(
-        title: "🖱️  Mouse Events",
-        borders: [:all],
-        border_color:
+      # Render header
+      header = RatatuiRuby::Paragraph.new(
+        text: "All Event Types Demo — Press 'q' or Ctrl+C to quit",
+        alignment: :center,
+        style: RatatuiRuby::Style.new(fg: :cyan, modifiers: [:bold])
       )
-    )
+      frame.render_widget(header, header_area)
 
-    resize_panel = RatatuiRuby::Paragraph.new(
-      text: @resize_info,
-      alignment: :center,
-      block: RatatuiRuby::Block.new(
-        title: "📐 Resize Events",
-        borders: [:all],
-        border_color:
+      # Split content area into top and bottom rows
+      top_row_area, bottom_row_area = RatatuiRuby::Layout.split(
+        content_area,
+        direction: :vertical,
+        constraints: [
+          RatatuiRuby::Constraint.percentage(50),
+          RatatuiRuby::Constraint.percentage(50),
+        ]
       )
-    )
 
-    special_panel = RatatuiRuby::Paragraph.new(
-      text: @special_info,
-      alignment: :center,
-      block: RatatuiRuby::Block.new(
-        title: "✨ Paste & Focus Events",
-        borders: [:all],
-        border_color:
+      # Split top row into key and mouse panels
+      key_panel_area, mouse_panel_area = RatatuiRuby::Layout.split(
+        top_row_area,
+        direction: :horizontal,
+        constraints: [
+          RatatuiRuby::Constraint.percentage(50),
+          RatatuiRuby::Constraint.percentage(50),
+        ]
       )
-    )
 
-    # 2x2 grid layout
-    top_row = RatatuiRuby::Layout.new(
-      direction: :horizontal,
-      constraints: [
-        RatatuiRuby::Constraint.percentage(50),
-        RatatuiRuby::Constraint.percentage(50),
-      ],
-      children: [key_panel, mouse_panel]
-    )
+      # Split bottom row into resize and special panels
+      resize_panel_area, special_panel_area = RatatuiRuby::Layout.split(
+        bottom_row_area,
+        direction: :horizontal,
+        constraints: [
+          RatatuiRuby::Constraint.percentage(50),
+          RatatuiRuby::Constraint.percentage(50),
+        ]
+      )
 
-    bottom_row = RatatuiRuby::Layout.new(
-      direction: :horizontal,
-      constraints: [
-        RatatuiRuby::Constraint.percentage(50),
-        RatatuiRuby::Constraint.percentage(50),
-      ],
-      children: [resize_panel, special_panel]
-    )
+      # Render key panel
+      key_panel = RatatuiRuby::Paragraph.new(
+        text: @key_info,
+        alignment: :center,
+        block: RatatuiRuby::Block.new(
+          title: "⌨️  Key Events",
+          borders: [:all],
+          border_color:
+        )
+      )
+      frame.render_widget(key_panel, key_panel_area)
 
-    # Header with instructions
-    header = RatatuiRuby::Paragraph.new(
-      text: "All Event Types Demo — Press 'q' or Ctrl+C to quit",
-      alignment: :center,
-      style: { fg: :cyan, modifiers: [:bold] }
-    )
+      # Render mouse panel
+      mouse_panel = RatatuiRuby::Paragraph.new(
+        text: @mouse_info,
+        alignment: :center,
+        block: RatatuiRuby::Block.new(
+          title: "🖱️  Mouse Events",
+          borders: [:all],
+          border_color:
+        )
+      )
+      frame.render_widget(mouse_panel, mouse_panel_area)
 
-    layout = RatatuiRuby::Layout.new(
-      direction: :vertical,
-      constraints: [
-        RatatuiRuby::Constraint.length(1),
-        RatatuiRuby::Constraint.percentage(50),
-        RatatuiRuby::Constraint.percentage(50),
-      ],
-      children: [header, top_row, bottom_row]
-    )
+      # Render resize panel
+      resize_panel = RatatuiRuby::Paragraph.new(
+        text: @resize_info,
+        alignment: :center,
+        block: RatatuiRuby::Block.new(
+          title: "📐 Resize Events",
+          borders: [:all],
+          border_color:
+        )
+      )
+      frame.render_widget(resize_panel, resize_panel_area)
 
-    RatatuiRuby.draw(layout)
+      # Render special panel
+      special_panel = RatatuiRuby::Paragraph.new(
+        text: @special_info,
+        alignment: :center,
+        block: RatatuiRuby::Block.new(
+          title: "✨ Paste & Focus Events",
+          borders: [:all],
+          border_color:
+        )
+      )
+      frame.render_widget(special_panel, special_panel_area)
+    end
   end
 
   private def handle_input

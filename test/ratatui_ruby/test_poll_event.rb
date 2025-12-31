@@ -15,9 +15,10 @@ class TestPollEvent < Minitest::Test
     RatatuiRuby.restore_terminal
   end
 
-  def test_poll_event_returns_nil_when_no_events
+  def test_poll_event_returns_none_when_no_events
     result = RatatuiRuby.poll_event
-    assert_nil result
+    assert_instance_of RatatuiRuby::Event::None, result
+    assert_predicate result, :none?
   end
 
   def test_poll_key_event

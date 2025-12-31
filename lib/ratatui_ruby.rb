@@ -151,16 +151,20 @@ module RatatuiRuby
   # Checks for user input.
   #
   # Returns a discrete event (Key, Mouse, Resize) if one is available in the queue.
-  # Returns nil immediately if the queue is empty (non-blocking).
+  # Returns RatatuiRuby::Event::None if the queue is empty (non-blocking).
   #
   # === Example
   #
   #   event = RatatuiRuby.poll_event
-  #   puts "Key pressed" if event.is_a?(RatatuiRuby::Event::Key)
+  #   if event.none?
+  #     puts "No input available"
+  #   elsif event.key?
+  #     puts "Key pressed"
+  #   end
   #
   def self.poll_event
     raw = _poll_event
-    return nil if raw.nil?
+    return Event::None.new if raw.nil?
 
     case raw[:type]
     when :key

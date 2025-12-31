@@ -31,6 +31,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+#### Event System
+
+- **`Event::None` (Breaking)**: `RatatuiRuby.poll_event` now returns `Event::None` instead of `nil` when no event is available. This null-object responds safely to all event predicates with `false`. Use `event.none?` or pattern-match on `type: :none`. Code using `while (event = poll_event)` must change to `while (event = poll_event) && !event.none?`.
+
 ### Fixed
 
 ### Removed

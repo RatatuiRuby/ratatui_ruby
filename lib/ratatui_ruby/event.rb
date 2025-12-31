@@ -17,32 +17,52 @@ module RatatuiRuby
   # * <tt>Paste</tt> — clipboard paste
   # * <tt>FocusGained</tt> — terminal gained focus
   # * <tt>FocusLost</tt> — terminal lost focus
+  # * <tt>None</tt> — no event available (Null Object)
   #
   # == Pattern Matching (Exhaustive)
   #
-  # Use <tt>case...in</tt> to dispatch on event type. Include an +else+ clause
-  # to catch unmatched patterns, otherwise Ruby raises <tt>NoMatchingPatternError</tt>:
+  # Use <tt>case...in</tt> to dispatch on every possible event type. This ensures
+  # you handle every case without needing an +else+ clause:
   #
   #   case RatatuiRuby.poll_event
   #   in { type: :key, code: "q" }
   #     break
+  #   in { type: :key, code: code, modifiers: }
+  #     handle_key(code, modifiers)
   #   in { type: :mouse, kind: "down", x:, y: }
   #     handle_click(x, y)
-  #   else
-  #     # Ignore other events (resize, paste, focus, etc.)
+  #   in { type: :mouse, kind:, x:, y: }
+  #     # handle other mouse activities
+  #   in { type: :resize, width:, height: }
+  #     handle_resize(width, height)
+  #   in { type: :paste, content: }
+  #     handle_paste(content)
+  #   in { type: :focus_gained }
+  #     handle_focus_gain
+  #   in { type: :focus_lost }
+  #     handle_focus_loss
+  #   in { type: :none }
+  #     # Idle
   #   end
   #
-  # == Type Checking
+  # == Predicates
   #
   # Check event types with predicates without pattern matching:
   #
   #   event = RatatuiRuby.poll_event
   #   if event.key?
   #     puts "Key pressed"
+  #   elsif event.none?
+  #     # Idle
   #   elsif event.mouse?
   #     puts "Mouse event"
   #   end
   class Event
+    # Returns true if this is a None event.
+    def none?
+      false
+    end
+
     # Returns true if this is a Key event.
     def key?
       false
@@ -102,6 +122,7 @@ module RatatuiRuby
   end
 end
 
+require_relative "event/none"
 require_relative "event/key"
 require_relative "event/mouse"
 require_relative "event/resize"

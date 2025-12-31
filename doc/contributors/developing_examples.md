@@ -48,8 +48,6 @@ class MyExampleApp
       :quit
     in { type: :key, code: code }
       # Handle other keys
-    else
-      nil  # Catch-all for unmatched events (mouse, resize, focus, etc.)
     end
   end
 end
@@ -111,8 +109,6 @@ end
        :quit
      in { type: :mouse, kind: "down", x:, y: }
        handle_click(x, y)
-     else
-       nil  # Required: catch unmatched event types
      end
    end
    ```

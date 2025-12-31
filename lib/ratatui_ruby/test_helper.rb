@@ -47,7 +47,7 @@ module RatatuiRuby
     def with_test_terminal(width = 80, height = 24, **opts)
       RatatuiRuby.init_test_terminal(width, height)
       # Flush any lingering events from previous tests
-      while RatatuiRuby.poll_event; end
+      while (event = RatatuiRuby.poll_event) && !event.none?; end
 
       RatatuiRuby.stub :init_terminal, nil do
         RatatuiRuby.stub :restore_terminal, nil do

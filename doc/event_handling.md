@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 `ratatui_ruby` provides a rich, object-oriented event system that supports multiple coding styles, from simple boolean predicates to modern Ruby pattern matching.
 
-Events are retrieved using `RatatuiRuby.poll_event`. This method returns an instance of a subclass of `RatatuiRuby::Event` (e.g., `RatatuiRuby::Event::Key`, `RatatuiRuby::Event::Mouse`) or `nil` if no event is available.
+Events are retrieved using `RatatuiRuby.poll_event`. This method returns an instance of a subclass of `RatatuiRuby::Event` (e.g., `RatatuiRuby::Event::Key`, `RatatuiRuby::Event::Mouse`). When no event is available, it returns `RatatuiRuby::Event::None`—a [null object](https://martinfowler.com/eaaCatalog/specialCase.html) that safely responds to all event predicates with `false`.
 
 ## 1. Symbol and String Comparison (Simplest)
 
@@ -107,8 +107,8 @@ loop do
   in type: :mouse, kind: "down", x:, y:
     handle_click(x, y)
 
-  else
-    # Ignore
+  in type: :none
+    # No event available, continue loop
   end
 end
 ```
@@ -123,3 +123,4 @@ end
 | `RatatuiRuby::Event::Paste` | `:paste` | `content` | `paste?` |
 | `RatatuiRuby::Event::FocusGained` | `:focus_gained` | (none) | `focus_gained?` |
 | `RatatuiRuby::Event::FocusLost` | `:focus_lost` | (none) | `focus_lost?` |
+| `RatatuiRuby::Event::None` | `:none` | (none) | `none?` |

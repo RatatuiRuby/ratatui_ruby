@@ -113,6 +113,7 @@ The project follows a standard Gem layout with an `ext/` directory for Rust code
     - Performance improvements that affect applications
 - Changelogs should be useful to downstream developers (both app and library developers), not simple restatements of diffs or commit messages.
 - The Unreleased section MUST be considered "since the last git tag". Therefore, if a change was done in one commit and undone in another (both since the last tag), the second commit should remove its changelog entry.
+- **Location:** New entries ALWAYS go in `## [Unreleased]`. Never edit past version sections (e.g., `## [0.4.0]`)—those are frozen history.
 
 ## 6. Definition of Done (DoD)
 
