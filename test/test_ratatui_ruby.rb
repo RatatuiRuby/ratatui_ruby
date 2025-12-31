@@ -36,6 +36,27 @@ class TestRatatuiRuby < Minitest::Test
     RatatuiRuby.restore_terminal
   end
 
+  def test_draw_block
+    RatatuiRuby.init_test_terminal(10, 5)
+    RatatuiRuby.draw do |frame|
+      p = RatatuiRuby::Paragraph.new(text: "Block")
+      frame.render_widget(p, frame.area)
+    end
+
+    lines = RatatuiRuby.get_buffer_content.split("\n")
+    assert_equal "Block     ", lines[0]
+  ensure
+    RatatuiRuby.restore_terminal
+  end
+
+  def test_draw_validation
+    assert_raises(ArgumentError) do
+      RatatuiRuby.draw(RatatuiRuby::Paragraph.new(text: "Both")) { |it| puts it.inspect }
+    end
+
+    assert_raises(ArgumentError) { RatatuiRuby.draw }
+  end
+
   def test_resize
     RatatuiRuby.init_test_terminal(10, 5)
     RatatuiRuby.resize_terminal(20, 3)

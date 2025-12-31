@@ -102,11 +102,13 @@ end
 
 ---
 
-## Phase 2: The Ruby Schema & Helpers
+## Phase 2: The Ruby Schema & Helpers ✅
 
 **Goal:** Create the Ruby-side interface for the new Rust capabilities.
 
-### Step 2.1: Define `RatatuiRuby::Frame`
+**Status:** DONE (2025-12-31)
+
+### Step 2.1: Define `RatatuiRuby::Frame` ✅
 
 * **File:** `lib/ratatui_ruby/frame.rb`
 
@@ -122,7 +124,7 @@ end
 
     * *Note:* The actual implementation is in Rust, but having the Ruby file helps RDoc/RBS.
 
-### Step 2.2: Update `RatatuiRuby.draw` Signature
+### Step 2.2: Update `RatatuiRuby.draw` Signature ✅
 
 * **File:** `lib/ratatui_ruby.rb`
 

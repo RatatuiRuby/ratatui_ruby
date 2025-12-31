@@ -108,7 +108,7 @@ fn init() -> Result<(), Error> {
 
     m.define_module_function("_init_terminal", function!(init_terminal, 2))?;
     m.define_module_function("restore_terminal", function!(restore_terminal, 0))?;
-    m.define_module_function("draw", function!(draw, -1))?;
+    m.define_module_function("_draw", function!(draw, -1))?;
 
     // Register Frame class
     let frame_class = m.define_class("Frame", ruby.class_object())?;

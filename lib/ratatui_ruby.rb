@@ -34,6 +34,7 @@ require_relative "ratatui_ruby/schema/text"
 require_relative "ratatui_ruby/schema/draw"
 require_relative "ratatui_ruby/event"
 require_relative "ratatui_ruby/cell"
+require_relative "ratatui_ruby/frame"
 
 begin
   require "ratatui_ruby/ratatui_ruby"
@@ -100,13 +101,48 @@ module RatatuiRuby
   # (Native method implemented in Rust)
 
   ##
-  # :method: draw
-  # :call-seq: draw(node) -> nil
-  #
   # Draws the given UI node tree to the terminal.
-  # [node] the root node of the UI tree (Paragraph, Layout).
   #
-  # (Native method implemented in Rust)
+  # TUI applications need to render widgets to the screen. Rendering could
+  # happen all at once with a pre-built tree, or incrementally with direct
+  # frame access.
+  #
+  # This method handles both. Pass a tree for declarative rendering, or
+  # pass a block to manipulate the frame directly. The block receives a
+  # {Frame} object for imperative drawing.
+  #
+  # [tree] A widget tree (Paragraph, Layout, etc.) to render. Optional if
+  #        a block is given.
+  #
+  # === Examples
+  #
+  # Legacy declarative style (tree-based):
+  #
+  #   RatatuiRuby.draw(Paragraph.new(text: "Hello"))
+  #
+  # New imperative style (block-based):
+  #
+  #   RatatuiRuby.draw do |frame|
+  #     frame.render_widget(Paragraph.new(text: "Hello"), frame.area)
+  #   end
+  #
+  def self.draw(tree = nil, &block)
+    if tree && block
+      raise ArgumentError, "Cannot provide both a tree and a block to draw"
+    end
+    unless tree || block
+      raise ArgumentError, "Must provide either a tree or a block to draw"
+    end
+
+    if tree
+      _draw(tree)
+    else
+      _draw(&block)
+    end
+  end
+
+  # (Native method _draw implemented in Rust)
+  private_class_method :_draw
 
   ##
   # :method: poll_event
