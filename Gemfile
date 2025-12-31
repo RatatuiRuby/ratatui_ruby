@@ -11,6 +11,9 @@ gemspec
 gem "irb"
 gem "rake", "~> 13.0"
 
+gem "chroma"
+gem "wcag_color_contrast"
+
 gem "minitest", "~> 5.16"
 
 gem "rubocop", "~> 1.21"

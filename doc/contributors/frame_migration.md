@@ -216,6 +216,29 @@ end
 
 ---
 
+## Phase 8: Color Picker Example Completion ✅
+
+**Status:** DONE (2025-12-31)
+
+**Goal:** Complete the color picker example using the Frame API, demonstrating practical hit-testing without layout duplication.
+
+### Step 8.1: Refactor Color Picker App ✅
+
+* **Action:** Decomposed monolithic 406-line app into modular components:
+  * `Input` - text input & validation
+  * `Palette` - color harmonies
+  * `Color` - color conversions & contrast
+  * `Harmony` - Data value object
+  * `Clipboard` - platform clipboard writes
+  * `CopyDialog` - dialog state & rendering
+  * `Scene` - layout orchestration
+
+* **Frame API Usage:** Layout calculations happen once per render inside `frame.render_widget` calls. Rects are stored directly for hit-testing, eliminating the previous `calculate_layout` duplication pattern.
+
+* **Tests:** All 12 tests pass, including hit-testing verification (click on export section → copy dialog).
+
+---
+
 ## Execution Order for Development Agents
 
 1. **Agent 1 (Rust Core):** Implement `ext/ratatui_ruby/src/frame.rs` and update `lib.rs` to expose the `Frame` class and modify `draw` to accept a block.
