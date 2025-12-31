@@ -10,6 +10,8 @@
 - [Contributing Guidelines](https://man.sr.ht/~kerrick/ratatui_ruby/contributing.md)
 - [Documentation Guide](https://man.sr.ht/~kerrick/ratatui_ruby/documentation_guide.md)
 - [The Design of **ratatui_ruby**](./design.md)
+- [Migration Plan: Adopting the Frame-Based API](./frame_migration.md)
+
 
 ## Documentation for Users
 

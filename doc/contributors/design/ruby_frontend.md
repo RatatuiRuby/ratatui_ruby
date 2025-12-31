@@ -9,6 +9,12 @@ This document describes the design philosophy and structure of the Ruby layer in
 
 ## Core Philosophy: Data-Driven UI
 
+> [!IMPORTANT]
+> **Upcoming Architecture Change (v0.5.0)**
+> We are migrating from the current implicit tree rendering to an explicit Frame-based API in v0.5.0.
+> See [Migration Plan: Adopting the Frame-Based API](../frame_migration.md) for details.
+
+
 The Ruby frontend is designed as a **thin, declarative layer** over the Rust backend. It uses an **Immediate Mode** paradigm where the user constructs a tree of pure data objects every frame to represent the desired UI state.
 
 ### 1. View Tree as Data

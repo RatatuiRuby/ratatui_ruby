@@ -20,8 +20,9 @@ Mailing List: Announcements](https://img.shields.io/badge/mailing_list-announcem
 **ratatui_ruby** is a Ruby wrapper for [Ratatui](https://ratatui.rs). It allows you to cook up Terminal User Interfaces in Ruby.
 **ratatui_ruby** is a community wrapper that is not affiliated with [the Ratatui team](https://github.com/orgs/ratatui/people).
 
-> [!WARNING]  
+> [!WARNING]
 > **ratatui_ruby** is currently in **BETA**. The API may change between minor versions.
+> A major shift to a [Frame-based API](doc/contributors/frame_migration.md) is planned for v0.5.0.
 
 Please join the **announce** mailing list at https://lists.sr.ht/~kerrick/ratatui_ruby-announce to stay up-to-date on new releases and announcements.
 
