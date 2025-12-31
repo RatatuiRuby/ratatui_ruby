@@ -148,6 +148,45 @@ module RatatuiRuby
     end
 
     ##
+    # Injects a mouse event.
+    #
+    #   inject_mouse(x: 10, y: 5, kind: :down, button: :left)
+    def inject_mouse(x:, y:, kind: :down, modifiers: [], button: :left)
+      event = RatatuiRuby::Event::Mouse.new(
+        kind: kind.to_s,
+        x:,
+        y:,
+        button: button.to_s,
+        modifiers:
+      )
+      inject_event(event)
+    end
+
+    ##
+    # Injects a mouse left click (down) event.
+    #
+    #   inject_click(x: 10, y: 5)
+    def inject_click(x:, y:, modifiers: [])
+      inject_mouse(x:, y:, kind: :down, modifiers:, button: :left)
+    end
+
+    ##
+    # Injects a mouse right click (down) event.
+    #
+    #   inject_right_click(x: 10, y: 5)
+    def inject_right_click(x:, y:, modifiers: [])
+      inject_mouse(x:, y:, kind: :down, modifiers:, button: :right)
+    end
+
+    ##
+    # Injects a mouse drag event.
+    #
+    #   inject_drag(x: 10, y: 5)
+    def inject_drag(x:, y:, modifiers: [], button: :left)
+      inject_mouse(x:, y:, kind: :drag, modifiers:, button:)
+    end
+
+    ##
     # Injects multiple Key events into the queue.
     #
     # Supports multiple formats for convenience:

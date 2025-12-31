@@ -121,4 +121,101 @@ class TestTestHelperModule < Minitest::Test
       assert_equal key, event
     end
   end
+
+  def test_raises_when_injecting_outside_context
+    error = assert_raises(RuntimeError) do
+      inject_key("q")
+    end
+    assert_match(/Events must be injected/, error.message)
+  end
+
+  def test_allows_injecting_inside_context
+    with_test_terminal(10, 5) do
+      # Should not raise
+      inject_key("q")
+    end
+  end
+
+  def test_inject_mouse_modifiers
+    with_test_terminal do
+      inject_mouse(x: 10, y: 5, kind: :down, button: :left, modifiers: ["ctrl", "alt"])
+
+      event = RatatuiRuby.poll_event
+      assert_instance_of RatatuiRuby::Event::Mouse, event
+      assert_equal "down", event.kind
+      assert_equal 10, event.x
+      assert_equal 5, event.y
+      assert_equal "left", event.button
+      assert_equal ["alt", "ctrl"], event.modifiers.sort
+    end
+  end
+
+  def test_inject_mouse
+    with_test_terminal do
+      inject_mouse(x: 10, y: 5, kind: :down, button: :left)
+
+      event = RatatuiRuby.poll_event
+      assert_instance_of RatatuiRuby::Event::Mouse, event
+      assert_equal "down", event.kind
+      assert_equal 10, event.x
+      assert_equal 5, event.y
+      assert_equal "left", event.button
+      assert_empty event.modifiers
+    end
+  end
+
+  def test_inject_click
+    with_test_terminal do
+      inject_click(x: 20, y: 15, modifiers: ["ctrl"])
+
+      event = RatatuiRuby.poll_event
+      assert_instance_of RatatuiRuby::Event::Mouse, event
+      assert_equal "down", event.kind
+      assert_equal 20, event.x
+      assert_equal 15, event.y
+      assert_equal "left", event.button
+      assert_equal ["ctrl"], event.modifiers
+    end
+  end
+
+  def test_inject_right_click
+    with_test_terminal do
+      inject_right_click(x: 0, y: 0)
+
+      event = RatatuiRuby.poll_event
+      assert_instance_of RatatuiRuby::Event::Mouse, event
+      assert_equal "down", event.kind
+      assert_equal 0, event.x
+      assert_equal 0, event.y
+      assert_equal "right", event.button
+    end
+  end
+
+  def test_inject_right_click_modifiers
+    with_test_terminal do
+      inject_right_click(x: 0, y: 0, modifiers: ["shift"])
+
+      event = RatatuiRuby.poll_event
+      assert_instance_of RatatuiRuby::Event::Mouse, event
+      assert_equal "down", event.kind
+      assert_equal 0, event.x
+      assert_equal 0, event.y
+      assert_equal "right", event.button
+      assert_equal ["shift"], event.modifiers
+    end
+  end
+
+  def test_inject_drag_modifiers
+    with_test_terminal do
+      inject_drag(x: 5, y: 10, button: :right, modifiers: ["ctrl"])
+
+      event = RatatuiRuby.poll_event
+      assert_instance_of RatatuiRuby::Event::Mouse, event
+      assert_equal "drag", event.kind
+      assert_equal 5, event.x
+      assert_equal 10, event.y
+      assert_equal "right", event.button
+      assert_equal ["ctrl"], event.modifiers
+    end
+  end
 end

@@ -17,6 +17,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **`RatatuiRuby.draw { |frame| ... }`**: New block-based drawing API that yields a `Frame` object for explicit widget placement. Enables hit testing without duplicating layout calculations.
 - **`Frame#area`**: Returns the terminal area as a `Rect`.
 - **`Frame#render_widget(widget, rect)`**: Renders a widget at a specific position. Works with all existing widgets and `Rect` objects.
+20: 
+21: #### Testing
+22: 
+23: - **`RatatuiRuby::TestHelper#inject_mouse`**: comprehensive mouse event injection helper supporting coordinates, buttons, and modifiers.
+24: - **`RatatuiRuby::TestHelper#inject_click`**: Helper for left-click events.
+25: - **`RatatuiRuby::TestHelper#inject_right_click`**: Helper for right-click events.
+26: - **`RatatuiRuby::TestHelper#inject_drag`**: Helper for mouse drag events.
 
 ### Changed
 
