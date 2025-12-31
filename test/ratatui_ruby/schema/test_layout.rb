@@ -205,4 +205,73 @@ class TestLayout < Minitest::Test
     assert_equal 40, rects.first.x
     assert_equal 20, rects.first.width
   end
+
+  def test_split_with_hash_area
+    area = { x: 10, y: 10, width: 100, height: 50 }
+    rects = RatatuiRuby::Layout.split(
+      area,
+      direction: :vertical,
+      constraints: [RatatuiRuby::Constraint.percentage(50), RatatuiRuby::Constraint.percentage(50)]
+    )
+    assert_equal 2, rects.length
+    assert_equal 10, rects[0].x
+    assert_equal 10, rects[0].y
+    assert_equal 100, rects[0].width
+    assert_equal 25, rects[0].height
+  end
+
+  def test_split_flex_modes_comprehensive
+    area = RatatuiRuby::Rect.new(x: 0, y: 0, width: 100, height: 10)
+    constraints = [RatatuiRuby::Constraint.length(10), RatatuiRuby::Constraint.length(10)]
+
+    # :start
+    rects = RatatuiRuby::Layout.split(area, direction: :horizontal, constraints:, flex: :start)
+    assert_equal 0, rects[0].x
+    assert_equal 10, rects[1].x
+
+    # :end
+    rects = RatatuiRuby::Layout.split(area, direction: :horizontal, constraints:, flex: :end)
+    assert_equal 80, rects[0].x
+    assert_equal 90, rects[1].x
+
+    # :space_between (0, 90)
+    rects = RatatuiRuby::Layout.split(area, direction: :horizontal, constraints:, flex: :space_between)
+    assert_equal 0, rects[0].x
+    assert_equal 90, rects[1].x
+
+    # :space_around (12 (impl dependent spacing), ...) - approximate checking logic
+    # Ratatui implementation: space_around with 2 items in 100 width, 10 each.
+    # free = 80. 3 gaps. each gap ~ 26.
+    # x1 = 26, x2 = 26+10+26 = 62?
+    # Actually ratatui uses Cassowary solver or specific logic. Just verify they are spaced.
+    rects = RatatuiRuby::Layout.split(area, direction: :horizontal, constraints:, flex: :space_around)
+    assert rects[0].x > 0
+    assert rects[1].x > rects[0].x + 10
+    assert rects[1].x < 90
+
+    # :space_evenly
+    rects = RatatuiRuby::Layout.split(area, direction: :horizontal, constraints:, flex: :space_evenly)
+    assert rects[0].x > 0
+    assert rects[1].x > rects[0].x + 10
+  end
+
+  def test_split_complex_constraints
+    area = RatatuiRuby::Rect.new(x: 0, y: 0, width: 100, height: 100)
+    constraints = [
+      RatatuiRuby::Constraint.length(10),
+      RatatuiRuby::Constraint.max(20),
+      RatatuiRuby::Constraint.percentage(50),
+      RatatuiRuby::Constraint.min(5),
+    ]
+    # layout logic will try to satisfy these.
+    rects = RatatuiRuby::Layout.split(area, direction: :vertical, constraints:)
+    assert_equal 4, rects.length
+    assert_equal 10, rects[0].height
+    # Max(20) might be 20 if there is space
+    assert rects[1].height <= 20
+    # Percentage(50) of 100 is 50
+    assert_equal 50, rects[2].height
+    # Remaining is allocated to Min(5) + others?
+    # Total used: 10 + ~20 + 50 = 80.
+  end
 end

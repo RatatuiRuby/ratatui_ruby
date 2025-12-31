@@ -138,7 +138,7 @@ end
 
 ## Phase 3: Layout Integration
 
-**Goal:** Ensure `Layout.split` is the primary way users slice the `Frame`.
+**Status:** DONE (2025-12-31)
 
 ### Step 3.1: Verify `Layout.split`
 

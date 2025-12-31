@@ -87,16 +87,27 @@ module RatatuiRuby
     #   left, right = rects
     #
     # [area]
-    #   The area to split (a Rect or any object responding to x, y, width, height).
+    #   The area to split. Can be a <tt>Rect</tt> or a <tt>Hash</tt> containing <tt>:x</tt>, <tt>:y</tt>, <tt>:width</tt>, and <tt>:height</tt>.
     # [direction]
     #   <tt>:vertical</tt> or <tt>:horizontal</tt> (default: <tt>:vertical</tt>).
     # [constraints]
-    #   Array of Constraint objects defining section sizes.
+    #   Array of <tt>Constraint</tt> objects defining section sizes.
     # [flex]
     #   Flex mode for spacing (default: <tt>:legacy</tt>).
     #
-    # Returns an Array of Rect objects.
+    # Returns an Array of <tt>Rect</tt> objects.
     def self.split(area, direction: :vertical, constraints:, flex: :legacy)
+      # Duck-typing: If it lacks geometry methods but can be a Hash, convert it.
+      if !area.respond_to?(:x) && area.respond_to?(:to_h)
+        # Assume it's a Hash-like object with :x, :y, etc.
+        hash = area.to_h
+        area = Rect.new(
+          x: hash.fetch(:x, 0),
+          y: hash.fetch(:y, 0),
+          width: hash.fetch(:width, 0),
+          height: hash.fetch(:height, 0)
+        )
+      end
       raw_rects = _split(area, direction, constraints, flex)
       raw_rects.map { |r| Rect.new(x: r[:x], y: r[:y], width: r[:width], height: r[:height]) }
     end

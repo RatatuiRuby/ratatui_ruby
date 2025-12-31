@@ -16,6 +16,6 @@ module RatatuiRuby
 
     private
 
-    def self._split: (Rect | Hash[Symbol, Integer], Symbol, Array[Constraint], Symbol) -> Array[Hash[Symbol, Integer]]
+    def self._split: (Rect, Symbol, Array[Constraint], Symbol) -> Array[Hash[Symbol, Integer]]
   end
 end
