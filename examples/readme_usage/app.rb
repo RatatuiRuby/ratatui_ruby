@@ -10,15 +10,20 @@ class ReadmeUsageApp
   def run
     RatatuiRuby.run do |tui|
       loop do
-        tui.draw \
-          tui.paragraph \
-            text: "Hello, Ratatui! Press 'q' to quit.",
-            alignment: :center,
-            block: tui.block(
-              title: "My Ruby TUI App",
-              borders: [:all],
-              border_color: "cyan"
-            )
+        tui.draw do |frame|
+          frame.render_widget(
+            tui.paragraph(
+              text: "Hello, Ratatui! Press 'q' to quit.",
+              alignment: :center,
+              block: tui.block(
+                title: "My Ruby TUI App",
+                borders: [:all],
+                border_color: "cyan"
+              )
+            ),
+            frame.area
+          )
+        end
         event = tui.poll_event
         break if event == "q" || event == :ctrl_c
       end

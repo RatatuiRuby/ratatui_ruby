@@ -68,8 +68,9 @@ gem install ratatui_ruby
 require "ratatui_ruby"
 RatatuiRuby.run do |tui|
   loop do
-    tui.draw \
-      tui.paragraph \
+    tui.draw do |frame|
+      frame.render_widget(
+        tui.paragraph(
           text: "Hello, Ratatui! Press 'q' to quit.",
           alignment: :center,
           block: tui.block(
@@ -77,6 +78,10 @@ RatatuiRuby.run do |tui|
             borders: [:all],
             border_color: "cyan"
           )
+        ),
+        frame.area
+      )
+    end
     event = tui.poll_event
     break if event == "q" || event == :ctrl_c
   end

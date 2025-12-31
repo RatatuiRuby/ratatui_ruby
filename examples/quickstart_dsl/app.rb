@@ -18,13 +18,17 @@ class QuickstartDslApp
           alignment: :center,
           block: tui.block(
             title: "My Ruby TUI App",
+            title_alignment: :center,
             borders: [:all],
-            border_color: "cyan"
+            border_color: "cyan",
+            style: { fg: "white" }
           )
         )
 
         # 3. Use RatatuiRuby methods, too.
-        tui.draw(view)
+        tui.draw do |frame|
+          frame.render_widget(view, frame.area)
+        end
         event = tui.poll_event
 
         break if event == "q" || event == :ctrl_c

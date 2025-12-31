@@ -44,7 +44,6 @@ begin
   loop do
     # 2. Create your UI (Immediate Mode)
     # We define a Paragraph widget inside a Block with a title and borders.
-    # Other widgets include RatatuiRuby::RatatuiMascot, RatatuiRuby::RatatuiLogo, etc.
     view = RatatuiRuby::Paragraph.new(
       text: "Hello, Ratatui! Press 'q' to quit.",
       alignment: :center,
@@ -58,7 +57,9 @@ begin
     )
  
     # 3. Draw the UI
-    RatatuiRuby.draw(view)
+    RatatuiRuby.draw do |frame|
+      frame.render_widget(view, frame.area)
+    end
  
     # 4. Poll for events
     event = RatatuiRuby.poll_event
@@ -76,7 +77,7 @@ end
 
 1.  **`RatatuiRuby.init_terminal`**: Enters raw mode and switches to the alternate screen.
 2.  **Immediate Mode UI**: On every iteration of the loop, you describe what the UI should look like by creating `Data` objects (like `Paragraph` and `Block`).
-3.  **`RatatuiRuby.draw(view)`**: The Ruby UI tree is passed to the Rust backend, which renders it to the terminal.
+3.  **`RatatuiRuby.draw { |frame| ... }`**: The block receives a `Frame` object, which acts as a canvas for the current render cycle. It allows you to render widgets onto specific areas of the screen. Nothing is drawn to the terminal until this block finishes, ensuring a flicker-free update.
 4.  **`RatatuiRuby.poll_event`**: Checks for keyboard, mouse, or resize events.
 5.  **`RatatuiRuby.restore_terminal`**: Crucial for leaving raw mode and returning the user to their shell properly. Always wrap your loop in a `begin...ensure` block to guarantee this runs.
 
@@ -104,21 +105,90 @@ RatatuiRuby.run do |tui|
     )
 
     # 3. Use RatatuiRuby methods, too.
-    tui.draw(view)
+    tui.draw do |frame|
+      frame.render_widget(view, frame.area)
+    end
     event = tui.poll_event
     
     break if event == "q" || event == :ctrl_c
   end
 end
+```
 
 
 #### How it works
 
 1.  **`RatatuiRuby.run`**: This context manager initializes the terminal before the block starts and ensures `restore_terminal` is called when the block exits (even if an error occurs).
 2.  **Widget Shorthand**: The block yields a `Session` object (here named `tui`). This object provides factory methods for every widget, allowing you to write `tui.paragraph(...)` instead of the more verbose `RatatuiRuby::Paragraph.new(...)`.
-3.  **Method Shorthand**: The session object also provides aliases for module functions of `RatatuiRuby`, allowing you to write `tui.draw(...)` instead of the more verbose `RatatuiRuby::draw(...)`.
+3.  **Method Shorthand**: The session object also provides aliases for module functions of `RatatuiRuby`, allowing you to write `tui.draw(...)` instead of the more verbose `RatatuiRuby.draw(...)`.
 
 For a deeper dive into the available application architectures (Manual vs Managed), see [Application Architecture](./application_architecture.md).
+
+### Adding Layouts
+
+Real-world applications often need to split the screen into multiple areas. `RatatuiRuby::Layout` lets you do this easily.
+
+```ruby
+require "ratatui_ruby"
+
+RatatuiRuby.run do |tui|
+  loop do
+    tui.draw do |frame|
+      # 1. Split the screen
+      top, bottom = tui.layout_split(
+        frame.area,
+        direction: :vertical,
+        constraints: [
+          tui.constraint_percentage(75),
+          tui.constraint_percentage(25),
+        ]
+      )
+
+      # 2. Render Top Widget
+      frame.render_widget(
+        tui.paragraph(
+          text: "Hello, Ratatui!",
+          alignment: :center,
+          block: tui.block(title: "Content", borders: [:all], border_color: "cyan")
+        ),
+        top
+      )
+
+      # 3. Render Bottom Widget with Styled Text
+      # We use a Line of Spans to style specific characters
+      text_line = tui.text_line(
+        spans: [
+          tui.text_span(content: "Press '"),
+          tui.text_span(
+            content: "q",
+            style: tui.style(modifiers: [:bold, :underlined])
+          ),
+          tui.text_span(content: "' to quit."),
+        ],
+        alignment: :center
+      )
+
+      frame.render_widget(
+        tui.paragraph(
+          text: text_line,
+          block: tui.block(title: "Controls", borders: [:all])
+        ),
+        bottom
+      )
+    end
+
+    event = tui.poll_event
+    break if event == "q" || event == :ctrl_c
+  end
+end
+```
+
+#### How it works
+
+1.  **`tui.layout_split` (`RatatuiRuby::Layout.split`)**: Takes an area (like `frame.area`) and splits it into multiple sub-areas based on constraints.
+2.  **`tui.constraint_*` (`RatatuiRuby::Constraint`)**: Defines how space is distributed (e.g., `percentage`, `length`, `min`, `max`).
+3.  **`Frame#render_widget(widget, rect)`**: You pass the specific area (like `top` or `bottom`) to render the widget into that exact region.
+4.  **`tui.text_span` (`RatatuiRuby::Text::Span`)**: Allows for rich styling within a single line of text.
 
 ## Examples
 

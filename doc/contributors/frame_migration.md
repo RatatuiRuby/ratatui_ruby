@@ -188,16 +188,17 @@ end
 
 ---
 
-## Phase 6: Documentation Examples
+## Phase 6: Documentation Examples ✅
 
-**Goal:** Convert documentation-verification examples to use the new Frame-based API.
+**Status:** DONE (2025-12-31)
 
-### Step 6.1: Convert Examples
+### Step 6.1: Convert Examples ✅
 
 * **Targets:**
     * `examples/quickstart_lifecycle`
     * `examples/quickstart_dsl`
     * `examples/readme_usage`
+    * `examples/quickstart_layout` (Added during implementation)
 
 * **Action:**
     * Update `app.rb` to use `RatatuiRuby.draw { |frame| ... }`.

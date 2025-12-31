@@ -9,29 +9,38 @@ require "ratatui_ruby"
 
 class QuickstartLifecycleApp
   def run
-    # Using the RatatuiRuby.run block for automatic terminal setup/teardown
-    RatatuiRuby.run do |tui|
+    # 1. Initialize the terminal
+    RatatuiRuby.init_terminal
+
+    begin
       # The Main Loop
       loop do
-        # 1. Create your UI (Immediate Mode)
+        # 2. Create your UI (Immediate Mode)
         # We define a Paragraph widget inside a Block with a title and borders.
         view = RatatuiRuby::Paragraph.new(
           text: "Hello, Ratatui! Press 'q' to quit.",
           alignment: :center,
           block: RatatuiRuby::Block.new(
             title: "My Ruby TUI App",
+            title_alignment: :center,
             borders: [:all],
-            border_color: "cyan"
+            border_color: "cyan",
+            style: { fg: "white" }
           )
         )
 
-        # 2. Draw the UI
-        tui.draw(view)
+        # 3. Draw the UI
+        RatatuiRuby.draw do |frame|
+          frame.render_widget(view, frame.area)
+        end
 
-        # 3. Poll for events
+        # 4. Poll for events
         event = RatatuiRuby.poll_event
         break if event == "q" || event == :ctrl_c
       end
+    ensure
+      # 5. Restore the terminal to its original state
+      RatatuiRuby.restore_terminal
     end
   end
 end
