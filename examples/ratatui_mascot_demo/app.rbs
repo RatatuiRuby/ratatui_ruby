@@ -1,0 +1,7 @@
+class RatatuiMascotDemoApp
+  # @public
+  def self.new: () -> RatatuiMascotDemoApp
+
+  # @public
+  def run: () -> void
+end

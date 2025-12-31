@@ -11,6 +11,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [Unreleased]
 
 ### Added
+
+#### RatatuiMascot Widget
+
+- **RatatuiMascot**: New widget to display the Ratatui mascot (Ferris).
+
 #### RatatuiLogo Widget
 
 - **RatatuiLogo**: New widget to display the Ratatui logo.

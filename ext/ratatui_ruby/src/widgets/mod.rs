@@ -16,6 +16,7 @@ pub mod list;
 pub mod overlay;
 pub mod paragraph;
 pub mod ratatui_logo;
+pub mod ratatui_mascot;
 pub mod scrollbar;
 pub mod sparkline;
 pub mod table;
