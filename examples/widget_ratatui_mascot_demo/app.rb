@@ -6,6 +6,21 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
+# Demonstrates personality and charm with the project mascot.
+#
+# Interfaces without personality feel clinical and dry. Users appreciate a friendly face in their terminal.
+#
+# This demo showcases the <tt>RatatuiMascot</tt> widget. It provides an interactive playground where you can toggle the surrounding block.
+#
+# Use it to understand how to add a playful touch to your terminal dashboards or about screens.
+#
+# === Example
+#
+# Run the demo from the terminal:
+#
+#   ruby examples/widget_ratatui_mascot_demo/app.rb
+#
+# rdoc-image:/doc/images/widget_ratatui_mascot_demo.png
 class WidgetRatatuiMascotDemo
   def initialize
     @show_block = true

@@ -6,7 +6,22 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
-# A demo application for the Calendar widget.
+# Demonstrates monthly calendar attributes with interactive cycling.
+#
+# Dates are complex. Rendering them in a grid requires calculation of leap years, month lengths, and day-of-week offsets.
+# Use this widget to skip the boilerplate.
+#
+# This demo showcases the <tt>Calendar</tt> widget. It provides an interactive playground where you can toggle headers, weekday labels, and event highlights in real-time.
+#
+# Use it to understand how to render time-based data grids efficiently.
+#
+# === Example
+#
+# Run the demo from the terminal:
+#
+#   ruby examples/widget_calendar_demo/app.rb
+#
+# rdoc-image:/doc/images/widget_calendar_demo.png
 class WidgetCalendarDemo
   def run
     RatatuiRuby.run do |tui|

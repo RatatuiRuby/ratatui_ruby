@@ -274,114 +274,25 @@ Demonstrates interactive row selection in the `Table` widget with keyboard navig
 
 ### Widget Demos
 
-Single-widget examples that exhaustively demonstrate a widget's configuration options.
+These smaller, focused examples demonstrate specific widgets and their configuration options.
 
-#### [BarChart Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_barchart_demo/app.rb)
-
-Demonstrates the `BarChart` widget with interactive dataset cycling (Simple Hash, Styled Array, Groups) and attribute controls (width, gap, styles).
-
-![widget_barchart_demo](./images/widget_barchart_demo.png)
-
-#### [Block Padding](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_block_padding/app.rb)
-
-Demonstrates the `padding` property of the `Block` widget, supporting both uniform and directional padding.
-
-![block_padding](./images/widget_block_padding.png)
-
-#### [Block Titles](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_block_titles/app.rb)
-
-Demonstrates the `Block` widget's ability to render multiple titles with individual alignment and positioning (top/bottom).
-
-![block_titles](./images/widget_block_titles.png)
-
-#### [Box Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_box_demo/app.rb)
-
-A simple demonstration of `Block` and `Paragraph` widgets, reacting to key presses to change colors, border types, border styles, and title styling. Features the new `border_style` parameter for applying colors and modifiers (bold, italic) to borders independently of the content background.
-
-![box_demo](./images/widget_box_demo.png)
-
-#### [Calendar Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_calendar_demo/app.rb)
-
-Demonstrates the `Calendar` widget with interactive attribute cycling. Features event highlighting (dates with specific styles), toggleable month/weekday headers, and surrounding month visibility (with custom styling) via keyboard shortcuts. Press `h` to toggle month header, `w` to toggle weekday header, `s` to toggle surrounding month dates, and `e` to toggle events.
-
-![calendar_demo](./images/widget_calendar_demo.png)
-
-#### [Chart Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_chart_demo/app.rb)
-
-Demonstrates the `Chart` widget with both scatter and line datasets, including custom axes. Features customizable axis label alignment and legend positioning.
-
-![chart_demo](./images/widget_chart_demo.png)
-
-#### [Gauge Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_gauge_demo/app.rb)
-
-Demonstrates the `Gauge` widget with interactive attribute cycling. Features multiple gauge instances with customizable ratio, gauge color, background style, Unicode toggle, and label modes. The sidebar provides hotkey documentation for exploring all Gauge options, including the distinction between `style` (background) and `gauge_style` (filled bar).
-
-![gauge_demo](./images/widget_gauge_demo.png)
-
-#### [LineGauge Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_line_gauge_demo/app.rb)
-
-Demonstrates the `LineGauge` widget with customizable filled and unfilled symbols, base style support via the `style` parameter, independent styling for filled/unfilled portions, and interactive ratio cycling with arrow keys.
-
-![line_gauge_demo](./images/widget_line_gauge_demo.png)
-
-![list_demo](./images/widget_list_demo.png)
-
-#### [Popup Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_popup_demo/app.rb)
-
-Demonstrates the `Clear` widget and how to prevent "style bleed" when rendering opaque popups over colored backgrounds.
-
-![popup_demo](./images/widget_popup_demo.png)
-
-#### [Rect Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_rect/app.rb)
-
-Demonstrates the `Rect` class—the fundamental geometry primitive for TUI layout. Shows Rect attributes (`x`, `y`, `width`, `height`) and `Rect#contains?` for hit testing mouse clicks. Also demonstrates the cached layout pattern: compute layout in `draw`, cache rects in instance variables, reuse in `handle_input`.
-
-![widget_rect](./images/widget_rect.png)
-
-#### [Ratatui Logo Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_ratatui_logo_demo/app.rb)
-
-Demonstrates the `RatatuiLogo` widget.
-
-![ratatui_logo_demo](./images/widget_ratatui_logo_demo.png)
-
-#### [Rich Text](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_rich_text/app.rb)
-
-Demonstrates `Text::Span` and `Text::Line` for creating styled text with inline formatting, enabling word-level control over colors and text modifiers.
-
-![rich_text](./images/widget_rich_text.png)
-
-#### [Scrollbar Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_scrollbar_demo/app.rb)
-
-A demonstration of the `Scrollbar` widget, featuring mouse wheel scrolling and extensive customization of symbols and styles.
-
-![scrollbar_demo](./images/widget_scrollbar_demo.png)
-
-#### [Scroll Text](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_scroll_text/app.rb)
-
-Demonstrates the `Paragraph` widget's scroll functionality, allowing navigation through long text content using arrow keys for both horizontal and vertical scrolling.
-
-![scroll_text](./images/widget_scroll_text.png)
-
-#### [Sparkline Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_sparkline_demo/app.rb)
-
-Demonstrates the `Sparkline` widget with interactive attribute cycling. Features multiple data sets with different patterns (steady growth, gaps, random, sawtooth, peaks), and explores all `Sparkline` options including direction, color, the new `absent_value_symbol` and `absent_value_style` parameters for distinguishing zero/absent values from low data, and the new `bar_set` parameter for custom bar characters.
-
-![sparkline_demo](./images/widget_sparkline_demo.png)
-
-#### [Table Flex](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_table_flex/app.rb)
-
-Demonstrates different flex modes in the `Table` widget, such as `:space_between` and `:space_around`, allowing for modern, responsive table layouts.
-
-![table_flex](./images/widget_table_flex.png)
-
-#### [Tabs Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_tabs_demo/app.rb)
-
-Demonstrates the `Tabs` widget interactive style cycling, dividers, and padding customization.
-
-![widget_tabs_demo](./images/widget_tabs_demo.png)
-
-#### [Widget Style Colors](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_style_colors/app.rb)
-
-Demonstrates hexadecimal color code support in Style parameters. Renders an 80x24 color gradient using HSL-to-RGB conversion and #RRGGBB hex codes, showcasing 24-bit true color rendering on capable terminals.
-
-![widget_style_colors](./images/widget_style_colors.png)
+*   [Bar Chart](../examples/widget_barchart_demo/app.rb)
+*   [Block Padding](../examples/widget_block_padding/app.rb)
+*   [Block Titles](../examples/widget_block_titles/app.rb)
+*   [Box (Block/Paragraph)](../examples/widget_box_demo/app.rb)
+*   [Calendar](../examples/widget_calendar_demo/app.rb)
+*   [Chart](../examples/widget_chart_demo/app.rb)
+*   [Gauge](../examples/widget_gauge_demo/app.rb)
+*   [Line Gauge](../examples/widget_line_gauge_demo/app.rb)
+*   [List](../examples/widget_list_demo/app.rb)
+*   [Popup (Clear)](../examples/widget_popup_demo/app.rb)
+*   [Rect](../examples/widget_rect/app.rb)
+*   [Ratatui Logo](../examples/widget_ratatui_logo_demo/app.rb)
+*   [Ratatui Mascot](../examples/widget_ratatui_mascot_demo/app.rb)
+*   [Rich Text](../examples/widget_rich_text/app.rb)
+*   [Scrollbar](../examples/widget_scrollbar_demo/app.rb)
+*   [Scroll Text](../examples/widget_scroll_text/app.rb)
+*   [Sparkline](../examples/widget_sparkline_demo/app.rb)
+*   [Table Flex](../examples/widget_table_flex/app.rb)
+*   [Tabs](../examples/widget_tabs_demo/app.rb)
+*   [Widget Style Colors](../examples/widget_style_colors/app.rb)

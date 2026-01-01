@@ -6,7 +6,21 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
-# Demonstrates Gauge widget with interactive attribute cycling.
+# Demonstrates completion visualization with interactive attribute cycling.
+#
+# Long-running tasks create anxiety. Users need to know that the system is working and how much is left to do.
+#
+# This demo showcases the <tt>Gauge</tt> widget. It provides an interactive playground where you can cycle through different ratios, colors, and label templates in real-time.
+#
+# Use it to understand how to communicate progress and task status in your terminal interface.
+#
+# === Example
+#
+# Run the demo from the terminal:
+#
+#   ruby examples/widget_gauge_demo/app.rb
+#
+# rdoc-image:/doc/images/widget_gauge_demo.png
 class WidgetGaugeDemo
   def initialize
     @ratio = 0.65

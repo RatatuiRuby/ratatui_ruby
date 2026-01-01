@@ -13,12 +13,13 @@ module RatatuiRuby
   #
   # Use it in dashboards, headers, or list items to providing trending data at a glance.
   #
-  # === Examples
+  # {rdoc-image:/doc/images/widget_sparkline_demo.png}[link:/examples/widget_sparkline_demo/app_rb.html]
   #
-  #   Sparkline.new(
-  #     data: [1, 4, 3, 8, 2, 9, 3, 2],
-  #     style: Style.new(fg: :yellow)
-  #   )
+  # === Example
+  #
+  # Run the interactive demo from the terminal:
+  #
+  #   ruby examples/widget_sparkline_demo/app.rb
   class Sparkline < Data.define(:data, :max, :style, :block, :direction, :absent_value_symbol, :absent_value_style, :bar_set)
     ##
     # :attr_reader: data

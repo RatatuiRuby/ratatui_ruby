@@ -12,18 +12,13 @@ module RatatuiRuby
   #
   # Use blocks to define distinct areas. Group related information. Create a visual hierarchy that guides the user's eye.
   #
-  # === Examples
+  # {rdoc-image:/doc/images/widget_box_demo.png}[link:/examples/widget_box_demo/app_rb.html]
   #
-  #   # A simple bordered block
-  #   Block.new(borders: [:all], title: "Logs")
+  # === Example
   #
-  #   # A complex block with styling and padding
-  #   Block.new(
-  #     title: "Status",
-  #     borders: [:left, :right],
-  #     style: Style.new(fg: :yellow),
-  #     padding: [1, 1, 0, 0] # Left, Right, Top, Bottom
-  #   )
+  # Run the interactive demo from the terminal:
+  #
+  #   ruby examples/widget_box_demo/app.rb
   class Block < Data.define(:title, :titles, :title_alignment, :title_style, :borders, :border_color, :border_style, :border_type, :border_set, :style, :padding, :children)
     ##
     # :attr_reader: title

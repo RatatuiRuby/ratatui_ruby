@@ -6,8 +6,23 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
-# Demonstrates List widget with interactive attribute cycling.
+# Demonstrates a selectable list of items with interactive attribute cycling.
+#
+# Users need to browse and select from collections of data. Lists are fundamental to terminal interfaces, but managing selection state, scrolling, and styling can be complex.
+#
+# This demo showcases the <tt>List</tt> widget. It provides an interactive playground where you can cycle through different configurations, styles, and behaviors in real-time.
+#
+# Use it to understand how to implement menus, file browsers, or any selectable collection of items.
+#
+# === Examples
+#
+# Run the demo from the terminal:
+#
+#   ruby examples/widget_list_demo/app.rb
+#
+# rdoc-image:/doc/images/widget_list_demo.png
 class WidgetListDemo
+  # Initializes the demo with example data and default configuration.
   def initialize
     @selected_index = nil
 
@@ -193,6 +208,9 @@ class WidgetListDemo
     @scroll_padding_index = 0
   end
 
+  # Runs the demo application.
+  #
+  # This method enters the terminal alternate screen, starts the main loop, and handles cleanup on exit.
   def run
     RatatuiRuby.run do |tui|
       @tui = tui
@@ -224,6 +242,7 @@ class WidgetListDemo
     end
   end
 
+  # :nodoc:
   private def render
     items = @item_sets[@item_set_index][:items]
     selection_label = @selected_index.nil? ? "none" : @selected_index.to_s
@@ -323,6 +342,7 @@ class WidgetListDemo
     end
   end
 
+  # :nodoc:
   private def handle_input
     case @tui.poll_event
     in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }

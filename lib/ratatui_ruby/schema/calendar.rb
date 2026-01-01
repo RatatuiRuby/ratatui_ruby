@@ -13,14 +13,13 @@ module RatatuiRuby
   #
   # Use it for date pickers, schedulers, or logs.
   #
-  # === Examples
+  # {rdoc-image:/doc/images/widget_calendar_demo.png}[link:/examples/widget_calendar_demo/app_rb.html]
   #
-  #   Calendar.new(
-  #     year: 2025,
-  #     month: 12,
-  #     default_style: Style.new(fg: :white),
-  #     header_style: Style.new(fg: :yellow, modifiers: [:bold])
-  #   )
+  # === Example
+  #
+  # Run the interactive demo from the terminal:
+  #
+  #   ruby examples/widget_calendar_demo/app.rb
   class Calendar < Data.define(:year, :month, :events, :default_style, :header_style, :block, :show_weekdays_header, :show_surrounding, :show_month_header)
     ##
     # :attr_reader: year

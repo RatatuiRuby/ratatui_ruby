@@ -6,7 +6,21 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
-# Demonstrates Chart widget with interactive attribute cycling.
+# Demonstrates Cartesian plotting attributes with interactive cycling.
+#
+# Trends and patterns are invisible in raw logs. You need to see the shape of the data to understand the story it tells.
+#
+# This demo showcases the <tt>Chart</tt> widget. It provides an interactive playground where you can toggle marker types, axis alignments, and legend positions in real-time.
+#
+# Use it to understand how to visualize complex X/Y datasets and trends efficiently.
+#
+# === Example
+#
+# Run the demo from the terminal:
+#
+#   ruby examples/widget_chart_demo/app.rb
+#
+# rdoc-image:/doc/images/widget_chart_demo.png
 class WidgetChartDemo
   MARKERS = [
     { name: "Dot (·)", marker: :dot },

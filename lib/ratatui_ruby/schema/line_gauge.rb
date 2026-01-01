@@ -12,13 +12,13 @@ module RatatuiRuby
   #
   # Use it when you need to show status without stealing focus or space.
   #
-  # === Examples
+  # {rdoc-image:/doc/images/widget_line_gauge_demo.png}[link:/examples/widget_line_gauge_demo/app_rb.html]
   #
-  #   LineGauge.new(
-  #     ratio: 0.4,
-  #     filled_style: Style.new(fg: :blue),
-  #     unfilled_symbol: "-"
-  #   )
+  # === Example
+  #
+  # Run the interactive demo from the terminal:
+  #
+  #   ruby examples/widget_line_gauge_demo/app.rb
   class LineGauge < Data.define(:ratio, :label, :style, :filled_style, :unfilled_style, :block, :filled_symbol, :unfilled_symbol)
     ##
     # :attr_reader: ratio

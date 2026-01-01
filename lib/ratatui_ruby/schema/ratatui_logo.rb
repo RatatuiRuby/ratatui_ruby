@@ -6,12 +6,19 @@
 module RatatuiRuby
   # Displays the Ratatui logo.
   #
-  # A simple widget that renders the Ratatui logo. Useful for demos and about screens.
+  # Branding is important for identity. Users need to recognize the tools they use.
   #
-  # === Examples
+  # This widget renders the official Ratatui logo.
   #
-  #   RatatuiLogo.new
+  # Use it for splash screens, about sections, or terminal dashboards.
   #
+  # {rdoc-image:/doc/images/widget_ratatui_logo_demo.png}[link:/examples/widget_ratatui_logo_demo/app_rb.html]
+  #
+  # === Example
+  #
+  # Run the interactive demo from the terminal:
+  #
+  #   ruby examples/widget_ratatui_logo_demo/app.rb
   class RatatuiLogo < Data.define
     ##
     # :method: new

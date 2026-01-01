@@ -6,7 +6,21 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
-# Demonstrates Tabs widget with interactive attribute cycling.
+# Demonstrates view segregation with interactive tab navigation.
+#
+# Screen real estate is limited. You cannot show everything at once. Segregating content into views is necessary for complex apps.
+#
+# This demo showcases the <tt>Tabs</tt> widget. It provides an interactive playground where you can select tabs, cycle through dividers and styles, and adjust padding in real-time.
+#
+# Use it to understand how to build major mode switches or context navigation for your interface.
+#
+# === Example
+#
+# Run the demo from the terminal:
+#
+#   ruby examples/widget_tabs_demo/app.rb
+#
+# rdoc-image:/doc/images/widget_tabs_demo.png
 class WidgetTabsDemo
   def initialize
     @selected_tab = 0

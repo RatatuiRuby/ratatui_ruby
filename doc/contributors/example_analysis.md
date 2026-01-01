@@ -84,4 +84,8 @@ These serve as automated documentation tests: if the example code changes but th
 
 - [x] **`custom_widget`**: Currently Category 2 (real app), but it is actually a widget demonstration for the polymorphic `render` method custom widget pattern. Rename to `widget_render` and add more custom widgets the user can cycle through with hotkeys.
 
-- [ ] **Update documentation** (developing_examples.md) Widget-only examples should be reduced to a bulletd list with links to each widget's class. The screenshot and information about the example from the quickstart should be moved to the class's RDoc documentation.
+- [x] **Update RDoc**: For each widget class:
+  -  Rewrite its RDoc documentation in its lib/schema/*.rb file in accordance with [documentation_style.md](./documentation_style.md). Include an Example section with how to launch it from the shell, and an RDoc Linked Image tag. The image source is the image from doc/images/, and the image hyperlinks to the appropriate example HTML file..
+  - For its corresponding (examples/widget_*/app.rb) app file, make sure it has the same image tag, but not hyperlinked.
+
+- [ ] **Update documentation** (quickstart.md) Widget-only examples should be reduced to a bulleted list with links to each widget's class. The rest is redundant with the class's RDoc.

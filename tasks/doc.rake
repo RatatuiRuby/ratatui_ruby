@@ -444,7 +444,7 @@ task :copy_examples do
           <meta name="viewport" content="width=device-width, initial-scale=1">
           <title>Examples</title>
           <link href="#{doc_root_link.sub('index.html', '')}css/rdoc.css" rel="stylesheet">
-          <link href="#{doc_root_link.sub('index.html', '')}css/custom.css" rel="stylesheet">
+          <link href="#{doc_root_link.sub('index.html', '')}custom.css" rel="stylesheet">
           <script>
             var rdoc_rel_prefix = "#{doc_root_link.sub('index.html', '')}";
           </script>
@@ -536,7 +536,7 @@ task :copy_examples do
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Examples</title>
         <link href="../css/rdoc.css" rel="stylesheet">
-        <link href="../css/custom.css" rel="stylesheet">
+        <link href="../custom.css" rel="stylesheet">
         <script>
           var rdoc_rel_prefix = "../";
         </script>

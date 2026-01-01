@@ -12,24 +12,13 @@ module RatatuiRuby
   #
   # Use layouts to build responsive grids. Stack sections vertically for a sidebar-main structure. Partition them horizontally for headers and footers. Let the layout engine do the math.
   #
-  # === Examples
+  # {rdoc-image:/doc/images/widget_layout_split.png}[link:/examples/widget_layout_split/app_rb.html]
   #
-  #   # A simple vertical split (Sidebar / Main)
-  #   Layout.new(
-  #     direction: :horizontal,
-  #     constraints: [
-  #       Constraint.length(20), # Sidebar
-  #       Constraint.min(0)      # Main content
-  #     ]
-  #   )
+  # === Example
   #
-  #   # Flex layout (Centering a block)
-  #   Layout.new(
-  #     direction: :vertical,
-  #     flex: :center,
-  #     constraints: [Constraint.length(10)], # A 10-row block centered vertically
-  #     children: [modal_block]
-  #   )
+  # Run the interactive demo from the terminal:
+  #
+  #   ruby examples/widget_layout_split/app.rb
   class Layout < Data.define(:direction, :constraints, :children, :flex)
     ##
     # :attr_reader: direction

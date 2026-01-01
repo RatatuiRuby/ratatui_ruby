@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <script src="<%= '../' * (relative_path.split('/').size - 1) %>js/aliki.js" defer></script>
 
   <link href="<%= doc_root_link.sub('index.html', '') %>css/rdoc.css" rel="stylesheet">
-  <link href="<%= doc_root_link.sub('index.html', '') %>css/custom.css" rel="stylesheet">
+  <link href="<%= doc_root_link.sub('index.html', '') %>custom.css" rel="stylesheet">
 </head>
 <body class="file<%= ' has-toc' unless toc_items.empty? %>">
 <%= icons_svg %>

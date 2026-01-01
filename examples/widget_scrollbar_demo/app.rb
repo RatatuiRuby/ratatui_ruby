@@ -6,8 +6,21 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
-# Simple Scrollbar Demo
-# Simple Scrollbar Demo
+# Demonstrates viewport navigation with interactive theme and orientation cycling.
+#
+# Content overflows. Users get lost in long lists without landmarks. They need to know where they are and how much is left.
+#
+# This demo showcases the <tt>Scrollbar</tt> widget. It provides an interactive playground where you can toggle orientations and cycle through different themes (Standard, Rounded, ASCII, Minimal) in real-time.
+#
+# Use it to understand how to provide spatial awareness and navigation cues for overflowing content.
+#
+# === Example
+#
+# Run the demo from the terminal:
+#
+#   ruby examples/widget_scrollbar_demo/app.rb
+#
+# rdoc-image:/doc/images/widget_scrollbar_demo.png
 class WidgetScrollbarDemo
   def initialize
     @scroll_position = 0

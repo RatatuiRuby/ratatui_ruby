@@ -6,6 +6,21 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
+# Demonstrates structured data layout with flexible column distribution.
+#
+# Data is often multidimensional. You need to show relationships between fields (Name, Age, ID). Aligning columns manually in a monospaced environment is painful and error-prone.
+#
+# This demo showcases the <tt>Table</tt> widget's flex modes. It renders multiple tables demonstrating how data is distributed across the available space using <tt>:legacy</tt>, <tt>:space_between</tt>, and <tt>:space_around</tt> settings.
+#
+# Use it to understand how to build perfectly aligned grids for database records, logs, or file lists.
+#
+# === Example
+#
+# Run the demo from the terminal:
+#
+#   ruby examples/widget_table_flex/app.rb
+#
+# rdoc-image:/doc/images/widget_table_flex.png
 class WidgetTableFlex
   def run
     RatatuiRuby.run do |tui|

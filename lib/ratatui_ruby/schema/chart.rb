@@ -105,20 +105,13 @@ module RatatuiRuby
   #
   # Use it for analytics, scientific data, or monitoring metrics over time.
   #
-  # === Examples
+  # {rdoc-image:/doc/images/widget_chart_demo.png}[link:/examples/widget_chart_demo/app_rb.html]
   #
-  #   Chart.new(
-  #     datasets: [
-  #       Dataset.new(
-  #         name: "Requests",
-  #         data: [[0.0, 1.0], [1.0, 2.0], [2.0, 1.5]],
-  #         style: Style.new(fg: :yellow)
-  #       )
-  #     ],
-  #     x_axis: Axis.new(title: "Time", bounds: [0.0, 5.0]),
-  #     y_axis: Axis.new(title: "RPS", bounds: [0.0, 5.0]),
-  #     legend_position: :top_right
-  #   )
+  # === Example
+  #
+  # Run the interactive demo from the terminal:
+  #
+  #   ruby examples/widget_chart_demo/app.rb
   class Chart < Data.define(:datasets, :x_axis, :y_axis, :block, :style, :legend_position, :hidden_legend_constraints)
     ##
     # :attr_reader: datasets

@@ -6,7 +6,21 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
-# Demonstrates LineGauge widget with interactive attribute cycling.
+# Demonstrates compact status visualization with interactive attribute cycling.
+#
+# Screen space is precious. Standard block gauges are bulky and consume multiple rows.
+#
+# This demo showcases the <tt>LineGauge</tt> widget. It provides an interactive playground where you can cycle through different ratios, symbols, and styling for both filled and unfilled portions in real-time.
+#
+# Use it to understand how to provide status feedback in constrained layouts without consuming vertical space.
+#
+# === Example
+#
+# Run the demo from the terminal:
+#
+#   ruby examples/widget_line_gauge_demo/app.rb
+#
+# rdoc-image:/doc/images/widget_line_gauge_demo.png
 class WidgetLineGaugeDemo
   def initialize
     @ratio = 0.5

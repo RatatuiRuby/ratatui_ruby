@@ -12,13 +12,13 @@ module RatatuiRuby
   #
   # Use it for downloads, installations, or processing jobs.
   #
-  # === Examples
+  # {rdoc-image:/doc/images/widget_gauge_demo.png}[link:/examples/widget_gauge_demo/app_rb.html]
   #
-  #   Gauge.new(
-  #     ratio: 0.75,
-  #     label: "75%",
-  #     gauge_style: Style.new(fg: :green)
-  #   )
+  # === Example
+  #
+  # Run the interactive demo from the terminal:
+  #
+  #   ruby examples/widget_gauge_demo/app.rb
   class Gauge < Data.define(:ratio, :label, :style, :gauge_style, :block, :use_unicode)
     ##
     # :attr_reader: ratio

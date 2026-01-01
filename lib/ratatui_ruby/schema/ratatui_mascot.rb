@@ -6,14 +6,19 @@
 module RatatuiRuby
   # Displays the Ratatui mascot.
   #
-  # A widget that renders the Ratatui mascot (a rat).
+  # Interfaces without personality feel clinical and dry. Users appreciate a friendly face in their terminal.
   #
-  # === Examples
+  # This widget renders the Ratatui mascot (a mouse).
   #
-  #   RatatuiMascot.new(
-  #     block: Block.new(title: "Mascot")
-  #   )
+  # Use it to add charm to your application, greet users on startup, or as a decorative element in sidebars.
   #
+  # {rdoc-image:/doc/images/widget_ratatui_mascot_demo.png}[link:/examples/widget_ratatui_mascot_demo/app_rb.html]
+  #
+  # === Example
+  #
+  # Run the interactive demo from the terminal:
+  #
+  #   ruby examples/widget_ratatui_mascot_demo/app.rb
   class RatatuiMascot < Data.define(:block)
     ##
     # :method: new

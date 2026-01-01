@@ -6,7 +6,21 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
-# Demonstrates BarChart widget with interactive attribute cycling.
+# Demonstrates categorical data visualization with interactive attribute cycling.
+#
+# Raw tables of numbers are hard to scan. Comparing magnitudes requires mental arithmetic, which slows down decision-making.
+#
+# This demo showcases the <tt>BarChart</tt> widget. It provides an interactive playground where you can cycle through different data formats, styles, and orientations in real-time.
+#
+# Use it to understand how to visualize and compare discrete datasets effectively.
+#
+# === Example
+#
+# Run the demo from the terminal:
+#
+#   ruby examples/widget_barchart_demo/app.rb
+#
+# rdoc-image:/doc/images/widget_barchart_demo.png
 class WidgetBarchartDemo
   def initialize
     @data_index = 0

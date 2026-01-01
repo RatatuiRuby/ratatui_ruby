@@ -6,12 +6,21 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
-# Demonstrates Layout.split with interactive attribute cycling.
+# Demonstrates dynamic geometry management with interactive cycling.
 #
-# This widget showcase lets you explore all Layout.split parameters:
-# - Direction: vertical/horizontal
-# - Flex mode: legacy, start, center, end, space_between, space_around, space_evenly
-# - Constraint types: Fill, Length, Percentage, Min, Ratio
+# Terminal screens vary in size. Hardcoded positions break when the window resizes. You need a way to organize space dynamically.
+#
+# This demo showcases the <tt>Layout.split</tt> mechanism. It provides an interactive playground where you can toggle directions, all seven flex modes, and various constraint types (Fill, Length, Percentage, Min, Ratio) in real-time.
+#
+# Use it to understand how to build responsive, fluid terminal interfaces that adapt to any window dimensions.
+#
+# === Example
+#
+# Run the demo from the terminal:
+#
+#   ruby examples/widget_layout_split/app.rb
+#
+# rdoc-image:/doc/images/widget_layout_split.png
 class WidgetLayoutSplit
   DIRECTIONS = [
     { name: "Vertical", value: :vertical },

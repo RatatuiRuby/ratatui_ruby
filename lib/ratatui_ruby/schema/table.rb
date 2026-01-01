@@ -13,20 +13,13 @@ module RatatuiRuby
   #
   # Use it to display database records, logs, or file lists.
   #
-  # === Examples
+  # {rdoc-image:/doc/images/widget_table_flex.png}[link:/examples/widget_table_flex/app_rb.html]
   #
-  #   Table.new(
-  #     header: ["ID", "Name", "Status"],
-  #     rows: [
-  #       ["1", "Hideo", "Active"],
-  #       ["2", "Kojima", "Idle"]
-  #     ],
-  #     widths: [
-  #       Constraint.length(5),
-  #       Constraint.fill(1),
-  #       Constraint.length(10)
-  #     ]
-  #   )
+  # === Example
+  #
+  # Run the interactive demo from the terminal:
+  #
+  #   ruby examples/widget_table_flex/app.rb
   class Table < Data.define(:header, :rows, :widths, :highlight_style, :highlight_symbol, :highlight_spacing, :column_highlight_style, :cell_highlight_style, :selected_row, :selected_column, :block, :footer, :flex, :style, :column_spacing)
     ##
     # :attr_reader: header

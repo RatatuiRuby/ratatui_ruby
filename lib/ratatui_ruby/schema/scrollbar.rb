@@ -12,13 +12,13 @@ module RatatuiRuby
   #
   # Overlay it on top of lists, paragraphs, or tables to provide spatial awareness.
   #
-  # === Examples
+  # {rdoc-image:/doc/images/widget_scrollbar_demo.png}[link:/examples/widget_scrollbar_demo/app_rb.html]
   #
-  #   Scrollbar.new(
-  #     content_length: 100,
-  #     position: 25,
-  #     orientation: :vertical
-  #   )
+  # === Example
+  #
+  # Run the interactive demo from the terminal:
+  #
+  #   ruby examples/widget_scrollbar_demo/app.rb
   class Scrollbar < Data.define(
     :content_length,
     :position,

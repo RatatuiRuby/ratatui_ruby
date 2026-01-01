@@ -7,6 +7,21 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
+# Demonstrates branding visualization with the official logo.
+#
+# Branding is important for identity. Users need to recognize the tools they use.
+#
+# This demo showcases the <tt>RatatuiLogo</tt> widget. It renders the logo in a centered layout.
+#
+# Use it to understand how to incorporate the project's visual identity into your terminal application.
+#
+# === Example
+#
+# Run the demo from the terminal:
+#
+#   ruby examples/widget_ratatui_logo_demo/app.rb
+#
+# rdoc-image:/doc/images/widget_ratatui_logo_demo.png
 class WidgetRatatuiLogoDemo
   def run
     RatatuiRuby.run do |tui|

@@ -6,7 +6,21 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
-# Demonstrates Sparkline widget with interactive attribute cycling.
+# Demonstrates high-density data visualization with interactive attribute cycling.
+#
+# Users need context. A single value ("90% CPU") tells you current status, but not the trend. Full charts take up too much room.
+#
+# This demo showcases the <tt>Sparkline</tt> widget. It provides an interactive playground where you can cycle through data sets, directions, colors, and custom bar sets.
+#
+# Use it to understand how to condense history into a single line for dashboards or headers.
+#
+# === Example
+#
+# Run the demo from the terminal:
+#
+#   ruby examples/widget_sparkline_demo/app.rb
+#
+# rdoc-image:/doc/images/widget_sparkline_demo.png
 class WidgetSparklineDemo
   def run
     RatatuiRuby.run do |tui|

@@ -6,6 +6,21 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
+# Demonstrates visual container attributes with interactive cycling.
+#
+# Widgets often float in void. Without boundaries, interfaces become a chaotic mess of text. Users need structure to parse information.
+#
+# This demo showcases the <tt>Block</tt> widget. It provides an interactive playground where you can cycle through different border types, colors, and title alignments in real-time.
+#
+# Use it to understand how to define distinct areas and create visual hierarchy in your terminal interface.
+#
+# === Example
+#
+# Run the demo from the terminal:
+#
+#   ruby examples/widget_box_demo/app.rb
+#
+# rdoc-image:/doc/images/widget_box_demo.png
 class WidgetBoxDemo
   def initialize
     # Border Types (ratatui native styles)

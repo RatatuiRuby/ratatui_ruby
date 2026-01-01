@@ -12,14 +12,13 @@ module RatatuiRuby
   #
   # Use it at the top of your interface to switch between major modes or contexts.
   #
-  # === Examples
+  # {rdoc-image:/doc/images/widget_tabs_demo.png}[link:/examples/widget_tabs_demo/app_rb.html]
   #
-  #   Tabs.new(
-  #     titles: ["Home", "Settings", "Logs"],
-  #     selected_index: 0,
-  #     highlight_style: Style.new(fg: :yellow),
-  #     divider: "|"
-  #   )
+  # === Example
+  #
+  # Run the interactive demo from the terminal:
+  #
+  #   ruby examples/widget_tabs_demo/app.rb
   class Tabs < Data.define(:titles, :selected_index, :block, :divider, :highlight_style, :style, :padding_left, :padding_right)
     ##
     # :attr_reader: titles
