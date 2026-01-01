@@ -40,11 +40,11 @@ Architecture:
 
 - **NEVER** run `bundle exec rake` directly. **NEVER** run `bundle exec ruby -Ilib:test ...` directly.
 - **ALWAYS use `bin/agent_rake`** for running tests, linting, or checking compilation.
-- **Usage:**
-  - Runs default task (compile + test + lint): `bin/agent_rake`
-  - Runs specific task: `bin/agent_rake test:ruby` (for example)
+  - **Usage:**
+    - Runs default task (compile + test + lint): `bin/agent_rake`
+    - Runs specific task: `bin/agent_rake test:ruby` (for example)
 - **Setup:** `bin/setup` must handle both Bundler and Cargo dependencies.
-- **Git:** ALWAYS set `PAGER=cat` with `git`, `git`, etc..
+- **Git:** ALWAYS set `PAGER=cat` with `git`, `git`, etc.. **THIS IS MANDATORY!**
 
 ### Ruby Standards
 

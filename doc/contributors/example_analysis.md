@@ -34,6 +34,8 @@ These examples follow the pattern described in `developing_examples.md`: they ex
 - `scroll_text`: Demonstrates text scrolling behavior.
 - `table_flex`: Demonstrates Table widget with flexible layouts.
 - `widget_style_colors`: Demonstrates hex color gradients and style modifiers.
+- `widget_tabs_demo`: Demonstrates Tabs widget with interactive attribute cycling.
+- `widget_barchart_demo`: Demonstrates BarChart widget with interactive attribute cycling.
 
 ## Category 2: Real-Application Showcases
 
@@ -42,7 +44,6 @@ Examples that function as proof-of-concept TUI applications, demonstrating how t
 These are not API documentation—they do not systematically cycle through all widget parameters. Instead, they showcase composing multiple widgets to solve realistic problems (dashboards, forms, data views). They serve as inspiration for developers building their own applications and do not strictly follow the single-focus pattern.
 
 **Examples:**
-- `analytics`: Multi-widget analytics dashboard with Tabs and BarChart, demonstrating tab navigation and multi-chart layouts.
 - `login_form`: Form UI with text input, cursor positioning, and popup feedback using Paragraph, Overlay, Center, and Cursor.
 - `table_select`: Interactive table viewer with row/column selection, simulating a process monitor application.
 - `hit_test`: Demonstrates layout caching pattern for hit testing with split panels and mouse interaction.
@@ -75,17 +76,14 @@ These serve as automated documentation tests: if the example code changes but th
 
 - [x] **Update Quickstart** to reduce the heading levels of individual examples, inserting a new heading level above them and below "## Examples". This new heading level should map to the naming conventions, and this will require recategorizing the examples in quickstart.md.
 
-- [ ] **Split `analytics`** (demonstrates both Tabs and BarChart interactively). Create `widget_tabs_demo` and move BarChart demo to it, or extract BarChart into its own single-widget showcase.
+- [x] **Split `analytics`** (demonstrates both Tabs and BarChart interactively). Create `widget_tabs_demo` and move BarChart demo to it, and extract BarChart into its own single-widget showcase.
 
-- [ ] **Split `all_events`** (demonstrates multiple event types in a 2×2 grid). Consider extracting each event type into its own single-widget panel, or clarify whether this remains a "showcase of everything" vs. a focused event-demo.
+- [ ] **`all_events` and `mouse_events`** (demonstrates multiple event types in a 2×2 grid). Combine these, and make sure it has a showcases EVERY event class (as more have been added).
 
-- [ ] **Split `flex_layout`** (demonstrates Layout flex modes with multiple examples). This is borderline—it's quasi-documentation-verification of Layout behavior. Consider whether it belongs as `verify_flex_layout` or if it should remain as a showcase.
+- [ ] **Split `flex_layout`** (demonstrates Layout flex modes with multiple examples). This is borderline—it's quasi-documentation-verification of Layout behavior. Consider whether it belongs as `verify_flex_layout` or if it should remain as a showcase.o `widget_layout_split`. Instead of statically demonstrating a set of flex modes, it should use the interactive pattern to have hotkeys that cycle through ALL Layout.split parameters and options.
 
-- [ ] **Reassign `mouse_events`**: Currently straddles Category 2 (real app) and Category 3 (doc verification). Clarify its purpose: is it an app showcase or documenting mouse event structure? If doc-verification, move to Category 3 and rename to `verify_mouse_events`.
+- [ ] **`hit_test` and `frame_demo`**: Combine these as `app_hit_testing` and make it the mother of all hit testing / layout caching / etc. patterns.
 
-- [ ] **Reassign `hit_test`**: Currently categorized as Category 2 but serves partly to document the "Cached Layout Pattern". Consider renaming to `verify_hit_test` if it should be documentation-verification, or ensure it's purely a showcase of an application pattern.
+- [ ] **`custom_widget`**: Currently Category 2 (real app), but it is actually a widget demonstration for the polymorphic `render` method custom widget pattern. Rename to `widget_render` and add more custom widgets the user can cycle through with hotkeys.
 
-- [ ] **Verify `custom_widget`**: Currently Category 2 (real app), but is it actually a documented pattern or example code? If it's meant to verify custom widget documentation, rename to `verify_custom_widget`.
-- [ ] **Verify `frame_demo`**: Currently Category 2 (real app), but heavily used to explain caching/hit-testing. Decide if it should be `verify_frame_rendering`.
-
-- [ ] **Update documentation** (developing_examples.md) to reflect the new naming convention and clarify which category each example should belong to.
+- [ ] **Update documentation** (developing_examples.md) Widget-only examples should be reduced to a bulletd list with links to each widget's class. The screenshot and information about the example from the quickstart should be moved to the class's RDoc documentation.
