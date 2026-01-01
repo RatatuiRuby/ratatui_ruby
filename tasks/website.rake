@@ -14,7 +14,7 @@ namespace :website do
     require_relative "website/website"
 
     spec = Gem::Specification.load(Dir["*.gemspec"].first)
-    globs = RDocConfig::RDOC_FILES + ["*.gemspec", "doc/images/**/*"]
+    globs = RDocConfig::RDOC_FILES + ["*.gemspec", "doc/images/**/*", "examples/**/*"]
 
     Website.new(
       at: "www",

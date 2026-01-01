@@ -8,10 +8,12 @@ require "rdoc/task"
 require_relative "rdoc_config"
 
 RDoc::Task.new do |rdoc|
-  rdoc.rdoc_dir = "tmp/rdoc"
+  rdoc.rdoc_dir = ENV["RDOC_OUTPUT"] || "tmp/rdoc"
   rdoc.main = RDocConfig::MAIN
+  rdoc.title = ENV["RDOC_TITLE"] if ENV["RDOC_TITLE"]
   rdoc.rdoc_files.include(RDocConfig::RDOC_FILES)
-  rdoc.options << "--template-stylesheets=doc/custom.css"
+  custom_css = ENV["RDOC_CUSTOM_CSS"] || "doc/custom.css"
+  rdoc.options << "--template-stylesheets=#{custom_css}"
 end
 
 # Custom RDoc HTML generator that captures headings for TOC
@@ -34,10 +36,11 @@ class CapturingToHtml < RDoc::Markup::ToHtml
 end
 
 task :copy_doc_images do
+  rdoc_dir = ENV["RDOC_OUTPUT"] || "tmp/rdoc"
   if Dir.exist?("doc/images")
-    FileUtils.mkdir_p "tmp/rdoc/doc/images"
-    FileUtils.cp_r Dir["doc/images/*.png"], "tmp/rdoc/doc/images"
-    FileUtils.cp_r Dir["doc/images/*.gif"], "tmp/rdoc/doc/images"
+    FileUtils.mkdir_p "#{rdoc_dir}/doc/images"
+    FileUtils.cp_r Dir["doc/images/*.png"], "#{rdoc_dir}/doc/images"
+    FileUtils.cp_r Dir["doc/images/*.gif"], "#{rdoc_dir}/doc/images"
   end
 end
 
@@ -205,9 +208,11 @@ task :copy_examples do
   require "rdoc/markdown"
   require "rdoc/markup/to_html"
 
+  rdoc_dir = ENV["RDOC_OUTPUT"] || "tmp/rdoc"
+
   if Dir.exist?("examples")
-    FileUtils.rm_rf "tmp/rdoc/examples"
-    FileUtils.mkdir_p "tmp/rdoc/examples"
+    FileUtils.rm_rf "#{rdoc_dir}/examples"
+    FileUtils.mkdir_p "#{rdoc_dir}/examples"
 
     all_files = Dir.glob("examples/**/*.{rb,md}")
 
@@ -297,7 +302,7 @@ task :copy_examples do
     # Generate HTML files for each file
     all_files.each do |file_path|
       relative_path = file_path.sub("examples/", "")
-      target_dir = "tmp/rdoc/examples/#{File.dirname(relative_path)}"
+      target_dir = "#{rdoc_dir}/examples/#{File.dirname(relative_path)}"
       FileUtils.mkdir_p target_dir
 
       content = File.read(file_path)
@@ -391,22 +396,22 @@ task :copy_examples do
     end
 
     # Write search index for examples
-    FileUtils.mkdir_p "tmp/rdoc/examples/js"
+    FileUtils.mkdir_p "#{rdoc_dir}/examples/js"
     search_data = { index: search_entries }
-    File.write("tmp/rdoc/examples/js/search_data.js", "var search_data = #{JSON.generate(search_data)};")
+    File.write("#{rdoc_dir}/examples/js/search_data.js", "var search_data = #{JSON.generate(search_data)};")
 
     # Copy RDoc search JS files to examples
     rdoc_js_dir = Gem.find_files("rdoc/generator/template/aliki/js").first
     if rdoc_js_dir && Dir.exist?(rdoc_js_dir)
       %w[search_navigation.js search_ranker.js search_controller.js aliki.js].each do |js_file|
         src = File.join(rdoc_js_dir, js_file)
-        FileUtils.cp(src, "tmp/rdoc/examples/js/#{js_file}") if File.exist?(src)
+        FileUtils.cp(src, "#{rdoc_dir}/examples/js/#{js_file}") if File.exist?(src)
       end
     end
 
     # Generate index.html files for each directory
     files_by_dir.each do |dir, files|
-      target_dir = "tmp/rdoc/examples/#{dir}".sub("examples/", "")
+      target_dir = "#{rdoc_dir}/examples/#{dir}".sub("examples/", "")
       FileUtils.mkdir_p target_dir
 
       # Get parent directory
@@ -599,7 +604,7 @@ task :copy_examples do
       </html>
     HTML
 
-    File.write("tmp/rdoc/examples/index.html", root_index_html)
+    File.write("#{rdoc_dir}/examples/index.html", root_index_html)
   end
 end
 
