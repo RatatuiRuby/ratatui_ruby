@@ -45,6 +45,7 @@ Architecture:
     - Runs specific task: `bin/agent_rake test:ruby` (for example)
 - **Setup:** `bin/setup` must handle both Bundler and Cargo dependencies.
 - **Git:** ALWAYS set `PAGER=cat` with `git`, `git`, etc.. **THIS IS MANDATORY!**
+- **Rake:** Our rake tasks use `git ls-files`, so errors happen when you move or delete files. In this case, ask the user to stage changes for you.
 
 ### Ruby Standards
 

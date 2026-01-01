@@ -37,6 +37,7 @@ These examples follow the pattern described in `developing_examples.md`: they ex
 - `widget_tabs_demo`: Demonstrates Tabs widget with interactive attribute cycling.
 - `widget_barchart_demo`: Demonstrates BarChart widget with interactive attribute cycling.
 - `widget_layout_split`: Demonstrates Layout.split with interactive direction, flex, and constraint cycling.
+- `rect`: Demonstrates Rect class attributes (x, y, width, height) and `Rect#contains?` for hit testing. Shows the cached layout pattern.
 
 ## Category 2: Real-Application Showcases
 
@@ -47,11 +48,8 @@ These are not API documentation—they do not systematically cycle through all w
 **Examples:**
 - `login_form`: Form UI with text input, cursor positioning, and popup feedback using Paragraph, Overlay, Center, and Cursor.
 - `table_select`: Interactive table viewer with row/column selection, simulating a process monitor application.
-- `hit_test`: Demonstrates layout caching pattern for hit testing with split panels and mouse interaction.
 - `map_demo`: Canvas-based world map visualization with animated shapes and interactive marker cycling.
-- `mouse_events`: Multi-panel event display app showcasing all mouse event types.
 - `all_events`: Multi-panel dashboard displaying all event types (key, mouse, resize, paste, focus).
-- `frame_demo`: Interactive hit-testing dashboard demonstrating `Layout.split` and frame rendering.
 - `custom_widget`: Demonstrates custom widget implementation with a diagonal line widget.
 
 ## Category 3: Documentation-Verification Examples
@@ -82,7 +80,7 @@ These serve as automated documentation tests: if the example code changes but th
 
 - [x] **Split `flex_layout`** (demonstrates Layout flex modes with multiple examples). This is borderline—it's quasi-documentation-verification of Layout behavior. Consider whether it belongs as `verify_flex_layout` or if it should remain as a showcase.o `widget_layout_split`. Instead of statically demonstrating a set of flex modes, it should use the interactive pattern to have hotkeys that cycle through ALL Layout.split parameters and options.
 
-- [ ] **`hit_test` and `frame_demo`**: Combine these as `app_hit_testing` and make it the mother of all hit testing / layout caching / etc. patterns.
+- [x] **`hit_test` and `frame_demo`**: Combine these as `app_hit_testing` and make it the mother of all hit testing / layout caching / etc. patterns.
 
 - [ ] **`custom_widget`**: Currently Category 2 (real app), but it is actually a widget demonstration for the polymorphic `render` method custom widget pattern. Rename to `widget_render` and add more custom widgets the user can cycle through with hotkeys.
 

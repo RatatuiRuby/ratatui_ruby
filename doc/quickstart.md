@@ -312,6 +312,12 @@ Demonstrates the `Clear` widget and how to prevent "style bleed" when rendering 
 
 ![popup_demo](./images/widget_popup_demo.png)
 
+#### [Rect Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_rect/app.rb)
+
+Demonstrates the `Rect` class—the fundamental geometry primitive for TUI layout. Shows Rect attributes (`x`, `y`, `width`, `height`) and `Rect#contains?` for hit testing mouse clicks. Also demonstrates the cached layout pattern: compute layout in `draw`, cache rects in instance variables, reuse in `handle_input`.
+
+![widget_rect](./images/widget_rect.png)
+
 #### [Ratatui Logo Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_ratatui_logo_demo/app.rb)
 
 Demonstrates the `RatatuiLogo` widget.
