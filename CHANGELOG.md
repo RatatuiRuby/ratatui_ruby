@@ -12,6 +12,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Removed
+
+## [0.5.0] - 2026-01-01
+
+### Added
+
 #### Frame API
 
 - **`RatatuiRuby.draw { |frame| ... }`**: New block-based drawing API that yields a `Frame` object for explicit widget placement. Enables hit testing without duplicating layout calculations.
@@ -275,7 +285,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Input Handling**: Robust handling for both Keyboard and Mouse events.
 - **Testing Support**: Included `RatatuiRuby::TestHelper` and RSpec integration to make testing your TUI applications possible.
 
-[Unreleased]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.4.0...HEAD
+[Unreleased]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.5.0...HEAD
+[0.5.0]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.4.0...v0.5.0
 [0.4.0]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.3.1...v0.4.0
 [0.3.1]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.3.0...v0.3.1
 [0.3.0]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.2.0...v0.3.0
