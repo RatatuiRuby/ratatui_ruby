@@ -215,7 +215,23 @@ Full-featured examples demonstrating complex layouts and real-world TUI patterns
 
 A comprehensive demonstration of every event type supported by **ratatui_ruby**: Key, Mouse, Resize, Paste, and Focus events.
 
+**What you'll learn:**
+
+*   **MVVM Architecture**: How to separate logic (Model), state (ViewModel), and rendering (View) for clean, testable code.
+*   **Event Handling**: How to capture and distinguish between all input types, including modifiers (`Ctrl+C`) and focus changes.
+*   **Scalable Structure**: How to organize a non-trivial application into small, focused classes instead of a monolithic script.
+
 ![all_events](./images/app_all_events.png)
+
+#### [Color Picker](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/app_color_picker/app.rb)
+
+A feature-rich interactive application demonstrating a "Scene-Orchestrated" architecture.
+
+**What you'll learn:**
+
+*   **Scene-Orchestrated MVC**: How to separate the View (layout/rendering) from the Controller (event loop) and Model (business logic).
+*   **Hit Testing**: How to cache layout rectangles during the render pass to handle mouse clicks on specific elements.
+*   **Modal Dialogs**: How to implement overlay patterns that intercept input.
 
 #### [Custom Widget (Escape Hatch)](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/app_custom_widget/app.rb)
 
