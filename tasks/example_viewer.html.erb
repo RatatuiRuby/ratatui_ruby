@@ -11,7 +11,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   
   <script>
   var rdoc_rel_prefix = "<%= doc_root_link.sub('index.html', '') %>";
+  var index_rel_prefix = "<%= '../' * (relative_path.split('/').size - 1) %>";
   </script>
+
+  <script src="<%= '../' * (relative_path.split('/').size - 1) %>js/search_navigation.js" defer></script>
+  <script src="<%= '../' * (relative_path.split('/').size - 1) %>js/search_data.js" defer></script>
+  <script src="<%= '../' * (relative_path.split('/').size - 1) %>js/search_ranker.js" defer></script>
+  <script src="<%= '../' * (relative_path.split('/').size - 1) %>js/search_controller.js" defer></script>
+  <script src="<%= '../' * (relative_path.split('/').size - 1) %>js/aliki.js" defer></script>
 
   <link href="<%= doc_root_link.sub('index.html', '') %>css/rdoc.css" rel="stylesheet">
   <link href="<%= doc_root_link.sub('index.html', '') %>css/custom.css" rel="stylesheet">
@@ -23,14 +30,56 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       Example Viewer
     </div>
     
-    <div class="navbar-search navbar-search-desktop">
-      <!-- Search placeholder or actual search if we want to integrate it later -->
+    <!-- Desktop search bar -->
+    <div class="navbar-search navbar-search-desktop" role="search">
+      <form action="#" method="get" accept-charset="utf-8">
+        <input id="search-field" role="combobox" aria-label="Search"
+               aria-autocomplete="list" aria-controls="search-results-desktop"
+               type="text" name="search" placeholder="Search (/) examples..."
+               spellcheck="false" autocomplete="off"
+               title="Type to search, Up and Down to navigate, Enter to load">
+        <ul id="search-results-desktop" aria-label="Search Results"
+            aria-busy="false" aria-expanded="false"
+            aria-atomic="false" class="initially-hidden search-results"></ul>
+      </form>
     </div>
+
+    <!-- Mobile search icon button -->
+    <button id="search-toggle" class="navbar-search-mobile" aria-label="Open search" type="button">
+      <span aria-hidden="true">🔍</span>
+    </button>
 
     <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" type="button" onclick="cycleColorMode()">
       <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
     </button>
   </header>
+
+  <!-- Search Modal (Mobile) -->
+  <div id="search-modal" class="search-modal" hidden aria-modal="true" role="dialog" aria-label="Search">
+    <div class="search-modal-backdrop"></div>
+    <div class="search-modal-content">
+      <div class="search-modal-header">
+        <form class="search-modal-form" action="#" method="get" accept-charset="utf-8">
+          <span class="search-modal-icon" aria-hidden="true">🔍</span>
+          <input id="search-field-mobile" role="combobox" aria-label="Search"
+                 aria-autocomplete="list" aria-controls="search-results-mobile"
+                 type="text" name="search" placeholder="Search examples"
+                 spellcheck="false" autocomplete="off">
+          <button type="button" class="search-modal-close" aria-label="Close search" id="search-modal-close">
+            <span aria-hidden="true">esc</span>
+          </button>
+        </form>
+      </div>
+      <div class="search-modal-body">
+        <ul id="search-results-mobile" aria-label="Search Results"
+            aria-busy="false" aria-expanded="false"
+            aria-atomic="false" class="search-results search-modal-results initially-hidden"></ul>
+        <div class="search-modal-empty">
+          <p>No recent searches</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <nav id="navigation" role="navigation">
     <div id="fileindex-section" class="nav-section">

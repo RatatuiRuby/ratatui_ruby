@@ -59,7 +59,7 @@ def build_tree(all_files, root_dir, max_depth = nil, current_depth = 1)
       files: files.map { |f|
         {
           name: File.basename(f),
-          path: "#{File.basename(f).gsub(".", "_")}.html",
+          path: "#{File.basename(f).gsub('.', '_')}.html",
           full_path: f,
         }
       }.sort_by { |f| f[:name] },
@@ -94,11 +94,13 @@ def extract_rdoc_info(content, filename)
     # RDoc line numbers are 1-based
     anchor_index = target_class.line - 1
     title = target_class.name
+    search_snippet = target_class.respond_to?(:search_snippet) ? target_class.search_snippet : ""
   else
     # Fallback to first line of code if no class defined
     first_code_index = lines.find_index { |l| !l.strip.empty? && !l.strip.start_with?("#") }
     anchor_index = first_code_index
     title = nil
+    search_snippet = ""
   end
 
   # Walk upwards from the line before the anchor to find immediate comments
@@ -127,15 +129,18 @@ def extract_rdoc_info(content, filename)
       line.strip.sub(/^#\s?/, "")
     end
     raw_comment = cleaned_lines.join("\n")
+    # Use first line of comment as snippet if RDoc didn't provide one
+    search_snippet = cleaned_lines.first if search_snippet.empty?
   end
 
   {
     title:,
     raw_comment:,
+    search_snippet:,
   }
 rescue => e
   puts "Warning: Failed to extract RDoc info for #{filename}: #{e.message}"
-  { title: nil, comment_html: nil }
+  { title: nil, raw_comment: nil, search_snippet: "" }
 end
 
 def render_tree_html(tree_data, current_path, current_file_html, depth = 0)
@@ -286,6 +291,9 @@ task :copy_examples do
       end
     end
 
+    # Collect search index entries
+    search_entries = []
+
     # Generate HTML files for each file
     all_files.each do |file_path|
       relative_path = file_path.sub("examples/", "")
@@ -327,6 +335,16 @@ task :copy_examples do
           breadcrumb_path = "#{File.dirname(relative_path)}/"
         end
 
+        # Add to search index
+        html_path = "#{File.dirname(relative_path)}/#{File.basename(file_path).gsub('.', '_')}.html"
+        search_entries << {
+          name: page_title,
+          full_name: relative_path,
+          type: info[:title] ? "class" : "file",
+          path: html_path,
+          snippet: info[:search_snippet],
+        }
+
         file_header_html = "<h1 id=\"top\">#{ERB::Util.html_escape(page_title)}</h1>"
 
         # Concatenate comment and Source Code section
@@ -358,7 +376,7 @@ task :copy_examples do
       doc_root_link = "#{'../' * (depth + 1)}index.html"
 
       # Build tree structure for sidebar
-      current_file_html = "#{File.basename(file_path).gsub(".", "_")}.html"
+      current_file_html = "#{File.basename(file_path).gsub('.', '_')}.html"
       tree_data = build_tree(all_files, "examples", nil)
 
       context = ExampleViewerContext.new(breadcrumb_path, page_title, file_content_html, file_header_html,
@@ -368,8 +386,22 @@ task :copy_examples do
       }
       html = erb.result(context.get_binding)
 
-      html_file = "#{target_dir}/#{File.basename(file_path).gsub(".", "_")}.html"
+      html_file = "#{target_dir}/#{File.basename(file_path).gsub('.', '_')}.html"
       File.write(html_file, html)
+    end
+
+    # Write search index for examples
+    FileUtils.mkdir_p "tmp/rdoc/examples/js"
+    search_data = { index: search_entries }
+    File.write("tmp/rdoc/examples/js/search_data.js", "var search_data = #{JSON.generate(search_data)};")
+
+    # Copy RDoc search JS files to examples
+    rdoc_js_dir = Gem.find_files("rdoc/generator/template/aliki/js").first
+    if rdoc_js_dir && Dir.exist?(rdoc_js_dir)
+      %w[search_navigation.js search_ranker.js search_controller.js aliki.js].each do |js_file|
+        src = File.join(rdoc_js_dir, js_file)
+        FileUtils.cp(src, "tmp/rdoc/examples/js/#{js_file}") if File.exist?(src)
+      end
     end
 
     # Generate index.html files for each directory
@@ -394,7 +426,7 @@ task :copy_examples do
       # Build combined list of folders and files with icons
       items = []
       subdirs.each { |d| items << { type: :dir, name: File.basename(d), path: "#{File.basename(d)}/index.html", icon: "📁" } }
-      files.each { |f| items << { type: :file, name: File.basename(f), path: "#{File.basename(f).gsub(".", "_")}.html", icon: "📄" } }
+      files.each { |f| items << { type: :file, name: File.basename(f), path: "#{File.basename(f).gsub('.', '_')}.html", icon: "📄" } }
 
       # Sort alphabetically
       sorted_items = items.sort_by { |i| i[:name].downcase }
@@ -486,7 +518,7 @@ task :copy_examples do
     # Build combined list of root folders and files with icons
     root_items = []
     root_subdirs.each { |d| root_items << { type: :dir, name: File.basename(d), path: "#{File.basename(d)}/index.html", icon: "📁" } }
-    root_files.each { |f| root_items << { type: :file, name: File.basename(f), path: "#{File.basename(f).gsub(".", "_")}.html", icon: "📄" } }
+    root_files.each { |f| root_items << { type: :file, name: File.basename(f), path: "#{File.basename(f).gsub('.', '_')}.html", icon: "📄" } }
 
     # Sort alphabetically
     sorted_root_items = root_items.sort_by { |i| i[:name].downcase }
