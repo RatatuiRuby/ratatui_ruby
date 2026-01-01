@@ -20,4 +20,3 @@ module RatatuiRuby
     # Creates a new RatatuiLogo.
   end
 end
-

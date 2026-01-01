@@ -123,6 +123,7 @@ The project follows a standard Gem layout with an `ext/` directory for Rust code
 Before considering a task complete and returning control to the user, you **MUST** ensure:
 
 1.  **Default Rake Task Passes:** Run `bin/agent_rake` (no args). Confirm it passes with ZERO errors **or warnings**.
+  - You will save time if you run `bin/agent_rake rubocop:autocorrect` first.
   - If you think the build is looking for deleted files, it is not. Instead, tell the user and **ask them to stage changes**.
 2.  **Documentation Updated:** If public APIs or observable behavior changed, update relevant RDoc, rustdoc, `doc/` files, `README.md`, and/or `ratatui_ruby-wiki` files.
 3.  **Changelog Updated:** If public APIs, observable behavior, or gemspec dependencies have changed, update [CHANGELOG.md](CHANGELOG.md)'s **Unreleased** section.

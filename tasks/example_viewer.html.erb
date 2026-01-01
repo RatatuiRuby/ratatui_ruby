@@ -1,0 +1,123 @@
+<%#
+SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+SPDX-License-Identifier: AGPL-3.0-or-later
+%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= page_title %> - Example Viewer</title>
+  
+  <script>
+  var rdoc_rel_prefix = "<%= doc_root_link.sub('index.html', '') %>";
+  </script>
+
+  <link href="<%= doc_root_link.sub('index.html', '') %>css/rdoc.css" rel="stylesheet">
+  <link href="<%= doc_root_link.sub('index.html', '') %>css/custom.css" rel="stylesheet">
+</head>
+<body class="file<%= ' has-toc' unless toc_items.empty? %>">
+<%= icons_svg %>
+  <header class="top-navbar">
+    <div class="navbar-brand">
+      Example Viewer
+    </div>
+    
+    <div class="navbar-search navbar-search-desktop">
+      <!-- Search placeholder or actual search if we want to integrate it later -->
+    </div>
+
+    <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" type="button" onclick="cycleColorMode()">
+      <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
+    </button>
+  </header>
+
+  <nav id="navigation" role="navigation">
+    <div id="fileindex-section" class="nav-section">
+      <details class="nav-section-collapsible" open>
+        <summary class="nav-section-header">
+          <span class="nav-section-icon">
+             <svg><use href="#icon-file"></use></svg>
+          </span>
+          <span class="nav-section-title">Examples</span>
+          <span class="nav-section-chevron">
+            <svg><use href="#icon-chevron"></use></svg>
+          </span>
+        </summary>
+        <ul class="nav-list">
+          <li><a href="<%= doc_root_link %>">← Back to Docs</a></li>
+        </ul>
+      </details>
+    </div>
+    <div class="nav-section">
+      <details class="nav-section-collapsible" open>
+        <summary class="nav-section-header">
+          <span class="nav-section-icon">
+            <svg><use href="#icon-layers"></use></svg>
+          </span>
+          <span class="nav-section-title">Files</span>
+          <span class="nav-section-chevron">
+            <svg><use href="#icon-chevron"></use></svg>
+          </span>
+        </summary>
+        <ul class="link-list nav-list">
+          <%= render_tree(tree_data, relative_path, current_file_html) %>
+        </ul>
+      </details>
+    </div>
+  </nav>
+
+  <main role="main">
+    <div class="breadcrumb">
+      <%= breadcrumb_path %>
+    </div>
+    <%= file_header_html %>
+    <div class="content">
+      <%= file_content_html %>
+    </div>
+  </main>
+
+  <% unless toc_items.empty? %>
+  <aside class="table-of-contents" role="complementary" aria-label="Table of Contents">
+    <div class="toc-sticky">
+      <div class="toc-list">
+        <h3>On This Page</h3>
+        <%= render_toc(toc_items) %>
+      </div>
+    </div>
+  </aside>
+  <% end %>
+
+
+  <script>
+    const modes = ['auto', 'light', 'dark'];
+    const icons = { auto: '🌓', light: '☀️', dark: '🌙' };
+    
+    function setColorMode(mode) {
+      if (mode === 'auto') {
+        document.documentElement.removeAttribute('data-theme');
+        const systemTheme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', systemTheme);
+      } else {
+        document.documentElement.setAttribute('data-theme', mode);
+      }
+      
+      const icon = icons[mode];
+      const toggle = document.getElementById('theme-toggle');
+      toggle.querySelector('.theme-toggle-icon').textContent = icon;
+      
+      localStorage.setItem('rdoc-theme', mode);
+    }
+    
+    function cycleColorMode() {
+      const current = localStorage.getItem('rdoc-theme') || 'auto';
+      const currentIndex = modes.indexOf(current);
+      const nextMode = modes[(currentIndex + 1) % modes.length];
+      setColorMode(nextMode);
+    }
+    
+    const savedMode = localStorage.getItem('rdoc-theme') || 'auto';
+    setColorMode(savedMode);
+  </script>
+</body>
+</html>

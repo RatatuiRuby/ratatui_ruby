@@ -211,7 +211,7 @@ Full-featured examples demonstrating complex layouts and real-world TUI patterns
 
 
 
-#### [All Events](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/app_all_events/app.rb)
+#### [All Events](../examples/app_all_events/app.rb)
 
 Handling terminal events is unpredictable. Developers need to know exactly what the terminal sends for `Ctrl+C` or a mouse drag.
 
