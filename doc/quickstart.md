@@ -223,11 +223,11 @@ Demonstrates how to define a custom widget in pure Ruby using the `render(area, 
 
 ![custom_widget](./images/app_custom_widget.png)
 
-#### [Flex Layout](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/app_flex_layout/app.rb)
+#### [Layout Split Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_layout_split/app.rb)
 
-Demonstrates modern layout features including `Constraint.fill` and `Constraint.ratio` for proportional space distribution and `flex: :space_between` for evenly distributing fixed-size elements.
+Demonstrates `Layout.split` with interactive attribute cycling. Features hotkey controls For direction (vertical/horizontal), all 7 flex modes (legacy, start, center, end, space_between, space_around, space_evenly), and constraint types (fill, length, percentage, min, ratio).
 
-![flex_layout](./images/app_flex_layout.png)
+![widget_layout_split](./images/widget_layout_split.png)
 
 #### [Login Form](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/app_login_form/app.rb)
 
