@@ -1,0 +1,8 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module View
+  interface _View
+    def call(state: ViewState, tui: RatatuiRuby::Session, frame: RatatuiRuby::Frame, area: RatatuiRuby::Rect) -> void
+  end
+end

@@ -241,12 +241,6 @@ Exhibits the `Canvas` widget's power, rendering a world map with city labels, an
 
 ![map_demo](./images/app_map_demo.png)
 
-#### [Mouse Events](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/app_mouse_events/app.rb)
-
-Detailed plumbing of mouse events, including clicks, drags, and movement tracking.
-
-![mouse_events](./images/app_mouse_events.png)
-
 #### [Table Select](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/app_table_select/app.rb)
 
 Demonstrates interactive row selection in the `Table` widget with keyboard navigation, highlighting selected rows with custom styles and symbols, applying a base style, and dynamically adjusting `column_spacing`. Also demonstrates `column_highlight_style` and the new `cell_highlight_style` for precise selection visualization.

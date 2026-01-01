@@ -78,7 +78,7 @@ These serve as automated documentation tests: if the example code changes but th
 
 - [x] **Split `analytics`** (demonstrates both Tabs and BarChart interactively). Create `widget_tabs_demo` and move BarChart demo to it, and extract BarChart into its own single-widget showcase.
 
-- [ ] **`all_events` and `mouse_events`** (demonstrates multiple event types in a 2×2 grid). Combine these, and make sure it has a showcases EVERY event class (as more have been added).
+- [x] **`all_events` and `mouse_events`** (demonstrates multiple event types in a 2×2 grid). Combine these, and make sure it has a showcases EVERY event class (as more have been added).
 
 - [ ] **Split `flex_layout`** (demonstrates Layout flex modes with multiple examples). This is borderline—it's quasi-documentation-verification of Layout behavior. Consider whether it belongs as `verify_flex_layout` or if it should remain as a showcase.o `widget_layout_split`. Instead of statically demonstrating a set of flex modes, it should use the interactive pattern to have hotkeys that cycle through ALL Layout.split parameters and options.
 

@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+class Events
+  def initialize: () -> void
+  def record: (Symbol type, ?time: Time, ?description: String, ?sub_key: Symbol | String | nil, ?data: Hash[Symbol, untyped], ?live_type: Symbol) -> void
+  def live_event: (Symbol type) -> { time: Time, description: String } | nil
+  def live_events: () -> Hash[Symbol, { time: Time, description: String }]
+  def visible: (Integer max_entries) -> Array[EventEntry]
+  def empty?: () -> bool
+  def count: (Symbol type, ?Symbol | nil sub_type) -> Integer
+  def count_by_kind: (String kind) -> Integer
+  def lit?: (Symbol type, ?Symbol | String | nil sub_key) -> bool
+  def entries: () -> Array[EventEntry]
+end

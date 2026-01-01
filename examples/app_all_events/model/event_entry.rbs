@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+class EventEntry < Data
+  attr_reader type: Symbol
+  attr_reader sub_key: Symbol | String | nil
+  attr_reader color: Symbol
+  attr_reader timestamp: Timestamp
+  attr_reader data: Hash[Symbol, untyped]
+
+  def self.from_event(type: Symbol, sub_key: Symbol | String | nil, color: Symbol, timestamp: Timestamp, data: Hash[Symbol, untyped]) -> instance
+  def matches_type?: (Symbol check_type) -> bool
+  def matches_sub_type?: (Symbol check_type, Symbol | String check_sub_key) -> bool
+  def matches_kind?: (String kind) -> bool
+  def self.new: (?type: Symbol, ?sub_key: Symbol | String | nil, ?color: Symbol, ?timestamp: Timestamp, ?data: Hash[Symbol, untyped]) -> instance
+end
