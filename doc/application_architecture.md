@@ -4,61 +4,78 @@ SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
-# Core Concepts
+# Application Architecture
 
-This guide explains the core concepts and patterns available in `ratatui_ruby` for structuring your terminal applications.
+Architect robust TUI applications using core lifecycle patterns and API best practices.
 
-## 1. Lifecycle Management
+## Core Concepts
 
-Managing the terminal state is critical. You must enter "alternate screen" and "raw mode" on startup, and **always** restore the terminal on exit (even on errors), otherwise the user's terminal will be left in a broken state.
+Your app lives inside a terminal. You need to respect its rules.
 
-### `RatatuiRuby.run` (Recommended)
+### Lifecycle Management
 
-The `run` method acts as a **Context Manager**. It handles the initialization and restoration for you, ensuring the terminal is always restored even if your code raises an exception. We recommend using `run` for all applications, as it provides a safe sandbox for your TUI.
+Terminals have state. They remember cursor positions, input modes, and screen buffers.
+
+**The Problem:** If your app crashes or exits without cleaning up, it "breaks" the user's terminal. The cursor vanishes. Input echoes constantly. The alternate screen doesn't clear.
+
+**The Solution:** The library's lifecycle manager handles this for you. It enters "raw mode" on startup and guarantees restoration on exit.
+
+#### Use `RatatuiRuby.run`
+
+This method acts as a safety net. It initializes the terminal, yields control to your block, and restores the terminal afterwards—even if your code raises an exception.
 
 ```ruby
 RatatuiRuby.run do |tui|
   loop do
-     # Your code here
-    tui.draw(...)
+    tui.draw do |frame|
+      frame.render_widget(tui.paragraph(text: "Hello"), frame.area)
+    end
+    break if tui.poll_event == "q"
   end
 end
 # Terminal is restored here
 ```
 
-### Manual Management (Advanced)
+#### Manual Management
 
-You can manage this manually if you need granular control, but use `ensure` blocks!
+Need granular control? You can initialize and restore the terminal yourself. Use `ensure` blocks to guarantee cleanup.
 
 ```ruby
 RatatuiRuby.init_terminal
 begin
-  # Your code here
-  RatatuiRuby.draw(...)
+  RatatuiRuby.draw do |frame|
+    frame.render_widget(RatatuiRuby::Paragraph.new(text: "Hello"), frame.area)
+  end
 ensure
   RatatuiRuby.restore_terminal
+  # Terminal is restored here
 end
 ```
 
-## 2. API Convenience
+### API Convenience
 
-### Session API (Recommended)
+Writing UI trees involves nesting many widgets.
 
-The block yielded by `run` is a `RatatuiRuby::Session` instance (`tui`).
-It provides factory methods for every widget class (converting snake_case to CamelCase) and aliases for module functions.
+**The Problem:** Explicitly namespacing `RatatuiRuby::` for every widget (e.g., `RatatuiRuby::Paragraph.new`) is tedious. It creates visual noise that hides your layout structure.
 
-**Why use it?** It significantly reduces verbosity and repeated `RatatuiRuby::` namespacing, making the UI tree structure easier to read.
+**The Solution:** The Session API (`tui`) provides shorthand factories for every widget. It yields a session object to your block.
 
 ```ruby
 RatatuiRuby.run do |tui|
   loop do
-    layout = tui.layout(
-      direction: :horizontal,
-      constraints: [
-        RatatuiRuby::Constraint.length(20),
-        RatatuiRuby::Constraint.min(0)
-      ],
-      children: [
+    tui.draw do |frame|
+      # Split layout using Session helpes
+      sidebar_area, content_area = tui.layout_split(
+        frame.area,
+        direction: :horizontal,
+        constraints: [
+          tui.constraint_length(20),
+          tui.constraint_min(0)
+        ]
+      )
+
+      # Render sidebar
+      frame.render_widget(
         tui.paragraph(
           text: tui.text_line(spans: [
             tui.text_span(content: "Side", style: tui.style(fg: :blue)),
@@ -66,15 +83,19 @@ RatatuiRuby.run do |tui|
           ]),
           block: tui.block(borders: [:all], title: "Nav")
         ),
+        sidebar_area
+      )
+
+      # Render main content
+      frame.render_widget(
         tui.paragraph(
           text: "Main Content",
           style: tui.style(fg: :green),
           block: tui.block(borders: [:all], title: "Content")
-        )
-      ]
-    )
-    
-    tui.draw(layout)
+        ),
+        content_area
+      )
+    end
     
     event = tui.poll_event
     break if event == "q" || event == :ctrl_c
@@ -82,22 +103,25 @@ RatatuiRuby.run do |tui|
 end
 ```
 
-### Raw API
+#### Raw API
 
-You can always use the raw module methods and classes directly. This is useful if you are building your own abstractions or prefer explicit class instantiation.
-
-**Comparison:** Notice how much more verbose the same UI definition is.
+Building your own abstractions? You might prefer explicit class instantiation. The raw constants are always available.
 
 ```ruby
 RatatuiRuby.run do
   loop do
-    layout = RatatuiRuby::Layout.new(
-      direction: :horizontal,
-      constraints: [
-        RatatuiRuby::Constraint.length(20),
-        RatatuiRuby::Constraint.min(0)
-      ],
-      children: [
+    RatatuiRuby.draw do |frame|
+      # Manual split
+      rects = RatatuiRuby::Layout.split(
+        frame.area,
+        direction: :horizontal,
+        constraints: [
+          RatatuiRuby::Constraint.length(20),
+          RatatuiRuby::Constraint.min(0)
+        ]
+      )
+
+      frame.render_widget(
         RatatuiRuby::Paragraph.new(
           text: RatatuiRuby::Text::Line.new(spans: [
             RatatuiRuby::Text::Span.new(content: "Side", style: RatatuiRuby::Style.new(fg: :blue)),
@@ -105,18 +129,48 @@ RatatuiRuby.run do
           ]),
           block: RatatuiRuby::Block.new(borders: [:all], title: "Nav")
         ),
+        rects[0]
+      )
+
+      frame.render_widget(
         RatatuiRuby::Paragraph.new(
           text: "Main Content",
           style: RatatuiRuby::Style.new(fg: :green),
           block: RatatuiRuby::Block.new(borders: [:all], title: "Content")
-        )
-      ]
-    )
-    
-    RatatuiRuby.draw(layout)
+        ),
+        rects[1]
+      )
+    end
 
     event = RatatuiRuby.poll_event
     break if event == "q" || event == :ctrl_c
   end
 end
 ```
+
+## Reference Architectures
+
+Simple scripts work well with valid linear code. Complex apps need structure.
+
+We provide these reference architectures to inspire you:
+
+### MVVM (Model-View-ViewModel)
+
+**Source:** [examples/app_all_events](../examples/app_all_events/README.md)
+
+This pattern strictly separates concerns:
+*   **Model:** Pure business logic. It handles data and events.
+*   **View State (ViewModel):** An immutable data structure built fresh every frame. It calculates logic-dependent properties (like `border_color`) so the View doesn't have to.
+*   **View:** Pure rendering logic. It takes the View State and draws it.
+
+Use this when your app has complex state rules that clutter your rendering code.
+
+### Scene-Orchestrated MVC
+
+**Source:** [examples/app_color_picker](../examples/app_color_picker/README.md)
+
+This pattern addresses the difficulty of mouse interaction and layout management:
+*   **Scene:** A specialized View that owns the layout *and* hit testing. It caches the screen coordinates of widgets during the draw phase.
+*   **App (Controller):** Handles events by querying the Scene (e.g., `scene.rect_at(x, y)`).
+
+Use this when you need rich interactivity (mouse clicks, drag-and-drop) or complex dynamic layouts.

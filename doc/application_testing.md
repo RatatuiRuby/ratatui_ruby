@@ -46,11 +46,13 @@ Wrap your test assertions in `with_test_terminal`. This sets up a temporary, in-
 def test_rendering
   # Uses default 80x24 terminal
   with_test_terminal do
-    # 1. Instantiate your app/component
+    # 1. Instantiate your widget
     widget = RatatuiRuby::Paragraph.new(text: "Hello World")
     
-    # 2. Render it
-    RatatuiRuby.draw(widget)
+    # 2. Render it using the Frame API
+    RatatuiRuby.draw do |frame|
+      frame.render_widget(widget, frame.area)
+    end
     
     # 3. Assert on the output
     assert_includes buffer_content[0], "Hello World"

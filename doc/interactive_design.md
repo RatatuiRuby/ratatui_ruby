@@ -21,10 +21,13 @@ Structure your event loop into three clear phases:
 
 ```ruby
 def run
-  RatatuiRuby.run do
+  RatatuiRuby.run do |tui|
+    @tui = tui
     loop do
-      calculate_layout   # Phase 1: Geometry (once per frame)
-      render             # Phase 2: Draw
+      @tui.draw do |frame|
+        calculate_layout(frame.area) # Phase 1: Geometry (once per frame)
+        render(frame)                # Phase 2: Draw
+      end
       break if handle_input == :quit  # Phase 3: Input
     end
   end
@@ -33,29 +36,27 @@ end
 
 **Phase 1: Layout Calculation**
 
-Call this before rendering and event handling. It's the single source of truth for geometry:
+Call this inside your `draw` block. It uses the current terminal area provided by the frame:
 
 ```ruby
-def calculate_layout
-  full_area = RatatuiRuby::Rect.new(x: 0, y: 0, width: 80, height: 24)
-
+def calculate_layout(area)
   # Main area vs sidebar (70% / 30%)
-  main_area, @sidebar_area = RatatuiRuby::Layout.split(
-    full_area,
+  main_area, @sidebar_area = @tui.layout_split(
+    area,
     direction: :horizontal,
     constraints: [
-      RatatuiRuby::Constraint.percentage(70),
-      RatatuiRuby::Constraint.percentage(30),
+      @tui.constraint_percentage(70),
+      @tui.constraint_percentage(30),
     ]
   )
 
   # Within main area, left vs right panels
-  @left_rect, @right_rect = RatatuiRuby::Layout.split(
+  @left_rect, @right_rect = @tui.layout_split(
     main_area,
     direction: :horizontal,
     constraints: [
-      RatatuiRuby::Constraint.percentage(@left_ratio),
-      RatatuiRuby::Constraint.percentage(100 - @left_ratio)
+      @tui.constraint_percentage(@left_ratio),
+      @tui.constraint_percentage(100 - @left_ratio)
     ]
   )
 end
@@ -66,10 +67,9 @@ end
 Reuse the cached rects. Build and draw:
 
 ```ruby
-def render
-  left_panel = build_widget(@left_rect)
-  right_panel = build_widget(@right_rect)
-  # ... draw ...
+def render(frame)
+  frame.render_widget(build_widget(@left_rect), @left_rect)
+  frame.render_widget(build_widget(@right_rect), @right_rect)
 end
 ```
 
@@ -103,18 +103,14 @@ end
 
 ## Layout.split
 
-`Layout.split` computes layout geometry without rendering. It returns an array of `Rect` objects.
+`Layout.split` computes layout geometry without rendering. It returns an array of `Rect` objects. While you can call `RatatuiRuby::Layout.split` directly, we recommend using the `Session` helper (`tui.layout_split`) for cleaner application code.
 
 ```ruby
-rects = Layout.split(
-  area,
-  direction: :horizontal,
-  constraints: [Constraint.percentage(70), Constraint.percentage(30)]
-)
+# Preferred (Session API)
+left, right = tui.layout_split(area, constraints: [...])
 
-left, right = rects
-# left is a Rect describing the left 70% of the area
-# right is a Rect describing the right 30% of the area
+# Manual (Core API)
+left, right = RatatuiRuby::Layout.split(area, constraints: [...])
 ```
 
-Use it to establish the single source of truth in `calculate_layout`. Reuse the results in both render and event handling.
+Use it to establish the single source of truth inside your `draw` block. Store the results in instance variables and reuse them in both `render` and `handle_input`.

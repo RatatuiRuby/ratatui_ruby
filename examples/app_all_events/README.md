@@ -61,3 +61,21 @@ Hello World examples are great, but they don't scale. This example shows how to 
 
 ### "How do I implement an event loop?"
 It provides a robust reference implementation of the standard `loop { draw; handle_input }` cycle, including the correct way to handle quit signals.
+
+## Comparison: Choosing an Architecture
+
+Complex applications require structured state habits. `AppAllEvents` and the [Color Picker](../app_color_picker/README.md) demonstrate two different approaches.
+
+### The Dashboard Approach (AppAllEvents)
+
+Dashboards display data. They rarely require complex mouse interaction. Strict MVVM works best here. The View is a pure function. It accepts a `ViewState` and draws it. It ignores input. This simplifies testing.
+
+Use this pattern for logs, monitors, and data viewers.
+
+### The Tool Approach (Color Picker)
+
+Tools require interaction. Users click buttons and drag sliders. The Controller needs to know where components exist on screen. MVVM hides this layout data.
+
+The Color Picker uses a "Scene" pattern. The View exposes layout rectangles. The Controller uses these rectangles to handle mouse clicks.
+
+Use this pattern for forms, editors, and mouse-driven tools.

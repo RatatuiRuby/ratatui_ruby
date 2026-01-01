@@ -35,6 +35,7 @@ Architecture:
   - Tests must be meaningful; simply verifying that code "doesn't crash" or "compiles" is insufficient and unacceptable.
   - Each widget implementation must have a `tests` module with unit tests verifying basic rendering.
 - **Pre-commit:** Use `bin/agent_rake` to ensure commit-readiness. See Tools for detailed instructions.
+- **Git Pager:** ALWAYS set `PAGER=cat` for ALL `git` commands (e.g., `PAGER=cat git diff`). This is mandatory.
 
 ### Tools
 
@@ -44,7 +45,7 @@ Architecture:
     - Runs default task (compile + test + lint): `bin/agent_rake`
     - Runs specific task: `bin/agent_rake test:ruby` (for example)
 - **Setup:** `bin/setup` must handle both Bundler and Cargo dependencies.
-- **Git:** ALWAYS set `PAGER=cat` with `git`, `git`, etc.. **THIS IS MANDATORY!**
+- **Git:** ALWAYS set `PAGER=cat` with `git`, `git`, etc.. **THIS IS CRITICAL!**
 - **Rake:** Our rake tasks use `git ls-files`, so errors happen when you move or delete files. In this case, ask the user to stage changes for you.
 
 ### Ruby Standards

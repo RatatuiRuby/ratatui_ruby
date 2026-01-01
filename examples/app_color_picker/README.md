@@ -74,3 +74,21 @@ ruby examples/app_color_picker/app.rb
 -   Type a hex code (e.g., `#FF0055`) or color name (`cyan`).
 -   Press `Enter` to generate the palette.
 -   Click on the **Export Formats** box to copy the hex code.
+
+## Comparison: Choosing an Architecture
+
+Complex applications require structured state habits. This Color Picker and the [App All Events](../app_all_events/README.md) example demonstrate two different approaches.
+
+### The Tool Approach (Color Picker)
+
+Tools require interaction. Users click buttons and drag sliders. The Controller needs to know where components exist on screen. MVVM hides this layout data.
+
+This example uses a "Scene" pattern. The View exposes layout rectangles. The Controller uses these rectangles to handle mouse clicks.
+
+Use this pattern for forms, editors, and mouse-driven tools.
+
+### The Dashboard Approach (AppAllEvents)
+
+Dashboards display data. They rarely require complex mouse interaction. Strict MVVM works best there. The View is a pure function. It accepts a `ViewState` and draws it. It ignores input. This simplifies testing.
+
+Use that pattern for logs, monitors, and data viewers.
