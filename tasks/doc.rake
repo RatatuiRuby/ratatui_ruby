@@ -18,6 +18,7 @@ task :copy_doc_images do
   if Dir.exist?("doc/images")
     FileUtils.mkdir_p "tmp/rdoc/doc/images"
     FileUtils.cp_r Dir["doc/images/*.png"], "tmp/rdoc/doc/images"
+    FileUtils.cp_r Dir["doc/images/*.gif"], "tmp/rdoc/doc/images"
   end
 end
 

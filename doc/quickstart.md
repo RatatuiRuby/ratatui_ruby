@@ -324,10 +324,6 @@ Demonstrates the `LineGauge` widget with customizable filled and unfilled symbol
 
 ![line_gauge_demo](./images/widget_line_gauge_demo.png)
 
-#### [List Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_list_demo/app.rb)
-
-Demonstrates the `List` widget with interactive attribute cycling. Features multiple item sets to browse, customizable highlight styles and symbols, and exploration of all List options including direction, highlight spacing, repeat symbol mode, scroll padding, and base styling. The sidebar provides hotkey documentation for discovering all List features, including the new `p` key to adjust scroll padding.
-
 ![list_demo](./images/widget_list_demo.png)
 
 #### [Popup Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_popup_demo/app.rb)

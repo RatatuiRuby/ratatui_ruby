@@ -13,6 +13,8 @@ module RatatuiRuby
   #
   # Use it to build main menus, navigation sidebars, or logs.
   #
+  # {rdoc-image:/doc/images/widget_list_demo.png}[/examples/widget_list_demo/app.rb]
+  #
   # === Examples
   #
   #   # Basic List

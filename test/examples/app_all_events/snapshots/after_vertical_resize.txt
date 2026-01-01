@@ -1,0 +1,24 @@
+┌Event Counts──────┐ ┌Live Display─────────────────────────────────────────────┐
+│Key: 0            │ │Type     Time      Description                           │
+│  Unmodified: 0   │ │Key      —         —                                     │
+│  Modified: 0     │ │Mouse    —         —                                     │
+│Mouse: 0          │ │Resize   XX:XX:XX  #<RatatuiRuby::Event::Resize:0xXXXXXX│
+│  Down: 0         │ │Paste    —         —                                     │
+│  Up: 0           │ │Focus    —         —                                     │
+│  Drag: 0         │ │                                                         │
+│  Moved: 0        │ └─────────────────────────────────────────────────────────┘
+│  Scroll_up: 0    │ ┌Event Log────────────────────────────────────────────────┐
+│  Scroll_down: 0  │ │#<RatatuiRuby::Event::Resize:0xXXXXXX          │
+│Resize: 1         │ │@width=80, @height=30>                                   │
+│Paste: 0          │ │                                                         │
+│Focus: 0          │ │                                                         │
+│  Gained: 0       │ │                                                         │
+│  Lost: 0         │ │                                                         │
+│None: 0           │ │                                                         │
+│                  │ │                                                         │
+│                  │ │                                                         │
+│                  │ │                                                         │
+└──────────────────┘ └─────────────────────────────────────────────────────────┘
+┌Controls──────────────────────────────────────────────────────────────────────┐
+│q: Quit  Ctrl+C: Quit                                                         │
+└──────────────────────────────────────────────────────────────────────────────┘
