@@ -82,6 +82,6 @@ These serve as automated documentation tests: if the example code changes but th
 
 - [x] **`hit_test` and `frame_demo`**: Combine these as `app_hit_testing` and make it the mother of all hit testing / layout caching / etc. patterns.
 
-- [ ] **`custom_widget`**: Currently Category 2 (real app), but it is actually a widget demonstration for the polymorphic `render` method custom widget pattern. Rename to `widget_render` and add more custom widgets the user can cycle through with hotkeys.
+- [x] **`custom_widget`**: Currently Category 2 (real app), but it is actually a widget demonstration for the polymorphic `render` method custom widget pattern. Rename to `widget_render` and add more custom widgets the user can cycle through with hotkeys.
 
 - [ ] **Update documentation** (developing_examples.md) Widget-only examples should be reduced to a bulletd list with links to each widget's class. The screenshot and information about the example from the quickstart should be moved to the class's RDoc documentation.
