@@ -218,4 +218,69 @@ class TestTestHelperModule < Minitest::Test
       assert_equal ["ctrl"], event.modifiers
     end
   end
+
+  def test_assert_screen_matches_array
+    with_test_terminal(20, 2) do
+      # Setup buffer content mocked or real
+      # Since we can't easily set buffer content without rendering, we'll
+      # just rely on the fact that an empty terminal has empty lines.
+      # For a 20x2 terminal, we expect 2 lines of 20 spaces.
+      expected = [" " * 20, " " * 20]
+      assert_screen_matches(expected)
+    end
+  end
+
+  def test_assert_screen_matches_file
+    with_test_terminal(20, 3) do
+      # Using a temp file or fixture
+      fixture_path = File.join(__dir__, "fixtures/snapshot.txt")
+      # "Line 1", "Line 2", "Line 3"
+      # We need to simulate the buffer having this content.
+      # Since we can't inject "screen content" easily without a running app,
+      # we can stub `buffer_content` on the test instance, but `buffer_content`
+      # is a method on the module included in *this* class.
+      #
+      # We can use stubbing on the method:
+      stub :buffer_content, ["Line 1", "Line 2", "Line 3"] do
+        assert_screen_matches(fixture_path)
+      end
+    end
+  end
+
+  def test_assert_screen_matches_block
+    with_test_terminal(20, 2) do
+      dummy_content = ["Time: 12:00:00", "Status: OK"]
+      expected_content = ["Time: XX:XX:XX", "Status: OK"]
+
+      stub :buffer_content, dummy_content do
+        assert_screen_matches(expected_content) do |actual|
+          actual.map { |l| l.gsub(/\d{2}:\d{2}:\d{2}/, "XX:XX:XX") }
+        end
+      end
+    end
+  end
+
+  def test_assert_screen_matches_failure
+    with_test_terminal(20, 2) do
+      expected = ["Line 1", "Line 2"]
+      stub :buffer_content, ["Line 1", "Line 3"] do
+        error = assert_raises(Minitest::Assertion) do
+          assert_screen_matches(expected)
+        end
+        assert_match(/Line 2 mismatch/, error.message)
+      end
+    end
+  end
+
+  def test_assert_snapshot
+    with_test_terminal(20, 2) do
+      # We created test/snapshots/my_snapshot.txt with "Snapshot Content"
+      expected = ["Snapshot Content"]
+
+      stub :buffer_content, expected do
+        # This should look for test/snapshots/my_snapshot.txt
+        assert_snapshot("my_snapshot")
+      end
+    end
+  end
 end

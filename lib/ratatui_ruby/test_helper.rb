@@ -2,6 +2,7 @@
 
 require "timeout"
 require "minitest/mock"
+require "fileutils"
 
 # SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
@@ -248,6 +249,135 @@ module RatatuiRuby
         else
           assert_equal value, actual_value, "Expected cell at (#{x}, #{y}) to have #{key}=#{value.inspect}, but got #{actual_value.inspect}"
         end
+      end
+    end
+
+    ##
+    # Mock frame for unit testing views.
+    #
+    # Captures widgets passed to +render_widget+ for inspection.
+    # Does not render anything—purely captures the output.
+    #
+    # == Examples
+    #
+    #   frame = MockFrame.new
+    #   View::Log.new.call(state, tui, frame, area)
+    #   widget = frame.rendered_widgets.first[:widget]
+    #   assert_equal "Event Log", widget.block.title
+    MockFrame = Data.define(:rendered_widgets) do
+      def initialize(rendered_widgets: [])
+        super
+      end
+
+      def render_widget(widget, area)
+        rendered_widgets << { widget:, area: }
+      end
+    end
+
+    ##
+    # Stub area for unit testing views.
+    #
+    # Provides the minimal interface views expect (+width+, +height+).
+    #
+    # == Examples
+    #
+    #   area = StubRect.new(width: 60, height: 20)
+    StubRect = Data.define(:x, :y, :width, :height) do
+      def initialize(x: 0, y: 0, width: 80, height: 24)
+        super
+      end
+    end
+
+    ##
+    # Asserts that the current screen content matches a stored snapshot.
+    #
+    # This method simplifies snapshot testing by automatically resolving the snapshot path
+    # relative to the test file calling this method. It assumes a "snapshots" directory
+    # exists in the same directory as the test file.
+    #
+    #   # In test/test_login.rb
+    #   assert_snapshot("login_screen")
+    #   # Look for: test/snapshots/login_screen.txt
+    #
+    #   # With normalization block
+    #   assert_snapshot("clock") do |actual|
+    #     actual.map { |l| l.gsub(/\d{2}:\d{2}/, "XX:XX") }
+    #   end
+    #
+    # [name] String name of the snapshot (without extension).
+    # [msg] String optional failure message.
+    def assert_snapshot(name, msg = nil, &)
+      # Get the path of the test file calling this method
+      caller_path = caller_locations(1, 1).first.path
+      snapshot_dir = File.join(File.dirname(caller_path), "snapshots")
+      snapshot_path = File.join(snapshot_dir, "#{name}.txt")
+
+      assert_screen_matches(snapshot_path, msg, &)
+    end
+
+    ##
+    # Asserts that the current screen content matches the expected content.
+    #
+    # Users need to verify that the entire TUI screen looks exactly as expected.
+    # Manually checking every cell or line is tedious and error-prone.
+    #
+    # This helper compares the current buffer content against an expected string (file path)
+    # or array of strings. It supports automatic snapshot creation and updating via
+    # the +UPDATE_SNAPSHOTS+ environment variable.
+    #
+    # Use it to verify complex UI states, layouts, and renderings.
+    #
+    # == Usage
+    #
+    #   # Direct comparison
+    #   assert_screen_matches(["Line 1", "Line 2"])
+    #
+    #   # File comparison
+    #   assert_screen_matches("test/snapshots/login.txt")
+    #
+    #   # With normalization (e.g., masking dynamic data)
+    #   assert_screen_matches("test/snapshots/dashboard.txt") do |lines|
+    #     lines.map { |l| l.gsub(/User ID: \d+/, "User ID: XXX") }
+    #   end
+    #
+    # [expected] String (file path) or Array<String> (content).
+    # [msg] String optional failure message.
+    def assert_screen_matches(expected, msg = nil)
+      actual_lines = buffer_content
+
+      if block_given?
+        actual_lines = yield(actual_lines)
+      end
+
+      if expected.is_a?(String)
+        # Snapshot file mode
+        snapshot_path = expected
+        update_snapshots = ENV["UPDATE_SNAPSHOTS"] == "1" || ENV["UPDATE_SNAPSHOTS"] == "true"
+
+        if !File.exist?(snapshot_path) || update_snapshots
+          FileUtils.mkdir_p(File.dirname(snapshot_path))
+          File.write(snapshot_path, "#{actual_lines.join("\n")}\n")
+          if update_snapshots
+            puts "Updated snapshot: #{snapshot_path}"
+          else
+            puts "Created snapshot: #{snapshot_path}"
+          end
+        end
+
+        expected_lines = File.readlines(snapshot_path, chomp: true)
+      else
+        # Direct comparison mode
+        expected_lines = expected
+      end
+
+      msg ||= "Screen content mismatch"
+
+      assert_equal expected_lines.size, actual_lines.size, "#{msg}: Line count mismatch"
+
+      expected_lines.each_with_index do |expected_line, i|
+        actual_line = actual_lines[i]
+        assert_equal expected_line, actual_line,
+          "#{msg}: Line #{i + 1} mismatch.\nExpected: #{expected_line.inspect}\nActual:   #{actual_line.inspect}"
       end
     end
   end
