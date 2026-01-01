@@ -25,10 +25,10 @@ require_relative "scene"
 #
 # === Examples
 #
-#   WidgetColorPicker.new.run
+#   AppColorPicker.new.run
 #
-class WidgetColorPicker
-  # Creates a new <tt>WidgetColorPicker</tt> instance with a default palette and clipboard.
+class AppColorPicker
+  # Creates a new <tt>AppColorPicker</tt> instance with a default palette and clipboard.
   def initialize
     @input = Input.new
     @palette = Palette.new(@input.parse)
@@ -44,7 +44,7 @@ class WidgetColorPicker
   #
   # === Example
   #
-  #   app = WidgetColorPicker.new
+  #   app = AppColorPicker.new
   #   app.run
   #
   def run
@@ -109,4 +109,4 @@ class WidgetColorPicker
   end
 end
 
-WidgetColorPicker.new.run if __FILE__ == $PROGRAM_NAME
+AppColorPicker.new.run if __FILE__ == $PROGRAM_NAME

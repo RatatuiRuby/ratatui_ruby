@@ -10,13 +10,13 @@ require "ratatui_ruby/test_helper"
 require "minitest/autorun"
 require_relative "app"
 
-class TestWidgetColorPicker < Minitest::Test
+class TestAppColorPicker < Minitest::Test
   include RatatuiRuby::TestHelper
 
   def test_initial_render
     with_test_terminal do
       inject_key(:q)
-      app = WidgetColorPicker.new
+      app = AppColorPicker.new
       app.run
 
       content = buffer_content.join("\n")
@@ -28,7 +28,7 @@ class TestWidgetColorPicker < Minitest::Test
   def test_renders_input_section
     with_test_terminal do
       inject_key(:q)
-      app = WidgetColorPicker.new
+      app = AppColorPicker.new
       app.run
 
       content = buffer_content.join("\n")
@@ -39,7 +39,7 @@ class TestWidgetColorPicker < Minitest::Test
   def test_renders_controls
     with_test_terminal do
       inject_key(:q)
-      app = WidgetColorPicker.new
+      app = AppColorPicker.new
       app.run
 
       content = buffer_content.join("\n")
@@ -52,7 +52,7 @@ class TestWidgetColorPicker < Minitest::Test
       inject_key(:backspace, :backspace, :backspace, :backspace, :backspace, :backspace, :backspace)
       inject_key("#", "f", "f", "0", "0", "0", "0", :enter)
       inject_key(:q)
-      app = WidgetColorPicker.new
+      app = AppColorPicker.new
       app.run
 
       content = buffer_content.join("\n")
@@ -67,7 +67,7 @@ class TestWidgetColorPicker < Minitest::Test
   def test_esc_quits_application
     with_test_terminal do
       inject_key(:esc)
-      app = WidgetColorPicker.new
+      app = AppColorPicker.new
       app.run
 
       content = buffer_content.join("\n")
@@ -80,7 +80,7 @@ class TestWidgetColorPicker < Minitest::Test
       inject_key(:backspace, :backspace, :backspace, :backspace, :backspace, :backspace, :backspace)
       inject_event(RatatuiRuby::Event::Paste.new(content: "#ff0000"))
       inject_key(:q)
-      app = WidgetColorPicker.new
+      app = AppColorPicker.new
       app.run
 
       content = buffer_content.join("\n")
@@ -93,7 +93,7 @@ class TestWidgetColorPicker < Minitest::Test
       inject_key(:backspace, :backspace, :backspace, :backspace, :backspace, :backspace, :backspace)
       inject_key("#", "f", "f", "0", "0", "0", "0", :enter)
       inject_key(:q)
-      app = WidgetColorPicker.new
+      app = AppColorPicker.new
       app.run
 
       content = buffer_content.join("\n")
@@ -114,7 +114,7 @@ class TestWidgetColorPicker < Minitest::Test
         inject_key("#", "f", "f", "0", "0", "0", "0", :enter)
         inject_event(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 30, y: 11))
         inject_key(:q)
-        app = WidgetColorPicker.new
+        app = AppColorPicker.new
         app.run
 
         content = buffer_content.join("\n")
@@ -137,7 +137,7 @@ class TestWidgetColorPicker < Minitest::Test
         inject_event(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 30, y: 11))
         inject_key(:y)
         inject_key(:q)
-        app = WidgetColorPicker.new
+        app = AppColorPicker.new
         app.run
 
         content = buffer_content.join("\n")
@@ -154,7 +154,7 @@ class TestWidgetColorPicker < Minitest::Test
       inject_key(:right)
       inject_key(:enter)
       inject_key(:q)
-      app = WidgetColorPicker.new
+      app = AppColorPicker.new
       app.run
 
       content = buffer_content.join("\n")

@@ -25,7 +25,6 @@ These examples follow the pattern described in `developing_examples.md`: they ex
 - `cell_demo`: Demonstrates Cell widget.
 - `block_titles`: Demonstrates Block title positioning and alignment.
 - `block_padding`: Demonstrates Block padding (uniform and directional).
-- `color_picker`: Interactive tool for picking colors, generating palettes, and copying hex codes.
 - `ratatui_logo_demo`: Demonstrates RatatuiLogo with style cycling.
 - `ratatui_mascot_demo`: Demonstrates RatatuiMascot with style cycling.
 - `list_styles`: Demonstrates List styling variations.
@@ -50,6 +49,7 @@ These are not API documentation—they do not systematically cycle through all w
 - `table_select`: Interactive table viewer with row/column selection, simulating a process monitor application.
 - `map_demo`: Canvas-based world map visualization with animated shapes and interactive marker cycling.
 - `all_events`: Multi-panel dashboard displaying all event types (key, mouse, resize, paste, focus).
+- `color_picker`: Interactive tool for picking colors, generating palettes, and copying hex codes.
 - `custom_widget`: Demonstrates custom widget implementation with a diagonal line widget.
 
 ## Category 3: Documentation-Verification Examples
