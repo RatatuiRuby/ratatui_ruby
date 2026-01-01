@@ -77,4 +77,17 @@ class TestSession < Minitest::Test
     constraint = tui.constraint_percentage(50)
     assert_equal RatatuiRuby::Constraint.percentage(50), constraint
   end
+
+  def test_session_bar_chart_methods
+    tui = RatatuiRuby::Session.new
+
+    bar = tui.bar_chart_bar(value: 10, label: "Bar 1")
+    assert_equal RatatuiRuby::BarChart::Bar.new(value: 10, label: "Bar 1"), bar
+
+    group = tui.bar_chart_bar_group(label: "Group 1", bars: [bar])
+    assert_equal RatatuiRuby::BarChart::BarGroup.new(label: "Group 1", bars: [bar]), group
+
+    chart = tui.bar_chart(data: [group], bar_width: 5)
+    assert_equal RatatuiRuby::BarChart.new(data: [group], bar_width: 5), chart
+  end
 end

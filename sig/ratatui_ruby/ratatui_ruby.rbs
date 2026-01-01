@@ -8,7 +8,7 @@ module RatatuiRuby
     def to_s: () -> String
   end
 
-  def self.init_terminal: () -> void
+  def self.init_terminal: (focus_events: bool, bracketed_paste: bool) -> void
   def self.restore_terminal: () -> void
   def self.draw: (widget tree) -> void
                | () { (Frame) -> void } -> void

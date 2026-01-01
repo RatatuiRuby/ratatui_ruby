@@ -73,6 +73,23 @@ module RatatuiRuby
   end
 
   ##
+  # :singleton-method: restore_terminal
+  # Restores the terminal to its original state.
+  # Leaves alternate screen and disables raw mode.
+  #
+  # (Native method implemented in Rust)
+
+  ##
+  # :singleton-method: inject_test_event
+  # Injects a mock event into the event queue for testing purposes.
+  # [event_type] "key" or "mouse"
+  # [data] a Hash containing event data
+  #
+  #   inject_test_event("key", { code: "a" })
+  #
+  # (Native method implemented in Rust)
+
+  ##
   # Warns about usage of an experimental feature unless warnings are suppressed.
   #
   # [feature_name] String name of the feature (e.g., "Paragraph#line_count")
@@ -90,15 +107,6 @@ module RatatuiRuby
 
   # (Native method _init_terminal implemented in Rust)
   private_class_method :_init_terminal
-
-  ##
-  # :method: restore_terminal
-  # :call-seq: restore_terminal() -> nil
-  #
-  # Restores the terminal to its original state.
-  # Leaves alternate screen and disables raw mode.
-  #
-  # (Native method implemented in Rust)
 
   ##
   # Draws the given UI node tree to the terminal.
@@ -145,9 +153,6 @@ module RatatuiRuby
   private_class_method :_draw
 
   ##
-  # :method: poll_event
-  # :call-seq: poll_event() -> Event, nil
-  #
   # Checks for user input.
   #
   # Returns a discrete event (Key, Mouse, Resize) if one is available in the queue.
@@ -195,21 +200,6 @@ module RatatuiRuby
   private_class_method :_poll_event
 
   ##
-  # :method: inject_test_event
-  # :call-seq: inject_test_event(event_type, data) -> nil
-  #
-  # Injects a mock event into the event queue for testing purposes.
-  # [event_type] "key" or "mouse"
-  # [data] a Hash containing event data
-  #
-  #   inject_test_event("key", { code: "a" })
-  #
-  # (Native method implemented in Rust)
-
-  ##
-  # :method: run
-  # :call-seq: run { |session| ... } -> Object
-  #
   # Starts the TUI application lifecycle.
   #
   # Managing generic setup/teardown (raw mode, alternate screen) manualy is error-prone. If your app crashes, the terminal might be left in a broken state.
@@ -231,9 +221,6 @@ module RatatuiRuby
   end
 
   ##
-  # :method: get_cell_at
-  # :call-seq: get_cell_at(x, y) -> Cell
-  #
   # Inspects the terminal buffer at specific coordinates.
   #
   # When writing tests, you need to verify that your widget drew the correct characters and styles.

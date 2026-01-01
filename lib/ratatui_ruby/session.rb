@@ -105,54 +105,57 @@ module RatatuiRuby
       end
     end
 
-    # Wrap classes as snake_case factories
+    # Wrap classes and modules as snake_case factories
     RatatuiRuby.constants.each do |const_name|
       next if const_name == :Buffer
 
-      klass = RatatuiRuby.const_get(const_name)
-      next unless klass.is_a?(Class)
+      const = RatatuiRuby.const_get(const_name)
+      next unless const.is_a?(Module) # Class is a Module, so this catches both
 
-      method_name = const_name.to_s
-        .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
-        .gsub(/([a-z\d])([A-Z])/, '\1_\2')
-        .downcase
-
-      define_method(method_name) do |*args, **kwargs, &block|
-        klass.new(*args, **kwargs, &block)
-      end
-
-      # Wrap class methods (factories/helpers) as [class_snake]_[method]
-      # e.g. Layout.split -> layout_split
-      # e.g. Constraint.percentage -> constraint_percentage
-      klass.singleton_methods(false).each do |class_method|
-        session_method_name = "#{method_name}_#{class_method}"
-        if method_name == "layout" && class_method == :split
-          # Special case: layout_split is a clearer name than layout_split
-        end
-
-        define_method(session_method_name) do |*args, **kwargs, &block|
-          klass.public_send(class_method, *args, **kwargs, &block)
-        end
-      end
-    end
-
-    # Wrap nested module classes with prefixed names (e.g., shape_line, text_span)
-    { Shape: :shape, Text: :text }.each do |mod_name, prefix|
-      next unless RatatuiRuby.const_defined?(mod_name)
-
-      mod = RatatuiRuby.const_get(mod_name)
-      mod.constants.each do |const_name|
-        klass = mod.const_get(const_name)
-        next unless klass.is_a?(Class)
-
-        class_snake = const_name.to_s
+      # 1. Top-level factories (for Classes only)
+      #    e.g. RatatuiRuby::Paragraph -> tui.paragraph(...)
+      if const.is_a?(Class)
+        method_name = const_name.to_s
           .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
           .gsub(/([a-z\d])([A-Z])/, '\1_\2')
           .downcase
-        method_name = "#{prefix}_#{class_snake}"
 
         define_method(method_name) do |*args, **kwargs, &block|
-          klass.new(*args, **kwargs, &block)
+          const.new(*args, **kwargs, &block)
+        end
+
+        # 2. Class Method Helpers (for Classes only)
+        #    e.g. Layout.split -> layout_split
+        const.singleton_methods(false).each do |class_method|
+          session_method_name = "#{method_name}_#{class_method}"
+
+          define_method(session_method_name) do |*args, **kwargs, &block|
+            const.public_send(class_method, *args, **kwargs, &block)
+          end
+        end
+      end
+
+      # 3. Nested Class Factories (for both Modules and Classes)
+      #    e.g. RatatuiRuby::Text::Span -> tui.text_span(...)
+      #    e.g. RatatuiRuby::Shape::Line -> tui.shape_line(...)
+      const.constants.each do |child_name|
+        child = const.const_get(child_name)
+        next unless child.is_a?(Class)
+
+        parent_prefix = const_name.to_s
+          .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+          .gsub(/([a-z\d])([A-Z])/, '\1_\2')
+          .downcase
+
+        child_suffix = child_name.to_s
+          .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+          .gsub(/([a-z\d])([A-Z])/, '\1_\2')
+          .downcase
+
+        method_name = "#{parent_prefix}_#{child_suffix}"
+
+        define_method(method_name) do |*args, **kwargs, &block|
+          child.new(*args, **kwargs, &block)
         end
       end
     end

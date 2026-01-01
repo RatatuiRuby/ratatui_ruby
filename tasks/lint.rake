@@ -43,7 +43,7 @@ namespace :lint do
     sh "bundle exec rake rdoc:coverage"
   end
 
-  task docs: %w[rubycritic safe_rdoc_coverage reuse:lint]
+  task docs: %w[autodoc rubycritic safe_rdoc_coverage reuse:lint]
   task code: %w[rubocop rubycritic cargo:fmt cargo:clippy cargo:test]
   task licenses: %w[reuse:lint]
   task all: %w[docs code licenses]

@@ -37,6 +37,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+#### Session API
+
+- **Missing Convenience Methods**: Fixed `Session` convenience methods (e.g., `bar_chart`) being missed by replacing the manual list with automatic runtime introspection of the `RatatuiRuby` module.
+
 ### Removed
 
 ## [0.4.0] - 2025-12-30
