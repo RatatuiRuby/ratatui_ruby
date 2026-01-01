@@ -19,7 +19,7 @@ class TestCenter < Minitest::Test
     with_test_terminal(20, 5) do
       p = RatatuiRuby::Paragraph.new(text: "Hello")
       center = RatatuiRuby::Center.new(child: p, width_percent: 50, height_percent: 50)
-      RatatuiRuby.draw(center)
+      RatatuiRuby.draw { |f| f.render_widget(center, f.area) }
       assert_equal "                    ", buffer_content[0]
       assert_equal "     Hello          ", buffer_content[1]
       assert_equal "                    ", buffer_content[2]

@@ -28,7 +28,7 @@ class TestList < Minitest::Test
   def test_render
     with_test_terminal(20, 3) do
       list = RatatuiRuby::List.new(items: ["Item 1", "Item 2"], selected_index: 0)
-      RatatuiRuby.draw(list)
+      RatatuiRuby.draw { |f| f.render_widget(list, f.area) }
 
       assert_equal "> Item 1            ", buffer_content[0]
       assert_equal "  Item 2            ", buffer_content[1]
@@ -42,7 +42,7 @@ class TestList < Minitest::Test
         selected_index: 1,
         highlight_symbol: ">> "
       )
-      RatatuiRuby.draw(list)
+      RatatuiRuby.draw { |f| f.render_widget(list, f.area) }
       assert_equal "   Item 1           ", buffer_content[0]
       assert_equal ">> Item 2           ", buffer_content[1]
     end
@@ -55,7 +55,7 @@ class TestList < Minitest::Test
         selected_index: 0,
         direction: :bottom_to_top
       )
-      RatatuiRuby.draw(list)
+      RatatuiRuby.draw { |f| f.render_widget(list, f.area) }
       # In BottomToTop, the first item is at the bottom
       assert_equal "  Item 2            ", buffer_content[1]
       assert_equal "> Item 1            ", buffer_content[2]
@@ -66,7 +66,7 @@ class TestList < Minitest::Test
     assert_raises(ArgumentError) {
       list = RatatuiRuby::List.new(items: [], direction: :invalid)
       with_test_terminal(10, 10) do
-        RatatuiRuby.draw(list)
+        RatatuiRuby.draw { |f| f.render_widget(list, f.area) }
       end
     }
   end
@@ -79,7 +79,7 @@ class TestList < Minitest::Test
         highlight_symbol: ">> ",
         highlight_spacing: :always
       )
-      RatatuiRuby.draw(list)
+      RatatuiRuby.draw { |f| f.render_widget(list, f.area) }
       # Even with no selection, spacing column is always reserved
       assert_equal "   Item 1           ", buffer_content[0]
       assert_equal "   Item 2           ", buffer_content[1]
@@ -95,7 +95,7 @@ class TestList < Minitest::Test
         highlight_symbol: ">> ",
         highlight_spacing: :when_selected
       )
-      RatatuiRuby.draw(list)
+      RatatuiRuby.draw { |f| f.render_widget(list, f.area) }
       assert_equal ">> Item 1           ", buffer_content[0]
       assert_equal "   Item 2           ", buffer_content[1]
     end
@@ -110,7 +110,7 @@ class TestList < Minitest::Test
         highlight_symbol: ">> ",
         highlight_spacing: :when_selected
       )
-      RatatuiRuby.draw(list)
+      RatatuiRuby.draw { |f| f.render_widget(list, f.area) }
       assert_equal "Item 1              ", buffer_content[0]
       assert_equal "Item 2              ", buffer_content[1]
     end
@@ -124,7 +124,7 @@ class TestList < Minitest::Test
         highlight_symbol: ">> ",
         highlight_spacing: :never
       )
-      RatatuiRuby.draw(list)
+      RatatuiRuby.draw { |f| f.render_widget(list, f.area) }
       # With :never, no spacing column or symbol is shown
       assert_equal "Item 1              ", buffer_content[0]
       assert_equal "Item 2              ", buffer_content[1]

@@ -38,18 +38,22 @@ class WidgetBlockPadding
           text: "Press 'q' to quit."
         )
 
-        # Layout
-        layout = RatatuiRuby::Layout.new(
-          direction: :vertical,
-          constraints: [
-            RatatuiRuby::Constraint.length(10), # Uniform Padding
-            RatatuiRuby::Constraint.length(10), # Directional Padding
-            RatatuiRuby::Constraint.min(0),
-          ],
-          children: [para1, para2, para3]
-        )
+        tui.draw do |frame|
+          # Layout
+          areas = RatatuiRuby::Layout.split(
+            frame.area,
+            direction: :vertical,
+            constraints: [
+              RatatuiRuby::Constraint.length(10), # Uniform Padding
+              RatatuiRuby::Constraint.length(10), # Directional Padding
+              RatatuiRuby::Constraint.min(0),
+            ]
+          )
 
-        tui.draw(layout)
+          frame.render_widget(para1, areas[0])
+          frame.render_widget(para2, areas[1])
+          frame.render_widget(para3, areas[2])
+        end
 
         event = tui.poll_event
         break if event == "q" || event == :ctrl_c

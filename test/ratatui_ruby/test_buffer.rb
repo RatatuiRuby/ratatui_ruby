@@ -23,7 +23,7 @@ class TestDraw < Minitest::Test
     widget = CustomWidget.new(cell)
 
     with_test_terminal(10, 5) do
-      RatatuiRuby.draw(widget)
+      RatatuiRuby.draw { |f| f.render_widget(widget, f.area) }
 
       rendered_cell = RatatuiRuby.get_cell_at(0, 0)
       assert_equal "X", rendered_cell.char
@@ -44,7 +44,7 @@ class TestDraw < Minitest::Test
 
   def test_draw_cell_overwrite
     with_test_terminal(10, 5) do
-      RatatuiRuby.draw(OverwritingWidget.new)
+      RatatuiRuby.draw { |f| f.render_widget(OverwritingWidget.new, f.area) }
       assert_equal "B", RatatuiRuby.get_cell_at(0, 0).char
     end
   end
@@ -58,7 +58,7 @@ class TestDraw < Minitest::Test
 
   def test_draw_cell_out_of_bounds
     with_test_terminal(10, 5) do
-      RatatuiRuby.draw(OutOfBoundsWidget.new)
+      RatatuiRuby.draw { |f| f.render_widget(OutOfBoundsWidget.new, f.area) }
       # No assertion needed, just verifying no crash
       assert_equal " ", RatatuiRuby.get_cell_at(9, 4).char # Unaffected
     end

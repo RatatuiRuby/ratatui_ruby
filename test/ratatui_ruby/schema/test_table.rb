@@ -33,7 +33,7 @@ class TestTable < Minitest::Test
         rows: [["Val1", "Val2"]],
         widths: [RatatuiRuby::Constraint.length(8), RatatuiRuby::Constraint.length(8)]
       )
-      RatatuiRuby.draw(t)
+      RatatuiRuby.draw { |f| f.render_widget(t, f.area) }
       assert_equal "Col1     Col2       ", buffer_content[0]
       assert_equal "Val1     Val2       ", buffer_content[1]
       assert_equal "                    ", buffer_content[2]
@@ -51,7 +51,7 @@ class TestTable < Minitest::Test
         selected_row: 1,
         highlight_symbol: "> "
       )
-      RatatuiRuby.draw(t)
+      RatatuiRuby.draw { |f| f.render_widget(t, f.area) }
       assert_equal "  Col1     Col2     ", buffer_content[0]
       assert_equal "  Val1     Val2     ", buffer_content[1]
       assert_equal "> Val3     Val4     ", buffer_content[2]
@@ -73,7 +73,7 @@ class TestTable < Minitest::Test
     )
 
     with_test_terminal(20, 7) do
-      RatatuiRuby.draw(table)
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
       content = buffer_content
 
       # Check for header
@@ -105,7 +105,7 @@ class TestTable < Minitest::Test
     )
 
     with_test_terminal(20, 5) do
-      RatatuiRuby.draw(table)
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
       content = buffer_content
       # In a real terminal we'd check styles, but here we just check content presence implies it rendered.
       assert_includes content.join("\n"), "Styled Footer"
@@ -126,7 +126,7 @@ class TestTable < Minitest::Test
     )
 
     with_test_terminal(20, 5) do
-      RatatuiRuby.draw(table)
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
       content = buffer_content
       assert_includes content[0], "Row 1"
     end
@@ -145,7 +145,7 @@ class TestTable < Minitest::Test
     )
 
     with_test_terminal(20, 5) do
-      RatatuiRuby.draw(table)
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
       content = buffer_content
       assert_includes content[0], "Row 1"
     end
@@ -163,7 +163,7 @@ class TestTable < Minitest::Test
     )
 
     with_test_terminal(10, 1) do
-      RatatuiRuby.draw(table)
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
       line = buffer_content.first
       # "A        B" roughly
       # There should be significant whitespace between A and B
@@ -183,7 +183,7 @@ class TestTable < Minitest::Test
     )
 
     with_test_terminal(10, 1) do
-      RatatuiRuby.draw(table)
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
       line = buffer_content.first
       # "A B       " roughly
       # Spacing between A and B should be small (default column spacing is 1)
@@ -203,7 +203,7 @@ class TestTable < Minitest::Test
     )
 
     with_test_terminal(10, 1) do
-      RatatuiRuby.draw(table)
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
       line = buffer_content.first
       # "A     B" (5 spaces)
       assert_match(/A\s{5}B/, line)
@@ -223,7 +223,7 @@ class TestTable < Minitest::Test
     )
 
     with_test_terminal(5, 1) do
-      RatatuiRuby.draw(table)
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
       # "  " (2 spaces) + "A" (1 char) + "  " (padding to 5?)
       # Content: "  A  "
       assert_equal ["  A  "], buffer_content
@@ -243,7 +243,7 @@ class TestTable < Minitest::Test
     )
 
     with_test_terminal(5, 1) do
-      RatatuiRuby.draw(table)
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
       # "A    "
       assert_equal ["A    "], buffer_content
     end
@@ -262,7 +262,7 @@ class TestTable < Minitest::Test
     )
 
     with_test_terminal(5, 1) do
-      RatatuiRuby.draw(table)
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
       assert_equal ["A    "], buffer_content
     end
   end
@@ -281,7 +281,7 @@ class TestTable < Minitest::Test
     )
 
     with_test_terminal(5, 1) do
-      RatatuiRuby.draw(table)
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
       # "> A  "
       assert_equal ["> A  "], buffer_content
     end
@@ -296,7 +296,7 @@ class TestTable < Minitest::Test
     table = RatatuiRuby::Table.new(rows:, widths:)
 
     with_test_terminal(5, 1) do
-      RatatuiRuby.draw(table)
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
 
       # Check content
       assert_equal "A", RatatuiRuby.get_cell_at(0, 0).char
@@ -322,7 +322,7 @@ class TestTable < Minitest::Test
     )
 
     with_test_terminal(5, 3) do
-      RatatuiRuby.draw(table)
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
       # Check header (row 0)
       h = RatatuiRuby.get_cell_at(0, 0)
       assert_equal "H", h.char

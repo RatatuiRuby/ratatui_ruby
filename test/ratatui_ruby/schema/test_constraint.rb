@@ -61,7 +61,7 @@ class TestConstraint < Minitest::Test
           RatatuiRuby::Block.new(title: "C", borders: [:all]),
         ]
       )
-      RatatuiRuby.draw(l)
+      RatatuiRuby.draw { |f| f.render_widget(l, f.area) }
 
       # Ratatui Layout constraint behavior:
       # Length(2) -> 2 units.
@@ -74,7 +74,7 @@ class TestConstraint < Minitest::Test
         constraints: [RatatuiRuby::Constraint.percentage(50), RatatuiRuby::Constraint.percentage(50)],
         children: [RatatuiRuby::Block.new(title: "L", borders: [:all]), RatatuiRuby::Block.new(title: "R", borders: [:all])]
       )
-      RatatuiRuby.draw(l2)
+      RatatuiRuby.draw { |f| f.render_widget(l2, f.area) }
       # 20 width. 50% = 10.
       # Left block: 0-9. Right block: 10-19.
 
@@ -96,7 +96,7 @@ class TestConstraint < Minitest::Test
           RatatuiRuby::Paragraph.new(text: "B"),
         ]
       )
-      RatatuiRuby.draw(l)
+      RatatuiRuby.draw { |f| f.render_widget(l, f.area) }
       # Fill(1) gets 5 chars, Fill(3) gets 15 chars (1:3 ratio of 20)
       assert_equal "A    B              ", buffer_content[0]
     end
@@ -115,7 +115,7 @@ class TestConstraint < Minitest::Test
           RatatuiRuby::Paragraph.new(text: "Fill"),
         ]
       )
-      RatatuiRuby.draw(l)
+      RatatuiRuby.draw { |f| f.render_widget(l, f.area) }
       # Max(8) caps first at 8, Fill gets rest (12)
       assert_equal "Max     Fill        ", buffer_content[0]
     end
@@ -134,7 +134,7 @@ class TestConstraint < Minitest::Test
           RatatuiRuby::Paragraph.new(text: "B"),
         ]
       )
-      RatatuiRuby.draw(l)
+      RatatuiRuby.draw { |f| f.render_widget(l, f.area) }
       # Ratio(1/4) of 20 = 5. Ratio(3/4) of 20 = 15.
       assert_equal "A    B              ", buffer_content[0]
     end

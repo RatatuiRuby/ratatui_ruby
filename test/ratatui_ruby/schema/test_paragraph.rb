@@ -26,7 +26,7 @@ class TestParagraph < Minitest::Test
   def test_render
     with_test_terminal(20, 3) do
       p = RatatuiRuby::Paragraph.new(text: "Hello World")
-      RatatuiRuby.draw(p)
+      RatatuiRuby.draw { |f| f.render_widget(p, f.area) }
       assert_equal "Hello World         ", buffer_content[0]
       assert_equal "                    ", buffer_content[1]
     end

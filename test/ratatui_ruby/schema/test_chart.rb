@@ -31,7 +31,7 @@ module RatatuiRuby
         block: Block.new(title: "Test Chart"),
       )
 
-      RatatuiRuby.draw(chart)
+      RatatuiRuby.draw { |f| f.render_widget(chart, f.area) }
       buffer = RatatuiRuby.get_buffer_content
 
       # Check for axis titles
@@ -74,7 +74,7 @@ module RatatuiRuby
         block: Block.new(title: "Aligned Chart"),
       )
 
-      RatatuiRuby.draw(chart)
+      RatatuiRuby.draw { |f| f.render_widget(chart, f.area) }
       buffer = RatatuiRuby.get_buffer_content
 
       # Verify the chart renders with alignment settings
@@ -101,7 +101,7 @@ module RatatuiRuby
         block: Block.new(title: "Legacy Chart"),
       )
 
-      RatatuiRuby.draw(line_chart)
+      RatatuiRuby.draw { |f| f.render_widget(line_chart, f.area) }
       buffer = RatatuiRuby.get_buffer_content
 
       assert_includes buffer, "Legacy Chart"

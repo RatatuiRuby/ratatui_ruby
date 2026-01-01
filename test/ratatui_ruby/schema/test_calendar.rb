@@ -13,7 +13,7 @@ module RatatuiRuby
       with_test_terminal(22, 7) do
         # Default: show_month_header: false
         calendar = Calendar.new(year: 2025, month: 12)
-        RatatuiRuby.draw(calendar)
+        RatatuiRuby.draw { |f| f.render_widget(calendar, f.area) }
 
         # Header is hidden, so calendar starts directly with weekdays or dates
         assert_equal " Su Mo Tu We Th Fr Sa ", buffer_content[0]
@@ -28,7 +28,7 @@ module RatatuiRuby
     def test_calendar_with_header
       with_test_terminal(22, 7) do
         calendar = Calendar.new(year: 2025, month: 12, show_month_header: true)
-        RatatuiRuby.draw(calendar)
+        RatatuiRuby.draw { |f| f.render_widget(calendar, f.area) }
 
         assert_equal "    December 2025     ", buffer_content[0]
         assert_equal " Su Mo Tu We Th Fr Sa ", buffer_content[1]
@@ -46,7 +46,7 @@ module RatatuiRuby
           show_month_header: true,
           block: Block.new(title: "Test Block")
         )
-        RatatuiRuby.draw(calendar)
+        RatatuiRuby.draw { |f| f.render_widget(calendar, f.area) }
 
         assert_equal "┌Test Block────────────┐", buffer_content[0]
         assert_equal "│    December 2025     │", buffer_content[1]

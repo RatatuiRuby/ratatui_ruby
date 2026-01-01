@@ -50,7 +50,7 @@ class TestLayout < Minitest::Test
         ]
       )
 
-      RatatuiRuby.draw(l)
+      RatatuiRuby.draw { |f| f.render_widget(l, f.area) }
       assert_equal "    A    B     C    ", buffer_content[0]
     end
   end
@@ -83,7 +83,7 @@ class TestLayout < Minitest::Test
           RatatuiRuby::Paragraph.new(text: "Bottom"),
         ]
       )
-      RatatuiRuby.draw(l)
+      RatatuiRuby.draw { |f| f.render_widget(l, f.area) }
       assert_equal "Top                 ", buffer_content[0]
       assert_equal "                    ", buffer_content[1]
       assert_equal "                    ", buffer_content[2]
@@ -105,7 +105,7 @@ class TestLayout < Minitest::Test
         constraints: [RatatuiRuby::Constraint.length(6)],
         children: [RatatuiRuby::Paragraph.new(text: "Center")]
       )
-      RatatuiRuby.draw(l)
+      RatatuiRuby.draw { |f| f.render_widget(l, f.area) }
       # 6 chars centered in 20: starts at position 7 (0-indexed)
       assert_equal "       Center       ", buffer_content[0]
     end
@@ -127,7 +127,7 @@ class TestLayout < Minitest::Test
           RatatuiRuby::Paragraph.new(text: "C"),
         ]
       )
-      RatatuiRuby.draw(l)
+      RatatuiRuby.draw { |f| f.render_widget(l, f.area) }
       # Three 2-char blocks in 20 width with space_between:
       # First at 0, second at 9, third at 18
       assert_equal "A        B        C ", buffer_content[0]
@@ -142,7 +142,7 @@ class TestLayout < Minitest::Test
         constraints: [RatatuiRuby::Constraint.length(5)],
         children: [RatatuiRuby::Paragraph.new(text: "Right")]
       )
-      RatatuiRuby.draw(l)
+      RatatuiRuby.draw { |f| f.render_widget(l, f.area) }
       # 5 chars aligned to end in 20: starts at position 15
       assert_equal "               Right", buffer_content[0]
     end

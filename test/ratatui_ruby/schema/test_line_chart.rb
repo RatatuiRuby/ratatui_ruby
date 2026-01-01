@@ -28,7 +28,7 @@ class TestLineChart < Minitest::Test
     with_test_terminal(20, 10) do
       ds = RatatuiRuby::Dataset.new(name: "Data", data: [[0.0, 0.0], [1.0, 1.0], [2.0, 2.0]])
       chart = RatatuiRuby::LineChart.new(datasets: [ds], x_labels: ["0", "1", "2"])
-      RatatuiRuby.draw(chart)
+      RatatuiRuby.draw { |f| f.render_widget(chart, f.area) }
       assert_equal "│                   ", buffer_content[0]
       assert_equal "│                   ", buffer_content[1]
       assert_equal "│                   ", buffer_content[2]

@@ -12,7 +12,7 @@ module RatatuiRuby
     def test_default
       widget = RatatuiMascot.new
       with_test_terminal do
-        RatatuiRuby.draw(widget)
+        RatatuiRuby.draw { |f| f.render_widget(widget, f.area) }
         # Verify mascot is drawn (should contain some mascot characters)
         # The mascot uses block characters (pseudo-pixels)
         content = buffer_content.join("\n")
@@ -29,7 +29,7 @@ module RatatuiRuby
       widget = RatatuiMascot.new(block:)
 
       with_test_terminal do
-        RatatuiRuby.draw(widget)
+        RatatuiRuby.draw { |f| f.render_widget(widget, f.area) }
 
         content = buffer_content.join("\n")
         assert_includes content, "Ratatui" # Title

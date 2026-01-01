@@ -19,7 +19,7 @@ class TestOverlay < Minitest::Test
       l1 = RatatuiRuby::Paragraph.new(text: "Back")
       l2 = RatatuiRuby::Paragraph.new(text: "Fore")
       overlay = RatatuiRuby::Overlay.new(layers: [l1, l2])
-      RatatuiRuby.draw(overlay)
+      RatatuiRuby.draw { |f| f.render_widget(overlay, f.area) }
       assert_equal "Fore                ", buffer_content[0]
       assert_equal "                    ", buffer_content[1]
       assert_equal "                    ", buffer_content[2]

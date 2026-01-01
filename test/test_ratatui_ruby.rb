@@ -24,7 +24,7 @@ class TestRatatuiRuby < Minitest::Test
     # Use the test backend to verify rendering
     RatatuiRuby.init_test_terminal(10, 5)
     p = RatatuiRuby::Paragraph.new(text: "Hello")
-    RatatuiRuby.draw(p)
+    RatatuiRuby.draw { |f| f.render_widget(p, f.area) }
 
     lines = RatatuiRuby.get_buffer_content.split("\n")
     assert_equal "Hello     ", lines[0]
@@ -61,7 +61,7 @@ class TestRatatuiRuby < Minitest::Test
     RatatuiRuby.init_test_terminal(10, 5)
     RatatuiRuby.resize_terminal(20, 3)
     p = RatatuiRuby::Paragraph.new(text: "Widened")
-    RatatuiRuby.draw(p)
+    RatatuiRuby.draw { |f| f.render_widget(p, f.area) }
 
     lines = RatatuiRuby.get_buffer_content.split("\n")
     assert_equal 3, lines.length

@@ -18,7 +18,7 @@ class TestCursor < Minitest::Test
       # Cursor is a ghost widget, it shouldn't affect the buffer content (cells).
       # It sets the cursor state.
       cursor = RatatuiRuby::Cursor.new(x: 5, y: 2)
-      RatatuiRuby.draw(cursor)
+      RatatuiRuby.draw { |f| f.render_widget(cursor, f.area) }
 
       assert_equal({ x: 5, y: 2 }, cursor_position)
 

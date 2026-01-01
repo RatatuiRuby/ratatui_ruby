@@ -55,48 +55,40 @@ class WidgetCellDemo
 
       # Main loop
       loop do
-        # Create a layout that holds both widgets
-        # We use a vertical layout:
-        # Top: Custom CheckeredBackground with specific height
-        # Bottom: Table using remaining space
+        tui.draw do |frame|
+          # Create a layout that holds both widgets
+          # We use a vertical layout:
+          # Top: Custom CheckeredBackground with specific height
+          # Bottom: Table using remaining space
+          top_area, bottom_area = RatatuiRuby::Layout.split(
+            frame.area,
+            direction: :vertical,
+            constraints: [
+              RatatuiRuby::Constraint.length(10), # Top section
+              RatatuiRuby::Constraint.min(0), # Bottom section
+            ]
+          )
 
-        # Note: CheckeredBackground renders to the area implicitly if passed as a child.
-        # However, to overlay the paragraph, we might need a more complex structure or
-        # wrapper. RatatuiRuby::Layout handles non-overlapping children.
-        # To get the "Overlay" effect from my previous code (Paragraph over Background),
-        # we would need to composite them. For now, let's just show them stacked or
-        # using 'Overlay' widget if it exists.
+          # Top Child: An Overlay of Paragraph on top of CheckeredBackground
+          overlay = RatatuiRuby::Overlay.new(
+            layers: [
+              CheckeredBackground.new,
+              RatatuiRuby::Center.new(
+                width_percent: 50,
+                height_percent: 50,
+                child: RatatuiRuby::Paragraph.new(
+                  text: "Custom Widget Demo\n(CheckeredBackground)",
+                  alignment: :center,
+                  block: RatatuiRuby::Block.new(borders: :all, title: "Overlay")
+                )
+              ),
+            ]
+          )
+          frame.render_widget(overlay, top_area)
 
-        # Checking schema: Overlay exists? Yes: require_relative "ratatui_ruby/schema/overlay" in lib/ratatui_ruby.rb
-
-        layout = RatatuiRuby::Layout.new(
-          direction: :vertical,
-          constraints: [
-            RatatuiRuby::Constraint.length(10), # Top section
-            RatatuiRuby::Constraint.min(0), # Bottom section
-          ],
-          children: [
-            # Top Child: An Overlay of Paragraph on top of CheckeredBackground
-            RatatuiRuby::Overlay.new(
-              layers: [
-                CheckeredBackground.new,
-                RatatuiRuby::Center.new(
-                  width_percent: 50,
-                  height_percent: 50,
-                  child: RatatuiRuby::Paragraph.new(
-                    text: "Custom Widget Demo\n(CheckeredBackground)",
-                    alignment: :center,
-                    block: RatatuiRuby::Block.new(borders: :all, title: "Overlay")
-                  )
-                ),
-              ]
-            ),
-            # Bottom Child: The Table
-            table,
-          ]
-        )
-
-        tui.draw(layout)
+          # Bottom Child: The Table
+          frame.render_widget(table, bottom_area)
+        end
 
         event = RatatuiRuby.poll_event
         if event.is_a?(RatatuiRuby::Event::Key) && (event.code == "q" || (event.code == "c" && event.modifiers.include?("ctrl")))

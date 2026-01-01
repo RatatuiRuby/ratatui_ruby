@@ -23,7 +23,7 @@ class TestClear < Minitest::Test
       # Create a simple UI that demonstrates Clear widget
       # Without Clear, we just have empty space
       clear = RatatuiRuby::Clear.new
-      RatatuiRuby.draw(clear)
+      RatatuiRuby.draw { |f| f.render_widget(clear, f.area) }
 
       # Verify entire buffer is cleared (every character)
       assert_equal "                    ", buffer_content[0]
@@ -46,7 +46,7 @@ class TestClear < Minitest::Test
           RatatuiRuby::Clear.new,
         ]
       )
-      RatatuiRuby.draw(ui)
+      RatatuiRuby.draw { |f| f.render_widget(ui, f.area) }
 
       # Verify Clear erased the background (every character)
       assert_equal "                    ", buffer_content[0]
@@ -62,7 +62,7 @@ class TestClear < Minitest::Test
       clear = RatatuiRuby::Clear.new(
         block: RatatuiRuby::Block.new(title: "Cleared", borders: [:all])
       )
-      RatatuiRuby.draw(clear)
+      RatatuiRuby.draw { |f| f.render_widget(clear, f.area) }
 
       # Verify exact buffer content with border characters and title
       assert_equal "┌Cleared───────────┐", buffer_content[0]

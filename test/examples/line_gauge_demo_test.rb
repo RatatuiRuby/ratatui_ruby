@@ -50,7 +50,7 @@ class LineGaugeDemoTest < Minitest::Test
         ]
       )
 
-      RatatuiRuby.draw(layout)
+      RatatuiRuby.draw { |f| f.render_widget(layout, f.area) }
       content = buffer_content
 
       # Verify that some rendering occurred

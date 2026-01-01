@@ -40,7 +40,7 @@ module RatatuiRuby
       # Standard vertical scrollbar is on the right of the area
       with_test_terminal(1, 10) do
         s = Scrollbar.new(content_length: 10, position: 0)
-        RatatuiRuby.draw(s)
+        RatatuiRuby.draw { |f| f.render_widget(s, f.area) }
         # Position 0 has thumb at row 1, 2, 3, 4
         assert_equal "▲", buffer_content[0]
         assert_equal "█", buffer_content[1]
@@ -58,7 +58,7 @@ module RatatuiRuby
     def test_render_horizontal
       with_test_terminal(10, 1) do
         s = Scrollbar.new(content_length: 10, position: 0, orientation: :horizontal)
-        RatatuiRuby.draw(s)
+        RatatuiRuby.draw { |f| f.render_widget(s, f.area) }
         # Position 0 has thumb at column 1-4
         assert_equal "◄████════►", buffer_content[0]
       end
@@ -75,7 +75,7 @@ module RatatuiRuby
           begin_symbol: "<",
           end_symbol: ">"
         )
-        RatatuiRuby.draw(s)
+        RatatuiRuby.draw { |f| f.render_widget(s, f.area) }
         # Custom symbols should be rendered
         assert_equal "<####---->", buffer_content[0]
       end

@@ -17,7 +17,7 @@ class TestGauge < Minitest::Test
   def test_render
     with_test_terminal(20, 1) do
       g = RatatuiRuby::Gauge.new(ratio: 0.5, label: "50%")
-      RatatuiRuby.draw(g)
+      RatatuiRuby.draw { |f| f.render_widget(g, f.area) }
       assert_equal "████████50%         ", buffer_content[0]
     end
   end

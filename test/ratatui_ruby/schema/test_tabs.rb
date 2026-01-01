@@ -24,7 +24,7 @@ class TestTabs < Minitest::Test
   def test_render
     with_test_terminal(20, 3) do
       tabs = RatatuiRuby::Tabs.new(titles: ["Tab 1", "Tab 2"], selected_index: 0)
-      RatatuiRuby.draw(tabs)
+      RatatuiRuby.draw { |f| f.render_widget(tabs, f.area) }
       assert_equal " Tab 1 │ Tab 2      ", buffer_content[0]
       assert_equal "                    ", buffer_content[1]
       assert_equal "                    ", buffer_content[2]
@@ -41,7 +41,7 @@ class TestTabs < Minitest::Test
 
     # Render to a buffer of width 50
     with_test_terminal(50, 3) do
-      RatatuiRuby.draw(tabs)
+      RatatuiRuby.draw { |f| f.render_widget(tabs, f.area) }
 
       # Verify content
       content = buffer_content
@@ -72,7 +72,7 @@ class TestTabs < Minitest::Test
         padding_left: 3,
         padding_right: 2
       )
-      RatatuiRuby.draw(tabs)
+      RatatuiRuby.draw { |f| f.render_widget(tabs, f.area) }
       # Expected: 3 spaces + " A │ B " + 2 spaces + remaining
       line = buffer_content[0]
       assert_match(/^   /, line, "Expected 3 leading spaces for padding_left")

@@ -22,7 +22,6 @@ Mailing List: Announcements](https://img.shields.io/badge/mailing_list-announcem
 
 > [!WARNING]
 > **ratatui_ruby** is currently in **BETA**. The API may change between minor versions.
-> A major shift to a [Frame-based API](doc/contributors/frame_migration.md) is planned for v0.5.0.
 
 Please join the **announce** mailing list at https://lists.sr.ht/~kerrick/ratatui_ruby-announce to stay up-to-date on new releases and announcements.
 

@@ -52,7 +52,7 @@ class TestBarChart < Minitest::Test
     with_test_terminal(20, 5) do
       # 10x5 area
       chart = RatatuiRuby::BarChart.new(data: { "A" => 1, "B" => 2 }, bar_width: 3)
-      RatatuiRuby.draw(chart)
+      RatatuiRuby.draw { |f| f.render_widget(chart, f.area) }
 
       assert_equal "    ███             ", buffer_content[0]
       assert_equal "    ███             ", buffer_content[1]
@@ -70,7 +70,7 @@ class TestBarChart < Minitest::Test
         bar_width: 1,
         direction: :horizontal
       )
-      RatatuiRuby.draw(chart)
+      RatatuiRuby.draw { |f| f.render_widget(chart, f.area) }
 
       # In horizontal mode, bars grow from left to right.
       # Labels and values are on the left of the bar.

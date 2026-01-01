@@ -41,17 +41,21 @@ class WidgetBlockTitles
           ),
         ]
 
-        layout = tui.layout(
-          direction: :vertical,
-          constraints: [
-            tui.constraint(:length, 10),
-            tui.constraint(:length, 10),
-            tui.constraint(:length, 10),
-          ],
-          children: blocks
-        )
+        tui.draw do |frame|
+          layout = tui.layout_split(
+            frame.area,
+            direction: :vertical,
+            constraints: [
+              tui.constraint(:length, 10),
+              tui.constraint(:length, 10),
+              tui.constraint(:length, 10),
+            ]
+          )
 
-        tui.draw(layout)
+          layout.each_with_index do |area, i|
+            frame.render_widget(blocks[i], area) if blocks[i]
+          end
+        end
 
         event = tui.poll_event
         break if event == "q" || event == :ctrl_c

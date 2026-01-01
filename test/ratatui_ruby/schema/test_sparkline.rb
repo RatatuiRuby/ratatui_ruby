@@ -26,7 +26,7 @@ class TestSparkline < Minitest::Test
   def test_render
     with_test_terminal(10, 3) do
       spark = RatatuiRuby::Sparkline.new(data: [1, 2, 3, 4])
-      RatatuiRuby.draw(spark)
+      RatatuiRuby.draw { |f| f.render_widget(spark, f.area) }
       assert_equal "  ▂█      ", buffer_content[0]
       assert_equal " ▄██      ", buffer_content[1]
       assert_equal "▆███      ", buffer_content[2]
@@ -41,7 +41,7 @@ class TestSparkline < Minitest::Test
   def test_direction_right_to_left
     with_test_terminal(10, 3) do
       spark = RatatuiRuby::Sparkline.new(data: [1, 2, 3, 4], direction: :right_to_left)
-      RatatuiRuby.draw(spark)
+      RatatuiRuby.draw { |f| f.render_widget(spark, f.area) }
       # Data renders right-to-left: from right edge, filling leftward
       assert_equal "      █▂  ", buffer_content[0]
       assert_equal "      ██▄ ", buffer_content[1]
@@ -74,7 +74,7 @@ class TestSparkline < Minitest::Test
         data: [1, nil, 2, nil, 3],
         absent_value_symbol: "-"
       )
-      RatatuiRuby.draw(spark)
+      RatatuiRuby.draw { |f| f.render_widget(spark, f.area) }
       content = buffer_content[0]
 
       # Absent values (nil) should render as "-"

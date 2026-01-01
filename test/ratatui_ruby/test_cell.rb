@@ -115,9 +115,9 @@ module RatatuiRuby
 
     def test_get_cell_at_integration
       with_test_terminal(10, 5) do
-        RatatuiRuby.draw(
-          Block.new(title: "Hi", borders: :all)
-        )
+        RatatuiRuby.draw do |f|
+          f.render_widget(Block.new(title: "Hi", borders: :all), f.area)
+        end
 
         # Title at (1, 0): "H"
         cell = RatatuiRuby.get_cell_at(1, 0)
