@@ -11,13 +11,14 @@ class SavedScreenshot < Data.define(:app, :path)
   end
 
   def stale?
-    return true unless exists?
+    return true unless valid?
 
     app_last_modified > screenshot_last_commit_time
   end
 
-  private def exists?
-    File.exist?(path)
+  private def valid?
+    # File must exist and have content (not 0 bytes)
+    File.size?(path) || false
   end
 
   private def app_last_modified

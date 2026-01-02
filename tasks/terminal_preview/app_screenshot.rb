@@ -15,8 +15,18 @@ class AppScreenshot < Data.define(:app, :output_path)
     LauncherScript.new(app.app_path, Dir.pwd).run do |launcher|
       TerminalWindow.new(launcher.path, launcher.pid_file).open do |window|
         take_snapshot(window.window_id)
-        puts " done."
-        true
+
+        if File.size?(output_path)
+          puts " done."
+          true
+        else
+          FileUtils.rm_f(output_path)
+          puts " FAILED"
+          puts
+          puts "  Window rendered nothing (app may have crashed before drawing)"
+          puts
+          false
+        end
       end
     end
   rescue => e
@@ -28,6 +38,6 @@ class AppScreenshot < Data.define(:app, :output_path)
   end
 
   private def take_snapshot(window_id)
-    system("screencapture -l #{window_id} -o -x '#{output_path}'")
+    system("screencapture", "-l", window_id.to_s, "-o", "-x", output_path)
   end
 end
