@@ -83,5 +83,54 @@ module RatatuiRuby
     #   end
     #
     # (Native method implemented in Rust)
+
+    ##
+    # :method: set_cursor_position
+    # :call-seq: set_cursor_position(x, y) -> nil
+    #
+    # Positions the blinking cursor at the given coordinates.
+    #
+    # Text input fields show users where typed characters will appear. Without
+    # a visible cursor, users cannot tell if the input is focused or where text
+    # will insert.
+    #
+    # This method moves the terminal cursor to a specific cell. Coordinates are
+    # 0-indexed from the terminal's top-left corner.
+    #
+    # Use it when building login forms, search bars, or command palettes.
+    #
+    # [x]
+    #   Column position (<tt>0</tt> = leftmost column).
+    # [y]
+    #   Row position (<tt>0</tt> = topmost row).
+    #
+    # === Example
+    #
+    # Position the cursor at the end of typed text in a login form:
+    #
+    #   PREFIX = "Username: [ "
+    #   username = "alice"
+    #
+    #   RatatuiRuby.draw do |frame|
+    #     # Render the input field
+    #     prompt = RatatuiRuby::Paragraph.new(
+    #       text: "#{PREFIX}#{username} ]",
+    #       block: RatatuiRuby::Block.new(borders: :all)
+    #     )
+    #     frame.render_widget(prompt, frame.area)
+    #
+    #     # Position cursor after the typed text
+    #     # Account for border (1) + prefix length + username length
+    #     cursor_x = 1 + PREFIX.length + username.length
+    #     cursor_y = 1  # First line inside border
+    #     frame.set_cursor_position(cursor_x, cursor_y)
+    #   end
+    #
+    # See also:
+    # - {Component-based implementation using Frame API}[link:/examples/app_color_picker/app_rb.html]
+    # - {Declarative implementation using Tree API}[link:/examples/app_login_form/app_rb.html]
+    # - RatatuiRuby::Cursor (Tree API alternative)
+    #
+    # (Native method implemented in Rust)
   end
 end

@@ -36,6 +36,20 @@ class TestAppColorPicker < Minitest::Test
     end
   end
 
+  def test_cursor_position_is_set
+    with_test_terminal do
+      inject_key(:q)
+      app = AppColorPicker.new
+      app.run
+
+      # Default input is "#F96302" (7 chars)
+      # Box border is 1 char wide.
+      # Expected X = 1 (border) + 7 (text) = 8
+      # Expected Y = 1 (border + line 0) = 1
+      assert_equal({ x: 8, y: 1 }, cursor_position)
+    end
+  end
+
   def test_renders_controls
     with_test_terminal do
       inject_key(:q)

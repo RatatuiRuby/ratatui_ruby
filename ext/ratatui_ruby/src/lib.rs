@@ -67,10 +67,17 @@ fn draw(args: &[Value]) -> Result<(), Error> {
     let mut draw_callback = |f: &mut ratatui::Frame<'_>| {
         if block_given {
             // New API: yield RubyFrame to block
-            let ruby_frame = RubyFrame::new(f);
+            // Create validity flag — set to true while the block is executing
+            let active = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(true));
+
+            let ruby_frame = RubyFrame::new(f, active.clone());
             if let Err(e) = ruby.yield_value::<_, Value>(ruby_frame) {
                 render_error = Some(e);
             }
+
+            // Invalidate frame immediately after block returns
+            // This prevents use-after-free if user stored the frame object
+            active.store(false, std::sync::atomic::Ordering::Relaxed);
         } else if let Some(tree_value) = tree {
             // Legacy API: render tree to full area
             if let Err(e) = rendering::render_node(f, f.area(), tree_value) {
@@ -114,6 +121,10 @@ fn init() -> Result<(), Error> {
     let frame_class = m.define_class("Frame", ruby.class_object())?;
     frame_class.define_method("area", method!(RubyFrame::area, 0))?;
     frame_class.define_method("render_widget", method!(RubyFrame::render_widget, 2))?;
+    frame_class.define_method(
+        "set_cursor_position",
+        method!(RubyFrame::set_cursor_position, 2),
+    )?;
     m.define_module_function("_poll_event", function!(events::poll_event, 1))?;
     m.define_module_function("inject_test_event", function!(events::inject_test_event, 2))?;
     m.define_module_function("clear_events", function!(events::clear_events, 0))?;

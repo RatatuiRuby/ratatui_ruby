@@ -61,8 +61,9 @@ class Input
 
   # Renders the input widget into the given area.
   #
-  # Caches `area` for hit testing. Shows the current input value with a cursor.
-  # Displays the error message in red if one is set.
+  # Caches `area` for hit testing. Shows the current input value and positions
+  # the terminal's blinking cursor at the end of the text using
+  # `frame.set_cursor_position`. Displays the error message in red if set.
   #
   # [tui] Session or TUI factory object
   # [frame] Frame object from RatatuiRuby.draw block
@@ -75,6 +76,10 @@ class Input
     @area = area
     widget = build_widget(tui)
     frame.render_widget(widget, area)
+
+    # Position real blinking cursor at end of input text
+    cursor_x, cursor_y = cursor_position_in(area)
+    frame.set_cursor_position(cursor_x, cursor_y)
   end
 
   # Processes a keyboard event and updates internal state.
@@ -139,7 +144,6 @@ class Input
     input_lines = [
       tui.text_line(spans: [
         tui.text_span(content: @value),
-        tui.text_span(content: "_", style: tui.style(modifiers: [:reversed])),
       ]),
     ]
 
@@ -156,5 +160,15 @@ class Input
         tui.paragraph(text: input_lines),
       ]
     )
+  end
+
+  # Calculates cursor position within the input area.
+  #
+  # Accounts for block border (1 cell) and current text length.
+  private def cursor_position_in(area)
+    # Border takes 1 cell on left, cursor goes after last character
+    x = area.x + 1 + @value.length
+    y = area.y + 1 # First line inside border
+    [x, y]
   end
 end

@@ -13,11 +13,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Added
 
 - **Non-Blocking Event Polling**: `RatatuiRuby.poll_event` now accepts an optional `timeout:` parameter (Float seconds). Use `timeout: 0.0` for non-blocking checks, or `timeout: 0.1` for fixed timesteps. Defaults to `0.016` (16ms) to preserve existing behavior.
+- **Cursor Positioning**: `Frame#set_cursor_position(x, y)` sets the terminal's hardware cursor position. Using this method is essential for input fields where the user expects visual feedback on their cursor location.
 
 
 ### Changed
 
 ### Fixed
+
+- **Frame Safety**: Calling methods on a `Frame` stored outside of a `draw` block now correctly raises a `RuntimeError` instead of causing undefined behavior or crashes. This ensures memory safety by preventing use-after-free scenarios with the underlying Rust frame.
 
 ### Removed
 

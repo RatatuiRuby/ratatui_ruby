@@ -15,6 +15,11 @@ module RatatuiRuby
   # === Examples
   #
   #   Cursor.new(x: 10, y: 5)
+  #
+  # See also:
+  # - {Declarative implementation using Tree API}[link:/examples/app_login_form/app_rb.html]
+  # - {Component-based implementation using Frame API}[link:/examples/app_color_picker/app_rb.html]
+  # - RatatuiRuby::Frame#set_cursor_position (Frame API alternative)
   class Cursor < Data.define(:x, :y)
     ##
     # :attr_reader: x
