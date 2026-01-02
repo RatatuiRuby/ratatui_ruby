@@ -3,7 +3,7 @@
 # SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-require_relative "comparison_links"
+require_relative "links"
 require_relative "unreleased_section"
 require_relative "history"
 require_relative "header"
@@ -22,13 +22,13 @@ class Changelog
 
     header = Header.parse(content)
     unreleased = UnreleasedSection.parse(content)
-    links = ComparisonLinks.parse(content)
+    links = Links.from_markdown(content)
 
     raise "Could not parse CHANGELOG.md" unless header && unreleased && links
 
     history = History.parse(content, header.length, unreleased.to_s.length, links.to_s)
 
-    links.update(new_version)
+    links.release(new_version)
     history.add(unreleased.as_version(new_version))
 
     File.write(@path, "#{header}#{UnreleasedSection.fresh}\n\n#{history}\n#{links}")

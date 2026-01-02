@@ -291,10 +291,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Input Handling**: Robust handling for both Keyboard and Mouse events.
 - **Testing Support**: Included `RatatuiRuby::TestHelper` and RSpec integration to make testing your TUI applications possible.
 
-[Unreleased]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.5.0...HEAD
-[0.5.0]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.4.0...v0.5.0
-[0.4.0]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.3.1...v0.4.0
-[0.3.1]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.3.0...v0.3.1
-[0.3.0]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.2.0...v0.3.0
-[0.2.0]: https://git.sr.ht/~kerrick/ratatui_ruby/compare/v0.1.0...v0.2.0
-[0.1.0]: https://git.sr.ht/~kerrick/ratatui_ruby/tree/v0.1.0
+[Unreleased]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/HEAD
+[0.5.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.5.0
+[0.4.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.4.0
+[0.3.1]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.3.1
+[0.3.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.3.0
+[0.2.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.2.0
+[0.1.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.1.0
