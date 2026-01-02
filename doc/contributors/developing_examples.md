@@ -84,9 +84,11 @@ All interactive examples must fit within an **80×24 terminal** (standard VT100 
 - **Style hotkeys visually:** Use `modifiers: [:bold, :underlined]` on hotkey letters to make them stand out from descriptions. Example: `i` (bold, underlined) followed by `Items`.
 - Test early by running the example at 80×24 and verifying all content is visible without wrapping, scrolling, or clipping.
 
-Every example must also have an RBS file documenting its public methods:
+## Type Signatures
 
-`examples/my_example/app.rbs`:
+Every example must also have an RBS file documenting its public methods. Type signatures live in a centralized location:
+
+`sig/examples/my_example/app.rbs`:
 ```rbs
 class MyExampleApp
   # @public
@@ -95,6 +97,28 @@ class MyExampleApp
   # @public
   def run: () -> void
 end
+```
+
+## Directory Structure
+
+Examples are organized across three locations:
+
+```
+examples/
+  my_example/
+    app.rb              ← REQUIRED: The runnable example code
+    README.md           ← REQUIRED: Purpose, architecture, hotkeys, usage
+
+test/examples/
+  my_example/
+    test_app.rb         ← REQUIRED: Tests (centralized, not local to example)
+    snapshots/          ← Auto-created by assert_snapshot
+      initial_render.txt
+
+sig/examples/
+  my_example/
+    app.rbs             ← REQUIRED: Type signatures (centralized, not local to example)
+```
 ```
 
 ### Key Requirements
@@ -135,7 +159,17 @@ end
     - Space: Toggle or select
     - `q` or Ctrl+C: Quit
 
-5. **Naming Conventions for Controls**
+6. **All examples must include a README.md** explaining:
+   - What problem the example solves
+   - Architecture (if applicable)
+   - Hotkeys (if interactive): Document all keyboard/mouse controls
+   - Key concepts demonstrated
+   - Usage instructions
+   - Learning outcomes
+
+   See examples/app_color_picker/README.md and examples/app_all_events/README.md for patterns. Adhere to docs/contributors/documentation_style.md.
+
+7. **Naming Conventions for Controls**
 
 When documenting hotkeys and cycling options in the UI, use consistent naming:
 
@@ -158,7 +192,7 @@ When documenting hotkeys and cycling options in the UI, use consistent naming:
 
 This keeps the UI self-documenting and users can see exact parameter names when they read the hotkey help.
 
-7. **Hit Testing**
+8. **Hit Testing**
 
 Examples with mouse interaction should use the **Frame API**. By calling `@tui.layout_split` inside `@tui.draw`, you obtain the exact `Rect`s used for rendering. Store these rects in instance variables (e.g., `@sidebar_rect`) to use them in your `handle_input` method for hit testing:
 
@@ -170,11 +204,9 @@ end
 
 ## Testing Examples
 
-Example tests live alongside examples as `test_app.rb` files in the same directory.
+Example tests live in a centralized test tree:
 
-### Testing Pattern
-
-`examples/my_example/test_app.rb`:
+`test/examples/my_example/test_app.rb`:
 ```ruby
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
@@ -191,56 +223,75 @@ class TestMyExampleApp < Minitest::Test
 
   def test_initial_render
     with_test_terminal do
-      inject_key(:q)  # Queue quit event
-      @app.run        # Run the app loop
-      
-      content = buffer_content.join("\n")
-      assert_includes content, "Expected Text"
-    end
-  end
-
-  def test_keyboard_interaction
-    with_test_terminal do
-      inject_key("s")  # Press 's' to cycle something
-      inject_key(:q)   # Then quit
-      @app.run
-
-      content = buffer_content.join("\n")
-      assert_includes content, "Changed State"
-    end
-  end
-
-  def test_mouse_interaction
-    with_test_terminal do
-      # Click at (10, 5)
-      inject_click(x: 10, y: 5)
       inject_key(:q)
       @app.run
-
-      content = buffer_content.join("\n")
-      assert_includes content, "Clicked at (10, 5)"
+      assert_snapshot("initial_render")
     end
   end
 end
 ```
 
-### Testing Guidelines
+## Snapshot Testing Pattern (REQUIRED)
 
-1. **Inject events, observe buffer.** Tests should only interact through:
-   - `inject_key`, `inject_click`, `inject_event`, etc. for input
-   - `buffer_content` for output verification
+All example tests MUST use snapshot testing via the `assert_snapshot` API, not manual content assertions.
 
-2. **Never call internal methods.** Don't call `render`, `handle_input`, `__send__`, or access instance variables with `instance_variable_get`. Tests verify behavior through the public `run` method.
+### Why Snapshots
 
-3. **Use `inject_key(:q)` to exit.** All examples should support quitting with `q`, so inject this as the final event to terminate the loop.
+- **Exact verification:** Captures complete screen state, character-by-character
+- **Auto-update:** `UPDATE_SNAPSHOTS=1 bin/agent_rake test` regenerates all snapshots
+- **Auto-managed:** Snapshots live in `test/examples/{name}/snapshots/{test_name}.txt`
+- **Maintainable:** No tedious manual string checks
+- **Self-documenting:** Snapshots show exactly what output is expected
 
-4. **Assert and refute.** When testing which item was clicked/selected, also verify the opposite didn't happen:
-   ```ruby
-   assert_includes content, "Left Panel clicked"
-   refute_includes content, "Right Panel clicked"
-   ```
+### Basic Pattern
 
-5. **Test state cycling.** If an example cycles through options (styles, modes, etc.), test that pressing the key actually changes the rendered output.
+```ruby
+def test_initial_render
+  with_test_terminal do
+    inject_key(:q)
+    @app.run
+    
+    assert_snapshot("initial_render")
+  end
+end
+```
+
+Snapshot auto-saved to: `test/examples/widget_foo_demo/snapshots/initial_render.txt`
+
+### With Normalization (for dynamic content)
+
+For examples with timestamps, random data, or other non-deterministic output:
+
+```ruby
+private def assert_normalized_snapshot(snapshot_name)
+  assert_snapshot(snapshot_name) do |actual|
+    actual.map do |line|
+      line.gsub(/\d{2}:\d{2}:\d{2}/, "XX:XX:XX")  # Mask timestamps
+           .gsub(/Random ID: \d+/, "Random ID: XXX")  # Mask random values
+    end
+  end
+end
+
+def test_after_event
+  with_test_terminal do
+    inject_key("a")
+    inject_key(:q)
+    @app.run
+    
+    assert_normalized_snapshot("after_event")
+  end
+end
+```
+
+See `test/examples/app_all_events/test_app.rb` for a complete example.
+
+### Regenerating Snapshots
+
+When UI changes are intentional, regenerate all snapshots:
+
+```bash
+UPDATE_SNAPSHOTS=1 bin/agent_rake test
+```
 
 ## Widget Attribute Cycling
 
