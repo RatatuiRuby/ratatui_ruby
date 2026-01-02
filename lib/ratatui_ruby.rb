@@ -191,7 +191,11 @@ module RatatuiRuby
 
     case raw[:type]
     when :key
-      Event::Key.new(code: raw[:code], modifiers: (raw[:modifiers] || []).freeze).freeze
+      Event::Key.new(
+        code: raw[:code],
+        modifiers: (raw[:modifiers] || []).freeze,
+        kind: raw[:kind] || :standard
+      ).freeze
     when :mouse
       Event::Mouse.new(
         kind: raw[:kind].to_s,

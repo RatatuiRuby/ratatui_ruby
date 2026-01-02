@@ -82,7 +82,7 @@ class TestCountsView < Minitest::Test
     assert all_zeros, "Expected all counts to be 0 initially"
 
     # Ensure sub-counts are visible
-    assert_includes text_content, "Unmodified:"
+    assert_includes text_content, "Standard:"
     assert_includes text_content, "Down:"
     assert_includes text_content, "Gained:"
   end
@@ -123,7 +123,7 @@ class TestCountsView < Minitest::Test
     widget = @frame.rendered_widgets.first[:widget]
     text_content = extract_all_content(widget)
 
-    assert_includes text_content, "Unmodified: 1"
+    assert_includes text_content, "Standard: 1"
   end
 
   def test_renders_focus_sub_counts

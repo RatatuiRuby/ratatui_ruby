@@ -18,39 +18,228 @@ module RatatuiRuby
   class TestKeyModifier < Minitest::Test
     include RatatuiRuby::TestHelper
 
-    LEFT_MODIFIERS = %w[
-      left_shift
-      left_control
-      left_alt
-      left_super
-      left_hyper
-      left_meta
-    ].freeze
-
-    RIGHT_MODIFIERS = %w[
-      right_shift
-      right_control
-      right_alt
-      right_super
-      right_hyper
-      right_meta
-    ].freeze
-
-    ISO_MODIFIERS = %w[
-      iso_level3_shift
-      iso_level5_shift
-    ].freeze
-
-    ALL_MODIFIER_KEYS = (LEFT_MODIFIERS + RIGHT_MODIFIERS + ISO_MODIFIERS).freeze
-
-    def test_all_modifier_keys_round_trip
+    def test_left_shift
       with_test_terminal do
-        ALL_MODIFIER_KEYS.each do |key|
-          inject_keys(key)
-          event = RatatuiRuby.poll_event
-          assert_equal key, event.code,
-            "Modifier key '#{key}' should round-trip through FFI"
-        end
+        inject_keys("left_shift")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "left_shift", event.code
+        refute event.text?
+        assert_equal "", event.char
+
+        assert event.left_shift?
+        refute event.ctrl?
+        # Modifier keys themselves do not inherently set modifier flags
+        refute event.alt?
+        refute event.shift?
+      end
+    end
+
+    def test_left_control
+      with_test_terminal do
+        inject_keys("left_control")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "left_control", event.code
+        refute event.text?
+        assert_equal "", event.char
+
+        assert event.left_control?
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
+      end
+    end
+
+    def test_left_alt
+      with_test_terminal do
+        inject_keys("left_alt")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "left_alt", event.code
+        refute event.text?
+        assert_equal "", event.char
+
+        assert event.left_alt?
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
+      end
+    end
+
+    def test_left_super
+      with_test_terminal do
+        inject_keys("left_super")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "left_super", event.code
+        refute event.text?
+        assert_equal "", event.char
+
+        assert event.left_super?
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
+      end
+    end
+
+    def test_left_hyper
+      with_test_terminal do
+        inject_keys("left_hyper")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "left_hyper", event.code
+        refute event.text?
+        assert_equal "", event.char
+
+        assert event.left_hyper?
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
+      end
+    end
+
+    def test_left_meta
+      with_test_terminal do
+        inject_keys("left_meta")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "left_meta", event.code
+        refute event.text?
+        assert_equal "", event.char
+
+        assert event.left_meta?
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
+      end
+    end
+
+    def test_right_shift
+      with_test_terminal do
+        inject_keys("right_shift")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "right_shift", event.code
+        refute event.text?
+        assert_equal "", event.char
+
+        assert event.right_shift?
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
+      end
+    end
+
+    def test_right_control
+      with_test_terminal do
+        inject_keys("right_control")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "right_control", event.code
+        refute event.text?
+        assert_equal "", event.char
+
+        assert event.right_control?
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
+      end
+    end
+
+    def test_right_alt
+      with_test_terminal do
+        inject_keys("right_alt")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "right_alt", event.code
+        refute event.text?
+        assert_equal "", event.char
+
+        assert event.right_alt?
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
+      end
+    end
+
+    def test_right_super
+      with_test_terminal do
+        inject_keys("right_super")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "right_super", event.code
+        refute event.text?
+        assert_equal "", event.char
+
+        assert event.right_super?
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
+      end
+    end
+
+    def test_right_hyper
+      with_test_terminal do
+        inject_keys("right_hyper")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "right_hyper", event.code
+        refute event.text?
+        assert_equal "", event.char
+
+        assert event.right_hyper?
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
+      end
+    end
+
+    def test_right_meta
+      with_test_terminal do
+        inject_keys("right_meta")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "right_meta", event.code
+        refute event.text?
+        assert_equal "", event.char
+
+        assert event.right_meta?
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
+      end
+    end
+
+    def test_iso_level3_shift
+      with_test_terminal do
+        inject_keys("iso_level3_shift")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "iso_level3_shift", event.code
+        refute event.text?
+        assert_equal "", event.char
+
+        assert event.iso_level3_shift?
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
+      end
+    end
+
+    def test_iso_level5_shift
+      with_test_terminal do
+        inject_keys("iso_level5_shift")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "iso_level5_shift", event.code
+        refute event.text?
+        assert_equal "", event.char
+
+        assert event.iso_level5_shift?
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
       end
     end
 
@@ -61,8 +250,7 @@ module RatatuiRuby
         inject_keys("right_shift")
         right = RatatuiRuby.poll_event
 
-        refute_equal left.code, right.code,
-          "Left and right modifiers should be distinct"
+        refute_equal left.code, right.code
         assert_equal "left_shift", left.code
         assert_equal "right_shift", right.code
       end
@@ -75,8 +263,7 @@ module RatatuiRuby
         inject_keys("left_shift")
         left = RatatuiRuby.poll_event
 
-        refute_equal iso3.code, left.code,
-          "ISO modifiers should be distinct from standard modifiers"
+        refute_equal iso3.code, left.code
       end
     end
   end

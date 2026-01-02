@@ -11,11 +11,14 @@ module RatatuiRuby
     def focus_lost?: () -> bool
     def deconstruct_keys: (Array[Symbol]?) -> Hash[Symbol, untyped]
 
+    type key_kind = :standard | :function | :media | :modifier | :system
+
     class Key < Event
       attr_reader code: String
       attr_reader modifiers: Array[String]
+      attr_reader kind: key_kind
 
-      def initialize: (code: String, modifiers: Array[String]) -> void
+      def initialize: (code: String, ?modifiers: Array[String], ?kind: key_kind) -> void
       def ==: (untyped other) -> bool
       def to_sym: () -> Symbol
       def to_s: () -> String
@@ -24,6 +27,13 @@ module RatatuiRuby
       def alt?: () -> bool
       def shift?: () -> bool
       def text?: () -> bool
+      def char: () -> String
+      def media?: () -> bool
+      def system?: () -> bool
+      def function?: () -> bool
+      def modifier?: () -> bool
+      def standard?: () -> bool
+      def unmodified?: () -> bool
       def deconstruct_keys: (Array[Symbol]?) -> Hash[Symbol, untyped]
     end
 

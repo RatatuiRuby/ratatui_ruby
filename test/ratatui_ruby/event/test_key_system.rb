@@ -10,24 +10,94 @@ module RatatuiRuby
   # Round-trip tests for system KeyCode variants through the Rust FFI layer.
   #
   # Tests: PrintScreen, Pause, Menu, KeypadBegin
+  # Also tests the `system?` category predicate.
   class TestKeySystem < Minitest::Test
     include RatatuiRuby::TestHelper
 
-    SYSTEM_KEYS = %w[
-      print_screen
-      pause
-      menu
-      keypad_begin
-    ].freeze
-
-    def test_all_system_keys_round_trip
+    def test_print_screen
       with_test_terminal do
-        SYSTEM_KEYS.each do |key|
-          inject_keys(key)
-          event = RatatuiRuby.poll_event
-          assert_equal key, event.code,
-            "System key '#{key}' should round-trip through FFI"
-        end
+        inject_keys("print_screen")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "print_screen", event.code
+        assert_equal :system, event.kind
+        refute event.text?
+        assert_equal "", event.char
+
+        assert event.print_screen?
+        assert event.system?
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
+      end
+    end
+
+    def test_pause
+      with_test_terminal do
+        inject_keys("pause")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "pause", event.code
+        assert_equal :system, event.kind
+        refute event.text?
+        assert_equal "", event.char
+
+        assert event.pause?
+        assert event.system?
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
+      end
+    end
+
+    def test_menu
+      with_test_terminal do
+        inject_keys("menu")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "menu", event.code
+        assert_equal :system, event.kind
+        refute event.text?
+        assert_equal "", event.char
+
+        assert event.menu?
+        assert event.system?
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
+      end
+    end
+
+    def test_keypad_begin
+      with_test_terminal do
+        inject_keys("keypad_begin")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "keypad_begin", event.code
+        assert_equal :system, event.kind
+        refute event.text?
+        assert_equal "", event.char
+
+        assert event.keypad_begin?
+        assert event.system?
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
+      end
+    end
+
+    # --- Category predicate tests ---
+
+    def test_system_keys_are_not_other_categories
+      with_test_terminal do
+        inject_keys("pause")
+        event = RatatuiRuby.poll_event
+
+        assert event.system?
+        refute event.standard?
+        refute event.function?
+        refute event.modifier?
+        refute event.media?
       end
     end
   end

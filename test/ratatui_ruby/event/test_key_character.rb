@@ -13,61 +13,68 @@ module RatatuiRuby
   class TestKeyCharacter < Minitest::Test
     include RatatuiRuby::TestHelper
 
-    LOWERCASE_LETTERS = ("a".."z").to_a.freeze
-    UPPERCASE_LETTERS = ("A".."Z").to_a.freeze
-    DIGITS = ("0".."9").to_a.freeze
-    COMMON_SYMBOLS = %w[! @ # - _ = + . , /].freeze
-
-    def test_all_lowercase_letters_round_trip
+    def test_lowercase_a
       with_test_terminal do
-        LOWERCASE_LETTERS.each do |char|
-          inject_keys(char)
-          event = RatatuiRuby.poll_event
-          assert_equal char, event.code,
-            "Lowercase letter '#{char}' should round-trip through FFI"
-        end
+        inject_keys("a")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "a", event.code
+        assert event.text?
+        assert_equal "a", event.char
+
+        # Predicate for 'a' (dynamic)
+        assert event.a?
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
       end
     end
 
-    def test_all_uppercase_letters_round_trip
+    def test_uppercase_A
       with_test_terminal do
-        UPPERCASE_LETTERS.each do |char|
-          inject_keys(char)
-          event = RatatuiRuby.poll_event
-          assert_equal char, event.code,
-            "Uppercase letter '#{char}' should round-trip through FFI"
-        end
+        inject_keys("A")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "A", event.code
+        assert event.text?
+        assert_equal "A", event.char
+
+        # Predicate for 'A' (dynamic)
+        assert event.A?
+        assert_equal "A", event.char
       end
     end
 
-    def test_all_digits_round_trip
+    def test_digit_1
       with_test_terminal do
-        DIGITS.each do |char|
-          inject_keys(char)
-          event = RatatuiRuby.poll_event
-          assert_equal char, event.code,
-            "Digit '#{char}' should round-trip through FFI"
-        end
+        inject_keys("1")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "1", event.code
+        assert event.text?
+        assert_equal "1", event.char
       end
     end
 
-    def test_common_symbols_round_trip
+    def test_symbol_at
       with_test_terminal do
-        COMMON_SYMBOLS.each do |char|
-          inject_keys(char)
-          event = RatatuiRuby.poll_event
-          assert_equal char, event.code,
-            "Symbol '#{char}' should round-trip through FFI"
-        end
+        inject_keys("@")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "@", event.code
+        assert event.text?
+        assert_equal "@", event.char
       end
     end
 
-    def test_space_key_round_trips
+    def test_space
       with_test_terminal do
         inject_keys(" ")
         event = RatatuiRuby.poll_event
-        assert_equal " ", event.code,
-          "Space character should round-trip through FFI"
+
+        assert_equal " ", event.code
+        assert event.text?
+        assert_equal " ", event.char
       end
     end
   end

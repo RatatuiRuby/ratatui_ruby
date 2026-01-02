@@ -29,22 +29,26 @@ pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), 
 }
 
 /// Parses a `snake_case` string to `MediaKeyCode`.
+///
+/// Accepts both the new `media_`-prefixed codes (canonical) and the legacy
+/// unprefixed codes for backward compatibility with existing tests.
 fn parse_media_key(s: &str) -> Option<ratatui::crossterm::event::MediaKeyCode> {
     use ratatui::crossterm::event::MediaKeyCode;
     match s {
-        "play" => Some(MediaKeyCode::Play),
+        // New canonical codes (media_ prefix)
+        "media_play" | "play" => Some(MediaKeyCode::Play),
         "media_pause" => Some(MediaKeyCode::Pause),
-        "play_pause" => Some(MediaKeyCode::PlayPause),
-        "reverse" => Some(MediaKeyCode::Reverse),
-        "stop" => Some(MediaKeyCode::Stop),
-        "fast_forward" => Some(MediaKeyCode::FastForward),
-        "rewind" => Some(MediaKeyCode::Rewind),
-        "track_next" => Some(MediaKeyCode::TrackNext),
-        "track_previous" => Some(MediaKeyCode::TrackPrevious),
-        "record" => Some(MediaKeyCode::Record),
-        "lower_volume" => Some(MediaKeyCode::LowerVolume),
-        "raise_volume" => Some(MediaKeyCode::RaiseVolume),
-        "mute_volume" => Some(MediaKeyCode::MuteVolume),
+        "media_play_pause" | "play_pause" => Some(MediaKeyCode::PlayPause),
+        "media_reverse" | "reverse" => Some(MediaKeyCode::Reverse),
+        "media_stop" | "stop" => Some(MediaKeyCode::Stop),
+        "media_fast_forward" | "fast_forward" => Some(MediaKeyCode::FastForward),
+        "media_rewind" | "rewind" => Some(MediaKeyCode::Rewind),
+        "media_track_next" | "track_next" => Some(MediaKeyCode::TrackNext),
+        "media_track_previous" | "track_previous" => Some(MediaKeyCode::TrackPrevious),
+        "media_record" | "record" => Some(MediaKeyCode::Record),
+        "media_lower_volume" | "lower_volume" => Some(MediaKeyCode::LowerVolume),
+        "media_raise_volume" | "raise_volume" => Some(MediaKeyCode::RaiseVolume),
+        "media_mute_volume" | "mute_volume" => Some(MediaKeyCode::MuteVolume),
         _ => None,
     }
 }
@@ -327,22 +331,27 @@ fn handle_event(event: ratatui::crossterm::event::Event) -> Result<Value, Error>
 }
 
 /// Converts `MediaKeyCode` to `snake_case` string.
+///
+/// All media keys are consistently prefixed with `media_` to reflect that they
+/// belong to the `KeyCode::Media(_)` variant in Crossterm. This allows Ruby's
+/// "Smart Predicates" to provide DWIM behavior (e.g., `pause?` matching both
+/// system and media pause).
 fn media_key_to_string(m: ratatui::crossterm::event::MediaKeyCode) -> &'static str {
     use ratatui::crossterm::event::MediaKeyCode;
     match m {
-        MediaKeyCode::Play => "play",
-        MediaKeyCode::Pause => "media_pause", // Disambiguate from KeyCode::Pause
-        MediaKeyCode::PlayPause => "play_pause",
-        MediaKeyCode::Reverse => "reverse",
-        MediaKeyCode::Stop => "stop",
-        MediaKeyCode::FastForward => "fast_forward",
-        MediaKeyCode::Rewind => "rewind",
-        MediaKeyCode::TrackNext => "track_next",
-        MediaKeyCode::TrackPrevious => "track_previous",
-        MediaKeyCode::Record => "record",
-        MediaKeyCode::LowerVolume => "lower_volume",
-        MediaKeyCode::RaiseVolume => "raise_volume",
-        MediaKeyCode::MuteVolume => "mute_volume",
+        MediaKeyCode::Play => "media_play",
+        MediaKeyCode::Pause => "media_pause",
+        MediaKeyCode::PlayPause => "media_play_pause",
+        MediaKeyCode::Reverse => "media_reverse",
+        MediaKeyCode::Stop => "media_stop",
+        MediaKeyCode::FastForward => "media_fast_forward",
+        MediaKeyCode::Rewind => "media_rewind",
+        MediaKeyCode::TrackNext => "media_track_next",
+        MediaKeyCode::TrackPrevious => "media_track_previous",
+        MediaKeyCode::Record => "media_record",
+        MediaKeyCode::LowerVolume => "media_lower_volume",
+        MediaKeyCode::RaiseVolume => "media_raise_volume",
+        MediaKeyCode::MuteVolume => "media_mute_volume",
     }
 }
 
@@ -376,6 +385,38 @@ fn handle_key_event(key: ratatui::crossterm::event::KeyEvent) -> Result<Value, E
     }
     let hash = ruby.hash_new();
     hash.aset(ruby.to_symbol("type"), ruby.to_symbol("key"))?;
+
+    // Determine the kind (category) of the key
+    let kind = match key.code {
+        KeyCode::Char(_)
+        | KeyCode::Enter
+        | KeyCode::Tab
+        | KeyCode::Backspace
+        | KeyCode::BackTab
+        | KeyCode::Up
+        | KeyCode::Down
+        | KeyCode::Left
+        | KeyCode::Right
+        | KeyCode::Home
+        | KeyCode::End
+        | KeyCode::PageUp
+        | KeyCode::PageDown
+        | KeyCode::Insert
+        | KeyCode::Delete
+        | KeyCode::Null => "standard",
+        KeyCode::F(_) => "function",
+        KeyCode::Media(_) => "media",
+        KeyCode::Modifier(_) => "modifier",
+        KeyCode::Esc
+        | KeyCode::CapsLock
+        | KeyCode::ScrollLock
+        | KeyCode::NumLock
+        | KeyCode::PrintScreen
+        | KeyCode::Pause
+        | KeyCode::Menu
+        | KeyCode::KeypadBegin => "system",
+    };
+
     let code = match key.code {
         // Characters
         KeyCode::Char(c) => c.to_string(),
@@ -415,6 +456,8 @@ fn handle_key_event(key: ratatui::crossterm::event::KeyEvent) -> Result<Value, E
     };
 
     hash.aset(ruby.to_symbol("code"), code)?;
+    hash.aset(ruby.to_symbol("kind"), ruby.to_symbol(kind))?;
+
     let mut modifiers = Vec::new();
     if key
         .modifiers

@@ -65,6 +65,15 @@ module RatatuiRuby
       #   puts event.modifiers # => ["ctrl", "shift"]
       attr_reader :modifiers
 
+      # The category of the key.
+      #
+      # One of: <tt>:standard</tt>, <tt>:function</tt>, <tt>:media</tt>, <tt>:modifier</tt>, <tt>:system</tt>.
+      #
+      # This allows grouping keys by their logical type without parsing the code string.
+      #
+      #   event.kind # => :media
+      attr_reader :kind
+
       # Returns true for Key events.
       #
       #   event.key?    # => true
@@ -80,9 +89,13 @@ module RatatuiRuby
       #   The key code (String).
       # [modifiers]
       #   List of modifiers (Array<String>).
-      def initialize(code:, modifiers: [])
+      # [kind]
+      #   The key category (Symbol). One of: <tt>:standard</tt>, <tt>:function</tt>,
+      #   <tt>:media</tt>, <tt>:modifier</tt>, <tt>:system</tt>. Defaults to <tt>:standard</tt>.
+      def initialize(code:, modifiers: [], kind: :standard)
         @code = code.freeze
         @modifiers = modifiers.map(&:freeze).sort.freeze
+        @kind = kind
       end
 
       # Compares the event with another object.
@@ -168,7 +181,7 @@ module RatatuiRuby
 
       # Returns inspection string.
       def inspect
-        "#<#{self.class} code=#{@code.inspect} modifiers=#{@modifiers.inspect}>"
+        "#<#{self.class} code=#{@code.inspect} modifiers=#{@modifiers.inspect} kind=#{@kind.inspect}>"
       end
 
       # Returns true if CTRL is held.
@@ -185,6 +198,58 @@ module RatatuiRuby
       def shift?
         @modifiers.include?("shift")
       end
+
+      # Returns true if this is a media key.
+      #
+      # Media keys include: play, pause, stop, track controls, volume controls.
+      # These are only available in terminals supporting the Kitty keyboard protocol.
+      #
+      #   event.media? # => true for media_play, media_pause, etc.
+      def media?
+        @kind == :media
+      end
+
+      # Returns true if this is a system key.
+      #
+      # System keys include: Esc, CapsLock, ScrollLock, NumLock, PrintScreen, Pause, Menu, KeypadBegin.
+      #
+      #   event.system? # => true for pause, esc, caps_lock, etc.
+      def system?
+        @kind == :system
+      end
+
+      # Returns true if this is a function key (F1-F24).
+      #
+      #   event.function? # => true for f1, f2, ..., f24
+      def function?
+        @kind == :function
+      end
+
+      # Returns true if this is a modifier key press.
+      #
+      # Modifier keys include: left_shift, right_control, left_alt, etc.
+      # These are only available in terminals supporting the Kitty keyboard protocol.
+      #
+      #   event.modifier? # => true for left_shift, right_control, etc.
+      def modifier?
+        @kind == :modifier
+      end
+
+      # Returns true if this is a standard key.
+      #
+      # Standard keys include: characters, Enter, Tab, arrow keys, navigation keys.
+      #
+      #   event.standard? # => true for "a", "enter", "up", etc.
+      def standard?
+        @kind == :standard
+      end
+
+      # Alias for {#standard?}.
+      #
+      # Provided for semantic clarity when checking if a key has no special category.
+      #
+      #   event.unmodified? # => true for standard keys like "a", "enter", "up"
+      alias unmodified? standard?
 
       # Returns true if the key represents a single printable character.
       #
@@ -221,12 +286,42 @@ module RatatuiRuby
       #
       # The method name is converted to a symbol and compared against the event.
       # This works for any key code or modifier+key combination.
+      #
+      # === Smart Predicates (DWIM)
+      #
+      # For convenience, generic predicates match both system and media variants:
+      #
+      #   event.pause?      # => true for BOTH system "pause" AND "media_pause"
+      #   event.play?       # => true for "media_play"
+      #   event.stop?       # => true for "media_stop"
+      #
+      # This "Do What I Mean" behavior reduces boilerplate when you just want to
+      # respond to a conceptual action (e.g., "pause the playback") regardless of
+      # whether the user pressed a keyboard key or a media button.
+      #
+      # For strict matching, use the full predicate or compare the code directly:
+      #
+      #   event.media_pause?  # => true ONLY for media pause
+      #   event.code == "pause"  # => true ONLY for system pause
       def method_missing(name, *args, &block)
         if name.to_s.end_with?("?")
-          key_sym = name.to_s[0...-1].to_sym
-          return self == key_sym
+          key_name = name.to_s[0...-1]
+          key_sym = key_name.to_sym
+
+          # Exact match (e.g., media_pause? for media_pause, pause? for pause)
+          return true if self == key_sym
+
+          # DWIM: For media keys, allow unprefixed predicate
+          # e.g., pause? returns true for media_pause
+          if @kind == :media && @code.start_with?("media_")
+            base_code = @code.delete_prefix("media_")
+            return true if key_name == base_code
+          end
+
+          false
+        else
+          super
         end
-        super
       end
 
       # Declares that this class responds to dynamic predicate methods.
@@ -239,9 +334,11 @@ module RatatuiRuby
       #   case event
       #   in type: :key, code: "c", modifiers: ["ctrl"]
       #     puts "Ctrl+C pressed"
+      #   in type: :key, kind: :media
+      #     puts "Media key pressed"
       #   end
       def deconstruct_keys(keys)
-        { type: :key, code: @code, modifiers: @modifiers }
+        { type: :key, code: @code, modifiers: @modifiers, kind: @kind }
       end
     end
   end

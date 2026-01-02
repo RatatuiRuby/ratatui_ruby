@@ -13,20 +13,51 @@ module RatatuiRuby
   class TestKeyLock < Minitest::Test
     include RatatuiRuby::TestHelper
 
-    LOCK_KEYS = %w[
-      caps_lock
-      scroll_lock
-      num_lock
-    ].freeze
-
-    def test_all_lock_keys_round_trip
+    def test_caps_lock
       with_test_terminal do
-        LOCK_KEYS.each do |key|
-          inject_keys(key)
-          event = RatatuiRuby.poll_event
-          assert_equal key, event.code,
-            "Lock key '#{key}' should round-trip through FFI"
-        end
+        inject_keys("caps_lock")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "caps_lock", event.code
+        refute event.text?
+        assert_equal "", event.char
+
+        assert event.caps_lock?
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
+      end
+    end
+
+    def test_num_lock
+      with_test_terminal do
+        inject_keys("num_lock")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "num_lock", event.code
+        refute event.text?
+        assert_equal "", event.char
+
+        assert event.num_lock?
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
+      end
+    end
+
+    def test_scroll_lock
+      with_test_terminal do
+        inject_keys("scroll_lock")
+        event = RatatuiRuby.poll_event
+
+        assert_equal "scroll_lock", event.code
+        refute event.text?
+        assert_equal "", event.char
+
+        assert event.scroll_lock?
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
       end
     end
   end
