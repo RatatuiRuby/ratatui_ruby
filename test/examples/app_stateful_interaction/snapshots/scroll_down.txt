@@ -1,0 +1,24 @@
+┌ Tables ──────────────▲┌ Orders Data ─────────────────────────────────────────▲
+│  Users               ▐│  Order ID         Status               Amount        ▐
+│> Orders              ▐│> AmazingCode8562  Pending              $180.94       ▐
+│  Products            ▐│  AmazingPromo2478 Completed            $110.45       ▐
+│  Invoices            ▐│  CoolDiscount1757 Pending              $415.69       ▐
+│  Audit Logs          ▐│  GreatPromotion34 Completed            $125.48       ▐
+│                      ▐│  StellarPromotion Pending              $344.66       ▐
+│                      ▐│  PremiumSale8250  Failed               $376.32       ║
+│                      ▐│  AmazingCode1061  Failed               $276.34       ║
+│                      ▐│  PremiumSavings36 Completed            $470.51       ║
+│                      ▐│  KillerDiscount89 Failed               $271.39       ║
+│                      ▐│  KillerDiscount45 Failed               $356.42       ║
+│                      ▐│  SweetSale1351    Pending              $383.6        ║
+│                      ▐│  SweetDeal1553    Completed            $233.93       ║
+│                      ▐│  GoodSavings8431  Pending              $15.97        ║
+│                      ▐│  CoolDiscount4394 Pending              $415.13       ║
+│                      ▐│  StellarSavings65 Pending              $236.38       ║
+│                      ▐│  SweetPrice8180   Pending              $18.87        ║
+│                      ▐│  SweetPrice4347   Pending              $21.28        ║
+│                      ║│  StellarCode9527  Pending              $421.81       ║
+│                      ║│  SweetSale1449    Pending              $421.06       ║
+│                      ║│  IncredibleSale90 Completed            $121.42       ║
+└──────────────────────▼└──────────────────────────────────────────────────────▼
+q: Quit | Tab/Arrows: Nav | Mouse: Click rows (Try it!)                         

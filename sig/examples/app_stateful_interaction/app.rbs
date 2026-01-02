@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+class AppStatefulInteraction
+  @tables: Array[String]
+  @data: Hash[String, Array[Array[String]]]
+  @list_state: RatatuiRuby::ListState
+  @table_state: RatatuiRuby::TableState
+  @active_pane: :list | :table
+  @tui: untyped
+  @style_active: RatatuiRuby::Style
+  @style_inactive: RatatuiRuby::Style
+  @style_highlight: RatatuiRuby::Style
+  @list_area: RatatuiRuby::Rect
+  @table_area: RatatuiRuby::Rect
+
+  # @public
+  def self.new: () -> AppStatefulInteraction
+
+  # @public
+  def run: () -> void
+
+  private
+
+  def render: () -> void
+  def render_list: (untyped frame, RatatuiRuby::Rect area) -> void
+  def render_table: (untyped frame, RatatuiRuby::Rect area) -> void
+  def handle_input: () -> (:quit | nil)
+  def scroll_active: (Integer delta) -> void
+  def handle_click: (Integer x, Integer y) -> void
+  def handle_list_click: (Integer mouse_y) -> void
+  def handle_table_click: (Integer mouse_y) -> void
+end

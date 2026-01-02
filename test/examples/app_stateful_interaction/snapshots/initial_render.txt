@@ -1,0 +1,24 @@
+┌ Tables ──────────────▲┌ Users Data ──────────────────────────────────────────▲
+│> Users               ▐│  Name             Email                Role          ▐
+│  Orders              ▐│> Brittany Klocko  lyndon_rempel@schumm Viewer        ▐
+│  Products            ▐│  Dan Kutch        chauncey.welch@russe Admin         ▐
+│  Invoices            ▐│  Ms. Meryl Herman malcom.reynolds@weim Viewer        ▐
+│  Audit Logs          ▐│  Rupert Shanahan  carey_keebler@robert Viewer        ▐
+│                      ▐│  Barbar Sanford   berry@green.example  Admin         ▐
+│                      ▐│  Shannon Kuhn     hal_stoltenberg@durg Admin         ║
+│                      ▐│  Marguerite Littl grace.hoeger@langosh Viewer        ║
+│                      ▐│  Doria Balistreri roscoe_graham@welch- Editor        ║
+│                      ▐│  Joey Frami CPA   christia@hayes-dougl Viewer        ║
+│                      ▐│  Miss Evette Mull kristel_abernathy@re Viewer        ║
+│                      ▐│  Ms. Jan Koepp    clark@johnston-ziema Viewer        ║
+│                      ▐│  Rep. Gaston Ritc raymundo@tillman.tes Viewer        ║
+│                      ▐│  Valrie Murray I  sonja.williamson@aue Admin         ║
+│                      ▐│  Tyree Heaney     dana_kshlerin@durgan Viewer        ║
+│                      ▐│  Mervin Hegmann J fae@ziemann.test     Editor        ║
+│                      ▐│  Caron Walter     marlon@jaskolski.tes Admin         ║
+│                      ▐│  Hector Durgan    pamella.jacobi@leusc Editor        ║
+│                      ║│  Ms. Cary Paucek  nan.glover@mayert-er Editor        ║
+│                      ║│  Sen. Maud Becker loan@stamm-gutkowski Editor        ║
+│                      ║│  Miles Monahan    rachele_gleason@reil Editor        ║
+└──────────────────────▼└──────────────────────────────────────────────────────▼
+q: Quit | Tab/Arrows: Nav | Mouse: Click rows (Try it!)                         

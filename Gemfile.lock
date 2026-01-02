@@ -58,6 +58,8 @@ GEM
       zeitwerk (~> 2.6)
     erb (6.0.1)
     erubi (1.13.1)
+    faker (3.5.3)
+      i18n (>= 1.8.11, < 2)
     flay (2.13.3)
       erubi (~> 1.10)
       path_expander (~> 1.0)
@@ -67,6 +69,8 @@ GEM
       path_expander (~> 1.0)
       ruby_parser (~> 3.1, > 3.1.0)
       sexp_processor (~> 4.8)
+    i18n (1.14.8)
+      concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     inch (0.8.0)
       pry
@@ -198,6 +202,7 @@ PLATFORMS
 
 DEPENDENCIES
   chroma
+  faker (~> 3.5.3)
   flog (= 4.8.0)
   inch (~> 0.4)
   irb
@@ -232,8 +237,10 @@ CHECKSUMS
   dry-types (1.8.3) sha256=b5d97a45e0ed273131c0c3d5bc9f5633c2d1242e092ee47401ce7d5eab65c1bc
   erb (6.0.1) sha256=28ecdd99c5472aebd5674d6061e3c6b0a45c049578b071e5a52c2a7f13c197e5
   erubi (1.13.1) sha256=a082103b0885dbc5ecf1172fede897f9ebdb745a4b97a5e8dc63953db1ee4ad9
+  faker (3.5.3) sha256=b961482dc0bb15ccb9a98ea7878b925669e9ae8f5e59b607da540b768137d765
   flay (2.13.3) sha256=664cea795a61a8bff71b9a3e4d5fca50f70308c99f6be93b522fc75ff25dd289
   flog (4.8.0) sha256=e04d0fc334175d00d765ddfb7b631ae3df39ed7f80f28aad8f72b996927fa2e4
+  i18n (1.14.8) sha256=285778639134865c5e0f6269e0b818256017e8cde89993fdfcbfb64d088824a5
   ice_nine (0.11.2) sha256=5d506a7d2723d5592dc121b9928e4931742730131f22a1a37649df1c1e2e63db
   inch (0.8.0) sha256=1b3a0f819814c3d2fe8407a7139798e428f3290d08b5c2729aed047bd64ad7e9
   io-console (0.8.2) sha256=d6e3ae7a7cc7574f4b8893b4fca2162e57a825b223a177b7afa236c5ef9814cc

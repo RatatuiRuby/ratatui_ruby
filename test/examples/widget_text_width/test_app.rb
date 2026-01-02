@@ -7,7 +7,7 @@ $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 require "ratatui_ruby/test_helper"
 require "minitest/autorun"
-require_relative "app"
+require_relative "../../../examples/widget_text_width/app"
 
 class TestWidgetTextWidth < Minitest::Test
   include RatatuiRuby::TestHelper
