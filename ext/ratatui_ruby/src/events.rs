@@ -28,25 +28,116 @@ pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), 
     Ok(())
 }
 
+/// Parses a `snake_case` string to `MediaKeyCode`.
+fn parse_media_key(s: &str) -> Option<ratatui::crossterm::event::MediaKeyCode> {
+    use ratatui::crossterm::event::MediaKeyCode;
+    match s {
+        "play" => Some(MediaKeyCode::Play),
+        "media_pause" => Some(MediaKeyCode::Pause),
+        "play_pause" => Some(MediaKeyCode::PlayPause),
+        "reverse" => Some(MediaKeyCode::Reverse),
+        "stop" => Some(MediaKeyCode::Stop),
+        "fast_forward" => Some(MediaKeyCode::FastForward),
+        "rewind" => Some(MediaKeyCode::Rewind),
+        "track_next" => Some(MediaKeyCode::TrackNext),
+        "track_previous" => Some(MediaKeyCode::TrackPrevious),
+        "record" => Some(MediaKeyCode::Record),
+        "lower_volume" => Some(MediaKeyCode::LowerVolume),
+        "raise_volume" => Some(MediaKeyCode::RaiseVolume),
+        "mute_volume" => Some(MediaKeyCode::MuteVolume),
+        _ => None,
+    }
+}
+
+/// Parses a `snake_case` string to `ModifierKeyCode`.
+fn parse_modifier_key(s: &str) -> Option<ratatui::crossterm::event::ModifierKeyCode> {
+    use ratatui::crossterm::event::ModifierKeyCode;
+    match s {
+        "left_shift" => Some(ModifierKeyCode::LeftShift),
+        "left_control" => Some(ModifierKeyCode::LeftControl),
+        "left_alt" => Some(ModifierKeyCode::LeftAlt),
+        "left_super" => Some(ModifierKeyCode::LeftSuper),
+        "left_hyper" => Some(ModifierKeyCode::LeftHyper),
+        "left_meta" => Some(ModifierKeyCode::LeftMeta),
+        "right_shift" => Some(ModifierKeyCode::RightShift),
+        "right_control" => Some(ModifierKeyCode::RightControl),
+        "right_alt" => Some(ModifierKeyCode::RightAlt),
+        "right_super" => Some(ModifierKeyCode::RightSuper),
+        "right_hyper" => Some(ModifierKeyCode::RightHyper),
+        "right_meta" => Some(ModifierKeyCode::RightMeta),
+        "iso_level3_shift" => Some(ModifierKeyCode::IsoLevel3Shift),
+        "iso_level5_shift" => Some(ModifierKeyCode::IsoLevel5Shift),
+        _ => None,
+    }
+}
+
 fn parse_key_event(
     data: magnus::RHash,
     ruby: &magnus::Ruby,
 ) -> Result<ratatui::crossterm::event::Event, Error> {
+    use ratatui::crossterm::event::KeyCode;
+
     let code_val: Value = data
         .get(ruby.to_symbol("code"))
         .ok_or_else(|| Error::new(ruby.exception_arg_error(), "Missing 'code' in key event"))?;
     let code_str: String = String::try_convert(code_val)?;
     let code = match code_str.as_str() {
-        "up" => ratatui::crossterm::event::KeyCode::Up,
-        "down" => ratatui::crossterm::event::KeyCode::Down,
-        "left" => ratatui::crossterm::event::KeyCode::Left,
-        "right" => ratatui::crossterm::event::KeyCode::Right,
-        "enter" => ratatui::crossterm::event::KeyCode::Enter,
-        "esc" => ratatui::crossterm::event::KeyCode::Esc,
-        "backspace" => ratatui::crossterm::event::KeyCode::Backspace,
-        "tab" => ratatui::crossterm::event::KeyCode::Tab,
-        c if c.len() == 1 => ratatui::crossterm::event::KeyCode::Char(c.chars().next().unwrap()),
-        _ => ratatui::crossterm::event::KeyCode::Null,
+        // Arrow keys
+        "up" => KeyCode::Up,
+        "down" => KeyCode::Down,
+        "left" => KeyCode::Left,
+        "right" => KeyCode::Right,
+        // Common keys
+        "enter" => KeyCode::Enter,
+        "esc" => KeyCode::Esc,
+        "backspace" => KeyCode::Backspace,
+        "tab" => KeyCode::Tab,
+        "back_tab" => KeyCode::BackTab,
+        // Navigation keys
+        "home" => KeyCode::Home,
+        "end" => KeyCode::End,
+        "page_up" => KeyCode::PageUp,
+        "page_down" => KeyCode::PageDown,
+        "insert" => KeyCode::Insert,
+        "delete" => KeyCode::Delete,
+        // Lock keys
+        "caps_lock" => KeyCode::CapsLock,
+        "scroll_lock" => KeyCode::ScrollLock,
+        "num_lock" => KeyCode::NumLock,
+        // System keys
+        "print_screen" => KeyCode::PrintScreen,
+        "pause" => KeyCode::Pause,
+        "menu" => KeyCode::Menu,
+        "keypad_begin" => KeyCode::KeypadBegin,
+        "null" => KeyCode::Null,
+        // Dynamic parsing for media, modifiers, function keys, and characters
+        s => {
+            // Media keys (check first - "fast_forward" starts with 'f' but isn't F-key)
+            if let Some(m) = parse_media_key(s) {
+                KeyCode::Media(m)
+            }
+            // Modifier keys
+            else if let Some(m) = parse_modifier_key(s) {
+                KeyCode::Modifier(m)
+            }
+            // Function keys: f1, f2, ..., f12, etc.
+            else if let Some(num_str) = s.strip_prefix('f') {
+                if let Ok(n) = num_str.parse::<u8>() {
+                    KeyCode::F(n)
+                } else {
+                    // "f" alone or invalid suffix - treat as character
+                    KeyCode::Char(s.chars().next().unwrap_or('\0'))
+                }
+            }
+            // Single character
+            else if s.len() == 1 {
+                KeyCode::Char(s.chars().next().unwrap())
+            }
+            // Unknown - default to Null
+            else {
+                KeyCode::Null
+            }
+        }
     };
 
     let mut modifiers = ratatui::crossterm::event::KeyModifiers::empty();
@@ -235,7 +326,50 @@ fn handle_event(event: ratatui::crossterm::event::Event) -> Result<Value, Error>
     }
 }
 
+/// Converts `MediaKeyCode` to `snake_case` string.
+fn media_key_to_string(m: ratatui::crossterm::event::MediaKeyCode) -> &'static str {
+    use ratatui::crossterm::event::MediaKeyCode;
+    match m {
+        MediaKeyCode::Play => "play",
+        MediaKeyCode::Pause => "media_pause", // Disambiguate from KeyCode::Pause
+        MediaKeyCode::PlayPause => "play_pause",
+        MediaKeyCode::Reverse => "reverse",
+        MediaKeyCode::Stop => "stop",
+        MediaKeyCode::FastForward => "fast_forward",
+        MediaKeyCode::Rewind => "rewind",
+        MediaKeyCode::TrackNext => "track_next",
+        MediaKeyCode::TrackPrevious => "track_previous",
+        MediaKeyCode::Record => "record",
+        MediaKeyCode::LowerVolume => "lower_volume",
+        MediaKeyCode::RaiseVolume => "raise_volume",
+        MediaKeyCode::MuteVolume => "mute_volume",
+    }
+}
+
+/// Converts `ModifierKeyCode` to `snake_case` string.
+fn modifier_key_to_string(m: ratatui::crossterm::event::ModifierKeyCode) -> &'static str {
+    use ratatui::crossterm::event::ModifierKeyCode;
+    match m {
+        ModifierKeyCode::LeftShift => "left_shift",
+        ModifierKeyCode::LeftControl => "left_control",
+        ModifierKeyCode::LeftAlt => "left_alt",
+        ModifierKeyCode::LeftSuper => "left_super",
+        ModifierKeyCode::LeftHyper => "left_hyper",
+        ModifierKeyCode::LeftMeta => "left_meta",
+        ModifierKeyCode::RightShift => "right_shift",
+        ModifierKeyCode::RightControl => "right_control",
+        ModifierKeyCode::RightAlt => "right_alt",
+        ModifierKeyCode::RightSuper => "right_super",
+        ModifierKeyCode::RightHyper => "right_hyper",
+        ModifierKeyCode::RightMeta => "right_meta",
+        ModifierKeyCode::IsoLevel3Shift => "iso_level3_shift",
+        ModifierKeyCode::IsoLevel5Shift => "iso_level5_shift",
+    }
+}
+
 fn handle_key_event(key: ratatui::crossterm::event::KeyEvent) -> Result<Value, Error> {
+    use ratatui::crossterm::event::KeyCode;
+
     let ruby = magnus::Ruby::get().unwrap();
     if key.kind != ratatui::crossterm::event::KeyEventKind::Press {
         return Ok(ruby.qnil().into_value_with(&ruby));
@@ -243,17 +377,43 @@ fn handle_key_event(key: ratatui::crossterm::event::KeyEvent) -> Result<Value, E
     let hash = ruby.hash_new();
     hash.aset(ruby.to_symbol("type"), ruby.to_symbol("key"))?;
     let code = match key.code {
-        ratatui::crossterm::event::KeyCode::Char(c) => c.to_string(),
-        ratatui::crossterm::event::KeyCode::Up => "up".to_string(),
-        ratatui::crossterm::event::KeyCode::Down => "down".to_string(),
-        ratatui::crossterm::event::KeyCode::Left => "left".to_string(),
-        ratatui::crossterm::event::KeyCode::Right => "right".to_string(),
-        ratatui::crossterm::event::KeyCode::Enter => "enter".to_string(),
-        ratatui::crossterm::event::KeyCode::Esc => "esc".to_string(),
-        ratatui::crossterm::event::KeyCode::Backspace => "backspace".to_string(),
-        ratatui::crossterm::event::KeyCode::Tab => "tab".to_string(),
-        _ => "unknown".to_string(),
+        // Characters
+        KeyCode::Char(c) => c.to_string(),
+        // Arrow keys
+        KeyCode::Up => "up".to_string(),
+        KeyCode::Down => "down".to_string(),
+        KeyCode::Left => "left".to_string(),
+        KeyCode::Right => "right".to_string(),
+        // Common keys
+        KeyCode::Enter => "enter".to_string(),
+        KeyCode::Esc => "esc".to_string(),
+        KeyCode::Backspace => "backspace".to_string(),
+        KeyCode::Tab => "tab".to_string(),
+        KeyCode::BackTab => "back_tab".to_string(),
+        // Navigation keys
+        KeyCode::Home => "home".to_string(),
+        KeyCode::End => "end".to_string(),
+        KeyCode::PageUp => "page_up".to_string(),
+        KeyCode::PageDown => "page_down".to_string(),
+        KeyCode::Insert => "insert".to_string(),
+        KeyCode::Delete => "delete".to_string(),
+        // Function keys
+        KeyCode::F(n) => format!("f{n}"),
+        // Lock keys
+        KeyCode::CapsLock => "caps_lock".to_string(),
+        KeyCode::ScrollLock => "scroll_lock".to_string(),
+        KeyCode::NumLock => "num_lock".to_string(),
+        // System keys
+        KeyCode::PrintScreen => "print_screen".to_string(),
+        KeyCode::Pause => "pause".to_string(),
+        KeyCode::Menu => "menu".to_string(),
+        KeyCode::KeypadBegin => "keypad_begin".to_string(),
+        KeyCode::Null => "null".to_string(),
+        // Compound variants
+        KeyCode::Media(m) => media_key_to_string(m).to_string(),
+        KeyCode::Modifier(m) => modifier_key_to_string(m).to_string(),
     };
+
     hash.aset(ruby.to_symbol("code"), code)?;
     let mut modifiers = Vec::new();
     if key
