@@ -11,19 +11,12 @@ Audit of ratatui_ruby `examples/` directory for v1.0.0 readiness.
 
 ## [P0: Critical (Must Fix Before v1.0.0) ](./examples_audit/p0_critical.md)
 
-1. **[Fix developing_examples.md](./examples_audit/p0_critical.md#1-fix-developingexamplesmd-blocking-documentation)**
-   - What's wrong with the current documentation
-   - Fix 1: Update "Example Structure" Section
-   - Fix 2: Update "Testing Examples" Section
-   - Fix 3: Add Directory Structure Documentation
-   - Fix 4: Add README Requirement
-   - Fix 5: Document Snapshot Testing as Standard
 
-2. **[Add README.md to 34 Examples](./examples_audit/p0_critical.md#2-add-readmemd-to-34-examples)**
+1. **[Add README.md to 34 Examples](./examples_audit/p0_critical.md#1-add-readmemd-to-34-examples)**
    - Template for widget examples
    - Reference comprehensive examples
 
-3. **[Migrate Example Tests to Snapshot API](./examples_audit/p0_critical.md#3-migrate-example-tests-to-snapshot-api)**
+2. **[Migrate Example Tests to Snapshot API](./examples_audit/p0_critical.md#2-migrate-example-tests-to-snapshot-api)**
    - Pattern change (old vs new)
    - Why snapshots are better
    - Example update pattern
