@@ -151,7 +151,6 @@ sig/examples/
        # Ignore other events
      end
    end
-   ```
 
 5. **Use keyboard keys to cycle through widget attributes.** Users should be able to interactively explore all widget options. Common patterns:
     - Arrow keys: Navigate or adjust values

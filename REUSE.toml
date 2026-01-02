@@ -22,16 +22,6 @@ SPDX-FileCopyrightText = "2025 Kerrick Long <me@kerricklong.com>"
 SPDX-License-Identifier = "AGPL-3.0-or-later"
 
 [[annotations]]
-path = 'test/snapshots/*.txt'
-SPDX-FileCopyrightText = "2025 Kerrick Long <me@kerricklong.com>"
-SPDX-License-Identifier = "AGPL-3.0-or-later"
-
-[[annotations]]
-path = 'examples/app_all_events/test/snapshots/*.txt'
-SPDX-FileCopyrightText = "2025 Kerrick Long <me@kerricklong.com>"
-SPDX-License-Identifier = "AGPL-3.0-or-later"
-
-[[annotations]]
-path = 'test/examples/app_all_events/snapshots/*.txt'
+path = '**/snapshots/*.txt'
 SPDX-FileCopyrightText = "2025 Kerrick Long <me@kerricklong.com>"
 SPDX-License-Identifier = "AGPL-3.0-or-later"
