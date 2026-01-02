@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use magnus::value::ReprValue;
-use magnus::Error;
+use magnus::{Error, Module};
 use ratatui::{
     backend::{CrosstermBackend, TestBackend},
     Terminal,
@@ -21,28 +21,32 @@ pub fn init_terminal(focus_events: bool, bracketed_paste: bool) -> Result<(), Er
     let ruby = magnus::Ruby::get().unwrap();
     let mut term_lock = TERMINAL.lock().unwrap();
     if term_lock.is_none() {
+        let module = ruby.define_module("RatatuiRuby")?;
+        let error_base = module.const_get::<_, magnus::RClass>("Error")?;
+        let error_class = error_base.const_get("Terminal")?;
+
         ratatui::crossterm::terminal::enable_raw_mode()
-            .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
+            .map_err(|e| Error::new(error_class, e.to_string()))?;
         let mut stdout = io::stdout();
         ratatui::crossterm::execute!(
             stdout,
             ratatui::crossterm::terminal::EnterAlternateScreen,
             ratatui::crossterm::event::EnableMouseCapture
         )
-        .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
+        .map_err(|e| Error::new(error_class, e.to_string()))?;
 
         if focus_events {
             ratatui::crossterm::execute!(stdout, ratatui::crossterm::event::EnableFocusChange)
-                .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
+                .map_err(|e| Error::new(error_class, e.to_string()))?;
         }
         if bracketed_paste {
             ratatui::crossterm::execute!(stdout, ratatui::crossterm::event::EnableBracketedPaste)
-                .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
+                .map_err(|e| Error::new(error_class, e.to_string()))?;
         }
 
         let backend = CrosstermBackend::new(stdout);
-        let terminal = Terminal::new(backend)
-            .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
+        let terminal =
+            Terminal::new(backend).map_err(|e| Error::new(error_class, e.to_string()))?;
         *term_lock = Some(TerminalWrapper::Crossterm(terminal));
     }
     Ok(())
@@ -52,8 +56,10 @@ pub fn init_test_terminal(width: u16, height: u16) -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let mut term_lock = TERMINAL.lock().unwrap();
     let backend = TestBackend::new(width, height);
-    let terminal = Terminal::new(backend)
-        .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
+    let module = ruby.define_module("RatatuiRuby")?;
+    let error_base = module.const_get::<_, magnus::RClass>("Error")?;
+    let error_class = error_base.const_get("Terminal")?;
+    let terminal = Terminal::new(backend).map_err(|e| Error::new(error_class, e.to_string()))?;
     *term_lock = Some(TerminalWrapper::Test(terminal));
     Ok(())
 }
@@ -93,8 +99,11 @@ pub fn get_buffer_content() -> Result<String, Error> {
         }
         Ok(result)
     } else {
+        let module = ruby.define_module("RatatuiRuby")?;
+        let error_base = module.const_get::<_, magnus::RClass>("Error")?;
+        let error_class = error_base.const_get("Terminal")?;
         Err(Error::new(
-            ruby.exception_runtime_error(),
+            error_class,
             "Terminal is not initialized as TestBackend",
         ))
     }
@@ -104,13 +113,19 @@ pub fn get_cursor_position() -> Result<Option<(u16, u16)>, Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let mut term_lock = TERMINAL.lock().unwrap();
     if let Some(TerminalWrapper::Test(terminal)) = term_lock.as_mut() {
+        let module = ruby.define_module("RatatuiRuby")?;
+        let error_base = module.const_get::<_, magnus::RClass>("Error")?;
+        let error_class = error_base.const_get("Terminal")?;
         let pos = terminal
             .get_cursor_position()
-            .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
+            .map_err(|e| Error::new(error_class, e.to_string()))?;
         Ok(Some(pos.into()))
     } else {
+        let module = ruby.define_module("RatatuiRuby")?;
+        let error_base = module.const_get::<_, magnus::RClass>("Error")?;
+        let error_class = error_base.const_get("Terminal")?;
         Err(Error::new(
-            ruby.exception_runtime_error(),
+            error_class,
             "Terminal is not initialized as TestBackend",
         ))
     }
@@ -125,7 +140,10 @@ pub fn resize_terminal(width: u16, height: u16) -> Result<(), Error> {
             TerminalWrapper::Test(terminal) => {
                 terminal.backend_mut().resize(width, height);
                 if let Err(e) = terminal.resize(ratatui::layout::Rect::new(0, 0, width, height)) {
-                    return Err(Error::new(ruby.exception_runtime_error(), e.to_string()));
+                    let module = ruby.define_module("RatatuiRuby")?;
+                    let error_base = module.const_get::<_, magnus::RClass>("Error")?;
+                    let error_class = error_base.const_get("Terminal")?;
+                    return Err(Error::new(error_class, e.to_string()));
                 }
             }
         }
@@ -148,14 +166,20 @@ pub fn get_cell_at(x: u16, y: u16) -> Result<magnus::RHash, Error> {
             hash.aset("modifiers", modifiers_to_value(cell.modifier))?;
             Ok(hash)
         } else {
+            let module = ruby.define_module("RatatuiRuby")?;
+            let error_base = module.const_get::<_, magnus::RClass>("Error")?;
+            let error_class = error_base.const_get("Terminal")?;
             Err(Error::new(
-                ruby.exception_runtime_error(),
+                error_class,
                 format!("Coordinates ({x}, {y}) out of bounds"),
             ))
         }
     } else {
+        let module = ruby.define_module("RatatuiRuby")?;
+        let error_base = module.const_get::<_, magnus::RClass>("Error")?;
+        let error_class = error_base.const_get("Terminal")?;
         Err(Error::new(
-            ruby.exception_runtime_error(),
+            error_class,
             "Terminal is not initialized as TestBackend",
         ))
     }

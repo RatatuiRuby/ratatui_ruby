@@ -94,8 +94,12 @@ impl RubyFrame {
         if self.active.load(Ordering::Relaxed) {
             Ok(())
         } else {
+            let ruby = magnus::Ruby::get().unwrap();
+            let module = ruby.define_module("RatatuiRuby")?;
+            let error_base = module.const_get::<_, magnus::RClass>("Error")?;
+            let error_class = error_base.const_get("Safety")?;
             Err(Error::new(
-                magnus::Ruby::get().unwrap().exception_runtime_error(),
+                error_class,
                 "Frame cannot be used outside of the draw block",
             ))
         }

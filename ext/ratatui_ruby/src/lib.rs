@@ -90,12 +90,18 @@ fn draw(args: &[Value]) -> Result<(), Error> {
     if let Some(wrapper) = term_lock.as_mut() {
         match wrapper {
             terminal::TerminalWrapper::Crossterm(term) => {
+                let module = ruby.define_module("RatatuiRuby")?;
+                let error_base = module.const_get::<_, magnus::RClass>("Error")?;
+                let error_class = error_base.const_get("Terminal")?;
                 term.draw(&mut draw_callback)
-                    .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
+                    .map_err(|e| Error::new(error_class, e.to_string()))?;
             }
             terminal::TerminalWrapper::Test(term) => {
+                let module = ruby.define_module("RatatuiRuby")?;
+                let error_base = module.const_get::<_, magnus::RClass>("Error")?;
+                let error_class = error_base.const_get("Terminal")?;
                 term.draw(&mut draw_callback)
-                    .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
+                    .map_err(|e| Error::new(error_class, e.to_string()))?;
             }
         }
     } else {

@@ -21,9 +21,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- **Semantic Exceptions (Breaking)**: Replaced generic `RuntimeError` with `RatatuiRuby::Error::Terminal` for backend/terminal failures and `RatatuiRuby::Error::Safety` for API contract violations (like using `Frame` outside `draw`). This allows finer-grained error handling but breaks code explicitly rescuing `RuntimeError`. `ArgumentError` works as before.
 ### Fixed
 
-- **Frame Safety**: Calling methods on a `Frame` stored outside of a `draw` block now correctly raises a `RuntimeError` instead of causing undefined behavior or crashes. This ensures memory safety by preventing use-after-free scenarios with the underlying Rust frame.
+- **Frame Safety**: Calling methods on a `Frame` stored outside of a `draw` block now correctly raises a `RatatuiRuby::Error::Safety` (subclass of `RatatuiRuby::Error`) instead instead of causing undefined behavior or crashes. This ensures memory safety by preventing use-after-free scenarios with the underlying Rust frame.
 
 ### Removed
 

@@ -52,7 +52,13 @@ end
 # Use `RatatuiRuby.run` to start your application.
 module RatatuiRuby
   # Generic error class for RatatuiRuby.
-  class Error < StandardError; end
+  class Error < StandardError
+    # Raised when a terminal operation fails (e.g., I/O error, backend failure).
+    class Terminal < Error; end
+
+    # Raised when an API safety contract is violated (e.g., accessing a Frame outside its valid scope).
+    class Safety < Error; end
+  end
 
   ##
   # Initializes the terminal for TUI mode.

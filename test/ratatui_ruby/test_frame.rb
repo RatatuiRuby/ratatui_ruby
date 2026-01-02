@@ -148,4 +148,22 @@ class TestFrame < Minitest::Test
       assert_nil result
     end
   end
+
+  def test_frame_works_when_passed_to_helper_method
+    # Passing frame to helper methods during the draw block is valid.
+    with_test_terminal(20, 5) do
+      RatatuiRuby.draw do |frame|
+        # Simulate passing to a helper method
+        result = render_paragraph_helper(frame, "Hello")
+        assert_nil result # render_widget returns nil
+      end
+
+      assert_includes buffer_content.first, "Hello"
+    end
+  end
+
+  private def render_paragraph_helper(frame, text)
+    paragraph = RatatuiRuby::Paragraph.new(text:)
+    frame.render_widget(paragraph, frame.area)
+  end
 end
