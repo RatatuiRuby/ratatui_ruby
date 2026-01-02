@@ -16,32 +16,27 @@ require_relative "../view"
 class View::Log
   # Renders the event log widget to the given area.
   #
-  # [state] ViewState containing event data and styles.
+  # [model] AppModel containing event data.
   # [tui] RatatuiRuby instance.
   # [frame] RatatuiRuby::Frame being rendered.
   # [area] RatatuiRuby::Rect defining the widget's bounds.
-  def call(state, tui, frame, area)
+  def call(model, tui, frame, area)
+    dimmed_style = tui.style(fg: :dark_gray)
+    border_color = model.focused ? :green : :gray
+
     visible_entries_count = (area.height - 2) / 2
-    display_entries = state.events.visible(visible_entries_count)
+    display_entries = model.visible(visible_entries_count)
 
     log_lines = []
-    if state.events.empty?
-      log_lines << tui.text_line(spans: [tui.text_span(content: "No events yet...", style: state.dimmed_style)])
+    if model.empty?
+      log_lines << tui.text_line(spans: [tui.text_span(content: "No events yet...", style: dimmed_style)])
     else
       display_entries.each do |entry|
         entry_style = tui.style(fg: entry.color)
-
-        # Split description into lines if it's too long, or just let it wrap conceptually (though paragraph wraps by character by default)
-        # Using simple inspect output as requested.
         description = entry.description
 
-        # We want to display it over potentially multiple lines if needed, but the original code did manual 2-line formatting.
-        # Let's try to just dump the inspect string. If it's very long, it might be cut off.
-        # But the User asked specifically to use inspect.
-
         log_lines << tui.text_line(spans: [tui.text_span(content: description, style: entry_style)])
-        log_lines << tui.text_line(spans: [tui.text_span(content: "", style: entry_style)]) # Spacer line to match previous 2-line rhythm? Or just compact?
-        # Previous view had 2 lines per entry. Let's keep a spacer to make it readable.
+        log_lines << tui.text_line(spans: [tui.text_span(content: "", style: entry_style)])
       end
     end
 
@@ -52,7 +47,7 @@ class View::Log
       block: tui.block(
         title: "Event Log",
         borders: [:all],
-        border_style: tui.style(fg: state.border_color)
+        border_style: tui.style(fg: border_color)
       )
     )
     frame.render_widget(widget, area)

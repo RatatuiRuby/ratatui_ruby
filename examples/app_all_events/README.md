@@ -5,37 +5,54 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # App All Events Example
 
-This example application captures and visualizes every event supported by `ratatui_ruby`. It serves as a comprehensive reference for event handling and a demonstration of a clean, scalable architectural pattern.
+This example application captures and visualizes every event supported by `ratatui_ruby`. It serves as a comprehensive reference for event handling and a demonstration of the Proto-TEA architectural pattern.
 
-## Architecture: MVVM (Model-View-ViewModel)
+## Architecture: Proto-TEA (Model-View-Update)
 
-This application demonstrates the **Model-View-ViewModel (MVVM)** pattern, modified for the immediate-mode nature of terminal UIs. This separation of concerns ensures that the UI logic is completely decoupled from the business logic, making the application easier to test and maintain.
+This application demonstrates **unidirectional data flow** inspired by The Elm Architecture. This separation ensures that state management is predictable and easy to test.
 
-### 1. Model (`model/`)
-The **Model** manages the application's domain data and logic. It knows nothing about the UI.
+### 1. Model (`model/app_model.rb`)
+A single immutable `Data.define` object holding **all** application state:
+*   Event log entries
+*   Focus state
+*   Window size
+*   Highlight timestamps
+*   Color cycle index
 
-*   **`Events` (`model/events.rb`)**: The core store. It records incoming events, maintains statistics (counts), and handles business logic like "highlight this event type for 300ms."
-*   **`EventEntry` (`model/event_entry.rb`)**: A value object representing a single recorded event.
+State changes use `.with(...)` to return a new Model instance.
 
-### 2. View State (ViewModel) (`view_state.rb`)
-The **View State** (comparable to a ViewModel or Presenter) is an immutable data structure built specifically for the View.
+### 2. Msg (`model/msg.rb`)
+Semantic value objects that decouple raw terminal events from business logic:
+*   `Msg::Input` — keyboard, mouse, or paste events
+*   `Msg::Resize` — terminal size changes
+*   `Msg::Focus` — focus gained/lost
+*   `Msg::Quit` — exit signal
 
-*   **`ViewState`**: It acts as a bridge. In every render loop, the application builds a fresh `ViewState` object, calculating derived data (like styles, active flags, and formatted strings) from the raw Model data.
-*   **Why?**: This prevents the View from having to contain logic. The View doesn't ask "is the app focused so I should use green?"; it just asks `state.border_color`.
+### 3. Update (`update.rb`)
+A **pure function** that computes the next state:
 
-### 3. View (`view/`)
-The **View** is responsible **only** for rendering. It receives the `ViewState` and draws to the screen.
+```ruby
+Update.call(msg, model) -> Model
+```
 
-*   **`View::App` (`view/app_view.rb`)**: The root view. It handles the high-level layout (splitting the screen into areas).
-*   **Sub-views**: `Counts`, `Live`, `Log`, `Controls`. Each is a small, focused component that renders a specific part of the screen based on the data in `ViewState`.
+All logic previously in `Events.record` now lives here. The function never mutates, never draws, never performs IO.
 
-### 4. Controller/App (`app.rb`)
-The **`AppAllEvents`** class ties it all together. It owns the main loop:
+### 4. View (`view/`)
+Pure rendering logic. Views accept the immutable `AppModel` and draw to the screen.
+*   **`View::App`**: Root view handling high-level layout
+*   **Sub-views**: `Counts`, `Live`, `Log`, `Controls`
 
-1.  **Poll**: Waits for an event from the terminal.
-2.  **Update**: Passes the event to the **Model** (`@events.record`).
-3.  **Build State**: Creates a new **ViewState** from the current Model and global state.
-4.  **Render**: Passes the **ViewState** to the **View** to draw the frame.
+### 5. Runtime (`app.rb`)
+The MVU loop:
+
+```ruby
+loop do
+  tui.draw { |f| view.call(model, tui, f, f.area) }
+  msg = map_event_to_msg(tui.poll_event, model)
+  break if msg.is_a?(Msg::Quit)
+  model = Update.call(msg, model)
+end
+```
 
 ## Library Features Showcased
 
@@ -57,10 +74,10 @@ Reading this code will teach you how to:
 If you are building an app and your logic isn't catching `Ctrl+Left`, run this app and press the keys. You will see exactly how `ratatui_ruby` parses that input (e.g., is it a `Key` event? What are the modifiers?).
 
 ### "How do I structure a real app?"
-Hello World examples are great, but they don't scale. This example shows how to structure an application that can grow. By simulating a "dashboard" with multiple independent widgets updating in real-time, it solves the problem of "how do I pass data around without global variables?"
+Hello World examples are great, but they don't scale. This example shows how to structure an application that can grow. By using immutable state and pure functions, it solves the problem of "where does my state live and how does it change?"
 
-### "How do I implement an event loop?"
-It provides a robust reference implementation of the standard `loop { draw; handle_input }` cycle, including the correct way to handle quit signals.
+### "How do I test my business logic?"
+The `Update` function is pure. You can test it by constructing a `Msg`, calling `Update.call(msg, model)`, and asserting on the returned `Model`. No mocking required.
 
 ## Comparison: Choosing an Architecture
 
@@ -68,14 +85,14 @@ Complex applications require structured state habits. `AppAllEvents` and the [Co
 
 ### The Dashboard Approach (AppAllEvents)
 
-Dashboards display data. They rarely require complex mouse interaction. Strict MVVM works best here. The View is a pure function. It accepts a `ViewState` and draws it. It ignores input. This simplifies testing.
+Dashboards display data. They rarely require complex mouse interaction. Proto-TEA works best here. State is immutable. Logic is pure. Updates are predictable. This simplifies testing.
 
 Use this pattern for logs, monitors, and data viewers.
 
 ### The Tool Approach (Color Picker)
 
-Tools require interaction. Users click buttons and drag sliders. The Controller needs to know where components exist on screen. MVVM hides this layout data.
+Tools require interaction. Users click buttons and drag sliders. The Controller needs to know where components exist on screen.
 
-The Color Picker uses a "Scene" pattern. The View exposes layout rectangles. The Controller uses these rectangles to handle mouse clicks.
+The Color Picker uses a "Scene-Orchestrated" pattern. The Scene calculates layout and exposes cached rectangles for hit testing.
 
 Use this pattern for forms, editors, and mouse-driven tools.

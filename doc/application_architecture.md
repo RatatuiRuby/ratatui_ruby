@@ -154,16 +154,17 @@ Simple scripts work well with valid linear code. Complex apps need structure.
 
 We provide these reference architectures to inspire you:
 
-### MVVM (Model-View-ViewModel)
+### Proto-TEA (Model-View-Update)
 
 **Source:** [examples/app_all_events](../examples/app_all_events/README.md)
 
-This pattern strictly separates concerns:
-*   **Model:** Pure business logic. It handles data and events.
-*   **View State (ViewModel):** An immutable data structure built fresh every frame. It calculates logic-dependent properties (like `border_color`) so the View doesn't have to.
-*   **View:** Pure rendering logic. It takes the View State and draws it.
+This pattern implements unidirectional data flow inspired by The Elm Architecture:
+*   **Model:** A single immutable `Data.define` object holding all application state.
+*   **Msg:** Semantic value objects that decouple raw events from business logic.
+*   **Update:** A pure function that computes the next state: `Update.call(msg, model) -> Model`.
+*   **View:** Pure rendering logic that accepts the immutable Model.
 
-Use this when your app has complex state rules that clutter your rendering code.
+Use this when you want predictable state management and easy-to-test logic.
 
 ### Scene-Orchestrated MVC
 

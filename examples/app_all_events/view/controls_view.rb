@@ -17,25 +17,27 @@ require_relative "../view"
 # === Examples
 #
 #   controls = View::Controls.new
-#   controls.call(state, tui, frame, area)
+#   controls.call(model, tui, frame, area)
 class View::Controls
   # Renders the controls widget to the given area.
   #
-  # [state] ViewState containing style information.
+  # [model] AppModel (unused, included for consistent interface).
   # [tui] RatatuiRuby instance.
   # [frame] RatatuiRuby::Frame being rendered.
   # [area] RatatuiRuby::Rect defining the widget's bounds.
   #
   # === Example
   #
-  #   controls.call(state, tui, frame, area)
-  def call(state, tui, frame, area)
+  #   controls.call(model, tui, frame, area)
+  def call(_model, tui, frame, area)
+    hotkey_style = tui.style(modifiers: [:bold, :underlined])
+
     widget = tui.paragraph(
       text: [
         tui.text_line(spans: [
-          tui.text_span(content: "q", style: state.hotkey_style),
+          tui.text_span(content: "q", style: hotkey_style),
           tui.text_span(content: ": Quit  "),
-          tui.text_span(content: "Ctrl+C", style: state.hotkey_style),
+          tui.text_span(content: "Ctrl+C", style: hotkey_style),
           tui.text_span(content: ": Quit"),
         ]),
       ],

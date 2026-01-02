@@ -21,7 +21,7 @@ require_relative "controls_view"
 # === Examples
 #
 #   app_view = View::App.new
-#   app_view.call(state, tui, frame, area)
+#   app_view.call(model, tui, frame, area)
 class View::App
   # Creates a new View::App and initializes sub-views.
   def initialize
@@ -33,15 +33,15 @@ class View::App
 
   # Renders the entire application UI to the given area.
   #
-  # [state] ViewState containing all application data.
+  # [model] AppModel containing all application data.
   # [tui] RatatuiRuby instance.
   # [frame] RatatuiRuby::Frame being rendered.
   # [area] RatatuiRuby::Rect defining the total available space.
   #
   # === Example
   #
-  #   app_view.call(state, tui, frame, area)
-  def call(state, tui, frame, area)
+  #   app_view.call(model, tui, frame, area)
+  def call(model, tui, frame, area)
     main_area, control_area = tui.layout_split(
       area,
       direction: :vertical,
@@ -70,9 +70,9 @@ class View::App
       ]
     )
 
-    @counts_view.call(state, tui, frame, counts_area)
-    @live_view.call(state, tui, frame, live_area)
-    @log_view.call(state, tui, frame, log_area)
-    @controls_view.call(state, tui, frame, control_area)
+    @counts_view.call(model, tui, frame, counts_area)
+    @live_view.call(model, tui, frame, live_area)
+    @log_view.call(model, tui, frame, log_area)
+    @controls_view.call(model, tui, frame, control_area)
   end
 end

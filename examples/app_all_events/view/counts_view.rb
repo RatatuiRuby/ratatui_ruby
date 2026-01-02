@@ -15,28 +15,32 @@ require_relative "../view"
 class View::Counts
   # Renders the event counts widget to the given area.
   #
-  # [state] ViewState containing event data and styles.
+  # [model] AppModel containing event data.
   # [tui] RatatuiRuby instance.
   # [frame] RatatuiRuby::Frame being rendered.
   # [area] RatatuiRuby::Rect defining the widget's bounds.
-  def call(state, tui, frame, area)
+  def call(model, tui, frame, area)
+    dimmed_style = tui.style(fg: :dark_gray)
+    lit_style = tui.style(fg: :green, modifiers: [:bold])
+    border_color = model.focused ? :green : :gray
+
     count_lines = []
 
     AppAllEvents::EVENT_TYPES.each do |type|
-      count = state.events.count(type)
+      count = model.count(type)
       label = type.to_s.capitalize
-      style = state.events.lit?(type) ? state.lit_style : nil
+      style = model.lit?(type) ? lit_style : nil
 
       count_lines << tui.text_line(spans: [
         tui.text_span(content: "#{label}: ", style:),
         tui.text_span(content: count.to_s, style: style || tui.style(fg: :yellow)),
       ])
 
-      state.events.sub_counts(type).each do |sub_type, sub_count|
+      model.sub_counts(type).each do |sub_type, sub_count|
         sub_label = sub_type.to_s.capitalize
         count_lines << tui.text_line(spans: [
-          tui.text_span(content: "  #{sub_label}: ", style: state.dimmed_style),
-          tui.text_span(content: sub_count.to_s, style: state.dimmed_style),
+          tui.text_span(content: "  #{sub_label}: ", style: dimmed_style),
+          tui.text_span(content: sub_count.to_s, style: dimmed_style),
         ])
       end
     end
@@ -47,7 +51,7 @@ class View::Counts
       block: tui.block(
         title: "Event Counts",
         borders: [:all],
-        border_style: tui.style(fg: state.border_color)
+        border_style: tui.style(fg: border_color)
       )
     )
     frame.render_widget(widget, area)

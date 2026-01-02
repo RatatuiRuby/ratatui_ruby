@@ -221,7 +221,7 @@ Use it to debug your input handling or verify terminal behavior.
 
 **What you'll learn:**
 
-*   **MVVM Architecture**: Separates logic (Model), state (ViewModel), and rendering (View) for clean, testable code.
+*   **Proto-TEA Architecture**: Implements unidirectional data flow (Model-View-Update) with immutable state and pure functions.
 *   **Event Handling**: Captures and distinguishes all input types, including modifiers (`Ctrl+C`) and focus changes.
 *   **Scalable Structure**: Organizes a non-trivial application into small, focused classes instead of a monolithic script.
 

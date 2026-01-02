@@ -9,8 +9,8 @@ require "ratatui_ruby/test_helper"
 require "minitest/autorun"
 require_relative "../../../../examples/app_all_events/app"
 require_relative "../../../../examples/app_all_events/view/counts_view"
-require_relative "../../../../examples/app_all_events/view_state"
-require_relative "../../../../examples/app_all_events/model/events"
+require_relative "../../../../examples/app_all_events/model/app_model"
+require_relative "../../../../examples/app_all_events/update"
 
 class TestCountsView < Minitest::Test
   def setup
@@ -19,28 +19,33 @@ class TestCountsView < Minitest::Test
     @area = RatatuiRuby::TestHelper::StubRect.new
   end
 
-  def build_state(events: Events.new, focused: true)
-    ViewState.build(events, focused, @tui, nil)
+  def build_model(focused: true)
+    AppModel.initial.with(focused:)
+  end
+
+  def record_event(model, event)
+    msg = Msg::Input.new(event:)
+    Update.call(msg, model)
   end
 
   def test_renders_single_widget
-    state = build_state
-    View::Counts.new.call(state, @tui, @frame, @area)
+    model = build_model
+    View::Counts.new.call(model, @tui, @frame, @area)
 
     assert_equal 1, @frame.rendered_widgets.length
   end
 
   def test_block_has_event_counts_title
-    state = build_state
-    View::Counts.new.call(state, @tui, @frame, @area)
+    model = build_model
+    View::Counts.new.call(model, @tui, @frame, @area)
 
     widget = @frame.rendered_widgets.first[:widget]
     assert_equal "Event Counts", widget.block.title
   end
 
   def test_renders_all_event_types
-    state = build_state
-    View::Counts.new.call(state, @tui, @frame, @area)
+    model = build_model
+    View::Counts.new.call(model, @tui, @frame, @area)
 
     widget = @frame.rendered_widgets.first[:widget]
     text_content = extract_all_content(widget)
@@ -54,8 +59,8 @@ class TestCountsView < Minitest::Test
   end
 
   def test_type_labels_are_capitalized
-    state = build_state
-    View::Counts.new.call(state, @tui, @frame, @area)
+    model = build_model
+    View::Counts.new.call(model, @tui, @frame, @area)
 
     widget = @frame.rendered_widgets.first[:widget]
     text_content = extract_all_content(widget)
@@ -66,8 +71,8 @@ class TestCountsView < Minitest::Test
   end
 
   def test_displays_zero_counts_initially
-    state = build_state
-    View::Counts.new.call(state, @tui, @frame, @area)
+    model = build_model
+    View::Counts.new.call(model, @tui, @frame, @area)
 
     widget = @frame.rendered_widgets.first[:widget]
     text_content = extract_all_content(widget)
@@ -83,13 +88,12 @@ class TestCountsView < Minitest::Test
   end
 
   def test_displays_incremented_counts
-    events = Events.new
-    events.record(RatatuiRuby::Event::Key.new(code: "a"))
-    events.record(RatatuiRuby::Event::Key.new(code: "b"))
-    events.record(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 0, y: 0))
-    state = build_state(events:)
+    model = build_model
+    model = record_event(model, RatatuiRuby::Event::Key.new(code: "a"))
+    model = record_event(model, RatatuiRuby::Event::Key.new(code: "b"))
+    model = record_event(model, RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 0, y: 0))
 
-    View::Counts.new.call(state, @tui, @frame, @area)
+    View::Counts.new.call(model, @tui, @frame, @area)
 
     widget = @frame.rendered_widgets.first[:widget]
     text_content = extract_all_content(widget)
@@ -99,11 +103,10 @@ class TestCountsView < Minitest::Test
   end
 
   def test_renders_mouse_sub_counts
-    events = Events.new
-    events.record(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 0, y: 0))
-    state = build_state(events:)
+    model = build_model
+    model = record_event(model, RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 0, y: 0))
 
-    View::Counts.new.call(state, @tui, @frame, @area)
+    View::Counts.new.call(model, @tui, @frame, @area)
 
     widget = @frame.rendered_widgets.first[:widget]
     text_content = extract_all_content(widget)
@@ -112,11 +115,10 @@ class TestCountsView < Minitest::Test
   end
 
   def test_renders_key_sub_counts
-    events = Events.new
-    events.record(RatatuiRuby::Event::Key.new(code: "a"))
-    state = build_state(events:)
+    model = build_model
+    model = record_event(model, RatatuiRuby::Event::Key.new(code: "a"))
 
-    View::Counts.new.call(state, @tui, @frame, @area)
+    View::Counts.new.call(model, @tui, @frame, @area)
 
     widget = @frame.rendered_widgets.first[:widget]
     text_content = extract_all_content(widget)
@@ -125,12 +127,11 @@ class TestCountsView < Minitest::Test
   end
 
   def test_renders_focus_sub_counts
-    events = Events.new
-    events.record(RatatuiRuby::Event::FocusGained.new)
-    events.record(RatatuiRuby::Event::FocusLost.new)
-    state = build_state(events:)
+    model = build_model
+    model = Update.call(Msg::Focus.new(gained: true), model)
+    model = Update.call(Msg::Focus.new(gained: false), model)
 
-    View::Counts.new.call(state, @tui, @frame, @area)
+    View::Counts.new.call(model, @tui, @frame, @area)
 
     widget = @frame.rendered_widgets.first[:widget]
     text_content = extract_all_content(widget)
@@ -140,11 +141,10 @@ class TestCountsView < Minitest::Test
   end
 
   def test_lit_style_when_event_type_is_lit
-    events = Events.new
-    events.record(RatatuiRuby::Event::Key.new(code: "a"))
-    state = build_state(events:)
+    model = build_model
+    model = record_event(model, RatatuiRuby::Event::Key.new(code: "a"))
 
-    View::Counts.new.call(state, @tui, @frame, @area)
+    View::Counts.new.call(model, @tui, @frame, @area)
 
     widget = @frame.rendered_widgets.first[:widget]
     key_line = widget.text.find { |line| line.spans.first.content.include?("Key:") }
@@ -156,15 +156,15 @@ class TestCountsView < Minitest::Test
   end
 
   def test_border_color_matches_focus_state
-    focused_state = build_state(focused: true)
-    View::Counts.new.call(focused_state, @tui, @frame, @area)
+    focused_model = build_model(focused: true)
+    View::Counts.new.call(focused_model, @tui, @frame, @area)
 
     widget = @frame.rendered_widgets.first[:widget]
     assert_equal :green, widget.block.border_style.fg
 
     @frame = RatatuiRuby::TestHelper::MockFrame.new
-    unfocused_state = build_state(focused: false)
-    View::Counts.new.call(unfocused_state, @tui, @frame, @area)
+    unfocused_model = build_model(focused: false)
+    View::Counts.new.call(unfocused_model, @tui, @frame, @area)
 
     widget = @frame.rendered_widgets.first[:widget]
     assert_equal :gray, widget.block.border_style.fg

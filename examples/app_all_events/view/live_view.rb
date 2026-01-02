@@ -17,19 +17,20 @@ require_relative "../view"
 # === Examples
 #
 #   live_view = View::Live.new
-#   live_view.call(state, tui, frame, area)
+#   live_view.call(model, tui, frame, area)
 class View::Live
   # Renders the live event table to the given area.
   #
-  # [state] ViewState containing event data and styles.
+  # [model] AppModel containing event data.
   # [tui] RatatuiRuby instance.
   # [frame] RatatuiRuby::Frame being rendered.
   # [area] RatatuiRuby::Rect defining the widget's bounds.
   #
   # === Example
   #
-  #   live_view.call(state, tui, frame, area)
-  def call(state, tui, frame, area)
+  #   live_view.call(model, tui, frame, area)
+  def call(model, tui, frame, area)
+    border_color = model.focused ? :green : :gray
     rows = []
 
     rows << tui.text_line(spans: [
@@ -39,13 +40,13 @@ class View::Live
     ])
 
     (AppAllEvents::EVENT_TYPES - [:none]).each do |type|
-      event_data = state.events.live_event(type)
+      event_data = model.live_event(type)
 
       class_str = type.to_s.capitalize
       time_str = event_data ? event_data[:time].strftime("%H:%M:%S") : "—"
       desc_str = event_data ? event_data[:description] : "—"
 
-      is_lit = state.events.lit?(type)
+      is_lit = model.lit?(type)
       row_style = is_lit ? tui.style(fg: :black, bg: :green) : nil
 
       rows << tui.text_line(spans: [
@@ -61,7 +62,7 @@ class View::Live
       block: tui.block(
         title: "Live Display",
         borders: [:all],
-        border_style: tui.style(fg: state.border_color)
+        border_style: tui.style(fg: border_color)
       )
     )
     frame.render_widget(widget, area)

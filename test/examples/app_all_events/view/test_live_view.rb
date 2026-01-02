@@ -9,8 +9,8 @@ require "ratatui_ruby/test_helper"
 require "minitest/autorun"
 require_relative "../../../../examples/app_all_events/app"
 require_relative "../../../../examples/app_all_events/view/live_view"
-require_relative "../../../../examples/app_all_events/view_state"
-require_relative "../../../../examples/app_all_events/model/events"
+require_relative "../../../../examples/app_all_events/model/app_model"
+require_relative "../../../../examples/app_all_events/update"
 
 class TestLiveView < Minitest::Test
   def setup
@@ -19,28 +19,33 @@ class TestLiveView < Minitest::Test
     @area = RatatuiRuby::TestHelper::StubRect.new
   end
 
-  def build_state(events: Events.new, focused: true)
-    ViewState.build(events, focused, @tui, nil)
+  def build_model(focused: true)
+    AppModel.initial.with(focused:)
+  end
+
+  def record_event(model, event)
+    msg = Msg::Input.new(event:)
+    Update.call(msg, model)
   end
 
   def test_renders_single_widget
-    state = build_state
-    View::Live.new.call(state, @tui, @frame, @area)
+    model = build_model
+    View::Live.new.call(model, @tui, @frame, @area)
 
     assert_equal 1, @frame.rendered_widgets.length
   end
 
   def test_block_has_live_display_title
-    state = build_state
-    View::Live.new.call(state, @tui, @frame, @area)
+    model = build_model
+    View::Live.new.call(model, @tui, @frame, @area)
 
     widget = @frame.rendered_widgets.first[:widget]
     assert_equal "Live Display", widget.block.title
   end
 
   def test_renders_header_row
-    state = build_state
-    View::Live.new.call(state, @tui, @frame, @area)
+    model = build_model
+    View::Live.new.call(model, @tui, @frame, @area)
 
     widget = @frame.rendered_widgets.first[:widget]
     header_spans = widget.text.first.spans
@@ -52,8 +57,8 @@ class TestLiveView < Minitest::Test
   end
 
   def test_header_has_bold_modifier
-    state = build_state
-    View::Live.new.call(state, @tui, @frame, @area)
+    model = build_model
+    View::Live.new.call(model, @tui, @frame, @area)
 
     widget = @frame.rendered_widgets.first[:widget]
     header_spans = widget.text.first.spans
@@ -64,8 +69,8 @@ class TestLiveView < Minitest::Test
   end
 
   def test_renders_row_for_each_event_type_except_none
-    state = build_state
-    View::Live.new.call(state, @tui, @frame, @area)
+    model = build_model
+    View::Live.new.call(model, @tui, @frame, @area)
 
     widget = @frame.rendered_widgets.first[:widget]
     # 1 header row + 5 event types (key, mouse, resize, paste, focus - not none)
@@ -73,8 +78,8 @@ class TestLiveView < Minitest::Test
   end
 
   def test_displays_dash_placeholder_when_no_event
-    state = build_state
-    View::Live.new.call(state, @tui, @frame, @area)
+    model = build_model
+    View::Live.new.call(model, @tui, @frame, @area)
 
     widget = @frame.rendered_widgets.first[:widget]
     # Second row is Key event (first after header)
@@ -85,8 +90,8 @@ class TestLiveView < Minitest::Test
   end
 
   def test_displays_event_type_capitalized
-    state = build_state
-    View::Live.new.call(state, @tui, @frame, @area)
+    model = build_model
+    View::Live.new.call(model, @tui, @frame, @area)
 
     widget = @frame.rendered_widgets.first[:widget]
     event_types_found = []
@@ -104,11 +109,10 @@ class TestLiveView < Minitest::Test
   end
 
   def test_lit_row_uses_highlighted_style
-    events = Events.new
-    events.record(RatatuiRuby::Event::Key.new(code: "a"))
-    state = build_state(events:)
+    model = build_model
+    model = record_event(model, RatatuiRuby::Event::Key.new(code: "a"))
 
-    View::Live.new.call(state, @tui, @frame, @area)
+    View::Live.new.call(model, @tui, @frame, @area)
 
     widget = @frame.rendered_widgets.first[:widget]
     key_row = widget.text[1]
@@ -120,8 +124,8 @@ class TestLiveView < Minitest::Test
   end
 
   def test_unlit_row_uses_cyan_for_type
-    state = build_state
-    View::Live.new.call(state, @tui, @frame, @area)
+    model = build_model
+    View::Live.new.call(model, @tui, @frame, @area)
 
     widget = @frame.rendered_widgets.first[:widget]
     # After some time, unlit rows have cyan type
@@ -132,15 +136,15 @@ class TestLiveView < Minitest::Test
   end
 
   def test_border_color_matches_focus_state
-    focused_state = build_state(focused: true)
-    View::Live.new.call(focused_state, @tui, @frame, @area)
+    focused_model = build_model(focused: true)
+    View::Live.new.call(focused_model, @tui, @frame, @area)
 
     widget = @frame.rendered_widgets.first[:widget]
     assert_equal :green, widget.block.border_style.fg
 
     @frame = RatatuiRuby::TestHelper::MockFrame.new
-    unfocused_state = build_state(focused: false)
-    View::Live.new.call(unfocused_state, @tui, @frame, @area)
+    unfocused_model = build_model(focused: false)
+    View::Live.new.call(unfocused_model, @tui, @frame, @area)
 
     widget = @frame.rendered_widgets.first[:widget]
     assert_equal :gray, widget.block.border_style.fg

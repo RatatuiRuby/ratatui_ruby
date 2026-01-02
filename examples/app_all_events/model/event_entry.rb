@@ -70,6 +70,23 @@ class EventEntry < Data.define(:event, :color, :timestamp)
   #   entry.matches_type?(:key) #=> true
   def matches_type?(check_type)
     return true if check_type == :focus && (type == :focus_gained || type == :focus_lost)
+
     type == check_type
+  end
+
+  # Returns the display type for live event grouping.
+  #
+  # Normalizes focus_gained and focus_lost to :focus.
+  #
+  # === Example
+  #
+  #   entry.live_type #=> :focus
+  def live_type
+    case type
+    when :focus_gained, :focus_lost
+      :focus
+    else
+      type
+    end
   end
 end

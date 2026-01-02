@@ -89,6 +89,6 @@ Use this pattern for forms, editors, and mouse-driven tools.
 
 ### The Dashboard Approach (AppAllEvents)
 
-Dashboards display data. They rarely require complex mouse interaction. Strict MVVM works best there. The View is a pure function. It accepts a `ViewState` and draws it. It ignores input. This simplifies testing.
+Dashboards display data. They rarely require complex mouse interaction. Proto-TEA (Model-View-Update) works best there. State is immutable. Logic is pure. Updates are predictable. This simplifies testing.
 
 Use that pattern for logs, monitors, and data viewers.
