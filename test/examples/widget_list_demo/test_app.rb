@@ -58,7 +58,7 @@ class TestWidgetListDemo < Minitest::Test
       content = buffer_content
       # Selects index 0 (Item 1)
       assert content.any? { |line| line.include?(">> Item 1") }
-      assert content.any? { |line| line.include?("Selection: 0") }
+      assert content.any? { |line| line.include?("Sel: 0") }
     end
   end
 
@@ -69,7 +69,7 @@ class TestWidgetListDemo < Minitest::Test
 
       content = buffer_content
       refute content.any? { |line| line.include?(">> ") && line.include?("Item 1") }
-      assert content.any? { |line| line.include?("Selection: none") }
+      assert content.any? { |line| line.include?("Sel: none") }
     end
   end
 
@@ -176,7 +176,7 @@ class TestWidgetListDemo < Minitest::Test
 
       content = buffer_content
       # After changing item set to Colors, selection should reset
-      assert content.any? { |line| line.include?("Selection: none") }
+      assert content.any? { |line| line.include?("Sel: none") }
     end
   end
 
@@ -232,6 +232,54 @@ class TestWidgetListDemo < Minitest::Test
 
       content = buffer_content
       assert content.any? { |line| line.include?("List Widget Demo") }
+    end
+  end
+
+  def test_cycle_offset_mode_to_offset_only
+    with_test_terminal do
+      # Press 'o' to cycle from Auto to Offset Only
+      inject_keys(:o, :q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      assert_includes content, "Offset Only"
+      assert_includes content, "Offset: 10"
+    end
+  end
+
+  def test_cycle_offset_mode_to_conflict
+    with_test_terminal do
+      # Press 'o' twice to reach Conflict mode
+      inject_keys(:o, :o, :q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      assert_includes content, "Conflict"
+      assert_includes content, "Offset: 0"
+    end
+  end
+
+  def test_offset_only_mode_disables_selection
+    with_test_terminal do
+      # Set selection first, then switch to Offset Only
+      inject_keys(:x, :o, :q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      # Selection is disabled in Offset Only mode
+      assert_includes content, "Sel: none"
+    end
+  end
+
+  def test_offset_mode_cycles_back_to_auto
+    with_test_terminal do
+      # Press 'o' three times to wrap back to Auto
+      inject_keys(:o, :o, :o, :q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      assert_includes content, "Auto (No Offset)"
+      assert_includes content, "Offset: auto"
     end
   end
 end

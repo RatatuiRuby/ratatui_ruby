@@ -14,7 +14,9 @@ module RatatuiRuby
     attr_reader highlight_spacing: Symbol
     attr_reader column_highlight_style: Style?
     attr_reader selected_column: Integer?
+    attr_reader offset: Integer?
 
-    def self.new: (?header: Array[String | Paragraph]?, ?rows: Array[Array[String | Paragraph | Style | _ToS]], ?widths: Array[Constraint], ?highlight_style: Style?, ?highlight_symbol: String, ?highlight_spacing: Symbol, ?column_highlight_style: Style?, ?cell_highlight_style: Style?, ?selected_row: Numeric?, ?selected_column: Numeric?, ?block: Block?, ?footer: Array[String | Paragraph]?, ?flex: Symbol, ?style: (Style | Hash[Symbol, untyped])?, ?column_spacing: Numeric) -> Table
+    def self.new: (?header: Array[String | Paragraph]?, ?rows: Array[Array[String | Paragraph | Style | _ToS]], ?widths: Array[Constraint], ?highlight_style: Style?, ?highlight_symbol: String, ?highlight_spacing: Symbol, ?column_highlight_style: Style?, ?cell_highlight_style: Style?, ?selected_row: Numeric?, ?selected_column: Numeric?, ?offset: Numeric?, ?block: Block?, ?footer: Array[String | Paragraph]?, ?flex: Symbol, ?style: (Style | Hash[Symbol, untyped])?, ?column_spacing: Numeric) -> Table
   end
 end
+

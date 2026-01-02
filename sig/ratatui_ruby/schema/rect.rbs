@@ -11,5 +11,8 @@ module RatatuiRuby
     attr_reader height: Integer
     def self.new: (?x: Numeric, ?y: Numeric, ?width: Numeric, ?height: Numeric) -> instance
     def contains?: (Integer px, Integer py) -> bool
+    def intersects?: (Rect other) -> bool
+    def intersection: (Rect other) -> Rect?
   end
 end
+

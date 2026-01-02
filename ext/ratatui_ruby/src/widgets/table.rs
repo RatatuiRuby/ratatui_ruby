@@ -110,6 +110,12 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         state.select_column(Some(index));
     }
 
+    let offset_val: Value = node.funcall("offset", ())?;
+    if !offset_val.is_nil() {
+        let offset: usize = offset_val.funcall("to_int", ())?;
+        *state.offset_mut() = offset;
+    }
+
     frame.render_stateful_widget(table, area, &mut state);
     Ok(())
 }

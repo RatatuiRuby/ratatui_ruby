@@ -343,4 +343,58 @@ class TestTable < Minitest::Test
       assert found_f, "Footer cell not found"
     end
   end
+
+  def test_offset_forces_scroll_position
+    # 10 rows, terminal height 5 (header + 4 data rows), offset forces viewport
+    rows = (0..9).map { |i| ["Row #{i}"] }
+    with_test_terminal(20, 5) do
+      table = RatatuiRuby::Table.new(
+        header: ["Header"],
+        rows:,
+        widths: [RatatuiRuby::Constraint.length(10)],
+        selected_row: 5,
+        offset: 5
+      )
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
+      content = buffer_content.join("\n")
+      # Offset 5 means first visible data row shows Row 5
+      assert_includes content, "Row 5"
+      assert_includes content, "Row 6"
+    end
+  end
+
+  def test_offset_nil_allows_auto_scroll
+    rows = (0..9).map { |i| ["Row #{i}"] }
+    with_test_terminal(20, 4) do
+      table = RatatuiRuby::Table.new(
+        header: ["Header"],
+        rows:,
+        widths: [RatatuiRuby::Constraint.length(10)],
+        selected_row: 8 # Near the end
+      )
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
+      content = buffer_content.join("\n")
+      # Auto-scroll should make Row 8 visible
+      assert_includes content, "Row 8"
+    end
+  end
+
+  def test_offset_without_selection
+    # Passive scroll: no selection, just viewing rows 5+
+    rows = (0..9).map { |i| ["Row #{i}"] }
+    with_test_terminal(20, 4) do
+      table = RatatuiRuby::Table.new(
+        header: ["Header"],
+        rows:,
+        widths: [RatatuiRuby::Constraint.length(10)],
+        selected_row: nil,
+        offset: 5
+      )
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
+      content = buffer_content.join("\n")
+      # Offset 5 with no selection shows Rows 5, 6, etc.
+      assert_includes content, "Row 5"
+      assert_includes content, "Row 6"
+    end
+  end
 end

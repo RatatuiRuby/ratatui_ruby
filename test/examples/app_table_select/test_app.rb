@@ -177,4 +177,52 @@ class TestAppTableSelect < Minitest::Test
       assert content.any? { |line| line.include?("Col Space (1)") }
     end
   end
+
+  def test_cycle_offset_mode_to_offset_only
+    with_test_terminal do
+      # Press 'o' to cycle from Auto to Offset Only
+      inject_keys(:o, :q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      assert_includes content, "Offset Only"
+      assert_includes content, "Offset: 3"
+    end
+  end
+
+  def test_cycle_offset_mode_to_conflict
+    with_test_terminal do
+      # Press 'o' twice to reach Conflict mode
+      inject_keys(:o, :o, :q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      assert_includes content, "Conflict"
+      assert_includes content, "Offset: 0"
+    end
+  end
+
+  def test_offset_only_mode_disables_selection
+    with_test_terminal do
+      # Switch to Offset Only mode
+      inject_keys(:o, :q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      # Selection is disabled in Offset Only mode
+      assert_includes content, "Sel: none"
+    end
+  end
+
+  def test_offset_mode_cycles_back_to_auto
+    with_test_terminal do
+      # Press 'o' three times to wrap back to Auto
+      inject_keys(:o, :o, :o, :q)
+      @app.run
+
+      content = buffer_content.join("\n")
+      assert_includes content, "Auto (No Offset)"
+      assert_includes content, "Offset: auto"
+    end
+  end
 end

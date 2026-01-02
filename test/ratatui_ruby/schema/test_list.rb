@@ -130,4 +130,53 @@ class TestList < Minitest::Test
       assert_equal "Item 2              ", buffer_content[1]
     end
   end
+
+  def test_offset_forces_scroll_position
+    # 10 items, terminal height 3, offset forces viewport to start at item 5
+    items = (0..9).map { |i| "Item #{i}" }
+    with_test_terminal(20, 3) do
+      list = RatatuiRuby::List.new(
+        items:,
+        selected_index: 5,
+        offset: 5
+      )
+      RatatuiRuby.draw { |f| f.render_widget(list, f.area) }
+      # Offset 5 means first visible row shows Item 5
+      assert_equal "> Item 5            ", buffer_content[0]
+      assert_equal "  Item 6            ", buffer_content[1]
+      assert_equal "  Item 7            ", buffer_content[2]
+    end
+  end
+
+  def test_offset_nil_allows_auto_scroll
+    # Without offset, Ratatui auto-scrolls to show selection
+    items = (0..9).map { |i| "Item #{i}" }
+    with_test_terminal(20, 3) do
+      list = RatatuiRuby::List.new(
+        items:,
+        selected_index: 8 # Near the end
+      )
+      RatatuiRuby.draw { |f| f.render_widget(list, f.area) }
+      # Auto-scroll should make Item 8 visible
+      content = buffer_content.join("\n")
+      assert_includes content, "Item 8"
+    end
+  end
+
+  def test_offset_without_selection
+    # Passive scroll: no selection, just viewing items 5-7
+    items = (0..9).map { |i| "Item #{i}" }
+    with_test_terminal(20, 3) do
+      list = RatatuiRuby::List.new(
+        items:,
+        selected_index: nil,
+        offset: 5
+      )
+      RatatuiRuby.draw { |f| f.render_widget(list, f.area) }
+      # Offset 5 with no selection shows Items 5, 6, 7
+      assert_equal "Item 5              ", buffer_content[0]
+      assert_equal "Item 6              ", buffer_content[1]
+      assert_equal "Item 7              ", buffer_content[2]
+    end
+  end
 end

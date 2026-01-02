@@ -47,6 +47,12 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         state.select(Some(index));
     }
 
+    let offset_val: Value = node.funcall("offset", ())?;
+    if !offset_val.is_nil() {
+        let offset: usize = offset_val.funcall("to_int", ())?;
+        *state.offset_mut() = offset;
+    }
+
     let mut list = List::new(items);
 
     let highlight_spacing = match highlight_spacing_sym.to_string().as_str() {

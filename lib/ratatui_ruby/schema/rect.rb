@@ -69,5 +69,48 @@ module RatatuiRuby
     def contains?(px, py)
       px >= x && px < x + width && py >= y && py < y + height
     end
+
+    # Tests whether this rectangle overlaps with another.
+    #
+    # Essential for determining if a widget is visible within a viewport or clipping area.
+    #
+    #   viewport = Rect.new(x: 0, y: 0, width: 80, height: 24)
+    #   widget = Rect.new(x: 70, y: 20, width: 20, height: 10)
+    #   viewport.intersects?(widget) # => true (partial overlap)
+    #
+    # [other]
+    #   Another Rect to test against.
+    #
+    # Returns true if the rectangles overlap.
+    def intersects?(other)
+      x < other.x + other.width &&
+        x + width > other.x &&
+        y < other.y + other.height &&
+        y + height > other.y
+    end
+
+    # Returns the overlapping area between this rectangle and another.
+    #
+    # Essential for calculating visible portions of widgets inside scroll views.
+    #
+    #   viewport = Rect.new(x: 0, y: 0, width: 80, height: 24)
+    #   widget = Rect.new(x: 70, y: 20, width: 20, height: 10)
+    #   visible = viewport.intersection(widget)
+    #   # => Rect(x: 70, y: 20, width: 10, height: 4)
+    #
+    # [other]
+    #   Another Rect to intersect with.
+    #
+    # Returns a new Rect representing the intersection, or +nil+ if no overlap.
+    def intersection(other)
+      return nil unless intersects?(other)
+
+      new_x = [x, other.x].max
+      new_y = [y, other.y].max
+      new_right = [x + width, other.x + other.width].min
+      new_bottom = [y + height, other.y + other.height].min
+
+      Rect.new(x: new_x, y: new_y, width: new_right - new_x, height: new_bottom - new_y)
+    end
   end
 end

@@ -15,6 +15,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Non-Blocking Event Polling**: `RatatuiRuby.poll_event` now accepts an optional `timeout:` parameter (Float seconds). Use `timeout: 0.0` for non-blocking checks, or `timeout: 0.1` for fixed timesteps. Defaults to `0.016` (16ms) to preserve existing behavior.
 - **Cursor Positioning**: `Frame#set_cursor_position(x, y)` sets the terminal's hardware cursor position. Using this method is essential for input fields where the user expects visual feedback on their cursor location.
 - **Text Measurement**: `RatatuiRuby::Text.width(string)` calculates the display width of a string in terminal cells, correctly handling unicode including ASCII (1 cell), CJK full-width characters (2 cells), emoji (typically 2 cells), and zero-width combining marks (0 cells). This is essential for auto-sizing widgets and responsive layouts. Delegates to the same unicode-width logic that Ratatui uses internally.
+- **Scroll Offset Control**: `List` and `Table` widgets now accept an optional `offset` parameter to control the viewport's scroll position. Use this for passive scrolling (viewing without selection) or calculating click-to-item mappings. When combined with a selection, Ratatui's natural scrolling may still adjust the viewport to keep the selection visible; set selection to `nil` for fully manual scroll control.
+- **Rect Geometry Helpers**: `Rect#intersects?(other)` tests whether two rectangles overlap. `Rect#intersection(other)` returns the overlapping area as a new `Rect`, or `nil` if disjoint. Essential for viewport clipping and hit testing in component architectures.
 
 
 ### Changed

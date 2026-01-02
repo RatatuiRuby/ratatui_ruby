@@ -206,6 +206,14 @@ class WidgetListDemo
       { name: "2 items", padding: 2 },
     ]
     @scroll_padding_index = 0
+
+    # Offset mode configurations to demonstrate offset + selection interaction
+    @offset_modes = [
+      { name: "Auto (No Offset)", offset: nil, allow_selection: true },
+      { name: "Offset Only", offset: 10, allow_selection: false },
+      { name: "Selection + Offset (Conflict)", offset: 0, allow_selection: true },
+    ]
+    @offset_mode_index = 0
   end
 
   # Runs the demo application.
@@ -245,7 +253,6 @@ class WidgetListDemo
   # :nodoc:
   private def render
     items = @item_sets[@item_set_index][:items]
-    selection_label = @selected_index.nil? ? "none" : @selected_index.to_s
     direction_config = @direction_configs[@direction_index]
     spacing_config = @highlight_spacing_configs[@highlight_spacing_index]
     repeat_config = @repeat_modes[@repeat_index]
@@ -253,6 +260,13 @@ class WidgetListDemo
     highlight_symbol = @highlight_symbol_names[@highlight_symbol_index]
     base_style_config = @base_styles[@base_style_index]
     scroll_padding_config = @scroll_padding_configs[@scroll_padding_index]
+    offset_mode_config = @offset_modes[@offset_mode_index]
+
+    # Determine selection/offset based on mode
+    effective_selection = offset_mode_config[:allow_selection] ? @selected_index : nil
+    effective_offset = offset_mode_config[:offset]
+    selection_label = effective_selection.nil? ? "none" : effective_selection.to_s
+    offset_label = effective_offset.nil? ? "auto" : effective_offset.to_s
 
     @tui.draw do |frame|
       # Split into main content and control panel
@@ -261,7 +275,7 @@ class WidgetListDemo
         direction: :vertical,
         constraints: [
           @tui.constraint_fill(1),
-          @tui.constraint_length(7),
+          @tui.constraint_length(8),
         ]
       )
 
@@ -282,7 +296,8 @@ class WidgetListDemo
       # Render list
       list = @tui.list(
         items:,
-        selected_index: @selected_index,
+        selected_index: effective_selection,
+        offset: effective_offset,
         style: base_style_config[:style],
         highlight_style: highlight_style_config[:style],
         highlight_symbol:,
@@ -291,7 +306,7 @@ class WidgetListDemo
         direction: direction_config[:direction],
         scroll_padding: scroll_padding_config[:padding],
         block: @tui.block(
-          title: "#{@item_sets[@item_set_index][:name]} (Selection: #{selection_label})",
+          title: "#{@item_sets[@item_set_index][:name]} | Sel: #{selection_label} | Offset: #{offset_label}",
           borders: [:all]
         )
       )
@@ -330,7 +345,11 @@ class WidgetListDemo
                 @tui.text_span(content: "b", style: @hotkey_style),
                 @tui.text_span(content: ": Base (#{base_style_config[:name]})  "),
                 @tui.text_span(content: "r", style: @hotkey_style),
-                @tui.text_span(content: ": Repeat (#{repeat_config[:name]})  "),
+                @tui.text_span(content: ": Repeat (#{repeat_config[:name]})"),
+              ]),
+              @tui.text_line(spans: [
+                @tui.text_span(content: "o", style: @hotkey_style),
+                @tui.text_span(content: ": Offset Mode (#{offset_mode_config[:name]})  "),
                 @tui.text_span(content: "q", style: @hotkey_style),
                 @tui.text_span(content: ": Quit"),
               ]),
@@ -373,6 +392,8 @@ class WidgetListDemo
       @repeat_index = (@repeat_index + 1) % @repeat_modes.size
     in type: :key, code: "p"
       @scroll_padding_index = (@scroll_padding_index + 1) % @scroll_padding_configs.size
+    in type: :key, code: "o"
+      @offset_mode_index = (@offset_mode_index + 1) % @offset_modes.size
     else
       nil
     end

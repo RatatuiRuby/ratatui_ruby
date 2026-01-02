@@ -27,7 +27,7 @@ module RatatuiRuby
   #     highlight_style: Style.new(bg: :blue),
   #     highlight_symbol: ">> "
   #   )
-  class List < Data.define(:items, :selected_index, :style, :highlight_style, :highlight_symbol, :repeat_highlight_symbol, :highlight_spacing, :direction, :scroll_padding, :block)
+  class List < Data.define(:items, :selected_index, :offset, :style, :highlight_style, :highlight_symbol, :repeat_highlight_symbol, :highlight_spacing, :direction, :scroll_padding, :block)
     ##
     # :attr_reader: items
     # The items to display (Array of Strings).
@@ -35,6 +35,22 @@ module RatatuiRuby
     ##
     # :attr_reader: selected_index
     # Index of the active selection (Integer or nil).
+
+    ##
+    # :attr_reader: offset
+    # Scroll offset (Integer or nil).
+    #
+    # Controls the viewport's starting position in the list.
+    #
+    # When +nil+ (default), Ratatui auto-scrolls to keep the selection visible ("natural scrolling").
+    #
+    # When set, forces the viewport to start at this item index. Use this for:
+    # - **Passive scrolling**: Scroll through a log viewer without selecting items.
+    # - **Click-to-select math**: Calculate which item index corresponds to a click coordinate.
+    #
+    # *Important*: When both +offset+ and +selected_index+ are set, Ratatui may still adjust
+    # the viewport during rendering to ensure the selection stays visible. Set +selected_index+
+    # to +nil+ for fully manual scroll control.
 
     ##
     # :attr_reader: style
@@ -78,6 +94,7 @@ module RatatuiRuby
     #
     # [items] Array of Strings.
     # [selected_index] Numeric (nullable, coerced to Integer).
+    # [offset] Numeric (nullable, coerced to Integer). Forces scroll position when set.
     # [style] Style object.
     # [highlight_style] Style object.
     # [highlight_symbol] String (default: <tt>"> "</tt>).
@@ -86,10 +103,11 @@ module RatatuiRuby
     # [direction] Symbol (default: <tt>:top_to_bottom</tt>).
     # [scroll_padding] Numeric (nullable, coerced to Integer, default: <tt>nil</tt>).
     # [block] Block (optional).
-    def initialize(items: [], selected_index: nil, style: nil, highlight_style: nil, highlight_symbol: "> ", repeat_highlight_symbol: false, highlight_spacing: :when_selected, direction: :top_to_bottom, scroll_padding: nil, block: nil)
+    def initialize(items: [], selected_index: nil, offset: nil, style: nil, highlight_style: nil, highlight_symbol: "> ", repeat_highlight_symbol: false, highlight_spacing: :when_selected, direction: :top_to_bottom, scroll_padding: nil, block: nil)
       super(
         items:,
         selected_index: selected_index.nil? ? nil : Integer(selected_index),
+        offset: offset.nil? ? nil : Integer(offset),
         style:,
         highlight_style:,
         highlight_symbol:,

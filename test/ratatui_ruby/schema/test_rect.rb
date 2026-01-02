@@ -55,4 +55,65 @@ class TestRect < Minitest::Test
     refute r.contains?(40, 0)   # right boundary exclusive
     refute r.contains?(0, 24)   # bottom boundary exclusive
   end
+
+  def test_intersects_overlapping
+    r1 = RatatuiRuby::Rect.new(x: 0, y: 0, width: 10, height: 10)
+    r2 = RatatuiRuby::Rect.new(x: 5, y: 5, width: 10, height: 10)
+    assert r1.intersects?(r2)
+    assert r2.intersects?(r1)
+  end
+
+  def test_intersects_contained
+    outer = RatatuiRuby::Rect.new(x: 0, y: 0, width: 100, height: 100)
+    inner = RatatuiRuby::Rect.new(x: 10, y: 10, width: 10, height: 10)
+    assert outer.intersects?(inner)
+    assert inner.intersects?(outer)
+  end
+
+  def test_intersects_adjacent_not_overlapping
+    r1 = RatatuiRuby::Rect.new(x: 0, y: 0, width: 10, height: 10)
+    r2 = RatatuiRuby::Rect.new(x: 10, y: 0, width: 10, height: 10) # touches right edge
+    refute r1.intersects?(r2)
+    refute r2.intersects?(r1)
+  end
+
+  def test_intersects_disjoint
+    r1 = RatatuiRuby::Rect.new(x: 0, y: 0, width: 10, height: 10)
+    r2 = RatatuiRuby::Rect.new(x: 50, y: 50, width: 10, height: 10)
+    refute r1.intersects?(r2)
+    refute r2.intersects?(r1)
+  end
+
+  def test_intersection_overlapping
+    viewport = RatatuiRuby::Rect.new(x: 0, y: 0, width: 80, height: 24)
+    widget = RatatuiRuby::Rect.new(x: 70, y: 20, width: 20, height: 10)
+    result = viewport.intersection(widget)
+
+    assert_equal 70, result.x
+    assert_equal 20, result.y
+    assert_equal 10, result.width  # 80 - 70 = 10 visible
+    assert_equal 4, result.height  # 24 - 20 = 4 visible
+  end
+
+  def test_intersection_contained
+    outer = RatatuiRuby::Rect.new(x: 0, y: 0, width: 100, height: 100)
+    inner = RatatuiRuby::Rect.new(x: 10, y: 10, width: 20, height: 20)
+    result = outer.intersection(inner)
+
+    # Inner rect is fully contained, so intersection equals inner
+    assert_equal inner, result
+  end
+
+  def test_intersection_disjoint_returns_nil
+    r1 = RatatuiRuby::Rect.new(x: 0, y: 0, width: 10, height: 10)
+    r2 = RatatuiRuby::Rect.new(x: 50, y: 50, width: 10, height: 10)
+    assert_nil r1.intersection(r2)
+    assert_nil r2.intersection(r1)
+  end
+
+  def test_intersection_adjacent_returns_nil
+    r1 = RatatuiRuby::Rect.new(x: 0, y: 0, width: 10, height: 10)
+    r2 = RatatuiRuby::Rect.new(x: 10, y: 0, width: 10, height: 10)
+    assert_nil r1.intersection(r2)
+  end
 end

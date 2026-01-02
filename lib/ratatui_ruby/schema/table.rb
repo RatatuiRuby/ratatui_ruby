@@ -20,7 +20,7 @@ module RatatuiRuby
   # Run the interactive demo from the terminal:
   #
   #   ruby examples/widget_table_flex/app.rb
-  class Table < Data.define(:header, :rows, :widths, :highlight_style, :highlight_symbol, :highlight_spacing, :column_highlight_style, :cell_highlight_style, :selected_row, :selected_column, :block, :footer, :flex, :style, :column_spacing)
+  class Table < Data.define(:header, :rows, :widths, :highlight_style, :highlight_symbol, :highlight_spacing, :column_highlight_style, :cell_highlight_style, :selected_row, :selected_column, :offset, :block, :footer, :flex, :style, :column_spacing)
     ##
     # :attr_reader: header
     # Header row content (Array of Strings).
@@ -43,7 +43,7 @@ module RatatuiRuby
 
     ##
     # :attr_reader: highlight_spacing
-    # When to show the highlight symbol column (:always, :when_selected, :never).
+    # When to show the highlight symbol column (<tt>:always</tt>, <tt>:when_selected</tt>, <tt>:never</tt>).
 
     ##
     # :attr_reader: column_highlight_style
@@ -60,6 +60,22 @@ module RatatuiRuby
     ##
     # :attr_reader: selected_column
     # Index of the selected column (Integer or nil).
+
+    ##
+    # :attr_reader: offset
+    # Scroll offset (Integer or nil).
+    #
+    # Controls the viewport's starting row position in the table.
+    #
+    # When +nil+ (default), Ratatui auto-scrolls to keep the selection visible ("natural scrolling").
+    #
+    # When set, forces the viewport to start at this row index. Use this for:
+    # - **Passive scrolling**: Scroll through a log table without selecting rows.
+    # - **Click-to-select math**: Calculate which row index corresponds to a click coordinate.
+    #
+    # *Important*: When both +offset+ and +selected_row+ are set, Ratatui may still adjust
+    # the viewport during rendering to ensure the selection stays visible. Set +selected_row+
+    # to +nil+ for fully manual scroll control.
 
     ##
     # :attr_reader: block
@@ -93,12 +109,13 @@ module RatatuiRuby
     # [cell_highlight_style] Style object.
     # [selected_row] Integer (nullable).
     # [selected_column] Integer (nullable).
+    # [offset] Numeric (nullable, coerced to Integer). Forces scroll position when set.
     # [block] Block (optional).
     # [footer] Array of strings/paragraphs (optional).
     # [flex] Symbol (optional, default: <tt>:legacy</tt>).
     # [style] Style object or Hash (optional).
     # [column_spacing] Integer (optional, default: 1).
-    def initialize(header: nil, rows: [], widths: [], highlight_style: nil, highlight_symbol: "> ", highlight_spacing: :when_selected, column_highlight_style: nil, cell_highlight_style: nil, selected_row: nil, selected_column: nil, block: nil, footer: nil, flex: :legacy, style: nil, column_spacing: 1)
+    def initialize(header: nil, rows: [], widths: [], highlight_style: nil, highlight_symbol: "> ", highlight_spacing: :when_selected, column_highlight_style: nil, cell_highlight_style: nil, selected_row: nil, selected_column: nil, offset: nil, block: nil, footer: nil, flex: :legacy, style: nil, column_spacing: 1)
       super(
         header:,
         rows:,
@@ -110,6 +127,7 @@ module RatatuiRuby
         cell_highlight_style:,
         selected_row: selected_row.nil? ? nil : Integer(selected_row),
         selected_column: selected_column.nil? ? nil : Integer(selected_column),
+        offset: offset.nil? ? nil : Integer(offset),
         block:,
         footer:,
         flex:,

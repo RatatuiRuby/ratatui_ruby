@@ -28,6 +28,12 @@ class AppTableSelect
     { name: "Never", spacing: :never },
   ].freeze
 
+  OFFSET_MODES = [
+    { name: "Auto (No Offset)", offset: nil, allow_selection: true },
+    { name: "Offset Only (row 3)", offset: 3, allow_selection: false },
+    { name: "Selection + Offset (Conflict)", offset: 0, allow_selection: true },
+  ].freeze
+
   def initialize
     @selected_index = 1
     @selected_col = 1
@@ -36,6 +42,7 @@ class AppTableSelect
     @highlight_spacing_index = 0
     @show_column_highlight = true
     @show_cell_highlight = true
+    @offset_mode_index = 0
   end
 
   def run
@@ -80,15 +87,22 @@ class AppTableSelect
 
     current_style_entry = @styles[@current_style_index]
     current_spacing_entry = HIGHLIGHT_SPACINGS[@highlight_spacing_index]
-    selection_label = @selected_index.nil? ? "none" : @selected_index.to_s
+    offset_mode_entry = OFFSET_MODES[@offset_mode_index]
+
+    # Determine selection/offset based on mode
+    effective_selection = offset_mode_entry[:allow_selection] ? @selected_index : nil
+    effective_offset = offset_mode_entry[:offset]
+    selection_label = effective_selection.nil? ? "none" : effective_selection.to_s
+    offset_label = effective_offset.nil? ? "auto" : effective_offset.to_s
 
     # Main table
     table = @tui.table(
       header: ["PID", "Name", "CPU"],
       rows:,
       widths:,
-      selected_row: @selected_index,
+      selected_row: effective_selection,
       selected_column: @selected_col,
+      offset: effective_offset,
       highlight_style:,
       highlight_symbol: "> ",
       highlight_spacing: current_spacing_entry[:spacing],
@@ -97,7 +111,7 @@ class AppTableSelect
       style: current_style_entry[:style],
       column_spacing: @column_spacing,
       block: @tui.block(
-        title: "Processes",
+        title: "Processes | Sel: #{selection_label} | Offset: #{offset_label}",
         borders: :all
       ),
       footer: ["Total: #{PROCESSES.length}", "Total CPU: #{PROCESSES.sum { |p| p[:cpu] }}%", ""]
@@ -130,11 +144,17 @@ class AppTableSelect
             ]),
             # Line 3: More Controls
             @tui.text_line(spans: [
+              @tui.text_span(content: "+/-", style: @hotkey_style),
               @tui.text_span(content: ": Col Space (#{@column_spacing})  "),
               @tui.text_span(content: "c", style: @hotkey_style),
-              @tui.text_span(content: ": Col Highlight (#{@show_column_highlight ? 'On' : 'Off'})  "),
+              @tui.text_span(content: ": Col Highlight (#{@show_column_highlight ? 'On' : 'Off'})"),
+            ]),
+            # Line 4: Offset Mode
+            @tui.text_line(spans: [
               @tui.text_span(content: "z", style: @hotkey_style),
-              @tui.text_span(content: ": Cell Highlight (#{@show_cell_highlight ? 'On' : 'Off'})"),
+              @tui.text_span(content: ": Cell Highlight (#{@show_cell_highlight ? 'On' : 'Off'})  "),
+              @tui.text_span(content: "o", style: @hotkey_style),
+              @tui.text_span(content: ": Offset Mode (#{offset_mode_entry[:name]})"),
             ]),
           ]
         ),
@@ -147,7 +167,7 @@ class AppTableSelect
       direction: :vertical,
       constraints: [
         @tui.constraint_fill(1),
-        @tui.constraint_length(5),
+        @tui.constraint_length(6),
       ]
     )
 
@@ -190,6 +210,8 @@ class AppTableSelect
       @show_column_highlight = !@show_column_highlight
     in type: :key, code: "z"
       @show_cell_highlight = !@show_cell_highlight
+    in type: :key, code: "o"
+      @offset_mode_index = (@offset_mode_index + 1) % OFFSET_MODES.length
     else
       nil
     end
