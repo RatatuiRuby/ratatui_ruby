@@ -231,15 +231,15 @@ Use it to debug your input handling or verify terminal behavior.
 
 Interactive tools require complex state. Mapping mouse clicks to widgets and handling modal dialogs creates messy code if handled in the main loop.
 
-This app implements a full Color Picker using a "Scene-Orchestrated" pattern. The Scene calculates layout and exposes cached rectangles for hit testing.
+This app implements a full Color Picker using a "Proto-Kit (Component-Based)" pattern. Each component encapsulates its own rendering, state, and event handling.
 
 Use it to build forms, editors, and mouse-driven tools.
 
 **What you'll learn:**
 
-*   **Scene-Orchestrated MVC**: Separates the View (layout/rendering) from the Controller (event loop) and Model (business logic).
-*   **Hit Testing**: Caches layout rectangles during the render pass to handle mouse clicks on specific elements.
-*   **Modal Dialogs**: Implements overlay patterns that intercept input.
+*   **Proto-Kit Architecture**: Self-contained components with `render(tui, frame, area)` and `handle_event(event)`.
+*   **Encapsulated Hit Testing**: Components cache their render area and check `contains?` internally.
+*   **Modal Dialogs**: Implements overlay patterns that intercept input via Chain of Responsibility.
 
 #### [Custom Widget (Escape Hatch)](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/app_custom_widget/app.rb)
 

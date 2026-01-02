@@ -8,62 +8,102 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 This example demonstrates how to build a **Feature-Rich Interactive Application** using `ratatui_ruby`.
 
 It goes beyond simple widgets to show a complete, real-world architecture for handling:
--   **Complex State Management** (Input validation, undo/redo prep, clipboard interaction)
+-   **Complex State Management** (Input validation, clipboard interaction)
 -   **Mouse Interaction & Hit Testing**
 -   **Dynamic Layouts**
 -   **Modal Dialogs**
 
-## Architecture: The "Scene-Orchestrated" Pattern
+## Architecture: The "Proto-Kit" Pattern (Component-Based)
 
-This app uses a pattern we call **"Scene-Orchestrated MVC"**.
+This app uses a **Strict Component-Based Architecture** where every UI element encapsulates its own **Rendering**, **State**, and **Event Handling**.
 
-### 1. The App (Controller)
-The main `App` class (`app.rb`) acts as the Controller. It:
--   Holds the source of truth (the State).
--   Runs the Event Loop.
--   Routes input events to the appropriate handler.
--   Initializes the `Scene`.
+### The Component Contract
 
-### 2. The Scene (View / Layout Engine)
-The `Scene` class (`scene.rb`) acts as the primary View. Unlike simple examples where the render logic is in the `App` class, here the **Scene owns the Layout**.
--   **Composition**: It takes purely logical objects (`Palette`, `Input`) and decides how to present them.
--   **Hit Testing**: Crucially, the Scene **caches layout rectangles** (like `@export_area_rect`) during the render pass so the Controller knows *where* things are to handle clicks later.
+Every component implements this duck-type interface:
 
-### 3. The Logical Models
-The application logic is broken down into small, testable Plain Old Ruby Objects (POROs) that know nothing about the TUI:
--   **`Color`**: Handles hex parsing, contrast calculation, and transformations.
--   **`Palette`**: Generates color harmonies.
--   **`Input`**: Manages the text buffer and validation state.
--   **`Clipboard`**: Wraps system commands.
+```ruby
+# Renders the component into the given area
+# Caches `area` for hit testing
+def render(tui, frame, area)
+  @area = area
+  # ... render using frame.render_widget
+end
 
-This separation means your **business logic remains pure Ruby**, while the TUI layer focuses solely on presentation.
+# Processes events; returns a symbolic signal or nil
+def handle_event(event) -> Symbol | nil
+  # Returns :consumed, :submitted, :copy_requested, etc.
+end
+
+# Optional: time-based updates
+def tick
+end
+```
+
+### 1. The MainContainer (Orchestrator)
+
+The `MainContainer` class (`main_container.rb`) owns all child components and orchestrates the UI:
+
+-   **Layout Phase:** Calculates `Rect`s using `tui.layout_split`.
+-   **Delegation Phase:** Calls `child.render(tui, frame, child_area)` for each component.
+-   **Event Routing (Chain of Responsibility):** Delegates events front-to-back. The modal dialog gets priority when active.
+-   **Mediator Pattern:** Interprets symbolic signals (`:submitted`, `:copy_requested`) to coordinate cross-component effects.
+
+### 2. Self-Contained Components
+
+Each UI element is a self-contained component:
+
+-   **`Input`**: Text entry with validation. Returns `:submitted` when Enter is pressed.
+-   **`Palette`**: Displays color harmonies. Accepts `update_color` from the container.
+-   **`ExportPane`**: Shows HEX/RGB/HSL formats. Returns `:copy_requested` when clicked.
+-   **`Controls`**: Displays keyboard shortcuts. Has a `tick` lifecycle for clipboard feedback.
+-   **`CopyDialog`**: Modal confirmation dialog. Returns `:consumed` when handling events.
+
+### 3. The App (Minimal Runner)
+
+The `App` class (`app.rb`) is a thin runner:
+-   Creates the `MainContainer`.
+-   Runs the main loop: `tick` → `render` → `poll` → `handle_event`.
+-   Checks for quit events.
 
 ## Key Features Showcased
 
-### 🖱️ Mouse Support & Hit Testing
-See `Scene#export_rect` and `App#handle_main_input`.
-The app detects clicks on specific UI elements. This handles the problem: *"How do I know which button the user clicked?"*
--   **Solution**: The rendering layer (Scene) exposes the `Rect` of interactive areas. The event loop checks `rect.contains?(mouse_x, mouse_y)`.
+### 🖱️ Encapsulated Hit Testing
 
-### 🔲 Modal Dialogs
-See `CopyDialog`.
-The app implements a modal overlay that intercepts input.
--   **Pattern**: The `App` checks `if dialog.active?`. If true, it routes events *only* to the dialog, effectively "blocking" the main UI.
+Components cache their render area (`@area`) during `render`. In `handle_event`, they check `@area&.contains?(x, y)` to detect clicks. The container never calculates coordinates—hit testing is fully encapsulated.
 
-### 🎨 Advanced Styling & Layout
--   **Dynamic Constraints**: Layouts that adapt to content.
--   **Visual Feedback**:
-    -   Input fields turn red on error.
-    -   Clipboard messages fade out over time (`Clipboard#tick`).
-    -   Text colors automatically adjust for contrast (Black text on light backgrounds, White on dark).
+### 🔲 Modal Dialogs via Chain of Responsibility
 
-## Problem Solving: What you can learn
+When `CopyDialog` is active, the `MainContainer` offers it events first. If it returns `:consumed`, event propagation stops. This creates modal behavior without explicit flags in the app.
+
+### 📡 Symbolic Signals (Mediator Pattern)
+
+Components return semantic symbols instead of just `:consumed`:
+-   `Input` returns `:submitted` when the user presses Enter.
+-   `ExportPane` returns `:copy_requested` when clicked.
+
+The `MainContainer` interprets these signals to coordinate cross-component communication:
+
+```ruby
+result = @input.handle_event(event)
+case result
+when :submitted
+  @palette.update_color(@input.parsed_color)
+  return :consumed
+end
+```
+
+### ⏱️ Lifecycle Hooks (`tick`)
+
+Components can have time-based updates. `Controls#tick` delegates to `Clipboard#tick` to decrement the feedback timer.
+
+## Problem Solving: What You Can Learn
 
 Read this example if you are trying to solve:
-1.  **"How do I structure a larger app?"** -> Move render logic out of `App` and into a `Scene` or `View` class.
-2.  **"How do I handle mouse clicks?"** -> Cache the `Rect` during render.
-3.  **"How do I make a popup?"** -> Use a state flag (`active?`) to conditional render on top of everything else (z-ordering) and hijack the input loop.
-4.  **"How do I validate input?"** -> Wrap strings in an `Input` object that tracks both keypresses and validation errors.
+1.  **"How do I structure a larger app?"** → Use the Component Contract and a Container for orchestration.
+2.  **"How do I handle mouse clicks?"** → Cache `@area` during render; check `contains?` in `handle_event`.
+3.  **"How do I make a popup?"** → Use Chain of Responsibility: the active modal gets events first.
+4.  **"How do I coordinate between components?"** → Use symbolic signals and the Mediator pattern.
+5.  **"How do I validate input?"** → Encapsulate validation inside the `Input` component.
 
 ## Usage
 
@@ -79,15 +119,15 @@ ruby examples/app_color_picker/app.rb
 
 Complex applications require structured state habits. This Color Picker and the [App All Events](../app_all_events/README.md) example demonstrate two different approaches.
 
-### The Tool Approach (Color Picker)
+### The Tool Approach (Color Picker - Proto-Kit)
 
-Tools require interaction. Users click buttons and drag sliders. The Controller needs to know where components exist on screen. MVVM hides this layout data.
+Tools require interaction. Users click buttons and drag sliders. Components need to know where they exist on screen for hit testing. The Container orchestrates cross-component effects.
 
-This example uses a "Scene" pattern. The View exposes layout rectangles. The Controller uses these rectangles to handle mouse clicks.
+This example uses the **Proto-Kit (Component-Based)** pattern. Each component owns its own state, rendering, and event handling. The Container routes events and mediates communication.
 
 Use this pattern for forms, editors, and mouse-driven tools.
 
-### The Dashboard Approach (AppAllEvents)
+### The Dashboard Approach (AppAllEvents - Proto-TEA)
 
 Dashboards display data. They rarely require complex mouse interaction. Proto-TEA (Model-View-Update) works best there. State is immutable. Logic is pure. Updates are predictable. This simplifies testing.
 

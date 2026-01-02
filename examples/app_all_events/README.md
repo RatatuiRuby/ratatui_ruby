@@ -91,8 +91,9 @@ Use this pattern for logs, monitors, and data viewers.
 
 ### The Tool Approach (Color Picker)
 
-Tools require interaction. Users click buttons and drag sliders. The Controller needs to know where components exist on screen.
+Tools require interaction. Users click buttons and drag sliders. Each UI component needs to know where it exists on screen for hit testing.
 
-The Color Picker uses a "Scene-Orchestrated" pattern. The Scene calculates layout and exposes cached rectangles for hit testing.
+The Color Picker uses a "Proto-Kit (Component-Based)" pattern. Each component encapsulates its own rendering, state, and event handling. The Container routes events and coordinates cross-component effects.
 
 Use this pattern for forms, editors, and mouse-driven tools.
+

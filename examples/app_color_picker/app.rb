@@ -7,11 +7,7 @@ $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 $LOAD_PATH.unshift File.expand_path(__dir__)
 
 require "ratatui_ruby"
-require_relative "input"
-require_relative "palette"
-require_relative "clipboard"
-require_relative "copy_dialog"
-require_relative "scene"
+require_relative "main_container"
 
 # A terminal-based color picker application.
 #
@@ -21,26 +17,27 @@ require_relative "scene"
 # This application solves the problem by providing an interactive interface. It parses hex strings,
 # generates palettes, and displays them visually in the terminal.
 #
-# Use it to experiment with color combinations and quickly find the right hex codes.
+# === Architecture
+#
+# This example uses the Proto-Kit (Component-Based) pattern:
+# - **Components**: Self-contained UI elements with `render`, `handle_event`, and optional `tick`
+# - **Container**: Owns layout, delegates to children, routes events via Chain of Responsibility
+# - **Mediator**: Container interprets symbolic signals (`:consumed`, `:submitted`) for cross-component effects
 #
 # === Examples
 #
 #   AppColorPicker.new.run
 #
 class AppColorPicker
-  # Creates a new <tt>AppColorPicker</tt> instance with a default palette and clipboard.
+  # Creates a new <tt>AppColorPicker</tt> instance.
   def initialize
-    @input = Input.new
-    @palette = Palette.new(@input.parse)
-    @clipboard = Clipboard.new
-    @dialog = CopyDialog.new(@clipboard)
-    @scene = nil
+    @container = nil
   end
 
   # Starts the terminal session and enters the main event loop.
   #
-  # This method initializes the terminal, renders the initial scene, and polls for
-  # input until the user quits.
+  # This method initializes the terminal, creates the MainContainer, and runs
+  # the event loop until the user quits.
   #
   # === Example
   #
@@ -49,62 +46,27 @@ class AppColorPicker
   #
   def run
     RatatuiRuby.run do |tui|
-      @scene = Scene.new(tui)
+      @container = MainContainer.new(tui)
+
       loop do
-        render(tui)
-        result = handle_input(tui)
-        break if result == :quit
+        @container.tick
+        tui.draw { |frame| @container.render(tui, frame, frame.area) }
+
+        event = tui.poll_event
+        break if quit_event?(event)
+
+        @container.handle_event(event)
       end
     end
   end
 
-  private def render(tui)
-    @clipboard.tick
-    tui.draw do |frame|
-      @scene.render(frame, input: @input, palette: @palette, clipboard: @clipboard, dialog: @dialog)
-    end
-  end
-
-  private def handle_input(tui)
-    event = tui.poll_event
-    @input.clear_error unless @dialog.active?
-
-    if @dialog.active?
-      handle_dialog_input(event)
-    else
-      handle_main_input(event)
-    end
-  end
-
-  private def handle_dialog_input(event)
-    result = @dialog.handle_input(event)
+  private def quit_event?(event)
     case event
-    in { type: :key, code: "q" } | { type: :key, code: "esc" } | { type: :key, code: "c", modifiers: ["ctrl"] }
-      :quit
+    in { type: :key, code: "q" } | { type: :key, code: "esc" } |
+       { type: :key, code: "c", modifiers: [/ctrl/] }
+      true
     else
-      result
-    end
-  end
-
-  private def handle_main_input(event)
-    case event
-    in { type: :key, code: "q" } | { type: :key, code: "esc" } | { type: :key, code: "c", modifiers: ["ctrl"] }
-      :quit
-    in { type: :key, code: "enter" }
-      @palette = Palette.new(@input.parse)
-    in { type: :key, code: "backspace" }
-      @input.delete_char
-    in { type: :paste, content: }
-      @input.set(content)
-      @palette = Palette.new(@input.parse)
-    in { type: :key, code: code }
-      @input.append_char(code)
-    in { type: :mouse, kind: "down", button: "left", x:, y: }
-      if @scene && @scene.export_rect&.contains?(x, y) && @palette.main
-        @dialog.open(@palette.main.hex)
-      end
-    else
-      nil
+      false
     end
   end
 end

@@ -5,66 +5,95 @@
 
 require_relative "color"
 
-# Holds a primary color and its harmonies.
+# A self-contained component displaying a color palette with harmonies.
 #
-# Color pickers need to show related colors: shades, tints, complements. Building
-# these relationships repeatedly is redundant. Passing them individually through
-# rendering pipelines is awkward.
+# Color pickers need to show related colors: shades, tints, complements. This
+# component owns a primary color and renders its harmonies.
 #
-# This object owns a primary color and generates its harmonies on demand. It
-# provides accessor methods and rendering helpers.
+# === Component Contract
 #
-# Use it to organize color data for palette displays.
+# - `render(tui, frame, area)`: Draws the harmony blocks; stores `area`
+# - `handle_event(event) -> nil`: Display-only, always returns nil
+# - `update_color(color)`: Updates the primary color (called by MainContainer)
 #
 # === Example
 #
-#   color = Color.parse("#FF0000")
-#   palette = Palette.new(color)
-#   palette.main           # => Color
-#   palette.all            # => [Harmony, Harmony, ...]
-#   blocks = palette.as_blocks(tui)  # => [Block, Block, ...]
+#   palette = Palette.new
+#   palette.update_color(Color.parse("#FF0000"))
+#   palette.render(tui, frame, palette_area)
 class Palette
-  def initialize(primary_color)
+  def initialize(primary_color = nil)
     @primary = primary_color
+    @area = nil
   end
+
+  # The cached render area.
+  attr_reader :area
 
   # The primary (main) color, or nil if no color is set.
   #
   # === Example
   #
-  #   palette = Palette.new(color)
   #   palette.main.hex  # => "#FF0000"
   def main
     @primary
   end
 
+  # Updates the primary color.
+  #
+  # Called by the MainContainer when Input submits a new color.
+  #
+  # [color] Color object or nil
+  def update_color(color)
+    @primary = color
+  end
+
   # All harmonies: main, shade, tint, complement, split 1, split 2, split-complement.
   #
   # Returns an empty array if no primary color is set.
-  #
-  # === Example
-  #
-  #   palette = Palette.new(color)
-  #   palette.all.size  # => 7
   def all
     return [] if @primary.nil?
 
     @primary.harmonies
   end
 
-  # Renders all harmonies as TUI Block widgets.
+  # Renders the palette into the given area.
   #
-  # Each harmony becomes a titled block showing its color swatch. Returns an empty
-  # array if no primary color is set.
+  # Shows all harmony blocks in a horizontal layout. If no color is set,
+  # displays a placeholder message.
   #
   # [tui] Session or TUI factory object
+  # [frame] Frame object from RatatuiRuby.draw block
+  # [area] Rect area to draw into
   #
   # === Example
   #
-  #   palette = Palette.new(color)
-  #   blocks = palette.as_blocks(tui)
-  #   # blocks[0] => Block titled "Main" with color swatch
-  def as_blocks(tui)
+  #   palette.render(tui, frame, palette_area)
+  def render(tui, frame, area)
+    @area = area
+    widget = build_widget(tui)
+    frame.render_widget(widget, area)
+  end
+
+  # Display-only component; always returns nil.
+  def handle_event(_event)
+    nil
+  end
+
+  private def build_widget(tui)
+    if @primary.nil?
+      tui.paragraph(text: "No color selected")
+    else
+      blocks = as_blocks(tui)
+      tui.layout(
+        direction: :horizontal,
+        constraints: Array.new(blocks.size) { tui.constraint_fill(1) },
+        children: blocks
+      )
+    end
+  end
+
+  private def as_blocks(tui)
     return [] if @primary.nil?
 
     all.map do |harmony|

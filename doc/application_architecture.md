@@ -166,12 +166,15 @@ This pattern implements unidirectional data flow inspired by The Elm Architectur
 
 Use this when you want predictable state management and easy-to-test logic.
 
-### Scene-Orchestrated MVC
+### Proto-Kit (Component-Based)
 
 **Source:** [examples/app_color_picker](../examples/app_color_picker/README.md)
 
-This pattern addresses the difficulty of mouse interaction and layout management:
-*   **Scene:** A specialized View that owns the layout *and* hit testing. It caches the screen coordinates of widgets during the draw phase.
-*   **App (Controller):** Handles events by querying the Scene (e.g., `scene.rect_at(x, y)`).
+This pattern addresses the difficulty of mouse interaction and complex UI orchestration:
+*   **Component Contract:** Every UI element implements `render(tui, frame, area)` and `handle_event(event)`.
+*   **Encapsulated Hit Testing:** Components cache their render area and check `contains?` internally.
+*   **Symbolic Signals:** `handle_event` returns semantic symbols (`:consumed`, `:submitted`) instead of just booleans.
+*   **Container (Mediator):** A parent container routes events via Chain of Responsibility and coordinates cross-component effects.
 
 Use this when you need rich interactivity (mouse clicks, drag-and-drop) or complex dynamic layouts.
+

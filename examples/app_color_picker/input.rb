@@ -5,27 +5,30 @@
 
 require_relative "color"
 
-# Manages text input and color parsing with error feedback.
+# A self-contained text input component for color entry.
 #
 # Users type color values. They make mistakes—typos, invalid formats. The app
-# needs to validate their input and show helpful error messages. Manually
-# tracking input state, validation, and error messages across renders is
-# cumbersome and error-prone.
+# needs to validate their input and show helpful error messages.
 #
-# This object holds the current input string. It validates by parsing. It stores
-# errors and clears them when appropriate. It provides methods to manipulate
-# the input (append, delete).
+# This component encapsulates rendering, state, and event handling. It draws
+# itself into the provided area, caches that area for hit testing, and handles
+# keyboard events internally.
 #
-# Use it to build text input forms where validation feedback matters.
+# === Component Contract
+#
+# - `render(tui, frame, area)`: Draws the input field; stores `area` for hit testing
+# - `handle_event(event) -> Symbol | nil`: Returns `:consumed`, `:submitted`, or `nil`
 #
 # === Example
 #
 #   input = Input.new
-#   input.append_char("#")
-#   input.append_char("f")
-#   input.append_char("f")
-#   color = input.parse  # => Color or nil
-#   puts input.error     # => error message if parse failed
+#   input.render(tui, frame, area)
+#
+#   result = input.handle_event(event)
+#   case result
+#   when :submitted
+#     palette.update_color(input.parsed_color)
+#   end
 class Input
   PRINTABLE_PATTERN = /[\w#,().\s%]/
 
@@ -35,89 +38,104 @@ class Input
   def initialize(initial_value = "#F96302")
     @value = initial_value
     @error = ""
+    @parsed_color = nil
+    @area = nil
   end
 
   # Current input string.
-  #
-  # === Example
-  #
-  #   input = Input.new
-  #   input.value  # => "#F96302"
-  def value
-    @value
-  end
+  attr_reader :value
 
   # Error message from the last failed parse, or empty string.
-  #
-  # === Example
-  #
-  #   input.parse  # => nil (invalid)
-  #   input.error  # => "Invalid color format. Try: #ff0000, rgb(255,0,0), red"
-  def error
-    @error
-  end
+  attr_reader :error
+
+  # The last successfully parsed Color, or nil.
+  attr_reader :parsed_color
+
+  # The cached render area, for hit testing.
+  attr_reader :area
 
   # Clears the current error message.
   def clear_error
     @error = ""
   end
 
-  # Appends a character to the input if it matches the printable pattern.
+  # Renders the input widget into the given area.
   #
-  # Silently ignores non-printable characters. Valid characters include
-  # letters, digits, hash, comma, parentheses, dot, space, and percent.
+  # Caches `area` for hit testing. Shows the current input value with a cursor.
+  # Displays the error message in red if one is set.
   #
-  # [char] String single character
-  def append_char(char)
-    @value += char if char.length == 1 && char.match?(PRINTABLE_PATTERN)
-  end
-
-  # Removes the last character from the input.
-  def delete_char
-    @value = @value[0...-1]
-  end
-
-  # Replaces the entire input string.
-  #
-  # [text] String new input value
-  def set(text)
-    @value = text
-  end
-
-  # Parses the current input as a Color.
-  #
-  # Returns a Color if valid; nil otherwise. Sets the error message on failure.
-  # Clears the error message on success.
+  # [tui] Session or TUI factory object
+  # [frame] Frame object from RatatuiRuby.draw block
+  # [area] Rect area to draw into
   #
   # === Example
   #
-  #   input = Input.new("#FF0000")
-  #   color = input.parse  # => Color
-  #   input.error          # => ""
-  def parse
-    color = Color.parse(@value)
-    if color
-      clear_error
-      color
+  #   input.render(tui, frame, input_area)
+  def render(tui, frame, area)
+    @area = area
+    widget = build_widget(tui)
+    frame.render_widget(widget, area)
+  end
+
+  # Processes a keyboard event and updates internal state.
+  #
+  # Returns:
+  # - `:submitted` when Enter is pressed (caller should read `parsed_color`)
+  # - `:consumed` when the event was handled (typing, backspace)
+  # - `nil` when the event was ignored
+  #
+  # [event] Event from RatatuiRuby.poll_event
+  #
+  # === Example
+  #
+  #   result = input.handle_event(event)
+  #   if result == :submitted
+  #     palette.update_color(input.parsed_color)
+  #   end
+  def handle_event(event)
+    case event
+    in { type: :key, code: "enter" }
+      parse
+      :submitted
+    in { type: :key, code: "backspace" }
+      delete_char
+      :consumed
+    in { type: :paste, content: }
+      set(content)
+      parse
+      :submitted
+    in { type: :key, code: code }
+      append_char(code)
+      :consumed
     else
-      @error = "Invalid color format. Try: #ff0000, rgb(255,0,0), red"
       nil
     end
   end
 
-  # Renders the input widget for display in a TUI frame.
-  #
-  # Shows the current input value with a cursor. Displays the error message
-  # in red if one is set.
-  #
-  # [tui] Session or TUI factory object
-  #
-  # === Example
-  #
-  #   input = Input.new
-  #   widget = input.render(tui)
-  #   frame.render_widget(widget, area)
-  def render(tui)
+  private def append_char(char)
+    @value += char if char.length == 1 && char.match?(PRINTABLE_PATTERN)
+  end
+
+  private def delete_char
+    @value = @value[0...-1]
+  end
+
+  private def set(text)
+    @value = text
+  end
+
+  private def parse
+    color = Color.parse(@value)
+    if color
+      clear_error
+      @parsed_color = color
+    else
+      @error = "Invalid color format. Try: #ff0000, rgb(255,0,0), red"
+      @parsed_color = nil
+    end
+  end
+
+  private def build_widget(tui)
     input_lines = [
       tui.text_line(spans: [
         tui.text_span(content: @value),

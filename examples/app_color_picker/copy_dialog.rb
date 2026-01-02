@@ -5,38 +5,40 @@
 
 require_relative "clipboard"
 
-# A confirmation dialog for copying text to the clipboard.
+# A self-contained modal dialog component for copying text to the clipboard.
 #
 # Users click on content they want to copy. The app needs to confirm: "Are you
-# sure?" Managing dialog state (visible, selection, active), rendering the
-# dialog, and dispatching keyboard events manually is tedious.
+# sure?" This component owns dialog state, renders itself, and handles keyboard
+# input.
 #
-# This object owns dialog state and lifecycle. It renders itself. It responds
-# to keyboard input. It delegates clipboard operations to a Clipboard.
+# === Component Contract
 #
-# Use it to build copy-on-click interactions with user confirmation.
+# - `render(tui, frame, area)`: Draws the dialog; stores `area`
+# - `handle_event(event) -> Symbol | nil`: Returns `:consumed` when handled
+# - `open(text)`: Opens the dialog with the text to copy
+# - `close`: Closes the dialog
+# - `active?`: True if the dialog is visible
 #
 # === Example
 #
-#   clipboard = Clipboard.new
 #   dialog = CopyDialog.new(clipboard)
-#
-#   # Open the dialog
 #   dialog.open("#FF0000")
-#   dialog.active?  # => true
 #
-#   # Handle input
-#   result = dialog.handle_input(event)  # Routes to :copied or :cancelled
+#   result = dialog.handle_event(event)
+#   # result == :consumed when dialog handled the event
 #
-#   # Render
-#   widget = dialog.render(tui, area)
+#   dialog.render(tui, frame, center_area)
 class CopyDialog
   def initialize(clipboard)
     @clipboard = clipboard
     @text = ""
     @selected = :yes
     @active = false
+    @area = nil
   end
+
+  # The cached render area.
+  attr_reader :area
 
   # Opens the dialog with text to copy.
   #
@@ -48,7 +50,6 @@ class CopyDialog
   #
   #   dialog.open("#FF0000")
   #   dialog.active?  # => true
-  #   dialog.text     # => "#FF0000"
   def open(text)
     @text = text
     @selected = :yes
@@ -61,73 +62,68 @@ class CopyDialog
   end
 
   # True if the dialog is currently open and visible.
-  #
-  # === Example
-  #
-  #   dialog.open("text")
-  #   dialog.active?  # => true
-  #   dialog.close
-  #   dialog.active?  # => false
   def active?
     @active
   end
 
-  # Processes a keyboard event and updates selection or closes the dialog.
+  # Renders the dialog into the given area.
   #
-  # Left/h moves selection to :yes. Right/l moves to :no. Enter confirms.
-  # Y/N hotkeys also work (Y copies immediately, N cancels). Returns nil for
-  # all handled events; does nothing if the dialog is inactive.
+  # Shows the text to copy, Yes/No buttons with current selection highlighted,
+  # and keyboard instructions.
   #
-  # [event] Hash event from RatatuiRuby.poll_event
+  # [tui] Session or TUI factory object
+  # [frame] Frame object from RatatuiRuby.draw block
+  # [area] Rect area to draw into
   #
   # === Example
   #
-  #   dialog.open("text")
-  #   dialog.handle_input({ type: :key, code: "left" })
-  #   dialog.handle_input({ type: :key, code: "enter" })
-  #   dialog.active?  # => false
-  def handle_input(event)
+  #   dialog.render(tui, frame, center_area)
+  def render(tui, frame, area)
+    @area = area
+    widget = build_widget(tui)
+    frame.render_widget(widget, area)
+  end
+
+  # Processes a keyboard event and updates selection or closes the dialog.
+  #
+  # Returns:
+  # - `:consumed` when the event was handled
+  # - `nil` when the event was ignored or dialog is inactive
+  #
+  # [event] Event from RatatuiRuby.poll_event
+  #
+  # === Example
+  #
+  #   result = dialog.handle_event(event)
+  def handle_event(event)
     return nil unless @active
 
     case event
     in { type: :key, code: "left" } | { type: :key, code: "h" }
       @selected = :yes
-      nil
+      :consumed
     in { type: :key, code: "right" } | { type: :key, code: "l" }
       @selected = :no
-      nil
+      :consumed
     in { type: :key, code: "enter" }
       if @selected == :yes
         @clipboard.copy(@text)
       end
       @active = false
-      nil
+      :consumed
     in { type: :key, code: "y" }
       @clipboard.copy(@text)
       @active = false
-      nil
+      :consumed
     in { type: :key, code: "n" }
       @active = false
-      nil
+      :consumed
     else
       nil
     end
   end
 
-  # Renders the dialog widget for display in a TUI frame.
-  #
-  # Shows the text to copy, Yes/No buttons with current selection highlighted,
-  # and keyboard instructions. Renders only when active.
-  #
-  # [tui] Session or TUI factory object
-  # [area] Rect area for the dialog
-  #
-  # === Example
-  #
-  #   dialog.open("#FF0000")
-  #   widget = dialog.render(tui, center_area)
-  #   frame.render_widget(widget, center_area)
-  def render(tui, area)
+  private def build_widget(tui)
     yes_style = if @selected == :yes
       tui.style(bg: :cyan, fg: :black, modifiers: [:bold])
     else
