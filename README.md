@@ -103,6 +103,8 @@ Issues for the underlying Rust library should be filed at [ratatui/ratatui](http
 
 Want to help develop **ratatui_ruby**? Check out the [contribution guide on the wiki](https://man.sr.ht/~kerrick/ratatui_ruby/contributing.md).
 
+**Note**: We use a `devel` branch for active development. `main` is for stable releases only.
+
 
 ## Copyright & License
 

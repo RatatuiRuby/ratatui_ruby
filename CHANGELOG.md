@@ -12,6 +12,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **Non-Blocking Event Polling**: `RatatuiRuby.poll_event` now accepts an optional `timeout:` parameter (Float seconds). Use `timeout: 0.0` for non-blocking checks, or `timeout: 0.1` for fixed timesteps. Defaults to `0.016` (16ms) to preserve existing behavior.
+
+
 ### Changed
 
 ### Fixed

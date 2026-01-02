@@ -10,7 +10,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 Events are retrieved using `RatatuiRuby.poll_event`. This method returns an instance of a subclass of `RatatuiRuby::Event` (e.g., `RatatuiRuby::Event::Key`, `RatatuiRuby::Event::Mouse`). When no event is available, it returns `RatatuiRuby::Event::None`—a [null object](https://martinfowler.com/eaaCatalog/specialCase.html) that safely responds to all event predicates with `false`.
 
-## 1. Symbol and String Comparison (Simplest)
+## 1. Blocking vs. Polling
+
+Most applications run in a loop (e.g., a game loop or UI loop). To prevent high CPU usage, the loop should wait briefly for input.
+
+*   **Default (Polling):** `RatatuiRuby.poll_event` (no args) waits for **0.016s** (approx 60 FPS). If no event occurs, it returns `RatatuiRuby::Event::None`. This keeps the application responsive.
+*   **Blocking:** `RatatuiRuby.poll_event(timeout: nil)` waits **forever** until an event occurs. Use this for scripts that only react to input and do not need to update the UI on a timer.
+*   **Non-Blocking:** `RatatuiRuby.poll_event(timeout: 0.0)` returns immediately.
+
+## 2. Symbol and String Comparison (Simplest)
 
 For simple key events, `RatatuiRuby::Event::Key` objects can be compared directly to Symbols or Strings. This is often the quickest way to get started.
 
@@ -36,7 +44,7 @@ if event == :enter
 end
 ```
 
-## 2. Predicate Methods (Intermediate)
+## 3. Predicate Methods (Intermediate)
 
 If you need more control or logic (e.g. `if/elsif`), or need to handle non-key events like Resize or Mouse, use the predicate methods.
 
@@ -82,7 +90,7 @@ if event.mouse? && event.scroll_up?
 end
 ```
 
-## 3. Pattern Matching (Powerful)
+## 4. Pattern Matching (Powerful)
 
 For complex applications, Ruby 3.0+ Pattern Matching with the `type:` discriminator is the most idiomatic and concise approach.
 

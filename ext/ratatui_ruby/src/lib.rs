@@ -114,7 +114,7 @@ fn init() -> Result<(), Error> {
     let frame_class = m.define_class("Frame", ruby.class_object())?;
     frame_class.define_method("area", method!(RubyFrame::area, 0))?;
     frame_class.define_method("render_widget", method!(RubyFrame::render_widget, 2))?;
-    m.define_module_function("_poll_event", function!(events::poll_event, 0))?;
+    m.define_module_function("_poll_event", function!(events::poll_event, 1))?;
     m.define_module_function("inject_test_event", function!(events::inject_test_event, 2))?;
     m.define_module_function("clear_events", function!(events::clear_events, 0))?;
 

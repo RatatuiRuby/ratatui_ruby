@@ -52,4 +52,32 @@ class TestPollEvent < Minitest::Test
     assert_equal 5, result.x
     assert_equal 5, result.y
   end
+
+  def test_poll_event_with_zero_timeout_returns_immediately
+    start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    result = RatatuiRuby.poll_event(timeout: 0.0)
+    elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time
+
+    assert_instance_of RatatuiRuby::Event::None, result
+    assert_operator elapsed, :<, 0.01, "Zero timeout should return in under 10ms"
+  end
+
+  def test_poll_event_with_nil_timeout_returns_none_in_test_mode
+    result = RatatuiRuby.poll_event(timeout: nil)
+    assert_instance_of RatatuiRuby::Event::None, result
+  end
+
+  def test_poll_event_with_explicit_timeout_returns_injected_event
+    RatatuiRuby.inject_test_event("key", { code: "x" })
+    result = RatatuiRuby.poll_event(timeout: 0.1)
+
+    assert_predicate result, :key?
+    assert_equal "x", result.code
+  end
+
+  def test_poll_event_with_negative_timeout_raises_error
+    assert_raises(ArgumentError) do
+      RatatuiRuby.poll_event(timeout: -1.0)
+    end
+  end
 end

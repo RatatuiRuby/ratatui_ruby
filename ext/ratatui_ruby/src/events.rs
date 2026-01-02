@@ -178,7 +178,7 @@ pub fn clear_events() {
     EVENT_QUEUE.lock().unwrap().clear();
 }
 
-pub fn poll_event(ruby: &magnus::Ruby) -> Result<Value, Error> {
+pub fn poll_event(ruby: &magnus::Ruby, timeout_val: Option<f64>) -> Result<Value, Error> {
     let event = {
         let mut queue = EVENT_QUEUE.lock().unwrap();
         if queue.is_empty() {
@@ -204,14 +204,23 @@ pub fn poll_event(ruby: &magnus::Ruby) -> Result<Value, Error> {
         return Ok(ruby.qnil().into_value_with(ruby));
     }
 
-    if ratatui::crossterm::event::poll(std::time::Duration::from_millis(16))
-        .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?
-    {
+    if let Some(secs) = timeout_val {
+        // Timed poll: wait up to the specified duration
+        let duration = std::time::Duration::from_secs_f64(secs);
+        if ratatui::crossterm::event::poll(duration)
+            .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?
+        {
+            let event = ratatui::crossterm::event::read()
+                .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
+            handle_event(event)
+        } else {
+            Ok(ruby.qnil().into_value_with(ruby))
+        }
+    } else {
+        // Blocking: wait indefinitely for an event
         let event = ratatui::crossterm::event::read()
             .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
         handle_event(event)
-    } else {
-        Ok(ruby.qnil().into_value_with(ruby))
     }
 }
 

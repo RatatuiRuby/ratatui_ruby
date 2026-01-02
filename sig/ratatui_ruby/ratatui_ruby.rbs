@@ -12,7 +12,7 @@ module RatatuiRuby
   def self.restore_terminal: () -> void
   def self.draw: (widget tree) -> void
                | () { (Frame) -> void } -> void
-  def self._poll_event: () -> Hash[Symbol, untyped]?
-  def self.poll_event: () -> Event?
+  def self._poll_event: (Float?) -> Hash[Symbol, untyped]?
+  def self.poll_event: (?timeout: Float?) -> Event?
   def self.inject_test_event: (String, Hash[Symbol, untyped]) -> void
 end

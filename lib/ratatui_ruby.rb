@@ -155,20 +155,29 @@ module RatatuiRuby
   ##
   # Checks for user input.
   #
-  # Returns a discrete event (Key, Mouse, Resize) if one is available in the queue.
-  # Returns RatatuiRuby::Event::None if the queue is empty (non-blocking).
+  # Interactive apps must respond to input. Loops need to poll without burning CPU.
   #
-  # === Example
+  # This method checks for an event. It returns the event if one is found. It returns {RatatuiRuby::Event::None} if the timeout expires.
   #
+  # [timeout] Float seconds to wait (default: 0.016).
+  #           Pass <tt>nil</tt> to block indefinitely (wait forever).
+  #           Pass <tt>0.0</tt> for a non-blocking check.
+  #
+  # === Examples
+  #
+  #   # Standard loop (approx 60 FPS)
   #   event = RatatuiRuby.poll_event
-  #   if event.none?
-  #     puts "No input available"
-  #   elsif event.key?
-  #     puts "Key pressed"
-  #   end
   #
-  def self.poll_event
-    raw = _poll_event
+  #   # Block until event (pauses execution)
+  #   event = RatatuiRuby.poll_event(timeout: nil)
+  #
+  #   # Non-blocking check (returns immediately)
+  #   event = RatatuiRuby.poll_event(timeout: 0.0)
+  #
+  def self.poll_event(timeout: 0.016)
+    raise ArgumentError, "timeout must be non-negative" if timeout && timeout < 0
+
+    raw = _poll_event(timeout)
     return Event::None.new if raw.nil?
 
     case raw[:type]
