@@ -2,8 +2,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::{parse_block, parse_style};
+use crate::widgets::table_state::RubyTableState;
 use bumpalo::Bump;
-use magnus::{prelude::*, Error, Symbol, Value};
+use magnus::{prelude::*, Error, Symbol, TryConvert, Value};
 use ratatui::{
     layout::{Constraint, Flex, Rect},
     widgets::{Cell, HighlightSpacing, Row, Table, TableState},
@@ -117,6 +118,111 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     frame.render_stateful_widget(table, area, &mut state);
+    Ok(())
+}
+
+/// Renders a Table with an external state object.
+///
+/// This function ignores `selected_row`, `selected_column`, and `offset` from the widget.
+/// The State object is the single source of truth for selection and scroll position.
+pub fn render_stateful(
+    frame: &mut Frame,
+    area: Rect,
+    node: Value,
+    state_wrapper: Value,
+) -> Result<(), Error> {
+    let bump = Bump::new();
+    let ruby = magnus::Ruby::get().unwrap();
+
+    // Extract the RubyTableState wrapper
+    let state: &RubyTableState = TryConvert::try_convert(state_wrapper)?;
+
+    // Parse rows
+    let rows_value: Value = node.funcall("rows", ())?;
+    let rows_array = magnus::RArray::from_value(rows_value)
+        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for rows"))?;
+    let widths_val: Value = node.funcall("widths", ())?;
+    let widths_array = magnus::RArray::from_value(widths_val)
+        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for widths"))?;
+
+    let mut rows = Vec::new();
+    for i in 0..rows_array.len() {
+        let index = isize::try_from(i)
+            .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let row_val: Value = rows_array.entry(index)?;
+        rows.push(parse_row(row_val)?);
+    }
+
+    let constraints = parse_constraints(widths_array)?;
+
+    // Build table (ignoring selected_row, selected_column, offset — State is truth)
+    let header_val: Value = node.funcall("header", ())?;
+    let footer_val: Value = node.funcall("footer", ())?;
+    let highlight_style_val: Value = node.funcall("highlight_style", ())?;
+    let column_highlight_style_val: Value = node.funcall("column_highlight_style", ())?;
+    let cell_highlight_style_val: Value = node.funcall("cell_highlight_style", ())?;
+    let highlight_symbol_val: Value = node.funcall("highlight_symbol", ())?;
+    let block_val: Value = node.funcall("block", ())?;
+    let flex_sym: Symbol = node.funcall("flex", ())?;
+    let highlight_spacing_sym: Symbol = node.funcall("highlight_spacing", ())?;
+    let style_val: Value = node.funcall("style", ())?;
+    let column_spacing_val: Value = node.funcall("column_spacing", ())?;
+
+    let flex = match flex_sym.to_string().as_str() {
+        "start" => Flex::Start,
+        "center" => Flex::Center,
+        "end" => Flex::End,
+        "space_between" => Flex::SpaceBetween,
+        "space_around" => Flex::SpaceAround,
+        "space_evenly" => Flex::SpaceEvenly,
+        _ => Flex::Legacy,
+    };
+
+    let mut table = Table::new(rows, constraints).flex(flex);
+
+    let highlight_spacing = match highlight_spacing_sym.to_string().as_str() {
+        "always" => HighlightSpacing::Always,
+        "never" => HighlightSpacing::Never,
+        _ => HighlightSpacing::WhenSelected,
+    };
+    table = table.highlight_spacing(highlight_spacing);
+
+    if !header_val.is_nil() {
+        table = table.header(parse_row(header_val)?);
+    }
+    if !footer_val.is_nil() {
+        table = table.footer(parse_row(footer_val)?);
+    }
+    if !block_val.is_nil() {
+        table = table.block(parse_block(block_val, &bump)?);
+    }
+    if !highlight_style_val.is_nil() {
+        table = table.row_highlight_style(parse_style(highlight_style_val)?);
+    }
+    if !column_highlight_style_val.is_nil() {
+        table = table.column_highlight_style(parse_style(column_highlight_style_val)?);
+    }
+    if !cell_highlight_style_val.is_nil() {
+        table = table.cell_highlight_style(parse_style(cell_highlight_style_val)?);
+    }
+    if !highlight_symbol_val.is_nil() {
+        let symbol: String = highlight_symbol_val.funcall("to_s", ())?;
+        table = table.highlight_symbol(symbol);
+    }
+    if !style_val.is_nil() {
+        table = table.style(parse_style(style_val)?);
+    }
+    if !column_spacing_val.is_nil() {
+        let spacing: u16 = column_spacing_val.funcall("to_int", ())?;
+        table = table.column_spacing(spacing);
+    }
+
+    // Borrow the inner TableState, render, and release the borrow immediately
+    {
+        let mut inner_state = state.borrow_mut();
+        frame.render_stateful_widget(table, area, &mut inner_state);
+    }
+
     Ok(())
 }
 

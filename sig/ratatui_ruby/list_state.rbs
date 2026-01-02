@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class ListState
+    def self.new: (?Integer? selected) -> ListState
+    def select: (Integer? index) -> nil
+    def selected: () -> Integer?
+    def offset: () -> Integer
+    def scroll_down_by: (Integer n) -> nil
+    def scroll_up_by: (Integer n) -> nil
+  end
+end

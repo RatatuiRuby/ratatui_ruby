@@ -13,13 +13,16 @@ This document describes the design philosophy and structure of the Ruby layer in
 
 The Ruby frontend is designed as a **thin, declarative layer** over the Rust backend. It uses an **Immediate Mode** paradigm where the user constructs a tree of pure data objects every frame to represent the desired UI state.
 
-### 1. View Tree as Data
+### 1. Separation of Configuration and Status
 
-Unlike traditional OO GUI toolkits (like Qt or Swing) where widgets are retained objects with internal state, `ratatui_ruby` widgets are immutable value objects.
+`ratatui_ruby` strictly separates **what** a widget is (Configuration) from **where** it is (Status).
+
+#### Configuration (Input)
+Widgets (e.g., `RatatuiRuby::List`) are immutable value objects defining the *desired appearance* for the current frame. They are pure inputs to the renderer.
 
 *   Implemented using Ruby 3.2+ `Data` classes.
 *   Located in `lib/ratatui_ruby/schema/`.
-*   These objects act as a Schema or Interface Definition Language (IDL) between Ruby and Rust.
+*   Act as a Schema/IDL between Ruby and Rust.
 
 **Example:**
 ```ruby
@@ -29,6 +32,39 @@ paragraph = RatatuiRuby::Paragraph.new(
   style: RatatuiRuby::Style.new(fg: :red),
   block: nil
 )
+```
+
+#### Status (Output)
+**Optional.** Only specific widgets (like `List` and `Table`) rely on runtime status. State objects (e.g., `RatatuiRuby::ListState`) track metrics calculated by the backend, such as scroll offsets.
+
+*   passed as a *secondary argument* to `render_stateful_widget`.
+*   **The Widget Configuration is still required.** You cannot render a State without its corresponding Widget.
+*   Updated in-place by the Rust backend to reflect the actual rendered state.
+
+**Example:**
+```ruby
+# 1. Initialize State once (Input/Output)
+list_state = RatatuiRuby::ListState.new
+list_state.select(3)
+
+RatatuiRuby.run do |tui|
+  loop do
+    tui.draw do |frame|
+      # 2. Define Configuration (Input)
+      # (Note: In a real app, you'd probably use `tui.list(...)` helper)
+      list = RatatuiRuby::List.new(items: ["A", "B", "C", "D"])
+      
+      # 3. Render with both (Side Effect: updates list_state)
+      frame.render_stateful_widget(list, frame.area, list_state)
+    end
+    
+    # 4. Read back Status (Output)
+    # If the backend auto-scrolled to keep index 3 visible:
+    puts "Scroll Offset: #{list_state.offset}"
+    
+    break if tui.poll_event == "q"
+  end
+end
 ```
 
 ### 2. Immediate Mode Rendering

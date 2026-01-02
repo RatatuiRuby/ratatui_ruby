@@ -338,6 +338,16 @@ module RatatuiRuby
     #
     # Factory for RatatuiRuby::List.new.
     #
+    # :method: list_state
+    # :call-seq: list_state(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::ListState.new.
+    #
+    # :method: list_state_new
+    # :call-seq: list_state_new(*args, **kwargs, &block)
+    #
+    # Helper for RatatuiRuby::ListState.new.
+    #
     # :method: overlay
     # :call-seq: overlay(*args, **kwargs, &block)
     #
@@ -372,6 +382,16 @@ module RatatuiRuby
     # :call-seq: scrollbar(*args, **kwargs, &block)
     #
     # Factory for RatatuiRuby::Scrollbar.new.
+    #
+    # :method: scrollbar_state
+    # :call-seq: scrollbar_state(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::ScrollbarState.new.
+    #
+    # :method: scrollbar_state_new
+    # :call-seq: scrollbar_state_new(*args, **kwargs, &block)
+    #
+    # Helper for RatatuiRuby::ScrollbarState.new.
     #
     # :method: shape_circle
     # :call-seq: shape_circle(*args, **kwargs, &block)
@@ -422,6 +442,16 @@ module RatatuiRuby
     # :call-seq: table(*args, **kwargs, &block)
     #
     # Factory for RatatuiRuby::Table.new.
+    #
+    # :method: table_state
+    # :call-seq: table_state(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::TableState.new.
+    #
+    # :method: table_state_new
+    # :call-seq: table_state_new(*args, **kwargs, &block)
+    #
+    # Helper for RatatuiRuby::TableState.new.
     #
     # :method: tabs
     # :call-seq: tabs(*args, **kwargs, &block)

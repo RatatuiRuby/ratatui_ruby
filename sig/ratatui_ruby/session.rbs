@@ -75,6 +75,8 @@ module RatatuiRuby
     def line_chart: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def line_gauge: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def list: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def list_state: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def list_state_new: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def overlay: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def paragraph: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def paragraph_new: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
@@ -82,6 +84,8 @@ module RatatuiRuby
     def ratatui_mascot: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def rect: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def scrollbar: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def scrollbar_state: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def scrollbar_state_new: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def shape_circle: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def shape_label: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def shape_line: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
@@ -92,6 +96,8 @@ module RatatuiRuby
     def style: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def style_default: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def table: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def table_state: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def table_state_new: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def tabs: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def text_width: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def text_line: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::{parse_block, parse_style};
+use crate::widgets::list_state::RubyListState;
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, Symbol, TryConvert, Value};
 use ratatui::{
@@ -104,6 +105,111 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     frame.render_stateful_widget(list, area, &mut state);
+    Ok(())
+}
+
+/// Renders a List with an external state object.
+///
+/// This function ignores `selected_index` and `offset` from the widget.
+/// The State object is the single source of truth for selection and scroll position.
+pub fn render_stateful(
+    frame: &mut Frame,
+    area: Rect,
+    node: Value,
+    state_wrapper: Value,
+) -> Result<(), Error> {
+    let bump = Bump::new();
+    let ruby = magnus::Ruby::get().unwrap();
+
+    // Extract the RubyListState wrapper
+    let state: &RubyListState = TryConvert::try_convert(state_wrapper)?;
+
+    // Build items
+    let items_val: Value = node.funcall("items", ())?;
+    let items_array = magnus::RArray::from_value(items_val)
+        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array"))?;
+
+    let mut items: Vec<String> = Vec::new();
+    for i in 0..items_array.len() {
+        let index = isize::try_from(i)
+            .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let item: String = items_array.entry(index)?;
+        items.push(item);
+    }
+
+    // Build widget (ignoring selected_index and offset — State is truth)
+    let style_val: Value = node.funcall("style", ())?;
+    let highlight_style_val: Value = node.funcall("highlight_style", ())?;
+    let highlight_symbol_val: Value = node.funcall("highlight_symbol", ())?;
+    let repeat_highlight_symbol_val: Value = node.funcall("repeat_highlight_symbol", ())?;
+    let highlight_spacing_sym: Symbol = node.funcall("highlight_spacing", ())?;
+    let direction_val: Value = node.funcall("direction", ())?;
+    let scroll_padding_val: Value = node.funcall("scroll_padding", ())?;
+    let block_val: Value = node.funcall("block", ())?;
+
+    let symbol: String = if highlight_symbol_val.is_nil() {
+        String::new()
+    } else {
+        String::try_convert(highlight_symbol_val)?
+    };
+
+    let mut list = List::new(items);
+
+    let highlight_spacing = match highlight_spacing_sym.to_string().as_str() {
+        "always" => HighlightSpacing::Always,
+        "never" => HighlightSpacing::Never,
+        _ => HighlightSpacing::WhenSelected,
+    };
+    list = list.highlight_spacing(highlight_spacing);
+
+    if !highlight_symbol_val.is_nil() {
+        list = list.highlight_symbol(Line::from(symbol));
+    }
+
+    if !repeat_highlight_symbol_val.is_nil() {
+        let repeat: bool = TryConvert::try_convert(repeat_highlight_symbol_val)?;
+        list = list.repeat_highlight_symbol(repeat);
+    }
+
+    if !direction_val.is_nil() {
+        let direction_sym: magnus::Symbol = TryConvert::try_convert(direction_val)?;
+        let direction_str = direction_sym.name().unwrap();
+        match direction_str.as_ref() {
+            "top_to_bottom" => list = list.direction(ratatui::widgets::ListDirection::TopToBottom),
+            "bottom_to_top" => list = list.direction(ratatui::widgets::ListDirection::BottomToTop),
+            _ => {
+                return Err(Error::new(
+                    ruby.exception_arg_error(),
+                    "direction must be :top_to_bottom or :bottom_to_top",
+                ))
+            }
+        }
+    }
+
+    if !scroll_padding_val.is_nil() {
+        let padding: usize = TryConvert::try_convert(scroll_padding_val)?;
+        list = list.scroll_padding(padding);
+    }
+
+    if !style_val.is_nil() {
+        list = list.style(parse_style(style_val)?);
+    }
+
+    if !highlight_style_val.is_nil() {
+        list = list.highlight_style(parse_style(highlight_style_val)?);
+    }
+
+    if !block_val.is_nil() {
+        list = list.block(parse_block(block_val, &bump)?);
+    }
+
+    // Borrow the inner ListState, render, and release the borrow immediately
+    {
+        let mut inner_state = state.borrow_mut();
+        frame.render_stateful_widget(list, area, &mut inner_state);
+    }
+    // Borrow is now released
+
     Ok(())
 }
 

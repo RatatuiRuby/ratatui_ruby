@@ -35,6 +35,9 @@ require_relative "ratatui_ruby/schema/draw"
 require_relative "ratatui_ruby/event"
 require_relative "ratatui_ruby/cell"
 require_relative "ratatui_ruby/frame"
+require_relative "ratatui_ruby/list_state"
+require_relative "ratatui_ruby/table_state"
+require_relative "ratatui_ruby/scrollbar_state"
 
 begin
   require "ratatui_ruby/ratatui_ruby"

@@ -18,6 +18,7 @@
 //! The `'static` lifetime is a lie, but a safe one within these constraints.
 
 use crate::rendering;
+use crate::widgets;
 use magnus::{prelude::*, Error, Value};
 use ratatui::layout::Rect;
 use ratatui::Frame;
@@ -151,6 +152,58 @@ impl RubyFrame {
 
         // Delegate to the existing render_node function
         rendering::render_node(frame, rect, widget)
+    }
+
+    /// Renders a stateful widget at the specified area.
+    ///
+    /// This mirrors `frame.render_stateful_widget(widget, area, &mut state)` in Rust Ratatui.
+    /// The State object is the single source of truth for selection and offset.
+    /// Widget properties (`selected_index`, `selected_row`, `offset`) are ignored.
+    ///
+    /// # Arguments
+    ///
+    /// * `widget` - A Ruby widget object (e.g., `RatatuiRuby::List`)
+    /// * `area` - A Ruby `Rect`
+    /// * `state` - A Ruby state object (e.g., `RatatuiRuby::ListState`)
+    pub fn render_stateful_widget(
+        &self,
+        widget: Value,
+        area: Value,
+        state: Value,
+    ) -> Result<(), Error> {
+        self.ensure_active()?;
+        let ruby = magnus::Ruby::get().unwrap();
+
+        // Parse the Ruby area into a Rust Rect
+        let x: u16 = area.funcall("x", ())?;
+        let y: u16 = area.funcall("y", ())?;
+        let width: u16 = area.funcall("width", ())?;
+        let height: u16 = area.funcall("height", ())?;
+        let rect = Rect::new(x, y, width, height);
+
+        // SAFETY: The frame pointer is valid for the duration of the draw callback.
+        let frame = unsafe { (*self.inner.get()).as_mut() };
+
+        // SAFETY: Immediate conversion to owned string avoids GC-unsafe borrowed reference.
+        let widget_class = unsafe { widget.class().name() }.into_owned();
+        // SAFETY: Immediate conversion to owned string avoids GC-unsafe borrowed reference.
+        let state_class = unsafe { state.class().name() }.into_owned();
+
+        match (widget_class.as_str(), state_class.as_str()) {
+            ("RatatuiRuby::List", "RatatuiRuby::ListState") => {
+                widgets::list::render_stateful(frame, rect, widget, state)
+            }
+            ("RatatuiRuby::Table", "RatatuiRuby::TableState") => {
+                widgets::table::render_stateful(frame, rect, widget, state)
+            }
+            ("RatatuiRuby::Scrollbar", "RatatuiRuby::ScrollbarState") => {
+                widgets::scrollbar::render_stateful(frame, rect, widget, state)
+            }
+            _ => Err(Error::new(
+                ruby.exception_arg_error(),
+                format!("Unsupported widget/state combination: {widget_class} with {state_class}"),
+            )),
+        }
     }
 
     /// Sets the cursor position in the terminal.

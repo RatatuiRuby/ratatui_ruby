@@ -52,6 +52,41 @@ ensure
 end
 ```
 
+### Stateful Widgets
+
+Most widgets are stateless configuration. You create them, render them, and they are gone. However, the **runtime status** of some widgets (like Lists and Tables) must persist across frames (e.g., scroll offsets or selection).
+
+**The Problem:** If you re-create a List configuration every frame, you lose the context of where it was scrolled or what was selected. If Ratatui auto-scrolls to a selection, you can't read that new offset back from an immutable input widget.
+
+**The Solution:** Use "Stateful Rendering". You create a mutable State object (Output/Status) once and pass it to `render_stateful_widget`. **The Widget configuration (Input) is still mandatory**, but the State object (passed separately) captures the runtime changes.
+
+> [!IMPORTANT]
+> **Precedence Rule:** When using `render_stateful_widget`, the **State object is the single source of truth** for selection and offset. Widget properties (`selected_index`, `selected_row`, `offset`) are **ignored**.
+>
+> For example: `list(selected_index: 0)` with `state.select(5)` → Item 5 is highlighted, not Item 0.
+
+**Use Case:** When you need to read back the scroll offset (e.g., for mouse hit testing) or persist selection without managing indexes manually.
+
+```ruby
+# Initialize state once
+@list_state = RatatuiRuby::ListState.new
+
+RatatuiRuby.run do |tui|
+  loop do
+    tui.draw do |frame|
+      # Create immutable widget (selected_index is ignored in stateful mode)
+      list = tui.list(items: ["A", "B", "C"])
+      
+      # Render with state — state takes precedence
+      frame.render_stateful_widget(list, frame.area, @list_state)
+    end
+    
+    # Read back offset calculated by Ratatui
+    puts "Current Scroll Offset: #{@list_state.offset}"
+  end
+end
+```
+
 ### API Convenience
 
 Writing UI trees involves nesting many widgets.

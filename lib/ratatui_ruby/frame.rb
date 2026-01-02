@@ -93,6 +93,45 @@ module RatatuiRuby
     # (Native method implemented in Rust)
 
     ##
+    # :method: render_stateful_widget
+    # :call-seq: render_stateful_widget(widget, area, state) -> nil
+    #
+    # Renders a widget with persistent state.
+    #
+    # Some UI components (like List or Table) have **runtime status** (Status) that
+    # changes during rendering, such as the current scroll offset.
+    #
+    # Since Widget definitions (Configuration Definition) are immutable inputs,
+    # you must pass a separate mutable State object (Output Status) to capture
+    # these changes.
+    #
+    # Note: The Widget configuration is *always* required. The State object is
+    # only used for specific widgets that need to persist runtime status.
+    #
+    #
+    # [widget]
+    #   The immutable widget configuration (Input) (e.g., RatatuiRuby::List).
+    # [area]
+    #   The Rect area to render into.
+    # [state]
+    #   The mutable state object (Output) (e.g., RatatuiRuby::ListState).
+    #
+    # === Example
+    #
+    #   # Initialize state once (outside the loop)
+    #   @list_state = RatatuiRuby::ListState.new
+    #
+    #   RatatuiRuby.draw do |frame|
+    #     list = RatatuiRuby::List.new(items: ["A", "B"])
+    #     frame.render_stateful_widget(list, frame.area, @list_state)
+    #   end
+    #
+    #   # Read back the offset calculated by Ratatui
+    #   puts @list_state.offset
+    #
+    # (Native method implemented in Rust)
+
+    ##
     # :method: set_cursor_position
     # :call-seq: set_cursor_position(x, y) -> nil
     #

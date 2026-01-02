@@ -2,8 +2,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::parse_block;
+use crate::widgets::scrollbar_state::RubyScrollbarState;
 use bumpalo::Bump;
-use magnus::{prelude::*, Error, Symbol, Value};
+use magnus::{prelude::*, Error, Symbol, TryConvert, Value};
 use ratatui::{
     layout::Rect,
     widgets::{Scrollbar, ScrollbarOrientation, ScrollbarState},
@@ -86,6 +87,97 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         frame.render_widget(block, area);
         frame.render_stateful_widget(scrollbar, inner_area, &mut state);
     }
+    Ok(())
+}
+
+/// Renders a Scrollbar with an external state object.
+///
+/// The State object is the single source of truth for position and `content_length`.
+/// Widget properties (`position`, `content_length`) are ignored.
+pub fn render_stateful(
+    frame: &mut Frame,
+    area: Rect,
+    node: Value,
+    state_wrapper: Value,
+) -> Result<(), Error> {
+    // Extract the RubyScrollbarState wrapper
+    let state: &RubyScrollbarState = TryConvert::try_convert(state_wrapper)?;
+
+    let orientation_sym: Symbol = node.funcall("orientation", ())?;
+    let thumb_symbol_val: Value = node.funcall("thumb_symbol", ())?;
+    let thumb_style_val: Value = node.funcall("thumb_style", ())?;
+    let track_symbol_val: Value = node.funcall("track_symbol", ())?;
+    let track_style_val: Value = node.funcall("track_style", ())?;
+    let begin_symbol_val: Value = node.funcall("begin_symbol", ())?;
+    let begin_style_val: Value = node.funcall("begin_style", ())?;
+    let end_symbol_val: Value = node.funcall("end_symbol", ())?;
+    let end_style_val: Value = node.funcall("end_style", ())?;
+    let style_val: Value = node.funcall("style", ())?;
+    let block_val: Value = node.funcall("block", ())?;
+
+    let mut scrollbar = Scrollbar::default();
+
+    scrollbar = match orientation_sym.to_string().as_str() {
+        "vertical_left" => scrollbar.orientation(ScrollbarOrientation::VerticalLeft),
+        "horizontal_bottom" | "horizontal" => {
+            scrollbar.orientation(ScrollbarOrientation::HorizontalBottom)
+        }
+        "horizontal_top" => scrollbar.orientation(ScrollbarOrientation::HorizontalTop),
+        _ => scrollbar.orientation(ScrollbarOrientation::VerticalRight),
+    };
+
+    // Hoisted strings to extend lifetime
+    let thumb_str: String;
+    let track_str: String;
+    let begin_str: String;
+    let end_str: String;
+
+    if !thumb_symbol_val.is_nil() {
+        thumb_str = thumb_symbol_val.funcall("to_s", ())?;
+        scrollbar = scrollbar.thumb_symbol(&thumb_str);
+    }
+    if !thumb_style_val.is_nil() {
+        scrollbar = scrollbar.thumb_style(crate::style::parse_style(thumb_style_val)?);
+    }
+    if !track_symbol_val.is_nil() {
+        track_str = track_symbol_val.funcall("to_s", ())?;
+        scrollbar = scrollbar.track_symbol(Some(&track_str));
+    }
+    if !track_style_val.is_nil() {
+        scrollbar = scrollbar.track_style(crate::style::parse_style(track_style_val)?);
+    }
+    if !begin_symbol_val.is_nil() {
+        begin_str = begin_symbol_val.funcall("to_s", ())?;
+        scrollbar = scrollbar.begin_symbol(Some(&begin_str));
+    }
+    if !begin_style_val.is_nil() {
+        scrollbar = scrollbar.begin_style(crate::style::parse_style(begin_style_val)?);
+    }
+    if !end_symbol_val.is_nil() {
+        end_str = end_symbol_val.funcall("to_s", ())?;
+        scrollbar = scrollbar.end_symbol(Some(&end_str));
+    }
+    if !end_style_val.is_nil() {
+        scrollbar = scrollbar.end_style(crate::style::parse_style(end_style_val)?);
+    }
+    if !style_val.is_nil() {
+        scrollbar = scrollbar.style(crate::style::parse_style(style_val)?);
+    }
+
+    // Borrow the inner ScrollbarState, render, and release the borrow immediately
+    {
+        let mut inner_state = state.borrow_mut();
+        if block_val.is_nil() {
+            frame.render_stateful_widget(scrollbar, area, &mut inner_state);
+        } else {
+            let bump = Bump::new();
+            let block = parse_block(block_val, &bump)?;
+            let inner_area = block.inner(area);
+            frame.render_widget(block, area);
+            frame.render_stateful_widget(scrollbar, inner_area, &mut inner_state);
+        }
+    }
+
     Ok(())
 }
 

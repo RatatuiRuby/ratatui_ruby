@@ -16,6 +16,7 @@ The project follows a **Structured Design** approach, separating concerns into m
 1.  **Single Generic Renderer**: The backend implements a single generic renderer that accepts a Ruby `Value` representing the root of the view tree.
 2.  **No Custom Rust Structs for UI**: Do not define custom Rust structs that mirror Ruby UI components. Instead, extract data directly from Ruby objects using `funcall`.
 3.  **Dynamic Dispatch**: Use `value.class().name()` (e.g., `"RatatuiRuby::Paragraph"`) to dynamically dispatch rendering logic to the appropriate widget module.
+    *   *Exception:* `render_stateful_widget` bypasses generic dispatch for specific Widget/State pairs (e.g., List + ListState) to allow mutating the State object.
 4.  **Immediate Mode**: The renderer traverses the Ruby object tree every frame and rebuilds the Ratatui widget tree on the fly.
 
 ### Module Structure

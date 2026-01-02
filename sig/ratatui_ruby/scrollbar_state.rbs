@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class ScrollbarState
+    def self.new: (Integer content_length) -> ScrollbarState
+    def position: () -> Integer
+    def position=: (Integer value) -> Integer
+    def content_length: () -> Integer
+    def content_length=: (Integer value) -> Integer
+    def viewport_content_length: () -> Integer
+    def viewport_content_length=: (Integer value) -> Integer
+    def first: () -> nil
+    def last: () -> nil
+    def next: () -> nil
+    def prev: () -> nil
+  end
+end

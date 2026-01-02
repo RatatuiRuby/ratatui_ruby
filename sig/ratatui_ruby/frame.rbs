@@ -5,5 +5,7 @@ module RatatuiRuby
   class Frame
     def area: () -> Rect
     def render_widget: (widget widget, Rect area) -> nil
+    def render_stateful_widget: (widget widget, Rect area, (ListState | TableState | ScrollbarState) state) -> nil
+    def set_cursor_position: (Integer x, Integer y) -> nil
   end
 end

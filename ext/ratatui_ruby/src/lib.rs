@@ -129,12 +129,21 @@ fn init() -> Result<(), Error> {
     frame_class.define_method("area", method!(RubyFrame::area, 0))?;
     frame_class.define_method("render_widget", method!(RubyFrame::render_widget, 2))?;
     frame_class.define_method(
+        "render_stateful_widget",
+        method!(RubyFrame::render_stateful_widget, 3),
+    )?;
+    frame_class.define_method(
         "set_cursor_position",
         method!(RubyFrame::set_cursor_position, 2),
     )?;
     m.define_module_function("_poll_event", function!(events::poll_event, 1))?;
     m.define_module_function("inject_test_event", function!(events::inject_test_event, 2))?;
     m.define_module_function("clear_events", function!(events::clear_events, 0))?;
+
+    // Register State classes
+    widgets::list_state::register(&ruby, m)?;
+    widgets::table_state::register(&ruby, m)?;
+    widgets::scrollbar_state::register(&ruby, m)?;
 
     // Test backend helpers
     m.define_module_function(
