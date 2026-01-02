@@ -12,6 +12,7 @@ crate-type = ["cdylib", "staticlib"]
 [dependencies]
 magnus = "0.8.2"
 ratatui = { version = "0.30", features = ["widget-calendar", "layout-cache", "unstable-rendered-line-info"] }
+unicode-width = "0.1"
 
 bumpalo = "3.16"
 lazy_static = "1.4"

@@ -26,6 +26,11 @@ module RatatuiRuby
     #
     # Delegates to RatatuiRuby._tabs_width.
     #
+    # :method: _text_width
+    # :call-seq: _text_width(*args, **kwargs, &block)
+    #
+    # Delegates to RatatuiRuby._text_width.
+    #
     # :method: clear_events
     # :call-seq: clear_events(*args, **kwargs, &block)
     #
@@ -223,6 +228,16 @@ module RatatuiRuby
     #
     # Factory for RatatuiRuby::Dataset.new.
     #
+    # :method: draw_cell
+    # :call-seq: draw_cell(*args, **kwargs, &block)
+    #
+    # Helper for RatatuiRuby::Draw.cell.
+    #
+    # :method: draw_string
+    # :call-seq: draw_string(*args, **kwargs, &block)
+    #
+    # Helper for RatatuiRuby::Draw.string.
+    #
     # :method: draw_cell_cmd
     # :call-seq: draw_cell_cmd(*args, **kwargs, &block)
     #
@@ -402,6 +417,11 @@ module RatatuiRuby
     # :call-seq: tabs(*args, **kwargs, &block)
     #
     # Factory for RatatuiRuby::Tabs.new.
+    #
+    # :method: text_width
+    # :call-seq: text_width(*args, **kwargs, &block)
+    #
+    # Helper for RatatuiRuby::Text.width.
     #
     # :method: text_line
     # :call-seq: text_line(*args, **kwargs, &block)

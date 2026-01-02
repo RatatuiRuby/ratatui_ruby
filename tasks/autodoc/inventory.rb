@@ -32,14 +32,16 @@ module Autodoc
         if const.is_a?(Class)
           snake_name = Name.new(const_name).snake
           members << Member::Factory.new(name: snake_name, const_name:)
+        end
 
-          const.singleton_methods(false).sort.each do |class_method|
-            members << Member::Helper.new(
-              name: "#{snake_name}_#{class_method}",
-              class_method:,
-              const_name:
-            )
-          end
+        # Singleton methods (for both Classes and Modules)
+        parent_prefix = Name.new(const_name).snake
+        const.singleton_methods(false).sort.each do |class_method|
+          members << Member::Helper.new(
+            name: "#{parent_prefix}_#{class_method}",
+            class_method:,
+            const_name:
+          )
         end
 
         const.constants.sort.each do |child_name|

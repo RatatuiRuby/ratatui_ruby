@@ -13,6 +13,7 @@ module RatatuiRuby
     def _paragraph_line_count: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def _paragraph_line_width: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def _tabs_width: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def _text_width: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def clear_events: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def draw: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def experimental_warnings: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
@@ -52,6 +53,8 @@ module RatatuiRuby
     def constraint_ratio: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def cursor: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def dataset: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def draw_cell: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def draw_string: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def draw_cell_cmd: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def draw_string_cmd: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def error: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
@@ -88,6 +91,7 @@ module RatatuiRuby
     def style_default: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def table: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def tabs: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def text_width: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def text_line: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def text_span: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
   end

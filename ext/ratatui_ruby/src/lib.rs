@@ -13,6 +13,7 @@
 mod events;
 mod frame;
 mod rendering;
+mod string_width;
 mod style;
 mod terminal;
 mod text;
@@ -161,6 +162,9 @@ fn init() -> Result<(), Error> {
 
     // Tabs metrics
     m.define_module_function("_tabs_width", function!(widgets::tabs::width, 1))?;
+
+    // Text measurement
+    m.define_module_function("_text_width", function!(string_width::text_width, 1))?;
 
     Ok(())
 }

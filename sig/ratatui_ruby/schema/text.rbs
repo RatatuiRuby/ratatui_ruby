@@ -5,18 +5,20 @@ module RatatuiRuby
   module Text
     class Span < Data
       attr_reader content: String
-      attr_reader style: Style?
+      attr_reader style: Style | nil
 
-      def self.new: (content: String, ?style: Style?) -> Span
-      def self.styled: (String, ?Style?) -> Span
+      def initialize: (content: String, style: Style | nil) -> void
+      def self.styled: (String, Style | nil) -> Span
     end
 
     class Line < Data
       attr_reader spans: Array[Span]
-      attr_reader alignment: (:left | :center | :right)?
+      attr_reader alignment: Symbol | nil
 
-      def self.new: (?spans: Array[Span], ?alignment: (:left | :center | :right)?) -> Line
-      def self.from_string: (String, ?alignment: (:left | :center | :right)?) -> Line
+      def initialize: (spans: Array[Span], alignment: Symbol | nil) -> void
+      def self.from_string: (String, alignment: Symbol | nil) -> Line
     end
+
+    def self.width: (String) -> Integer
   end
 end

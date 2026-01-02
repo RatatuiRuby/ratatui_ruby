@@ -40,6 +40,7 @@ module RatatuiRuby
   #
   # *   <tt>text_span(...)</tt> -> <tt>RatatuiRuby::Text::Span.new(...)</tt>
   # *   <tt>text_line(...)</tt> -> <tt>RatatuiRuby::Text::Line.new(...)</tt>
+  # *   <tt>text_width(string)</tt> -> <tt>RatatuiRuby::Text.width(string)</tt>
   #
   # === Examples
   #
@@ -123,15 +124,21 @@ module RatatuiRuby
         define_method(method_name) do |*args, **kwargs, &block|
           const.new(*args, **kwargs, &block)
         end
+      end
 
-        # 2. Class Method Helpers (for Classes only)
-        #    e.g. Layout.split -> layout_split
-        const.singleton_methods(false).each do |class_method|
-          session_method_name = "#{method_name}_#{class_method}"
+      # 2. Singleton Method Helpers (for both Classes and Modules)
+      #    e.g. Layout.split -> layout_split
+      #    e.g. Text.width -> text_width
+      const.singleton_methods(false).each do |class_method|
+        parent_prefix = const_name.to_s
+          .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+          .gsub(/([a-z\d])([A-Z])/, '\1_\2')
+          .downcase
 
-          define_method(session_method_name) do |*args, **kwargs, &block|
-            const.public_send(class_method, *args, **kwargs, &block)
-          end
+        session_method_name = "#{parent_prefix}_#{class_method}"
+
+        define_method(session_method_name) do |*args, **kwargs, &block|
+          const.public_send(class_method, *args, **kwargs, &block)
         end
       end
 
