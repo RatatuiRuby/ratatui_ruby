@@ -16,6 +16,14 @@ module RatatuiRuby
   # Use it inside a <tt>RatatuiRuby.draw</tt> block to render widgets with full
   # control over placement.
   #
+  # == Thread/Ractor Safety
+  #
+  # Frame is an *I/O handle*, not a data object. It has side effects
+  # (render_widget, set_cursor_position) and is intentionally *not*
+  # Ractor-shareable. Passing it to helper methods during the draw block is
+  # fine. However, do not include it in immutable TEA Models/Messages or pass
+  # it to other Ractors. Frame is only valid during the draw block's execution.
+  #
   # === Examples
   #
   # Basic usage with a single widget:

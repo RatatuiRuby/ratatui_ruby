@@ -82,10 +82,10 @@ module RatatuiRuby
     # [bg] Symbol or String (nullable).
     # [modifiers] Array of Strings.
     def initialize(symbol: nil, char: nil, fg: nil, bg: nil, modifiers: [])
-      @symbol = symbol || char || " "
-      @fg = fg
-      @bg = bg
-      @modifiers = modifiers.freeze
+      @symbol = (symbol || char || " ").freeze
+      @fg = fg&.freeze
+      @bg = bg&.freeze
+      @modifiers = modifiers.map(&:freeze).freeze
       freeze
     end
 

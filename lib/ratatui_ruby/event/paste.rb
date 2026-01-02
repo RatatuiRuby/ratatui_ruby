@@ -47,7 +47,7 @@ module RatatuiRuby
       # [content]
       #   Pasted text (String).
       def initialize(content:)
-        @content = content
+        @content = content.freeze
       end
 
       # Deconstructs the event for pattern matching.

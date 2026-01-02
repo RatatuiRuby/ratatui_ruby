@@ -67,11 +67,11 @@ module RatatuiRuby
       # [modifiers]
       #   List of modifiers (Array<String>).
       def initialize(kind:, x:, y:, button:, modifiers: [])
-        @kind = kind
+        @kind = kind.freeze
         @x = x
         @y = y
-        @button = button || "none"
-        @modifiers = modifiers.sort
+        @button = (button || "none").freeze
+        @modifiers = modifiers.map(&:freeze).sort.freeze
       end
 
       # Returns true if mouse button was pressed down.

@@ -116,4 +116,9 @@ class TestRect < Minitest::Test
     r2 = RatatuiRuby::Rect.new(x: 10, y: 0, width: 10, height: 10)
     assert_nil r1.intersection(r2)
   end
+
+  def test_rect_is_ractor_shareable
+    rect = RatatuiRuby::Rect.new(x: 10, y: 5, width: 80, height: 24)
+    assert Ractor.shareable?(rect), "Rect should be Ractor.shareable? for thread/Ractor safety"
+  end
 end

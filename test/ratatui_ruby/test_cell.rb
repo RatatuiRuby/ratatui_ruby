@@ -128,5 +128,10 @@ module RatatuiRuby
         assert_cell_style(1, 0, char: "H")
       end
     end
+
+    def test_cell_is_ractor_shareable
+      cell = Cell.new(char: "X", fg: :red, bg: "blue", modifiers: ["bold", "italic"])
+      assert Ractor.shareable?(cell), "Cell should be Ractor.shareable? for thread/Ractor safety"
+    end
   end
 end

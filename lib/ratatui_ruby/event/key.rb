@@ -60,8 +60,8 @@ module RatatuiRuby
       # [modifiers]
       #   List of modifiers (Array<String>).
       def initialize(code:, modifiers: [])
-        @code = code
-        @modifiers = modifiers.sort
+        @code = code.freeze
+        @modifiers = modifiers.map(&:freeze).sort.freeze
       end
 
       # Compares the event with another object.

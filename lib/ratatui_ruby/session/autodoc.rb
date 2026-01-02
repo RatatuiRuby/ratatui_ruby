@@ -253,6 +253,16 @@ module RatatuiRuby
     #
     # Factory for RatatuiRuby::Error.new.
     #
+    # :method: error_safety
+    # :call-seq: error_safety(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Error::Safety.new.
+    #
+    # :method: error_terminal
+    # :call-seq: error_terminal(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Error::Terminal.new.
+    #
     # :method: event
     # :call-seq: event(*args, **kwargs, &block)
     #

@@ -90,4 +90,44 @@ class TestSession < Minitest::Test
     chart = tui.bar_chart(data: [group], bar_width: 5)
     assert_equal RatatuiRuby::BarChart.new(data: [group], bar_width: 5), chart
   end
+
+  def test_session_is_not_ractor_shareable
+    # Session is an I/O handle with side effects (draw, poll_event).
+    # It is intentionally NOT Ractor-shareable. Do not cache it in TEA Models.
+    tui = RatatuiRuby::Session.new
+    refute Ractor.shareable?(tui),
+      "Session should NOT be Ractor.shareable? — it's an I/O handle, not data"
+  end
+
+  def test_session_works_when_cached_in_instance_variable
+    # Caching session in @tui during the run loop is a valid pattern.
+    # This is how examples like app_color_picker work.
+    app = SessionCachingApp.new
+    with_test_terminal(20, 3) do
+      app.run
+    end
+    assert app.ran_successfully, "Session should work when cached in @tui"
+  end
+end
+
+# Helper class to test @tui = tui pattern
+class SessionCachingApp
+  attr_reader :ran_successfully
+
+  def initialize
+    @ran_successfully = false
+  end
+
+  def run
+    RatatuiRuby.run do |tui|
+      @tui = tui # Cache session in instance variable
+      render
+      @ran_successfully = true
+    end
+  end
+
+  private def render
+    # Use cached @tui from another method
+    @tui.draw(@tui.paragraph(text: "Cached!"))
+  end
 end

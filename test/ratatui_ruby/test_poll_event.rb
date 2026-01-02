@@ -80,4 +80,56 @@ class TestPollEvent < Minitest::Test
       RatatuiRuby.poll_event(timeout: -1.0)
     end
   end
+
+  def test_poll_event_returns_frozen_none_event
+    result = RatatuiRuby.poll_event
+    assert_predicate result, :frozen?, "Event::None should be frozen for Ractor safety"
+    assert Ractor.shareable?(result), "Event::None should be Ractor.shareable?"
+  end
+
+  def test_poll_event_returns_frozen_key_event
+    RatatuiRuby.inject_test_event("key", { code: "a", modifiers: ["ctrl"] })
+    result = RatatuiRuby.poll_event
+
+    assert_predicate result, :frozen?, "Event::Key should be frozen for Ractor safety"
+    assert_predicate result.modifiers, :frozen?, "Event::Key modifiers should be frozen"
+    assert Ractor.shareable?(result), "Event::Key should be Ractor.shareable?"
+  end
+
+  def test_poll_event_returns_frozen_mouse_event
+    RatatuiRuby.inject_test_event("mouse", { kind: "down", button: "left", x: 10, y: 20 })
+    result = RatatuiRuby.poll_event
+
+    assert_predicate result, :frozen?, "Event::Mouse should be frozen for Ractor safety"
+    assert_predicate result.modifiers, :frozen?, "Event::Mouse modifiers should be frozen"
+    assert Ractor.shareable?(result), "Event::Mouse should be Ractor.shareable?"
+  end
+
+  def test_poll_event_returns_frozen_resize_event
+    RatatuiRuby.inject_test_event("resize", { width: 120, height: 40 })
+    result = RatatuiRuby.poll_event
+
+    assert_predicate result, :frozen?, "Event::Resize should be frozen for Ractor safety"
+    assert Ractor.shareable?(result), "Event::Resize should be Ractor.shareable?"
+  end
+
+  def test_poll_event_returns_frozen_paste_event
+    RatatuiRuby.inject_test_event("paste", { content: "hello" })
+    result = RatatuiRuby.poll_event
+
+    assert_predicate result, :frozen?, "Event::Paste should be frozen for Ractor safety"
+    assert Ractor.shareable?(result), "Event::Paste should be Ractor.shareable?"
+  end
+
+  def test_poll_event_returns_frozen_focus_events
+    RatatuiRuby.inject_test_event("focus_gained", {})
+    result = RatatuiRuby.poll_event
+    assert_predicate result, :frozen?, "Event::FocusGained should be frozen for Ractor safety"
+    assert Ractor.shareable?(result), "Event::FocusGained should be Ractor.shareable?"
+
+    RatatuiRuby.inject_test_event("focus_lost", {})
+    result = RatatuiRuby.poll_event
+    assert_predicate result, :frozen?, "Event::FocusLost should be frozen for Ractor safety"
+    assert Ractor.shareable?(result), "Event::FocusLost should be Ractor.shareable?"
+  end
 end

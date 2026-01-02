@@ -58,6 +58,8 @@ module RatatuiRuby
     def draw_cell_cmd: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def draw_string_cmd: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def error: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def error_safety: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def error_terminal: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def event: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def event_focus_gained: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def event_focus_lost: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped

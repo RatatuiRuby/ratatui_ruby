@@ -149,6 +149,32 @@ class TestFrame < Minitest::Test
     end
   end
 
+  def test_frame_is_not_ractor_shareable
+    # Frame is an I/O handle with side effects (render_widget, set_cursor_position).
+    # It is intentionally NOT Ractor-shareable. Do not cache it in TEA Models.
+    with_test_terminal(20, 5) do
+      RatatuiRuby.draw do |frame|
+        refute Ractor.shareable?(frame),
+          "Frame should NOT be Ractor.shareable? — it's an I/O handle, not data"
+      end
+    end
+  end
+
+  def test_frame_raises_error_when_used_outside_draw_block
+    # Frame is only valid during the draw block's execution.
+    # Using it after the block returns raises RuntimeError.
+    with_test_terminal(20, 5) do
+      stored_frame = nil
+      RatatuiRuby.draw do |frame|
+        stored_frame = frame
+      end
+
+      assert_raises(RatatuiRuby::Error::Safety) do
+        stored_frame.area
+      end
+    end
+  end
+
   def test_frame_works_when_passed_to_helper_method
     # Passing frame to helper methods during the draw block is valid.
     with_test_terminal(20, 5) do

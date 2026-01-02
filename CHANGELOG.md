@@ -21,7 +21,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- **Frozen Data Objects (Breaking)**: Events returned by `RatatuiRuby.poll_event` and `Cell` objects from `RatatuiRuby.get_cell_at` are now deeply frozen for Ractor compatibility. Code that mutates these objects (e.g., `event.modifiers << "custom"`) must copy the data before modifying. `Rect` was already frozen. Note: `Frame` and `Session` are *I/O handles* with side effects and remain intentionally non-shareable.
 - **Semantic Exceptions (Breaking)**: Replaced generic `RuntimeError` with `RatatuiRuby::Error::Terminal` for backend/terminal failures and `RatatuiRuby::Error::Safety` for API contract violations (like using `Frame` outside `draw`). This allows finer-grained error handling but breaks code explicitly rescuing `RuntimeError`. `ArgumentError` works as before.
+
 ### Fixed
 
 - **Frame Safety**: Calling methods on a `Frame` stored outside of a `draw` block now correctly raises a `RatatuiRuby::Error::Safety` (subclass of `RatatuiRuby::Error`) instead instead of causing undefined behavior or crashes. This ensures memory safety by preventing use-after-free scenarios with the underlying Rust frame.

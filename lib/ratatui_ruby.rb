@@ -184,27 +184,27 @@ module RatatuiRuby
     raise ArgumentError, "timeout must be non-negative" if timeout && timeout < 0
 
     raw = _poll_event(timeout)
-    return Event::None.new if raw.nil?
+    return Event::None.new.freeze if raw.nil?
 
     case raw[:type]
     when :key
-      Event::Key.new(code: raw[:code], modifiers: raw[:modifiers] || [])
+      Event::Key.new(code: raw[:code], modifiers: (raw[:modifiers] || []).freeze).freeze
     when :mouse
       Event::Mouse.new(
         kind: raw[:kind].to_s,
         x: raw[:x],
         y: raw[:y],
         button: raw[:button].to_s,
-        modifiers: raw[:modifiers] || []
-      )
+        modifiers: (raw[:modifiers] || []).freeze
+      ).freeze
     when :resize
-      Event::Resize.new(width: raw[:width], height: raw[:height])
+      Event::Resize.new(width: raw[:width], height: raw[:height]).freeze
     when :paste
-      Event::Paste.new(content: raw[:content])
+      Event::Paste.new(content: raw[:content]).freeze
     when :focus_gained
-      Event::FocusGained.new
+      Event::FocusGained.new.freeze
     when :focus_lost
-      Event::FocusLost.new
+      Event::FocusLost.new.freeze
     else
       # Fallback for unknown events, though ideally we cover them all
       nil

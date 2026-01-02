@@ -148,6 +148,41 @@ RatatuiRuby.run do
 end
 ```
 
+## Thread and Ractor Safety
+
+Building for Ruby 4.0's parallel future? Know which objects can travel between Ractors.
+
+### Data Objects (Shareable)
+
+These are deeply frozen and `Ractor.shareable?`. Include them in TEA Models/Messages freely:
+
+| Object | Source |
+|--------|--------|
+| `Event::*` | `poll_event` |
+| `Cell` | `get_cell_at` |
+| `Rect` | `Layout.split`, `Frame#area` |
+
+### I/O Handles (Not Shareable)
+
+These have side effects and are intentionally not shareable:
+
+| Object | Valid Usage |
+|--------|-------------|
+| `Session` | Cache in `@tui` during run loop. Don't include in Models. |
+| `Frame` | Pass to helpers during draw block. Invalid after block returns. |
+
+```ruby
+# Good: Cache session in instance variable
+RatatuiRuby.run do |tui|
+  @tui = tui
+  loop { render; handle_input }
+end
+
+# Bad: Include in immutable Model (won't work with Ractors)
+Model = Data.define(:tui, :count)  # Don't do this
+```
+
+
 ## Reference Architectures
 
 Simple scripts work well with valid linear code. Complex apps need structure.
