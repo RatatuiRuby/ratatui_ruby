@@ -57,7 +57,7 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
             let class_name = unsafe { class.name() }.into_owned();
 
             match class_name.as_str() {
-                "RatatuiRuby::Shape::Line" => {
+                "RatatuiRuby::Widgets::Shape::Line" => {
                     let x1: f64 = shape_val.funcall("x1", ()).unwrap_or(0.0);
                     let y1: f64 = shape_val.funcall("y1", ()).unwrap_or(0.0);
                     let x2: f64 = shape_val.funcall("x2", ()).unwrap_or(0.0);
@@ -73,7 +73,7 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
                         color,
                     });
                 }
-                "RatatuiRuby::Shape::Rectangle" => {
+                "RatatuiRuby::Widgets::Shape::Rectangle" => {
                     let x: f64 = shape_val.funcall("x", ()).unwrap_or(0.0);
                     let y: f64 = shape_val.funcall("y", ()).unwrap_or(0.0);
                     let width: f64 = shape_val.funcall("width", ()).unwrap_or(0.0);
@@ -89,7 +89,7 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
                         color,
                     });
                 }
-                "RatatuiRuby::Shape::Circle" => {
+                "RatatuiRuby::Widgets::Shape::Circle" => {
                     let x: f64 = shape_val.funcall("x", ()).unwrap_or(0.0);
                     let y: f64 = shape_val.funcall("y", ()).unwrap_or(0.0);
                     let radius: f64 = shape_val.funcall("radius", ()).unwrap_or(0.0);
@@ -103,7 +103,7 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
                         color,
                     });
                 }
-                "RatatuiRuby::Shape::Map" => {
+                "RatatuiRuby::Widgets::Shape::Map" => {
                     let color_val: Value = shape_val.funcall("color", ()).unwrap();
                     let color =
                         parse_color(&color_val.to_string()).unwrap_or(ratatui::style::Color::Reset);
@@ -114,7 +114,7 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
                     };
                     ctx.draw(&Map { color, resolution });
                 }
-                "RatatuiRuby::Shape::Label" => {
+                "RatatuiRuby::Widgets::Shape::Label" => {
                     let x: f64 = shape_val.funcall("x", ()).unwrap_or(0.0);
                     let y: f64 = shape_val.funcall("y", ()).unwrap_or(0.0);
                     let text_val: Value = shape_val.funcall("text", ()).unwrap();

@@ -234,7 +234,7 @@ fn parse_row(row_val: Value) -> Result<Row<'static>, Error> {
     let class = row_val.class();
     let class_name = unsafe { class.name() }.into_owned();
 
-    if class_name == "RatatuiRuby::Row" {
+    if class_name == "RatatuiRuby::Widgets::Row" {
         let cells_val: Value = row_val.funcall("cells", ())?;
         let style_val: Value = row_val.funcall("style", ())?;
         let height_val: Value = row_val.funcall("height", ())?;
@@ -306,14 +306,14 @@ fn parse_cell(cell_val: Value) -> Result<Cell<'static>, Error> {
         }
     }
 
-    if class_name == "RatatuiRuby::Paragraph" {
+    if class_name == "RatatuiRuby::Widgets::Paragraph" {
         let text: String = cell_val.funcall("text", ())?;
         let style_val: Value = cell_val.funcall("style", ())?;
         let cell_style = parse_style(style_val)?;
         Ok(Cell::from(text).style(cell_style))
-    } else if class_name == "RatatuiRuby::Style" {
+    } else if class_name == "RatatuiRuby::Style::Style" {
         Ok(Cell::from("").style(parse_style(cell_val)?))
-    } else if class_name == "RatatuiRuby::Cell" {
+    } else if class_name == "RatatuiRuby::Widgets::Cell" {
         let symbol: String = cell_val.funcall("char", ())?;
         let fg_val: Value = cell_val.funcall("fg", ())?;
         let bg_val: Value = cell_val.funcall("bg", ())?;
