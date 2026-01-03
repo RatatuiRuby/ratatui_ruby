@@ -11,8 +11,11 @@ Important for v1.0.0 quality and ecosystem goals. Not blocking release, but reco
 
 ## 1. Ensure All Widgets Have Examples
 
-**Status:** Important for completeness — Every widget type should be demonstrable
+**Status:** Done
 
-Verify that all widget types shipped with ratatui_ruby have at least one example showing how to use them.
+Verified that all widget types shipped with ratatui_ruby have at least one example showing how to use them.
 
-**Action:** Check widget manifest against example inventory and create examples for any missing widgets.
+**Action:**
+- [x] Check widget manifest against example inventory
+- [x] Create `widget_canvas_demo`, `widget_center_demo`, and `widget_overlay_demo`
+

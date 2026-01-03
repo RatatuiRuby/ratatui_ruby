@@ -1,0 +1,24 @@
+┌RSS Reader────────────────────────────────────────────────────────────────────┐
+│Scientists Discover New Species of Deep-Sea Octopus Near Hawaii               │
+│Global Climate Summit Reaches Historic Agreement on Emissions                 │
+│Tech Giant Announces Breakthrough in Quantum Computing Research               │
+│Local Comm┌Notification────────────────────────────────────────────┐          │
+│Astronomer│              Your feeds have been updated              │          │
+│New Study │                                                        │          │
+│Electric V│                                                        │          │
+│Ancient Ma│                                                        │          │
+│Renewable │                                                        │          │
+│Robotics T│                                                        │          │
+│Archaeolog│                                                        │          │
+│Major Airl└────────────────────────────────────────────────────────┘          │
+│Breakthrough Treatment│                                │sease                 │
+│City Council Approves └────────────────────────────────┘work                  │
+│Marine Biologists Track Migration Patterns of Endangered Whales               │
+│New App Helps Farmers Optimize Water Usage During Drought                     │
+│International Space Station Extends Mission Timeline to 2030                  │
+└──────────────────────────────────────────────────────────────────────────────┘
+┌Controls──────────────────────────────────────────────────────────────────────┐
+│         0/1/2: Change number of overlays | space: Swap overlay order         │
+│                        c: Toggle clear (currently on)                        │
+│                                    q: Quit                                   │
+└──────────────────────────────────────────────────────────────────────────────┘
