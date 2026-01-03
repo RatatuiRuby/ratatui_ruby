@@ -5,6 +5,7 @@
 
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
+require "faker"
 
 # Demonstrates view segregation with interactive tab navigation.
 #
@@ -35,6 +36,9 @@ class WidgetTabsDemo
     @padding_right = 0
     @width_constraint_index = 0
     @hotkey_style = nil
+
+    # Generate the content once, not on every frame
+    @tab_text = 4.times.map { |it| Faker::Lorem.paragraph(sentence_count: 10 + it) }
   end
 
   def run
@@ -77,11 +81,12 @@ class WidgetTabsDemo
       )
 
       # Center the tabs vertically in the main area
-      tabs_area, = @tui.layout_split(
+      tabs_area, content_area = @tui.layout_split(
         main_area,
         direction: :vertical,
         constraints: [
           @tui.constraint_length(3),
+          @tui.constraint_fill(1),
         ]
       )
 
@@ -96,6 +101,7 @@ class WidgetTabsDemo
         padding_right: @padding_right
       )
       frame.render_widget(tabs, tabs_area)
+      frame.render_widget(tab_contents, content_area)
 
       render_controls(frame, controls_area, tabs.width)
     end
@@ -161,6 +167,14 @@ class WidgetTabsDemo
     else
       # Ignore other events
     end
+  end
+
+  private def tab_contents
+    @tui.paragraph(
+      text: @tab_text[@selected_tab],
+      wrap: true,
+      block: @tui.block(borders: [:all], title: @tabs[@selected_tab])
+    )
   end
 end
 
