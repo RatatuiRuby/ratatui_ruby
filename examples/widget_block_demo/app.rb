@@ -46,7 +46,7 @@ titles: [
       ],
 },
     ]
-    @titles_index = 0
+    @titles_index = 1
 
     @alignment_configs = [
       { name: "Left", alignment: :left },
@@ -102,15 +102,16 @@ set: {
 
       @title_styles = [
         { name: "None", style: nil },
+        { name: "Magenta Bold", style: @tui.style(fg: :magenta, modifiers: [:bold]) },
         { name: "Cyan Bold", style: @tui.style(fg: :cyan, modifiers: [:bold]) },
         { name: "Yellow Italic", style: @tui.style(fg: :yellow, modifiers: [:italic]) },
       ]
-      @title_style_index = 1 # Cyan Bold
+      @title_style_index = 1 # Magenta Bold
 
       @border_styles = [
+        { name: "Cyan", style: @tui.style(fg: :cyan) },
         { name: "Magenta Bold", style: @tui.style(fg: :magenta, modifiers: [:bold]) },
         { name: "None", style: nil },
-        { name: "Green", style: @tui.style(fg: :green) },
         { name: "Blue on White", style: @tui.style(fg: :blue, bg: :white) },
       ]
       @border_style_index = 0
@@ -120,7 +121,7 @@ set: {
         { name: "None", style: nil },
         { name: "White on Black", style: @tui.style(fg: :white, bg: :black) },
       ]
-      @base_style_index = 0
+      @base_style_index = 1
 
       @hotkey_style = @tui.style(modifiers: [:bold, :underlined])
 

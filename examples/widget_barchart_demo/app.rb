@@ -23,11 +23,11 @@ require "ratatui_ruby"
 # rdoc-image:/doc/images/widget_barchart_demo.png
 class WidgetBarchartDemo
   def initialize
-    @data_index = 0
+    @data_index = 2
     @styles = nil # Initialized in run
-    @style_index = 0
-    @label_style_index = 0
-    @value_style_index = 0
+    @style_index = 3
+    @label_style_index = 3
+    @value_style_index = 3
     @bar_sets = [
       { name: "Default", set: nil },
       { name: "Numbers (Short)", set: { 8 => "8", 7 => "7", 6 => "6", 5 => "5", 4 => "4", 3 => "3", 2 => "2", 1 => "1", 0 => "0" } },
@@ -38,7 +38,7 @@ class WidgetBarchartDemo
     @direction = :vertical
     @bar_width = 8
     @bar_gap = 1
-    @group_gap = 0
+    @group_gap = 2
     @height_mode = :full
     @hotkey_style = nil
   end

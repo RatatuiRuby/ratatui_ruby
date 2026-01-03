@@ -119,6 +119,15 @@ module RatatuiRuby
       #
       # [expected] String (file path) or Array<String> (content).
       # [msg] String optional failure message.
+      #
+      # == Non-Determinism
+      #
+      # To prevent flaky tests, this assertion performs a "Flakiness Check" when creating or updating
+      # snapshots. It captures the screen content, immediately re-renders the buffer, and compares
+      # the two results.
+      #
+      # Ensure your render logic is deterministic by seeding random number generators and stubbing
+      # time where necessary.
       def assert_screen_matches(expected, msg = nil)
         actual_lines = buffer_content
 
@@ -139,8 +148,8 @@ module RatatuiRuby
             else
               puts "Created snapshot: #{snapshot_path}"
             end
-          end
 
+          end
           expected_lines = File.readlines(snapshot_path, chomp: true)
         else
           # Direct comparison mode
@@ -193,6 +202,7 @@ module RatatuiRuby
           FileUtils.mkdir_p(File.dirname(snapshot_path))
           File.write(snapshot_path, actual_content)
           puts (update_snapshots ? "Updated" : "Created") + " rich snapshot: #{snapshot_path}"
+
         end
 
         expected_content = File.read(snapshot_path)
@@ -305,22 +315,22 @@ module RatatuiRuby
         offset = is_fg ? 30 : 40
 
         case name
-        when :black   then "\e[#{offset}m"
-        when :red     then "\e[#{offset + 1}m"
-        when :green   then "\e[#{offset + 2}m"
-        when :yellow  then "\e[#{offset + 3}m"
-        when :blue    then "\e[#{offset + 4}m"
+        when :black then "\e[#{offset}m"
+        when :red then "\e[#{offset + 1}m"
+        when :green then "\e[#{offset + 2}m"
+        when :yellow then "\e[#{offset + 3}m"
+        when :blue then "\e[#{offset + 4}m"
         when :magenta then "\e[#{offset + 5}m"
-        when :cyan    then "\e[#{offset + 6}m"
-        when :gray    then is_fg ? "\e[90m" : "\e[100m" # Dark gray usually
+        when :cyan then "\e[#{offset + 6}m"
+        when :gray then is_fg ? "\e[90m" : "\e[100m" # Dark gray usually
         when :dark_gray then is_fg ? "\e[90m" : "\e[100m"
-        when :light_red     then "\e[#{offset + 60 + 1}m"
-        when :light_green   then "\e[#{offset + 60 + 2}m"
-        when :light_yellow  then "\e[#{offset + 60 + 3}m"
-        when :light_blue    then "\e[#{offset + 60 + 4}m"
+        when :light_red then "\e[#{offset + 60 + 1}m"
+        when :light_green then "\e[#{offset + 60 + 2}m"
+        when :light_yellow then "\e[#{offset + 60 + 3}m"
+        when :light_blue then "\e[#{offset + 60 + 4}m"
         when :light_magenta then "\e[#{offset + 60 + 5}m"
-        when :light_cyan    then "\e[#{offset + 60 + 6}m"
-        when :white         then "\e[#{offset + 60 + 7}m"
+        when :light_cyan then "\e[#{offset + 60 + 6}m"
+        when :white then "\e[#{offset + 60 + 7}m"
         else ""
         end
       end

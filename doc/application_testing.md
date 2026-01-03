@@ -8,15 +8,11 @@ This guide explains how to test your RatatuiRuby applications using the provided
 
 ## Overview
 
-RatatuiRuby includes a `TestHelper` module designed to simplify unit testing of TUI applications. It allows you to:
+You need to verify that your application looks and behaves correctly. Manually checking every character on a terminal screen is tedious. Dealing with race conditions and complex state management in tests creates friction.
 
-- Initialize a virtual "test terminal" with specific dimensions.
+The `TestHelper` module solves this. It provides a headless "test terminal" to capture output and a suite of robust assertions to verify state.
 
-- Capture the rendered output (the "buffer") to assert against expected text.
-
-- Inspect the cursor position.
-
-- Simulate user input (using `inject_event`).
+Use it to write fast, deterministic tests for your TUI applications.
 
 ## Setup
 
@@ -36,11 +32,13 @@ class MyApplicationTest < Minitest::Test
 end
 ```
 
-## Basic Usage
+## Writing a View Test
 
-### `with_test_terminal`
+To test a view or widget, wrap your assertions in `with_test_terminal`. This sets up a temporary, in-memory backend for Ratatui to draw to.
 
-Wrap your test assertions in `with_test_terminal`. This sets up a temporary, in-memory backend for Ratatui to draw to, instead of the real terminal. It automatically cleans up afterwards.
+1.  **Initialize the terminal:** Call `with_test_terminal`.
+2.  **Render your code:** Instantiate your widget and draw it to a frame.
+3.  **Assert output:** Check the `buffer_content` against your expectations.
 
 ```ruby
 def test_rendering
@@ -55,49 +53,97 @@ def test_rendering
     end
     
     # 3. Assert on the output
-    assert_includes buffer_content[0], "Hello World"
+    assert_includes buffer_content.first, "Hello World"
   end
 end
 ```
 
-### `buffer_content`
+For the full API list, including `buffer_content` and `cursor_position`, see [RatatuiRuby::TestHelper::Terminal](../lib/ratatui_ruby/test_helper/terminal.rb).
 
-Returns the current state of the terminal as an Array of Strings. Useful for verifying that specific text appears where you expect it.
+## Verifying Styles
 
-```ruby
-rows = buffer_content
-assert_equal "Title", rows[0].strip
-assert_match /Results: \d+/, rows[2]
-```
+You often need to check colors and modifiers (bold, italic) to ensure your highlighting logic works.
 
-### `cursor_position`
-
-Returns the current cursor coordinates as `{ x: Integer, y: Integer }`. Useful for forms or ensuring focus is correct.
+Use `assert_fg_color`, `assert_bg_color`, and modifier helpers like `assert_bold`.
 
 ```ruby
-pos = cursor_position
-assert_equal 5, pos[:x]
-assert_equal 2, pos[:y]
+# Assert specific cell style
+assert_fg_color(:red, 0, 0)
+assert_bold(0, 0)
+
+# Or check a whole area
+assert_area_style({ x: 0, y: 0, w: 10, h: 1 }, bg: :blue)
 ```
 
-### `inject_event`
+See [RatatuiRuby::TestHelper::StyleAssertions](../lib/ratatui_ruby/test_helper/style_assertions.rb) for the comprehensive list of style helpers.
 
-Injects a mock event into the event queue. This is the preferred way to simulate user input instead of stubbing `poll_event`.
+## Simulating Input
+
+You need to test user interactions like typing or clicking. Stubbing `poll_event` directly is brittle.
+
+Use `inject_event` to push mock events into the queue. This ensures safe, deterministic handling of input.
 
 > [!IMPORTANT]
-> You must call `inject_event` inside a `with_test_terminal` block. Calling it outside leads to race conditions where events are flushed before the application starts.
+> Call `inject_event` inside a `with_test_terminal` block to avoid race conditions.
 
 ```ruby
 with_test_terminal do
   # Simulate 'q' key press
   inject_event("key", { code: "q" })
 
-  # Now poll_event will return the 'q' key event
+  # The application receives the 'q' event
   event = RatatuiRuby.poll_event
   assert_equal "q", event.code
 end
 ```
 
+See [RatatuiRuby::TestHelper::EventInjection](../lib/ratatui_ruby/test_helper/event_injection.rb) for helper methods like `inject_keys` and `inject_click`.
+
+## Snapshot Testing
+
+Snapshots let you verify complex layouts without manually asserting every line.
+
+Use `assert_snapshot` to compare the current screen against a stored reference file.
+
+```ruby
+with_test_terminal do
+  MyApp.new.run
+  assert_snapshot("dashboard_view")
+end
+```
+
+### Handling Non-Determinism
+
+Snapshots must be deterministic. Random data or current timestamps will cause test failures ("flakes").
+
+To prevent this:
+1.  **Seed Randomness:** Use a fixed seed for any RNG.
+2.  **Stub Time:** Force the application to use a static time.
+
+For detailed strategies and code examples, see [RatatuiRuby::TestHelper::Snapshot](../lib/ratatui_ruby/test_helper/snapshot.rb).
+
+## Isolated View Testing
+
+Sometimes you want to test a single view component without spinning up the full `TestTerminal` engine.
+
+Use `MockFrame` and `StubRect` to test render logic in isolation.
+
+```ruby
+def test_logs_view
+  frame = RatatuiRuby::TestHelper::TestDoubles::MockFrame.new
+  area = RatatuiRuby::TestHelper::TestDoubles::StubRect.new(width: 40, height: 10)
+  
+  # Call your view directly
+  MyView.new.render(frame, area)
+  
+  # Inspect what was rendered
+  rendered = frame.rendered_widgets.first
+  assert_equal "Logs", rendered[:widget].block.title
+end
+```
+
+See [RatatuiRuby::TestHelper::TestDoubles](../lib/ratatui_ruby/test_helper/test_doubles.rb).
+
 ## Example
 
-Be sure to check out the [examples directory](../examples/) in the repository, which contains several fully tested example applications showcasing these patterns.
+Check out the [examples directory](../examples/) for fully tested applications showcasing these patterns.

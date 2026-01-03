@@ -5,6 +5,7 @@
 
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
+require "faker" # Use Faker for large, realistic datasets
 
 # Demonstrates a selectable list of items with interactive attribute cycling.
 #
@@ -24,104 +25,10 @@ require "ratatui_ruby"
 class WidgetListDemo
   # Initializes the demo with example data and default configuration.
   def initialize
+    Faker::Config.random = Random.new(12345)
     @selected_index = 0
 
     @item_sets = [
-      {
-        name: "Large List",
-        items: (1..200).map { |i| "Item #{i}" },
-      },
-      {
-        name: "Colors",
-        items: [
-          "Red",
-          "Orange",
-          "Yellow",
-          "Green",
-          "Cyan",
-          "Blue",
-          "Indigo",
-          "Violet",
-          "Scarlet",
-          "Crimson",
-          "Maroon",
-          "Brown",
-          "Tan",
-          "Beige",
-          "Khaki",
-          "Gold",
-          "Silver",
-          "White",
-          "Gray",
-          "Black",
-          "Pink",
-          "Magenta",
-          "Turquoise",
-          "Teal",
-          "Coral",
-          "Salmon",
-          "Peach",
-          "Lavender",
-          "Lilac",
-          "Olive",
-          "Lime",
-          "Navy",
-          "Charcoal",
-          "Ivory",
-          "Azure",
-        ],
-      },
-      {
-        name: "Fruits",
-        items: [
-          "Apple",
-          "Apricot",
-          "Avocado",
-          "Banana",
-          "Blueberry",
-          "Blackberry",
-          "Cherry",
-          "Cranberry",
-          "Cucumber",
-          "Date",
-          "Dragonfruit",
-          "Elderberry",
-          "Fig",
-          "Grape",
-          "Grapefruit",
-          "Guava",
-          "Honeydew",
-          "Huckleberry",
-          "Jackfruit",
-          "Kiwi",
-          "Kumquat",
-          "Lemon",
-          "Lime",
-          "Lychee",
-          "Mango",
-          "Melon",
-          "Mulberry",
-          "Nectarine",
-          "Olive",
-          "Orange",
-          "Papaya",
-          "Passion Fruit",
-          "Peach",
-          "Pear",
-          "Persimmon",
-          "Pineapple",
-          "Plum",
-          "Pomegranate",
-          "Prune",
-          "Rambutan",
-          "Raspberry",
-          "Starfruit",
-          "Strawberry",
-          "Tangerine",
-          "Watermelon",
-          "Ugli Fruit",
-        ],
-      },
       {
         name: "Programming",
         items: [
@@ -175,6 +82,24 @@ class WidgetListDemo
           "BASIC",
         ],
       },
+      {
+        name: "Large List",
+        items: (1..200).map { |i| "Item #{i}" },
+      },
+      {
+        name: "Colors",
+        items: begin
+          Faker::Color.unique.clear
+          Array.new(100) { Faker::Color.color_name }
+        end,
+      },
+      {
+        name: "Fruits",
+        items: begin
+          Faker::Food.unique.clear
+          Array.new(100) { Faker::Food.fruits }
+        end,
+      },
     ]
     @item_set_index = 0
 
@@ -192,7 +117,7 @@ class WidgetListDemo
       { name: "Always", spacing: :always },
       { name: "Never", spacing: :never },
     ]
-    @highlight_spacing_index = 0
+    @highlight_spacing_index = 1
 
     @repeat_modes = [
       { name: "Off", repeat: false },
@@ -205,7 +130,7 @@ class WidgetListDemo
       { name: "1 item", padding: 1 },
       { name: "2 items", padding: 2 },
     ]
-    @scroll_padding_index = 0
+    @scroll_padding_index = 1
 
     # Offset mode configurations to demonstrate offset + selection interaction
     @offset_modes = [
@@ -213,7 +138,7 @@ class WidgetListDemo
       { name: "Offset Only", offset: 10, allow_selection: false },
       { name: "Selection + Offset (Conflict)", offset: 0, allow_selection: true },
     ]
-    @offset_mode_index = 0
+    @offset_mode_index = 1
   end
 
   # Runs the demo application.
@@ -224,8 +149,8 @@ class WidgetListDemo
       @tui = tui
       # Initialize styles that require @tui
       @highlight_styles = [
-        { name: "Blue Bold", style: @tui.style(fg: :blue, modifiers: [:bold]) },
         { name: "Blue on White Bold", style: @tui.style(fg: :blue, bg: :white, modifiers: [:bold]) },
+        { name: "Blue Bold", style: @tui.style(fg: :blue, modifiers: [:bold]) },
         { name: "Yellow on Black", style: @tui.style(fg: :yellow, bg: :black) },
         { name: "Green Italic", style: @tui.style(fg: :green, modifiers: [:italic]) },
         { name: "White Reversed", style: @tui.style(fg: :white, modifiers: [:reversed]) },

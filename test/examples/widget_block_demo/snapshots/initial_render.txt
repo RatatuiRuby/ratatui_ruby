@@ -1,4 +1,4 @@
-╭──────────────────────────────────Main Title──────────────────────────────────╮
+╭──────────────────────────────────Main Title─────────────────────────Top Right╮
 │                                                                              │
 │                                                                              │
 │  This paragraph is rendered inside the Block widget.                         │
@@ -11,13 +11,13 @@
 │                                                                              │
 │                                                                              │
 │                                                                              │
-╰──────────────────────────────────────────────────────────────────────────────╯
+╰Bottom Left───────────────────────────────────────────────────────────────────╯
 ┌Controls──────────────────────────────────────────────────────────────────────┐
-│t: Title (Main Title)  a: Alignment (Center)  s: Title Style (Cyan Bold)      │
-│e: Additional Titles (None)                                                   │
+│t: Title (Main Title)  a: Alignment (Center)  s: Title Style (Magenta Bold)   │
+│e: Additional Titles (Top + Bottom)                                           │
 │b: Borders (All)  y: Border Type (Rounded)                                    │
-│c: Border Style (Magenta Bold)  p: Padding (Uniform (2))                      │
-│f: Base Style (Dark Gray)  q: Quit                                            │
+│c: Border Style (Cyan)  p: Padding (Uniform (2))                              │
+│f: Base Style (None)  q: Quit                                                 │
 │                                                                              │
 │                                                                              │
 │                                                                              │

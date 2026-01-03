@@ -1,12 +1,12 @@
 Sparkline Widget Demo - Cycle attributes with hotkeys                           
 ┌Interactive Sparkline─────────────────────────────────────────────────────────┐
-│ ▁▂▂▃▄▄▅▆▆▇█                                                                  │
+│▂ ▃ ▄█▁▅▄▂▄▇                                                                  │
 └──────────────────────────────────────────────────────────────────────────────┘
 ┌Reversed Data─────────────────────────────────────────────────────────────────┐
-│█▇▆▆▅▄▄▃▂▂▁                                                                   │
+│▇▄▂▄▅▁█▄ ▃ ▂                                                                  │
 └──────────────────────────────────────────────────────────────────────────────┘
 ┌Without Absent Marker─────────────────────────────────────────────────────────┐
-│ ▁▂▂▃▄▄▅▆▆▇█                                                                  │
+│▂ ▃ ▄█▁▅▄▂▄▇                                                                  │
 └──────────────────────────────────────────────────────────────────────────────┘
 ┌Gap Pattern (Responsive)──────────────────────────────────────────────────────┐
 │▄_▆_▄_▇_▅_█_                                                                  │
@@ -17,8 +17,8 @@ Sparkline Widget Demo - Cycle attributes with hotkeys
                                                                                 
                                                                                 
 ┌Controls──────────────────────────────────────────────────────────────────────┐
-│↑/↓: Data (Steady Growth)                                                     │
-│d: Direction (Left to Right)  c: Color (Green)                                │
-│m: Absent Value Symbol (Underscore (_))  s: Absent Value Style (Default)      │
+│↑/↓: Data (Random)                                                            │
+│d: Direction (Left to Right)  c: Color (Cyan)                                 │
+│m: Absent Value Symbol (Underscore (_))  s: Absent Value Style (Dim Red)      │
 │b: Bar Set (Default (Block))  q: Quit                                         │
 └──────────────────────────────────────────────────────────────────────────────┘

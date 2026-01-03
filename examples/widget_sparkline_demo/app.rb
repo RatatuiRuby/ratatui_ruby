@@ -57,7 +57,8 @@ class WidgetSparklineDemo
         data: [1, 5, 1, 8, 1, 6, 1, 9, 1, 7, 1, 10],
       },
     ]
-    @data_index = 0
+    @data_index = 2
+    srand(12345) # Ensure reproducible "Random" data for snapshots
 
     @directions = [
       { name: "Left to Right", direction: :left_to_right },
@@ -72,7 +73,7 @@ class WidgetSparklineDemo
       { name: "Cyan", style: @tui.style(fg: :cyan) },
       { name: "Magenta", style: @tui.style(fg: :magenta) },
     ]
-    @style_index = 0
+    @style_index = 3
 
     @absent_symbols = [
       { name: "None", symbol: nil },
@@ -89,7 +90,7 @@ class WidgetSparklineDemo
       { name: "Dim Red", style: @tui.style(fg: :red, modifiers: [:dim]) },
       { name: "Dim Yellow", style: @tui.style(fg: :yellow, modifiers: [:dim]) },
     ]
-    @absent_style_index = 0
+    @absent_style_index = 2
 
     @bar_sets = [
       { name: "Default (Block)", set: nil },

@@ -1,4 +1,4 @@
-────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────Top Right
 This paragraph is rendered inside the Block widget.                             
 You can see how padding and base style affect this content.                     
                                                                                 
@@ -11,13 +11,13 @@ Current State:
                                                                                 
                                                                                 
                                                                                 
-────────────────────────────────────────────────────────────────────────────────
+Bottom Left─────────────────────────────────────────────────────────────────────
 ┌Controls──────────────────────────────────────────────────────────────────────┐
-│t: Title (None)  a: Alignment (Right)  s: Title Style (Cyan Bold)             │
-│e: Additional Titles (None)                                                   │
+│t: Title (None)  a: Alignment (Right)  s: Title Style (Magenta Bold)          │
+│e: Additional Titles (Top + Bottom)                                           │
 │b: Borders (Top/Bottom)  y: Border Type (Rounded)                             │
-│c: Border Style (Magenta Bold)  p: Padding (None (0))                         │
-│f: Base Style (Dark Gray)  q: Quit                                            │
+│c: Border Style (Cyan)  p: Padding (None (0))                                 │
+│f: Base Style (None)  q: Quit                                                 │
 │                                                                              │
 │                                                                              │
 │                                                                              │

@@ -1,24 +1,24 @@
 List Widget Demo - Interactive Attribute Cycling                                
-┌Large List | Sel: 0 | Offset: auto────────────────────────────────────────────┐
-│   Item 13                                                                    │
-│   Item 12                                                                    │
-│   Item 11                                                                    │
-│   Item 10                                                                    │
-│   Item 9                                                                     │
-│   Item 8                                                                     │
-│   Item 7                                                                     │
-│   Item 6                                                                     │
-│   Item 5                                                                     │
-│   Item 4                                                                     │
-│   Item 3                                                                     │
-│   Item 2                                                                     │
-│>> Item 1                                                                     │
+┌Programming | Sel: none | Offset: 10──────────────────────────────────────────┐
+│   VB.NET                                                                     │
+│   Closure                                                                    │
+│   Groovy                                                                     │
+│   Clojure                                                                    │
+│   Elixir                                                                     │
+│   Haskell                                                                    │
+│   Scala                                                                      │
+│   R                                                                          │
+│   Lua                                                                        │
+│   Perl                                                                       │
+│   TypeScript                                                                 │
+│   PHP                                                                        │
+│   Objective-C                                                                │
 └──────────────────────────────────────────────────────────────────────────────┘
 ┌Controls──────────────────────────────────────────────────────────────────────┐
-│i: Items  ↑/↓: Navigate  x: Select  h: Highlight (Blue Bold)                  │
+│i: Items  ↑/↓: Navigate  x: Select  h: Highlight (Blue on White Bold)         │
 │y: Symbol (>> )  d: Direction (Bottom to Top)                                 │
-│s: Spacing (When Selected)  p: Scroll Padding (None)                          │
+│s: Spacing (Always)  p: Scroll Padding (1 item)                               │
 │b: Base (None)  r: Repeat (Off)                                               │
-│o: Offset Mode (Auto (No Offset))  q: Quit                                    │
+│o: Offset Mode (Offset Only)  q: Quit                                         │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘

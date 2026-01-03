@@ -1,12 +1,12 @@
 Sparkline Widget Demo - Cycle attributes with hotkeys                           
 ┌Interactive Sparkline─────────────────────────────────────────────────────────┐
-│012234456678                                                                  │
+│203048154247                                                                  │
 └──────────────────────────────────────────────────────────────────────────────┘
 ┌Reversed Data─────────────────────────────────────────────────────────────────┐
-│876654432210                                                                  │
+│742451840302                                                                  │
 └──────────────────────────────────────────────────────────────────────────────┘
 ┌Without Absent Marker─────────────────────────────────────────────────────────┐
-│012234456678                                                                  │
+│203048154247                                                                  │
 └──────────────────────────────────────────────────────────────────────────────┘
 ┌Gap Pattern (Responsive)──────────────────────────────────────────────────────┐
 │4·6·4·7·5·8·                                                                  │
@@ -17,8 +17,8 @@ Sparkline Widget Demo - Cycle attributes with hotkeys
                                                                                 
                                                                                 
 ┌Controls──────────────────────────────────────────────────────────────────────┐
-│↑/↓: Data (Steady Growth)                                                     │
-│d: Direction (Left to Right)  c: Color (Green)                                │
-│m: Absent Value Symbol (Dot (·))  s: Absent Value Style (Default)             │
+│↑/↓: Data (Random)                                                            │
+│d: Direction (Left to Right)  c: Color (Cyan)                                 │
+│m: Absent Value Symbol (Dot (·))  s: Absent Value Style (Dim Red)             │
 │b: Bar Set (Numbers (0-8))  q: Quit                                           │
 └──────────────────────────────────────────────────────────────────────────────┘
