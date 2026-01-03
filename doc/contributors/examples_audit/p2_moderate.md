@@ -136,4 +136,25 @@ end
 ## Dependencies
 
 - P0 (developing_examples.md, README.md, tests) should be complete before consolidation
-- Can proceed in parallel with P0 API fixes
+
+---
+
+## 4. Enhance Widget Examples with Functional Context
+
+**Status:** Recommended — Move beyond "parameter playgrounds" to "real-world patterns"
+
+Current `widget_*` examples mostly focus on interactive parameter turning (changing colors, borders, etc.). While useful for API discovery, they don't show *how* to use the widget in a real application logic flow.
+
+### The Standard: widget_tabs_demo
+
+The `widget_tabs_demo` was enhanced to show **conditional rendering** of content based on the selected tab in git commit `38ceed39a011d557cc66e11a4598d3341dc7a0cc`. It doesn't just highlight the tab; it changes the screen content. This connects the widget (the tabs) to the problem it solves (view segregation).
+
+### Action
+
+Identify other widget examples that could benefit from this "functional context" treatment:
+
+-   **widget_popup_demo:** Show a multi-step modal flow (e.g., Confirm -> Success) rather than just a static overlay.
+-   **widget_list_demo:** Show a master-detail view where selecting a list item updates a detail pane.
+-   **widget_input_demo:** (If created) Show specific validation logic (email vs number).
+
+**Goal:** Every widget example should answer "How do I build a feature with this?" not just "What does this parameter do?"
