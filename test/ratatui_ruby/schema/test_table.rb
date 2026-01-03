@@ -397,4 +397,94 @@ class TestTable < Minitest::Test
       assert_includes content, "Row 6"
     end
   end
+
+  # Feature 1: Table cells now accept Text::Span and Text::Line
+  def test_rich_text_cell_with_span
+    span = RatatuiRuby::Text::Span.new(content: "Styled", style: RatatuiRuby::Style.new(fg: :red))
+    rows = [[span]]
+    widths = [RatatuiRuby::Constraint.length(10)]
+    table = RatatuiRuby::Table.new(rows:, widths:)
+
+    with_test_terminal(10, 1) do
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
+      assert_includes buffer_content.first, "Styled"
+      # Verify style applied
+      cell = RatatuiRuby.get_cell_at(0, 0)
+      assert_equal :red, cell.fg
+    end
+  end
+
+  def test_rich_text_cell_with_line
+    line = RatatuiRuby::Text::Line.new(spans: [
+      RatatuiRuby::Text::Span.new(content: "Hello ", style: RatatuiRuby::Style.new(fg: :green)),
+      RatatuiRuby::Text::Span.new(content: "World", style: RatatuiRuby::Style.new(fg: :blue))
+    ])
+    rows = [[line]]
+    widths = [RatatuiRuby::Constraint.length(15)]
+    table = RatatuiRuby::Table.new(rows:, widths:)
+
+    with_test_terminal(15, 1) do
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
+      content = buffer_content.first
+      assert_includes content, "Hello"
+      assert_includes content, "World"
+      # Verify styles (green for first part, blue after space)
+      assert_equal :green, RatatuiRuby.get_cell_at(0, 0).fg
+      assert_equal :blue, RatatuiRuby.get_cell_at(6, 0).fg
+    end
+  end
+
+  def test_rich_text_header_with_span
+    header = [RatatuiRuby::Text::Span.new(content: "Title", style: RatatuiRuby::Style.new(modifiers: [:bold]))]
+    rows = [["Data"]]
+    widths = [RatatuiRuby::Constraint.length(10)]
+    table = RatatuiRuby::Table.new(header:, rows:, widths:)
+
+    with_test_terminal(10, 2) do
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
+      assert_includes buffer_content[0], "Title"
+      assert RatatuiRuby.get_cell_at(0, 0).bold?
+    end
+  end
+
+  # Feature 2: Row class for row-level styling
+  def test_row_with_style
+    row = RatatuiRuby::Row.new(
+      cells: ["Error", "Something went wrong"],
+      style: RatatuiRuby::Style.new(bg: :red)
+    )
+    rows = [["Normal", "Row"], row]
+    widths = [RatatuiRuby::Constraint.length(10), RatatuiRuby::Constraint.length(20)]
+    table = RatatuiRuby::Table.new(rows:, widths:)
+
+    with_test_terminal(30, 2) do
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
+      # First row: normal (no background)
+      assert_nil RatatuiRuby.get_cell_at(0, 0).bg
+      # Second row (Row object): red background
+      assert_equal :red, RatatuiRuby.get_cell_at(0, 1).bg
+    end
+  end
+
+  def test_row_with_height
+    row = RatatuiRuby::Row.new(cells: ["Tall"], height: 3)
+    rows = [row]
+    widths = [RatatuiRuby::Constraint.length(10)]
+    table = RatatuiRuby::Table.new(rows:, widths:)
+
+    with_test_terminal(10, 5) do
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
+      # The row should occupy 3 lines (content on line 0, blanks on 1-2)
+      assert_includes buffer_content[0], "Tall"
+      # Lines 1 and 2 should be part of the row (empty/reserved space)
+    end
+  end
+
+  def test_row_creation
+    row = RatatuiRuby::Row.new(cells: ["A", "B"], style: RatatuiRuby::Style.new(fg: :blue), height: 2)
+    assert_equal ["A", "B"], row.cells
+    assert_equal :blue, row.style.fg
+    assert_equal 2, row.height
+  end
 end
+

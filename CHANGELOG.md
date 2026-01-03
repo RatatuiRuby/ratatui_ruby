@@ -12,6 +12,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **Rich Text in Table Cells**: `Table` cells (rows, header, footer) now accept `Text::Span` and `Text::Line` objects for per-character styling, matching List widget capabilities.
+- **Row Wrapper**: New `Row` data class allows applying row-level styling (background color, style) and layout properties (height, top_margin, bottom_margin) to Table rows. Table rows can now be plain arrays or `Row` objects.
+- **Line#width Method**: `Text::Line` now has a `width` instance method that calculates the display width in terminal cells using unicode-aware measurement. Useful for layout calculations with rich text.
+
 ### Changed
 
 ### Fixed

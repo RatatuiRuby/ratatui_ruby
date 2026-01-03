@@ -383,6 +383,11 @@ module RatatuiRuby
     #
     # Factory for RatatuiRuby::Rect.new.
     #
+    # :method: row
+    # :call-seq: row(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Row.new.
+    #
     # :method: scrollbar
     # :call-seq: scrollbar(*args, **kwargs, &block)
     #

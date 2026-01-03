@@ -70,5 +70,40 @@ module RatatuiRuby
       assert_equal 4, session.text_width("你好")
       assert_equal 8, session.text_width("Hello 👍")
     end
+
+    # Feature 3: Line#width instance method
+    def test_line_width_simple
+      line = RatatuiRuby::Text::Line.new(spans: [
+        RatatuiRuby::Text::Span.new(content: "Hello")
+      ])
+      assert_equal 5, line.width
+    end
+
+    def test_line_width_multiple_spans
+      line = RatatuiRuby::Text::Line.new(spans: [
+        RatatuiRuby::Text::Span.new(content: "Hello "),
+        RatatuiRuby::Text::Span.new(content: "World")
+      ])
+      assert_equal 11, line.width
+    end
+
+    def test_line_width_with_cjk
+      line = RatatuiRuby::Text::Line.new(spans: [
+        RatatuiRuby::Text::Span.new(content: "Hello "),
+        RatatuiRuby::Text::Span.new(content: "世界")
+      ])
+      # "Hello " = 6, "世界" = 4 (2 CJK × 2 cells)
+      assert_equal 10, line.width
+    end
+
+    def test_line_width_empty
+      line = RatatuiRuby::Text::Line.new(spans: [])
+      assert_equal 0, line.width
+    end
+
+    def test_line_width_from_string
+      line = RatatuiRuby::Text::Line.from_string("Test")
+      assert_equal 4, line.width
+    end
   end
 end

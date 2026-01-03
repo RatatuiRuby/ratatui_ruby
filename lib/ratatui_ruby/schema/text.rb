@@ -119,6 +119,24 @@ module RatatuiRuby
       def self.from_string(content, alignment: nil)
         new(spans: [Span.new(content:, style: nil)], alignment:)
       end
+
+      # Calculates the display width of this line in terminal cells.
+      #
+      # Sums the widths of all span contents using the same unicode-aware
+      # algorithm as Text.width. Useful for layout calculations.
+      #
+      # === Examples
+      #
+      #   line = Text::Line.new(spans: [
+      #     Text::Span.new(content: "Hello "),
+      #     Text::Span.new(content: "世界")
+      #   ])
+      #   line.width  # => 10 (6 ASCII + 4 CJK)
+      #
+      # Returns: Integer (number of terminal cells)
+      def width
+        RatatuiRuby::Text.width(spans.map { |s| s.content.to_s }.join)
+      end
     end
 
     ##

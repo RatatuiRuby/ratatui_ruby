@@ -17,6 +17,7 @@ module RatatuiRuby
 
       def initialize: (spans: Array[Span], alignment: Symbol | nil) -> void
       def self.from_string: (String, alignment: Symbol | nil) -> Line
+      def width: () -> Integer
     end
 
     def self.width: (String) -> Integer

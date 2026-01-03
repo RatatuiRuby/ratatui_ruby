@@ -23,11 +23,11 @@ module RatatuiRuby
   class Table < Data.define(:header, :rows, :widths, :highlight_style, :highlight_symbol, :highlight_spacing, :column_highlight_style, :cell_highlight_style, :selected_row, :selected_column, :offset, :block, :footer, :flex, :style, :column_spacing)
     ##
     # :attr_reader: header
-    # Header row content (Array of Strings).
+    # Header row content (Array of Strings, Text::Spans, Text::Lines, or Paragraphs).
 
     ##
     # :attr_reader: rows
-    # Data rows (Array of Arrays of Strings).
+    # Data rows (Array of Arrays). Each cell can be String, Text::Span, Text::Line, Paragraph, or Cell.
 
     ##
     # :attr_reader: widths
@@ -83,7 +83,7 @@ module RatatuiRuby
 
     ##
     # :attr_reader: footer
-    # Footer row content (Array of Strings).
+    # Footer row content (Array of Strings, Text::Spans, Text::Lines, or Paragraphs).
 
     ##
     # :attr_reader: flex
@@ -99,8 +99,8 @@ module RatatuiRuby
 
     # Creates a new Table.
     #
-    # [header] Array of strings/paragraphs.
-    # [rows] 2D Array of strings/paragraphs.
+    # [header] Array of strings, Text::Spans, Text::Lines, or paragraphs.
+    # [rows] 2D Array where each cell is String, Text::Span, Text::Line, Paragraph, or Cell.
     # [widths] Array of Constraints.
     # [highlight_style] Style object.
     # [highlight_symbol] String.

@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class Row < Data
+    type cell_content = String | Text::Span | Text::Line | Paragraph | Cell
+
+    attr_reader cells: Array[cell_content]
+    attr_reader style: Style?
+    attr_reader height: Integer?
+    attr_reader top_margin: Integer?
+    attr_reader bottom_margin: Integer?
+
+    def self.new: (
+      cells: Array[cell_content],
+      ?style: Style?,
+      ?height: Integer?,
+      ?top_margin: Integer?,
+      ?bottom_margin: Integer?
+    ) -> Row
+  end
+end

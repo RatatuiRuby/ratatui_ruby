@@ -84,6 +84,7 @@ module RatatuiRuby
     def ratatui_logo: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def ratatui_mascot: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def rect: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def row: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def scrollbar: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def scrollbar_state: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def scrollbar_state_new: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped

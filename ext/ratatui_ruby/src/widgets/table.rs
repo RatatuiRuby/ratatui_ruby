@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::{parse_block, parse_style};
+use crate::text::{parse_line, parse_span};
 use crate::widgets::table_state::RubyTableState;
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, Symbol, TryConvert, Value};
@@ -228,6 +229,51 @@ pub fn render_stateful(
 
 fn parse_row(row_val: Value) -> Result<Row<'static>, Error> {
     let ruby = magnus::Ruby::get().unwrap();
+
+    // Check if this is a RatatuiRuby::Row object with cells + style + height + margins
+    let class = row_val.class();
+    let class_name = unsafe { class.name() }.into_owned();
+
+    if class_name == "RatatuiRuby::Row" {
+        let cells_val: Value = row_val.funcall("cells", ())?;
+        let style_val: Value = row_val.funcall("style", ())?;
+        let height_val: Value = row_val.funcall("height", ())?;
+        let top_margin_val: Value = row_val.funcall("top_margin", ())?;
+        let bottom_margin_val: Value = row_val.funcall("bottom_margin", ())?;
+
+        let cells_array = magnus::RArray::from_value(cells_val)
+            .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for Row.cells"))?;
+
+        let mut cells = Vec::new();
+        for i in 0..cells_array.len() {
+            let index = isize::try_from(i)
+                .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+            let cell_val: Value = cells_array.entry(index)?;
+            cells.push(parse_cell(cell_val)?);
+        }
+
+        let mut row = Row::new(cells);
+
+        if !style_val.is_nil() {
+            row = row.style(parse_style(style_val)?);
+        }
+        if !height_val.is_nil() {
+            let h: u16 = height_val.funcall("to_int", ())?;
+            row = row.height(h);
+        }
+        if !top_margin_val.is_nil() {
+            let m: u16 = top_margin_val.funcall("to_int", ())?;
+            row = row.top_margin(m);
+        }
+        if !bottom_margin_val.is_nil() {
+            let m: u16 = bottom_margin_val.funcall("to_int", ())?;
+            row = row.bottom_margin(m);
+        }
+
+        return Ok(row);
+    }
+
+    // Fallback: plain array of cells
     let row_array = magnus::RArray::from_value(row_val)
         .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for row"))?;
 
@@ -245,6 +291,20 @@ fn parse_cell(cell_val: Value) -> Result<Cell<'static>, Error> {
     let class = cell_val.class();
     // SAFETY: Immediate conversion to owned string avoids GC-unsafe borrowed reference.
     let class_name = unsafe { class.name() }.into_owned();
+
+    // Try Text::Line first (contains multiple spans)
+    if class_name.contains("Line") {
+        if let Ok(line) = parse_line(cell_val) {
+            return Ok(Cell::from(line));
+        }
+    }
+
+    // Try Text::Span
+    if class_name.contains("Span") {
+        if let Ok(span) = parse_span(cell_val) {
+            return Ok(Cell::from(ratatui::text::Line::from(vec![span])));
+        }
+    }
 
     if class_name == "RatatuiRuby::Paragraph" {
         let text: String = cell_val.funcall("text", ())?;
