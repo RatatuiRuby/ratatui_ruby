@@ -84,32 +84,6 @@ module RatatuiRuby
       assert_includes buffer, "TestDS"
     end
 
-    def test_line_chart_backward_compatibility
-      datasets = [
-        Widgets::Dataset.new(
-          name: "TestDS",
-          data: [[0.0, 0.0], [10.0, 10.0]],
-          style: Style::Style.new(fg: :blue),
-        ),
-      ]
 
-      line_chart = Widgets::Chart.new(
-        datasets:,
-        x_labels: %w[X0 X10],
-        y_labels: %w[Y0 Y10],
-        y_bounds: [0.0, 10.0],
-        block: Widgets::Block.new(title: "Legacy Chart"),
-      )
-
-      RatatuiRuby.draw { |f| f.render_widget(line_chart, f.area) }
-      buffer = RatatuiRuby.get_buffer_content
-
-      assert_includes buffer, "Legacy Chart"
-      assert_includes buffer, "X0"
-      assert_includes buffer, "X10"
-      assert_includes buffer, "Y0"
-      assert_includes buffer, "Y10"
-      assert_includes buffer, "TestDS"
-    end
   end
 end

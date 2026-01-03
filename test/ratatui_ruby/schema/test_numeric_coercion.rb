@@ -139,7 +139,7 @@ class TestNumericCoercion < Minitest::Test
   end
 
   def test_line_chart_bounds_coerce_floats
-    chart = RatatuiRuby::Widgets::Chart.new(
+    chart = RatatuiRuby::Widgets::LineChart.new(
       datasets: [],
       y_bounds: [Rational(0, 1), Rational(100, 1)]
     )

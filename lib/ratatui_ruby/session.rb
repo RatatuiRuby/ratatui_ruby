@@ -383,33 +383,33 @@ module RatatuiRuby
     # -------------------------------------------------------------------
 
     # Creates a map shape for Canvas.
-    # @return [Hash] Shape configuration
-    def shape_map(**kwargs)
-      { type: :map, **kwargs }
+    # @return [Widgets::Shape::Map]
+    def shape_map(...)
+      Widgets::Shape::Map.new(...)
     end
 
     # Creates a line shape for Canvas.
-    # @return [Hash] Shape configuration
-    def shape_line(**kwargs)
-      { type: :line, **kwargs }
+    # @return [Widgets::Shape::Line]
+    def shape_line(...)
+      Widgets::Shape::Line.new(...)
     end
 
     # Creates a point (single pixel) shape for Canvas.
-    # @return [Hash] Shape configuration
-    def shape_point(**kwargs)
-      { type: :point, **kwargs }
+    # @return [Widgets::Shape::Point]
+    def shape_point(...)
+      Widgets::Shape::Point.new(...)
     end
 
     # Creates a circle shape for Canvas.
-    # @return [Hash] Shape configuration
-    def shape_circle(**kwargs)
-      { type: :circle, **kwargs }
+    # @return [Widgets::Shape::Circle]
+    def shape_circle(...)
+      Widgets::Shape::Circle.new(...)
     end
 
     # Creates a rectangle shape for Canvas.
-    # @return [Hash] Shape configuration
-    def shape_rectangle(**kwargs)
-      { type: :rectangle, **kwargs }
+    # @return [Widgets::Shape::Rectangle]
+    def shape_rectangle(...)
+      Widgets::Shape::Rectangle.new(...)
     end
 
     # -------------------------------------------------------------------
@@ -436,12 +436,6 @@ module RatatuiRuby
     # @return [Widgets::BarChart::BarGroup]
     def bar_chart_bar_group(...)
       Widgets::BarChart::BarGroup.new(...)
-    end
-
-    private
-
-    def to_h(**kwargs)
-      kwargs
     end
   end
 end

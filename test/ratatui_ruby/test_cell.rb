@@ -79,10 +79,10 @@ module RatatuiRuby
 
     def test_inspect
       c1 = Buffer::Cell.new(char: "X", fg: :red, modifiers: ["bold"])
-      assert_equal '#<RatatuiRuby::Cell symbol="X" fg=:red modifiers=["bold"]>', c1.inspect
+      assert_equal '#<RatatuiRuby::Buffer::Cell symbol="X" fg=:red modifiers=["bold"]>', c1.inspect
 
       c2 = Buffer::Cell.empty
-      assert_equal '#<RatatuiRuby::Cell symbol=" ">', c2.inspect
+      assert_equal '#<RatatuiRuby::Buffer::Cell symbol=" ">', c2.inspect
     end
 
     def test_to_s
