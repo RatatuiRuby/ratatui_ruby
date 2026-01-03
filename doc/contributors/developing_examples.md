@@ -308,3 +308,39 @@ Examples should demonstrate widget configurability by allowing interactive cycli
 | Scrollbar | theme | s |
 
 Display the current state in the UI (e.g., in a title or status bar or paragraph) so users can see what changed. Display the hotkey in the UI as well, so users can see how to change it; the hotkey should not disappear as app state changes.
+
+## Data Quality
+
+Examples must use **realistic, meaningful data**—not dummy placeholder text. This ensures examples:
+- Demonstrate the widget's real-world usage
+- Provide educational value to users reading the code
+- Look professional and polished
+
+### Guidelines
+
+**For small datasets (< 10 items):**
+Use hardcoded realistic data. Examples:
+- Geographic coordinates with city names (see `widget_map_demo/app.rb`)
+- Real product names or person names
+- Meaningful status values ("Completed", "Pending", "Failed")
+
+**For large datasets (≥ 10 items):**
+Use the [Faker](https://github.com/faker-ruby/faker) gem with **deterministic seeding** so data is consistent across runs:
+
+```ruby
+require "faker"
+
+# Seed Faker for reproducible output
+Faker::Config.random = Random.new(12345)
+
+# Generate realistic data
+users = Array.new(50) { Faker::Name.name }
+emails = Array.new(50) { Faker::Internet.email }
+```
+
+In tests, set the same seed before each test to ensure snapshot consistency.
+
+**Avoid:**
+- Repeated placeholder text like "Lorem ipsum" or "Background Layer" × 20
+- Generic numbered items like "Item 1", "Item 2" (unless the context demands it)
+- Nonsensical or visually jarring content
