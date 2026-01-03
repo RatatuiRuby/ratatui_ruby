@@ -7,7 +7,7 @@ $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
 # An example of the Canvas widget showing a world map and animated shapes.
-class AppMapDemo
+class WidgetMapDemo
   include RatatuiRuby
 
   COLORS = [:black, :blue, :white, nil].freeze
@@ -90,4 +90,4 @@ class AppMapDemo
   end
 end
 
-AppMapDemo.new.run if __FILE__ == $PROGRAM_NAME
+WidgetMapDemo.new.run if __FILE__ == $PROGRAM_NAME

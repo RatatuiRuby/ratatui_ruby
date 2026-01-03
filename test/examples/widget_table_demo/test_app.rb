@@ -8,14 +8,14 @@ $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 require "ratatui_ruby/test_helper"
 require "minitest/autorun"
-require_relative "../../../examples/app_table_select/app"
+require_relative "../../../examples/widget_table_demo/app"
 
 # Tests for the table_select example
-class TestAppTableSelect < Minitest::Test
+class TestWidgetTableDemo < Minitest::Test
   include RatatuiRuby::TestHelper
 
   def setup
-    @app = AppTableSelect.new
+    @app = WidgetTableDemo.new
   end
 
   def test_initial_render_no_selection

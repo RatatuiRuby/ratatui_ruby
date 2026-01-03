@@ -2,9 +2,9 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-class AppTableSelect
+class WidgetMapDemo
   # @public
-  def self.new: () -> AppTableSelect
+  def self.new: () -> WidgetMapDemo
 
   # @public
   def run: () -> void

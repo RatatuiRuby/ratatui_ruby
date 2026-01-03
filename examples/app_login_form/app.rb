@@ -82,10 +82,9 @@ class AppLoginForm
 
   private def handle_input
     case @tui.poll_event
-    in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
-      return :quit if @show_popup
-      nil
     in { type: :key, code: "c", modifiers: ["ctrl"] }
+      :quit
+    in { type: :key, code: "q" } if @show_popup
       :quit
     in { type: :key, code: "enter" }
       @show_popup ||= true

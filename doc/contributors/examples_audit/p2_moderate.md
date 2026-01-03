@@ -26,28 +26,6 @@ These are v1.0.0 quality improvements that refine the example suite after P0 is 
 
 ---
 
-### 1b. app_table_select + widget_table_flex → widget_table_demo
-
-**Overlap:** Both demonstrate Table widgets with different focuses.
-
-**app_table_select:** Row/column selection, highlight styles, real-world data (processes)
-**widget_table_flex:** Flex modes (:legacy, :space_between, :space_around), dummy data
-
-**Action:** Create unified widget_table_demo combining:
-- Row/column selection mechanics
-- Flex mode cycling via hotkeys
-- Real-world process data for context
-- Correct event handling and Session API
-
-**Files to delete:**
-- widget_table_flex/ (or merge into new widget_table_demo)
-- app_table_select/ (or merge into new widget_table_demo)
-- Corresponding test and sig entries
-
-**Effort:** 3 hours
-
----
-
 ### 1c. widget_block_padding + widget_block_titles → widget_block_demo
 
 **Overlap:** Both demonstrate Block widget attributes.

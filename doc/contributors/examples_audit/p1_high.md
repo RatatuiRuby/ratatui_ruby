@@ -15,7 +15,7 @@ Important for v1.0.0 quality and ecosystem goals. Not blocking release, but reco
 
 ### Event Handling (5 examples)
 
-widget_table_flex, widget_block_padding, widget_block_titles, widget_cell_demo, widget_scroll_text
+widget_block_padding, widget_block_titles, widget_cell_demo, widget_scroll_text
 
 **Current (WRONG):**
 ```ruby
@@ -56,7 +56,7 @@ RatatuiRuby::Constraint.length(...)
 
 **widget_cell_demo:** Rename `main` method to `run`
 
-**widget_scroll_text, app_table_select:** Remove executable bit (`chmod -x`)
+**widget_scroll_text, widget_table_demo:** Remove executable bit (`chmod -x`)
 
 ---
 

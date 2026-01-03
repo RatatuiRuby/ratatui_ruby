@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby
 # frozen_string_literal: true
 
 # SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
@@ -19,7 +18,7 @@ PROCESSES = [
   { pid: 6789, name: "node", cpu: 18.9 },
 ].freeze
 
-class AppTableSelect
+class WidgetTableDemo
   attr_reader :selected_index, :selected_col, :current_style_index, :column_spacing, :highlight_spacing, :column_highlight_style, :cell_highlight_style
 
   HIGHLIGHT_SPACINGS = [
@@ -34,6 +33,16 @@ class AppTableSelect
     { name: "Selection + Offset (Conflict)", offset: 0, allow_selection: true },
   ].freeze
 
+  FLEX_MODES = [
+    { name: "Legacy (Default)", flex: :legacy },
+    { name: "Start", flex: :start },
+    { name: "Center", flex: :center },
+    { name: "End", flex: :end },
+    { name: "Space Between", flex: :space_between },
+    { name: "Space Around", flex: :space_around },
+    { name: "Space Evenly", flex: :space_evenly },
+  ].freeze
+
   def initialize
     @selected_index = 1
     @selected_col = 1
@@ -43,6 +52,7 @@ class AppTableSelect
     @show_column_highlight = true
     @show_cell_highlight = true
     @offset_mode_index = 0
+    @flex_mode_index = 0
   end
 
   def run
@@ -88,6 +98,7 @@ class AppTableSelect
     current_style_entry = @styles[@current_style_index]
     current_spacing_entry = HIGHLIGHT_SPACINGS[@highlight_spacing_index]
     offset_mode_entry = OFFSET_MODES[@offset_mode_index]
+    flex_mode_entry = FLEX_MODES[@flex_mode_index]
 
     # Determine selection/offset based on mode
     effective_selection = offset_mode_entry[:allow_selection] ? @selected_index : nil
@@ -110,8 +121,9 @@ class AppTableSelect
       cell_highlight_style: @show_cell_highlight ? @cell_highlight_style : nil,
       style: current_style_entry[:style],
       column_spacing: @column_spacing,
+      flex: flex_mode_entry[:flex],
       block: @tui.block(
-        title: "Processes | Sel: #{selection_label} | Offset: #{offset_label}",
+        title: "Processes | Sel: #{selection_label} | Offset: #{offset_label} | Flex: #{flex_mode_entry[:name]}",
         borders: :all
       ),
       footer: ["Total: #{PROCESSES.length}", "Total CPU: #{PROCESSES.sum { |p| p[:cpu] }}%", ""]
@@ -147,7 +159,9 @@ class AppTableSelect
               @tui.text_span(content: "+/-", style: @hotkey_style),
               @tui.text_span(content: ": Col Space (#{@column_spacing})  "),
               @tui.text_span(content: "c", style: @hotkey_style),
-              @tui.text_span(content: ": Col Highlight (#{@show_column_highlight ? 'On' : 'Off'})"),
+              @tui.text_span(content: ": Col Highlight (#{@show_column_highlight ? 'On' : 'Off'})  "),
+              @tui.text_span(content: "f", style: @hotkey_style),
+              @tui.text_span(content: ": Flex Mode (#{flex_mode_entry[:name]})"),
             ]),
             # Line 4: Offset Mode
             @tui.text_line(spans: [
@@ -212,6 +226,8 @@ class AppTableSelect
       @show_cell_highlight = !@show_cell_highlight
     in type: :key, code: "o"
       @offset_mode_index = (@offset_mode_index + 1) % OFFSET_MODES.length
+    in type: :key, code: "f"
+      @flex_mode_index = (@flex_mode_index + 1) % FLEX_MODES.length
     else
       nil
     end
@@ -219,5 +235,5 @@ class AppTableSelect
 end
 
 if __FILE__ == $0
-  AppTableSelect.new.run
+  WidgetTableDemo.new.run
 end

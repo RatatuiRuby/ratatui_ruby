@@ -259,17 +259,9 @@ Shows how to use `Overlay`, `Center`, and `Cursor` to build a modal login form w
 
 ![login_form](./images/app_login_form.png)
 
-#### [Map Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/app_map_demo/app.rb)
 
-Exhibits the `Canvas` widget's power, rendering a world map with city labels, animated circles, and lines.
 
-![map_demo](./images/app_map_demo.png)
 
-#### [Table Select](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/app_table_select/app.rb)
-
-Demonstrates interactive row selection in the `Table` widget with keyboard navigation, highlighting selected rows with custom styles and symbols, applying a base style, and dynamically adjusting `column_spacing`. Also demonstrates `column_highlight_style` and the new `cell_highlight_style` for precise selection visualization.
-
-![table_select](./images/app_table_select.png)
 
 
 ### Widget Demos
@@ -285,6 +277,7 @@ These smaller, focused examples demonstrate specific widgets and their configura
 *   [Gauge](../examples/widget_gauge_demo/app.rb)
 *   [Line Gauge](../examples/widget_line_gauge_demo/app.rb)
 *   [List](../examples/widget_list_demo/app.rb)
+*   [Map (Canvas)](../examples/widget_map_demo/app.rb)
 *   [Popup (Clear)](../examples/widget_popup_demo/app.rb)
 *   [Rect](../examples/widget_rect/app.rb)
 *   [Ratatui Logo](../examples/widget_ratatui_logo_demo/app.rb)
@@ -293,6 +286,6 @@ These smaller, focused examples demonstrate specific widgets and their configura
 *   [Scrollbar](../examples/widget_scrollbar_demo/app.rb)
 *   [Scroll Text](../examples/widget_scroll_text/app.rb)
 *   [Sparkline](../examples/widget_sparkline_demo/app.rb)
-*   [Table Flex](../examples/widget_table_flex/app.rb)
+*   [Table (Selection)](../examples/widget_table_demo/app.rb)
 *   [Tabs](../examples/widget_tabs_demo/app.rb)
 *   [Widget Style Colors](../examples/widget_style_colors/app.rb)

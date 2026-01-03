@@ -8,13 +8,13 @@ require "ratatui_ruby"
 require "ratatui_ruby/test_helper"
 require "minitest/autorun"
 require "minitest/mock"
-require_relative "../../../examples/app_map_demo/app"
+require_relative "../../../examples/widget_map_demo/app"
 
-class TestAppMapDemo < Minitest::Test
+class TestWidgetMapDemo < Minitest::Test
   include RatatuiRuby::TestHelper
 
   def setup
-    @app = AppMapDemo.new
+    @app = WidgetMapDemo.new
   end
 
   def test_map_demo_renders
