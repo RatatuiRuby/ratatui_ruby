@@ -82,6 +82,7 @@ module RatatuiRuby
       assert_equal :key, pattern[:type]
       assert_equal "q", pattern[:code]
       assert_equal ["ctrl"], pattern[:modifiers]
+      assert_equal :standard, pattern[:kind]
     end
 
     def test_duck_typed_pattern_matching
@@ -106,7 +107,7 @@ module RatatuiRuby
 
     def test_inspect
       event = Event::Key.new(code: "a", modifiers: ["ctrl"])
-      assert_match(/#<RatatuiRuby::Event::Key code="a" modifiers=\["ctrl"\]>/, event.inspect)
+      assert_match(/#<RatatuiRuby::Event::Key code="a" modifiers=\["ctrl"\] kind=:standard>/, event.inspect)
     end
 
     def test_char_method
@@ -116,7 +117,7 @@ module RatatuiRuby
 
       # Special key
       event_enter = Event::Key.new(code: "enter")
-      assert_equal "", event_enter.char
+      assert_nil event_enter.char
 
       # Space
       event_space = Event::Key.new(code: " ")

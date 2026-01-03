@@ -1,23 +1,23 @@
 ┌Event Counts──────┐ ┌Live Display─────────────────────────────────────────────┐
 │Key: 3            │ │Type     Time      Description                           │
-│  Unmodified: 3   │ │Key      XX:XX:XX  #<RatatuiRuby::Event::Key code="c" mod│
-│  Modified: 0     │ │Mouse    XX:XX:XX  #<RatatuiRuby::Event::Mouse:0xXXXXXX│
-│Mouse: 1          │ │Resize   —         —                                     │
-│  Down: 1         │ │Paste    —         —                                     │
-│  Up: 0           │ │Focus    —         —                                     │
-│  Drag: 0         │ │                                                         │
-│  Moved: 0        │ └─────────────────────────────────────────────────────────┘
-│  Scroll_up: 0    │ ┌Event Log────────────────────────────────────────────────┐
-│  Scroll_down: 0  │ │#<RatatuiRuby::Event::Key code="a" modifiers=[]>         │
-│Resize: 0         │ │                                                         │
-│Paste: 0          │ │#<RatatuiRuby::Event::Key code="b" modifiers=[]>         │
-│Focus: 0          │ │                                                         │
-│  Gained: 0       │ │#<RatatuiRuby::Event::Key code="c" modifiers=[]>         │
+│  Standard: 3     │ │Key      XX:XX:XX  #<RatatuiRuby::Event::Key code="c" mod│
+│  Function: 0     │ │Mouse    XX:XX:XX  #<RatatuiRuby::Event::Mouse:0xXXXXXX│
+│  Media: 0        │ │Resize   —         —                                     │
+│  System: 0       │ │Paste    —         —                                     │
+│  Modifier: 0     │ │Focus    —         —                                     │
+│Mouse: 1          │ │                                                         │
+│  Down: 1         │ └─────────────────────────────────────────────────────────┘
+│  Up: 0           │ ┌Event Log────────────────────────────────────────────────┐
+│  Drag: 0         │ │#<RatatuiRuby::Event::Key code="a" modifiers=[]          │
+│  Moved: 0        │ │kind=:standard>                                          │
+│  Scroll_up: 0    │ │                                                         │
+│  Scroll_down: 0  │ │#<RatatuiRuby::Event::Key code="b" modifiers=[]          │
+│Resize: 0         │ │kind=:standard>                                          │
+│Paste: 0          │ │                                                         │
+│Focus: 0          │ │#<RatatuiRuby::Event::Key code="c" modifiers=[]          │
+│  Gained: 0       │ │kind=:standard>                                          │
 │  Lost: 0         │ │                                                         │
 │None: 0           │ │#<RatatuiRuby::Event::Mouse:0xXXXXXX           │
-│                  │ │@kind="down", @x=10, @y=5, @button="left", @modifiers=[]>│
-│                  │ │                                                         │
-│                  │ │                                                         │
 └──────────────────┘ └─────────────────────────────────────────────────────────┘
 ┌Controls──────────────────────────────────────────────────────────────────────┐
 │q: Quit  Ctrl+C: Quit                                                         │

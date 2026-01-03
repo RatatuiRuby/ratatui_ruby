@@ -73,7 +73,11 @@ class AppModel < Data.define(:entries, :focused, :window_size, :lit_types, :none
     return {} if type == :none
 
     matching = entries.select { |e| e.matches_type?(type) }
-    defaults = { key: %w[unmodified modified], focus: %w[gained lost], mouse: %w[down up drag moved scroll_up scroll_down] }
+    defaults = {
+      key: %w[standard function media system modifier],
+      focus: %w[gained lost],
+      mouse: %w[down up drag moved scroll_up scroll_down],
+    }
 
     matching.each_with_object(defaults.fetch(type, []).to_h { |k| [k, 0] }) do |entry, counts|
       group = subtype_for(entry, type)
@@ -139,11 +143,14 @@ class AppModel < Data.define(:entries, :focused, :window_size, :lit_types, :none
   end
 
   private def subtype_for(entry, type)
-    if entry.event.respond_to?(:kind)
-      entry.event.kind.to_s
-    elsif entry.event.respond_to?(:modifiers)
-      entry.event.modifiers.empty? ? "unmodified" : "modified"
-    elsif type == :focus
+    case type
+    when :key
+      # Key events: group by category kind (standard/function/media/modifier/system)
+      entry.event.kind.to_s if entry.event.respond_to?(:kind)
+    when :mouse
+      # Mouse events: group by event kind (down/up/drag/moved/scroll_up/scroll_down)
+      entry.event.kind.to_s if entry.event.respond_to?(:kind)
+    when :focus
       entry.type.to_s.sub("focus_", "")
     end
   end
