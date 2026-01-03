@@ -140,7 +140,7 @@ end
 
 ### Execution Constraints
 
-* **Documentation:** This is a breaking change. Update `CHANGELOG.md` with a migration guide.
+* **Documentation:** This is a breaking change. Create `doc/v0.7.0_migration.md` with a detailed migration guide. Link to it from `CHANGELOG.md`.
 * **Tests:** Expect the entire test suite to fail initially. You will need to bulk-update assertions to match the new namespaces.
 * **Parity:** Ensure `Widgets::Cell` accepts `Text::Span` and `Text::Line` for rich text, matching `ListItem`.
 

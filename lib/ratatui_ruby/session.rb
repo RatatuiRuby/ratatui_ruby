@@ -6,9 +6,12 @@
 module RatatuiRuby
   # Manages the terminal lifecycle and provides a concise API for the render loop.
   #
-  # Writing a TUI loop involves repetitive boilerplate. You constantly instantiate widgets (<tt>RatatuiRuby::Paragraph.new</tt>) and call global methods (<tt>RatatuiRuby.draw</tt>). This is verbose and hard to read.
+  # Writing a TUI loop involves repetitive boilerplate. You constantly instantiate widgets
+  # (<tt>RatatuiRuby::Widgets::Paragraph.new</tt>) and call global methods (<tt>RatatuiRuby.draw</tt>).
+  # This is verbose and hard to read.
   #
-  # The Session object simplifies this. It acts as a factory and a facade. It provides short helper methods for every widget and delegates core commands to the main module.
+  # The Session object simplifies this. It acts as a factory and a facade. It provides short helper
+  # methods for every widget and delegates core commands to the main module.
   #
   # Use it within <tt>RatatuiRuby.run</tt> to build your interface cleanly.
   #
@@ -19,36 +22,6 @@ module RatatuiRuby
   # instance variables (<tt>@tui = tui</tt>) during your application's run loop
   # is fine. However, do not include it in immutable TEA Models/Messages or
   # pass it to other Ractors.
-  #
-  # == Available Methods
-  #
-  # The session dynamically defines factory methods for all RatatuiRuby constants.
-  #
-  # *   <tt>draw(node)</tt> -> Delegates to <tt>RatatuiRuby.draw</tt>
-  # *   <tt>poll_event</tt> -> Delegates to <tt>RatatuiRuby.poll_event</tt>
-  #
-  # === Widget Factories
-  #
-  # The session acts as a dynamic factory. It creates a helper method for **every** class defined in the `RatatuiRuby` module.
-  #
-  # **The Rule:**
-  # To instantiate a class like `RatatuiRuby::SomeWidget`, call `tui.some_widget(...)`.
-  #
-  # **Common Examples:**
-  # *   <tt>paragraph(...)</tt> -> <tt>RatatuiRuby::Paragraph.new(...)</tt>
-  # *   <tt>block(...)</tt> -> <tt>RatatuiRuby::Block.new(...)</tt>
-  # *   <tt>layout(...)</tt> -> <tt>RatatuiRuby::Layout.new(...)</tt>
-  # *   <tt>list(...)</tt> -> <tt>RatatuiRuby::List.new(...)</tt>
-  # *   <tt>table(...)</tt> -> <tt>RatatuiRuby::Table.new(...)</tt>
-  # *   <tt>style(...)</tt> -> <tt>RatatuiRuby::Style.new(...)</tt>
-  #
-  # If a new class is added to the library, it is automatically available here.
-  #
-  # === Nested Helpers
-  #
-  # *   <tt>text_span(...)</tt> -> <tt>RatatuiRuby::Text::Span.new(...)</tt>
-  # *   <tt>text_line(...)</tt> -> <tt>RatatuiRuby::Text::Line.new(...)</tt>
-  # *   <tt>text_width(string)</tt> -> <tt>RatatuiRuby::Text.width(string)</tt>
   #
   # === Examples
   #
@@ -69,110 +42,406 @@ module RatatuiRuby
   #       break if event == "q" || event == :ctrl_c
   #     end
   #   end
-  #
-  # ==== Raw API (Verbose)
-  #
-  #   RatatuiRuby.run do
-  #     loop do
-  #       RatatuiRuby.draw \
-  #         RatatuiRuby::Paragraph.new(
-  #             text: "Hello, Ratatui! Press 'q' to quit.",
-  #             alignment: :center,
-  #             block: RatatuiRuby::Block.new(
-  #               title: "My Ruby TUI App",
-  #               borders: [:all],
-  #               border_color: "cyan"
-  #             )
-  #         )
-  #       event = RatatuiRuby.poll_event
-  #       break if event == "q" || event == :ctrl_c
-  #     end
-  #   end
-  #
-  # ==== Mixed Usage (Flexible)
-  #
-  #   RatatuiRuby.run do |tui|
-  #     loop do
-  #       RatatuiRuby.draw \
-  #         tui.paragraph \
-  #             text: "Hello, Ratatui! Press 'q' to quit.",
-  #             alignment: :center,
-  #             block: tui.block(
-  #               title: "My Ruby TUI App",
-  #               borders: [:all],
-  #               border_color: "cyan"
-  #             )
-  #       event = RatatuiRuby.poll_event
-  #       break if event == "q" || event == :ctrl_c
-  #     end
-  #   end
   class Session
-    # Wrap methods directly
-    RatatuiRuby.singleton_methods(false).each do |method_name|
-      define_method(method_name) do |*args, **kwargs, &block|
-        RatatuiRuby.public_send(method_name, *args, **kwargs, &block)
-      end
+    # -------------------------------------------------------------------
+    # Core Module Methods (delegated to RatatuiRuby)
+    # -------------------------------------------------------------------
+
+    # Draws the given UI node tree to the terminal.
+    # @see RatatuiRuby.draw
+    def draw(tree = nil, &block)
+      RatatuiRuby.draw(tree, &block)
     end
 
-    # Wrap classes and modules as snake_case factories
-    RatatuiRuby.constants.each do |const_name|
-      next if const_name == :Buffer
+    # Checks for user input.
+    # @see RatatuiRuby.poll_event
+    def poll_event(timeout: 0.016)
+      RatatuiRuby.poll_event(timeout:)
+    end
 
-      const = RatatuiRuby.const_get(const_name)
-      next unless const.is_a?(Module) # Class is a Module, so this catches both
+    # Inspects the terminal buffer at specific coordinates.
+    # @see RatatuiRuby.get_cell_at
+    def get_cell_at(x, y)
+      RatatuiRuby.get_cell_at(x, y)
+    end
 
-      # 1. Top-level factories (for Classes only)
-      #    e.g. RatatuiRuby::Paragraph -> tui.paragraph(...)
-      if const.is_a?(Class)
-        method_name = const_name.to_s
-          .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
-          .gsub(/([a-z\d])([A-Z])/, '\1_\2')
-          .downcase
+    # Creates a Draw::CellCmd for placing a cell at coordinates.
+    # @return [Draw::CellCmd]
+    def draw_cell(x, y, cell)
+      Draw.cell(x, y, cell)
+    end
 
-        define_method(method_name) do |*args, **kwargs, &block|
-          const.new(*args, **kwargs, &block)
-        end
-      end
+    # -------------------------------------------------------------------
+    # Layout Module Factories (RatatuiRuby::Layout::*)
+    # -------------------------------------------------------------------
 
-      # 2. Singleton Method Helpers (for both Classes and Modules)
-      #    e.g. Layout.split -> layout_split
-      #    e.g. Text.width -> text_width
-      const.singleton_methods(false).each do |class_method|
-        parent_prefix = const_name.to_s
-          .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
-          .gsub(/([a-z\d])([A-Z])/, '\1_\2')
-          .downcase
+    # Creates a Layout::Rect.
+    # @return [Layout::Rect]
+    def rect(...)
+      Layout::Rect.new(...)
+    end
 
-        session_method_name = "#{parent_prefix}_#{class_method}"
+    # Creates a Layout::Constraint.
+    # @return [Layout::Constraint]
+    def constraint(...)
+      Layout::Constraint.new(...)
+    end
 
-        define_method(session_method_name) do |*args, **kwargs, &block|
-          const.public_send(class_method, *args, **kwargs, &block)
-        end
-      end
+    # Creates a Layout::Constraint.length.
+    # @return [Layout::Constraint]
+    def constraint_length(n)
+      Layout::Constraint.length(n)
+    end
 
-      # 3. Nested Class Factories (for both Modules and Classes)
-      #    e.g. RatatuiRuby::Text::Span -> tui.text_span(...)
-      #    e.g. RatatuiRuby::Shape::Line -> tui.shape_line(...)
-      const.constants.each do |child_name|
-        child = const.const_get(child_name)
-        next unless child.is_a?(Class)
+    # Creates a Layout::Constraint.percentage.
+    # @return [Layout::Constraint]
+    def constraint_percentage(n)
+      Layout::Constraint.percentage(n)
+    end
 
-        parent_prefix = const_name.to_s
-          .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
-          .gsub(/([a-z\d])([A-Z])/, '\1_\2')
-          .downcase
+    # Creates a Layout::Constraint.min.
+    # @return [Layout::Constraint]
+    def constraint_min(n)
+      Layout::Constraint.min(n)
+    end
 
-        child_suffix = child_name.to_s
-          .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
-          .gsub(/([a-z\d])([A-Z])/, '\1_\2')
-          .downcase
+    # Creates a Layout::Constraint.max.
+    # @return [Layout::Constraint]
+    def constraint_max(n)
+      Layout::Constraint.max(n)
+    end
 
-        method_name = "#{parent_prefix}_#{child_suffix}"
+    # Creates a Layout::Constraint.fill.
+    # @return [Layout::Constraint]
+    def constraint_fill(n = 1)
+      Layout::Constraint.fill(n)
+    end
 
-        define_method(method_name) do |*args, **kwargs, &block|
-          child.new(*args, **kwargs, &block)
-        end
-      end
+    # Creates a Layout::Constraint.ratio.
+    # @return [Layout::Constraint]
+    def constraint_ratio(numerator, denominator)
+      Layout::Constraint.ratio(numerator, denominator)
+    end
+
+    # Creates a Layout::Layout.
+    # @return [Layout::Layout]
+    def layout(...)
+      Layout::Layout.new(...)
+    end
+
+    # Splits an area using Layout::Layout.split.
+    # @return [Array<Layout::Rect>]
+    def layout_split(area, direction: :vertical, constraints:, flex: :legacy)
+      Layout::Layout.split(area, direction:, constraints:, flex:)
+    end
+
+    # -------------------------------------------------------------------
+    # Style Module Factories (RatatuiRuby::Style::*)
+    # -------------------------------------------------------------------
+
+    # Creates a Style::Style.
+    # @return [Style::Style]
+    def style(...)
+      Style::Style.new(...)
+    end
+
+    # -------------------------------------------------------------------
+    # Widgets Module Factories (RatatuiRuby::Widgets::*)
+    # -------------------------------------------------------------------
+
+    # Creates a Widgets::Block.
+    # @return [Widgets::Block]
+    def block(...)
+      Widgets::Block.new(...)
+    end
+
+    # Creates a Widgets::Paragraph.
+    # @return [Widgets::Paragraph]
+    def paragraph(...)
+      Widgets::Paragraph.new(...)
+    end
+
+    # Creates a Widgets::List.
+    # @return [Widgets::List]
+    def list(...)
+      Widgets::List.new(...)
+    end
+
+    # Creates a Widgets::ListItem.
+    # @return [Widgets::ListItem]
+    def list_item(...)
+      Widgets::ListItem.new(...)
+    end
+
+    # Creates a Widgets::Table.
+    # @return [Widgets::Table]
+    def table(...)
+      Widgets::Table.new(...)
+    end
+
+    # Creates a Widgets::Row (for Table rows).
+    # @return [Widgets::Row]
+    def row(...)
+      Widgets::Row.new(...)
+    end
+
+    # Creates a Widgets::Row (alias for table row).
+    # @return [Widgets::Row]
+    def table_row(...)
+      Widgets::Row.new(...)
+    end
+
+    # Creates a Widgets::Cell (for Table cells).
+    # @return [Widgets::Cell]
+    def table_cell(...)
+      Widgets::Cell.new(...)
+    end
+
+    # Creates a Widgets::Tabs.
+    # @return [Widgets::Tabs]
+    def tabs(...)
+      Widgets::Tabs.new(...)
+    end
+
+    # Creates a Widgets::Gauge.
+    # @return [Widgets::Gauge]
+    def gauge(...)
+      Widgets::Gauge.new(...)
+    end
+
+    # Creates a Widgets::LineGauge.
+    # @return [Widgets::LineGauge]
+    def line_gauge(...)
+      Widgets::LineGauge.new(...)
+    end
+
+    # Creates a Widgets::Sparkline.
+    # @return [Widgets::Sparkline]
+    def sparkline(...)
+      Widgets::Sparkline.new(...)
+    end
+
+    # Creates a Widgets::BarChart.
+    # @return [Widgets::BarChart]
+    def bar_chart(...)
+      Widgets::BarChart.new(...)
+    end
+
+    # Creates a Widgets::BarChart::Bar.
+    # @return [Widgets::BarChart::Bar]
+    def bar(...)
+      Widgets::BarChart::Bar.new(...)
+    end
+
+    # Creates a Widgets::BarChart::BarGroup.
+    # @return [Widgets::BarChart::BarGroup]
+    def bar_group(...)
+      Widgets::BarChart::BarGroup.new(...)
+    end
+
+    # Creates a Widgets::Chart.
+    # @return [Widgets::Chart]
+    def chart(...)
+      Widgets::Chart.new(...)
+    end
+
+    # Creates a Widgets::Scrollbar.
+    # @return [Widgets::Scrollbar]
+    def scrollbar(...)
+      Widgets::Scrollbar.new(...)
+    end
+
+    # Creates a Widgets::Calendar.
+    # @return [Widgets::Calendar]
+    def calendar(...)
+      Widgets::Calendar.new(...)
+    end
+
+    # Creates a Widgets::Canvas.
+    # @return [Widgets::Canvas]
+    def canvas(...)
+      Widgets::Canvas.new(...)
+    end
+
+    # Creates a Widgets::Clear.
+    # @return [Widgets::Clear]
+    def clear(...)
+      Widgets::Clear.new(...)
+    end
+
+    # Creates a Widgets::Cursor.
+    # @return [Widgets::Cursor]
+    def cursor(...)
+      Widgets::Cursor.new(...)
+    end
+
+    # Creates a Widgets::Overlay.
+    # @return [Widgets::Overlay]
+    def overlay(...)
+      Widgets::Overlay.new(...)
+    end
+
+    # Creates a Widgets::Center.
+    # @return [Widgets::Center]
+    def center(...)
+      Widgets::Center.new(...)
+    end
+
+    # Creates a Widgets::RatatuiLogo.
+    # @return [Widgets::RatatuiLogo]
+    def ratatui_logo(...)
+      Widgets::RatatuiLogo.new(...)
+    end
+
+    # Creates a Widgets::RatatuiMascot.
+    # @return [Widgets::RatatuiMascot]
+    def ratatui_mascot(...)
+      Widgets::RatatuiMascot.new(...)
+    end
+
+    # Creates a Widgets::Shape::Label.
+    # @return [Widgets::Shape::Label]
+    def shape_label(...)
+      Widgets::Shape::Label.new(...)
+    end
+
+    # -------------------------------------------------------------------
+    # Text Module Factories (RatatuiRuby::Text::*)
+    # -------------------------------------------------------------------
+
+    # Creates a Text::Span.
+    # @return [Text::Span]
+    def text_span(...)
+      Text::Span.new(...)
+    end
+
+    # Creates a Text::Span (alias).
+    # @return [Text::Span]
+    def span(...)
+      Text::Span.new(...)
+    end
+
+    # Creates a Text::Line.
+    # @return [Text::Line]
+    def text_line(...)
+      Text::Line.new(...)
+    end
+
+    # Creates a Text::Line (alias).
+    # @return [Text::Line]
+    def line(...)
+      Text::Line.new(...)
+    end
+
+    # Calculates the display width of a string.
+    # @return [Integer]
+    def text_width(string)
+      Text.width(string)
+    end
+
+    # -------------------------------------------------------------------
+    # State Objects
+    # -------------------------------------------------------------------
+
+    # Creates a ListState.
+    # @return [ListState]
+    def list_state(...)
+      ListState.new(...)
+    end
+
+    # Creates a TableState.
+    # @return [TableState]
+    def table_state(...)
+      TableState.new(...)
+    end
+
+    # Creates a ScrollbarState.
+    # @return [ScrollbarState]
+    def scrollbar_state(...)
+      ScrollbarState.new(...)
+    end
+
+    # -------------------------------------------------------------------
+    # Chart Components (RatatuiRuby::Widgets::*)
+    # -------------------------------------------------------------------
+
+    # Creates a Widgets::Dataset.
+    # @return [Widgets::Dataset]
+    def dataset(...)
+      Widgets::Dataset.new(...)
+    end
+
+    # Creates a Widgets::Axis.
+    # @return [Widgets::Axis]
+    def axis(...)
+      Widgets::Axis.new(...)
+    end
+
+    # -------------------------------------------------------------------
+    # Canvas Shape Factories (RatatuiRuby::Widgets::Shape::*)
+    # These are not widgets but canvas shapes for custom drawings
+    # -------------------------------------------------------------------
+
+    # Creates a map shape for Canvas.
+    # @return [Hash] Shape configuration
+    def shape_map(**kwargs)
+      { type: :map, **kwargs }
+    end
+
+    # Creates a line shape for Canvas.
+    # @return [Hash] Shape configuration
+    def shape_line(**kwargs)
+      { type: :line, **kwargs }
+    end
+
+    # Creates a point (single pixel) shape for Canvas.
+    # @return [Hash] Shape configuration
+    def shape_point(**kwargs)
+      { type: :point, **kwargs }
+    end
+
+    # Creates a circle shape for Canvas.
+    # @return [Hash] Shape configuration
+    def shape_circle(**kwargs)
+      { type: :circle, **kwargs }
+    end
+
+    # Creates a rectangle shape for Canvas.
+    # @return [Hash] Shape configuration
+    def shape_rectangle(**kwargs)
+      { type: :rectangle, **kwargs }
+    end
+
+    # -------------------------------------------------------------------
+    # Buffer Inspection (RatatuiRuby::Buffer::*)
+    # -------------------------------------------------------------------
+
+    # Creates a Buffer::Cell (for testing).
+    # @return [Buffer::Cell]
+    def cell(...)
+      Buffer::Cell.new(...)
+    end
+
+    # -------------------------------------------------------------------
+    # BarChart Components
+    # -------------------------------------------------------------------
+
+    # Creates a Widgets::BarChart::Bar (alias).
+    # @return [Widgets::BarChart::Bar]
+    def bar_chart_bar(...)
+      Widgets::BarChart::Bar.new(...)
+    end
+
+    # Creates a Widgets::BarChart::BarGroup (alias).
+    # @return [Widgets::BarChart::BarGroup]
+    def bar_chart_bar_group(...)
+      Widgets::BarChart::BarGroup.new(...)
+    end
+
+    private
+
+    def to_h(**kwargs)
+      kwargs
     end
   end
 end

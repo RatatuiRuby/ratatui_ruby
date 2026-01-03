@@ -17,14 +17,14 @@ class TestWidgetRichTextUnit < Minitest::Test
   end
 
   def test_styled_span
-    style = RatatuiRuby::Style.new(fg: :red, modifiers: [:bold])
+    style = RatatuiRuby::Style::Style.new(fg: :red, modifiers: [:bold])
     span = RatatuiRuby::Text::Span.new(content: "error", style:)
     assert_equal "error", span.content
     assert_equal style, span.style
   end
 
   def test_span_styled_helper
-    style = RatatuiRuby::Style.new(modifiers: [:italic])
+    style = RatatuiRuby::Style::Style.new(modifiers: [:italic])
     span = RatatuiRuby::Text::Span.styled("italic text", style)
     assert_equal "italic text", span.content
     assert_equal style, span.style
@@ -65,13 +65,13 @@ class TestWidgetRichTextUnit < Minitest::Test
   end
 
   def test_paragraph_with_string
-    para = RatatuiRuby::Paragraph.new(text: "simple text")
+    para = RatatuiRuby::Widgets::Paragraph.new(text: "simple text")
     assert_equal "simple text", para.text
   end
 
   def test_paragraph_with_span
-    span = RatatuiRuby::Text::Span.new(content: "bold", style: RatatuiRuby::Style.new(modifiers: [:bold]))
-    para = RatatuiRuby::Paragraph.new(text: span)
+    span = RatatuiRuby::Text::Span.new(content: "bold", style: RatatuiRuby::Style::Style.new(modifiers: [:bold]))
+    para = RatatuiRuby::Widgets::Paragraph.new(text: span)
     assert_equal span, para.text
   end
 
@@ -79,10 +79,10 @@ class TestWidgetRichTextUnit < Minitest::Test
     line = RatatuiRuby::Text::Line.new(
       spans: [
         RatatuiRuby::Text::Span.new(content: "hello ", style: nil),
-        RatatuiRuby::Text::Span.new(content: "world", style: RatatuiRuby::Style.new(fg: :green)),
+        RatatuiRuby::Text::Span.new(content: "world", style: RatatuiRuby::Style::Style.new(fg: :green)),
       ]
     )
-    para = RatatuiRuby::Paragraph.new(text: line)
+    para = RatatuiRuby::Widgets::Paragraph.new(text: line)
     assert_equal line, para.text
   end
 
@@ -92,10 +92,10 @@ class TestWidgetRichTextUnit < Minitest::Test
         spans: [RatatuiRuby::Text::Span.new(content: "line 1", style: nil)]
       ),
       RatatuiRuby::Text::Line.new(
-        spans: [RatatuiRuby::Text::Span.new(content: "line 2", style: RatatuiRuby::Style.new(fg: :red))]
+        spans: [RatatuiRuby::Text::Span.new(content: "line 2", style: RatatuiRuby::Style::Style.new(fg: :red))]
       ),
     ]
-    para = RatatuiRuby::Paragraph.new(text: lines)
+    para = RatatuiRuby::Widgets::Paragraph.new(text: lines)
     assert_equal lines, para.text
   end
 end

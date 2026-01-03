@@ -8,7 +8,7 @@ require "ratatui_ruby"
 
 # An example of the Canvas widget showing a world map and animated shapes.
 class WidgetMapDemo
-  include RatatuiRuby
+  include RatatuiRuby::Widgets
 
   COLORS = [:black, :blue, :white, nil].freeze
   MARKERS = [:braille, :half_block, :dot, :block, :bar, :quadrant, :sextant, :octant].freeze

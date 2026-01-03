@@ -66,7 +66,7 @@ class WidgetRatatuiLogoDemo
       )
 
       # Main content: The Logo
-      logo = RatatuiRuby::RatatuiLogo.new
+      logo = RatatuiRuby::Widgets::RatatuiLogo.new
       frame.render_widget(logo, h_center_layout[0])
 
       # Control Panel

@@ -11,8 +11,8 @@ class TestTestHelperStyleAssertions < Minitest::Test
   def test_assert_fg_and_bg_order
     with_test_terminal(20, 3) do
       # Render text with specific colors
-      style = RatatuiRuby::Style.new(fg: :red, bg: :blue)
-      widget = RatatuiRuby::Block.new(borders: [:all], style:)
+      style = RatatuiRuby::Style::Style.new(fg: :red, bg: :blue)
+      widget = RatatuiRuby::Widgets::Block.new(borders: [:all], style:)
       RatatuiRuby.draw { |f| f.render_widget(widget, f.area) }
 
       # Should pass with expected value first
@@ -27,8 +27,8 @@ class TestTestHelperStyleAssertions < Minitest::Test
 
   def test_metaprogrammed_color_assertions
     with_test_terminal(20, 3) do
-      style = RatatuiRuby::Style.new(fg: :green, bg: :yellow)
-      widget = RatatuiRuby::Block.new(borders: [:all], style:)
+      style = RatatuiRuby::Style::Style.new(fg: :green, bg: :yellow)
+      widget = RatatuiRuby::Widgets::Block.new(borders: [:all], style:)
       RatatuiRuby.draw { |f| f.render_widget(widget, f.area) }
 
       # Test foreground metaprogrammed methods
@@ -43,8 +43,8 @@ class TestTestHelperStyleAssertions < Minitest::Test
 
   def test_modifier_assertions
     with_test_terminal(20, 3) do
-      style = RatatuiRuby::Style.new(modifiers: [:bold, :italic, :underlined])
-      widget = RatatuiRuby::Block.new(borders: [:all], style:)
+      style = RatatuiRuby::Style::Style.new(modifiers: [:bold, :italic, :underlined])
+      widget = RatatuiRuby::Widgets::Block.new(borders: [:all], style:)
       RatatuiRuby.draw { |f| f.render_widget(widget, f.area) }
 
       assert_bold(0, 0)
@@ -59,8 +59,8 @@ class TestTestHelperStyleAssertions < Minitest::Test
 
   def test_other_modifier_aliases
     with_test_terminal(20, 3) do
-      style = RatatuiRuby::Style.new(modifiers: [:reversed, :crossed_out, :slow_blink, :hidden])
-      widget = RatatuiRuby::Block.new(borders: [:all], style:)
+      style = RatatuiRuby::Style::Style.new(modifiers: [:reversed, :crossed_out, :slow_blink, :hidden])
+      widget = RatatuiRuby::Widgets::Block.new(borders: [:all], style:)
       RatatuiRuby.draw { |f| f.render_widget(widget, f.area) }
 
       assert_reversed(0, 0)

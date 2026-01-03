@@ -10,7 +10,7 @@ module RatatuiRuby
     include TestHelper
 
     def test_default
-      widget = RatatuiMascot.new
+      widget = Widgets::RatatuiMascot.new
       with_test_terminal do
         RatatuiRuby.draw { |f| f.render_widget(widget, f.area) }
         # Verify mascot is drawn (should contain some mascot characters)
@@ -25,8 +25,8 @@ module RatatuiRuby
 
     def test_block
       # Test wrapping in a block
-      block = Block.new(borders: [:all], title: "Ratatui")
-      widget = RatatuiMascot.new(block:)
+      block = Widgets::Block.new(borders: [:all], title: "Ratatui")
+      widget = Widgets::RatatuiMascot.new(block:)
 
       with_test_terminal do
         RatatuiRuby.draw { |f| f.render_widget(widget, f.area) }

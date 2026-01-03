@@ -13,7 +13,7 @@ module RatatuiRuby
     include TestHelper
 
     def test_cell_properties
-      cell = Cell.new(char: "X", fg: :red, bg: :blue, modifiers: ["bold", "italic"])
+      cell = Buffer::Cell.new(char: "X", fg: :red, bg: :blue, modifiers: ["bold", "italic"])
 
       assert_equal "X", cell.char
       assert_equal :red, cell.fg
@@ -26,7 +26,7 @@ module RatatuiRuby
     end
 
     def test_cell_empty
-      cell = Cell.empty
+      cell = Buffer::Cell.empty
       assert_equal " ", cell.char
       assert_nil cell.fg
       assert_nil cell.bg
@@ -34,12 +34,12 @@ module RatatuiRuby
     end
 
     def test_cell_default
-      cell = Cell.default
-      assert_equal Cell.empty, cell
+      cell = Buffer::Cell.default
+      assert_equal Buffer::Cell.empty, cell
     end
 
     def test_cell_char
-      cell = Cell.char("Z")
+      cell = Buffer::Cell.char("Z")
       assert_equal "Z", cell.char
       assert_equal "Z", cell.symbol # alias works too
       assert_nil cell.fg
@@ -48,7 +48,7 @@ module RatatuiRuby
     end
 
     def test_cell_symbol
-      cell = Cell.symbol("Y")
+      cell = Buffer::Cell.symbol("Y")
       assert_equal "Y", cell.symbol
       assert_equal "Y", cell.char # alias works too
       assert_nil cell.fg
@@ -58,41 +58,41 @@ module RatatuiRuby
 
     def test_initialize_accepts_both_symbol_and_char
       # Using symbol: (primary)
-      c1 = Cell.new(symbol: "A", fg: :red)
+      c1 = Buffer::Cell.new(symbol: "A", fg: :red)
       assert_equal "A", c1.symbol
       assert_equal "A", c1.char
 
       # Using char: (alias)
-      c2 = Cell.new(char: "B", fg: :blue)
+      c2 = Buffer::Cell.new(char: "B", fg: :blue)
       assert_equal "B", c2.symbol
       assert_equal "B", c2.char
     end
 
     def test_equality
-      c1 = Cell.new(char: "A", fg: :green)
-      c2 = Cell.new(char: "A", fg: :green)
-      c3 = Cell.new(char: "B", fg: :green)
+      c1 = Buffer::Cell.new(char: "A", fg: :green)
+      c2 = Buffer::Cell.new(char: "A", fg: :green)
+      c3 = Buffer::Cell.new(char: "B", fg: :green)
 
       assert_equal c1, c2
       refute_equal c1, c3
     end
 
     def test_inspect
-      c1 = Cell.new(char: "X", fg: :red, modifiers: ["bold"])
+      c1 = Buffer::Cell.new(char: "X", fg: :red, modifiers: ["bold"])
       assert_equal '#<RatatuiRuby::Cell symbol="X" fg=:red modifiers=["bold"]>', c1.inspect
 
-      c2 = Cell.empty
+      c2 = Buffer::Cell.empty
       assert_equal '#<RatatuiRuby::Cell symbol=" ">', c2.inspect
     end
 
     def test_to_s
-      c = Cell.new(char: "X", fg: :red)
+      c = Buffer::Cell.new(char: "X", fg: :red)
       assert_equal "X", c.to_s
-      assert_equal " ", Cell.empty.to_s
+      assert_equal " ", Buffer::Cell.empty.to_s
     end
 
     def test_pattern_matching
-      cell = Cell.new(char: "X", fg: :red)
+      cell = Buffer::Cell.new(char: "X", fg: :red)
 
       matched = case cell
       in { char: "X", fg: :red }
@@ -116,12 +116,12 @@ module RatatuiRuby
     def test_get_cell_at_integration
       with_test_terminal(10, 5) do
         RatatuiRuby.draw do |f|
-          f.render_widget(Block.new(title: "Hi", borders: :all), f.area)
+          f.render_widget(Widgets::Block.new(title: "Hi", borders: :all), f.area)
         end
 
         # Title at (1, 0): "H"
         cell = RatatuiRuby.get_cell_at(1, 0)
-        assert_instance_of Cell, cell
+        assert_instance_of Buffer::Cell, cell
         assert_equal "H", cell.char
 
         # Checking underlying helper usage too
@@ -130,7 +130,7 @@ module RatatuiRuby
     end
 
     def test_cell_is_ractor_shareable
-      cell = Cell.new(char: "X", fg: :red, bg: "blue", modifiers: ["bold", "italic"])
+      cell = Buffer::Cell.new(char: "X", fg: :red, bg: "blue", modifiers: ["bold", "italic"])
       assert Ractor.shareable?(cell), "Cell should be Ractor.shareable? for thread/Ractor safety"
     end
   end

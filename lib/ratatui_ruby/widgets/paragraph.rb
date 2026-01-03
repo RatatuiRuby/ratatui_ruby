@@ -63,7 +63,7 @@ module RatatuiRuby
     # [wrap] Boolean (default: false).
     # [alignment] Symbol (default: <tt>:left</tt>).
     # [scroll] Array of [y, x] integers (duck-typed via +to_int+).
-    def initialize(text:, style: Style.default, block: nil, wrap: false, alignment: :left, scroll: [0, 0])
+    def initialize(text:, style: RatatuiRuby::Style::Style.default, block: nil, wrap: false, alignment: :left, scroll: [0, 0])
       super(
         text:,
         style:,
@@ -76,7 +76,7 @@ module RatatuiRuby
 
     # Legacy constructor support.
     def self.new(text:, style: nil, fg: nil, bg: nil, block: nil, wrap: false, alignment: :left, scroll: [0, 0])
-      style ||= Style.new(fg:, bg:)
+      style ||= RatatuiRuby::Style::Style.new(fg:, bg:)
       coerced_scroll = [Integer(scroll[0]), Integer(scroll[1])]
       super(text:, style:, block:, wrap:, alignment:, scroll: coerced_scroll)
     end

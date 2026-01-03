@@ -9,7 +9,7 @@ module RatatuiRuby
   class TestScrollbar < Minitest::Test
     include RatatuiRuby::TestHelper
     def test_scrollbar_creation
-      s = Scrollbar.new(
+      s = Widgets::Scrollbar.new(
         content_length: 100,
         position: 10,
         orientation: :horizontal,
@@ -28,7 +28,7 @@ module RatatuiRuby
     end
 
     def test_scrollbar_defaults
-      s = Scrollbar.new(content_length: 50, position: 5)
+      s = Widgets::Scrollbar.new(content_length: 50, position: 5)
       assert_equal 50, s.content_length
       assert_equal 5, s.position
       assert_equal :vertical, s.orientation
@@ -39,7 +39,7 @@ module RatatuiRuby
     def test_render_vertical
       # Standard vertical scrollbar is on the right of the area
       with_test_terminal(1, 10) do
-        s = Scrollbar.new(content_length: 10, position: 0)
+        s = Widgets::Scrollbar.new(content_length: 10, position: 0)
         RatatuiRuby.draw { |f| f.render_widget(s, f.area) }
         # Position 0 has thumb at row 1, 2, 3, 4
         assert_equal "▲", buffer_content[0]
@@ -57,7 +57,7 @@ module RatatuiRuby
 
     def test_render_horizontal
       with_test_terminal(10, 1) do
-        s = Scrollbar.new(content_length: 10, position: 0, orientation: :horizontal)
+        s = Widgets::Scrollbar.new(content_length: 10, position: 0, orientation: :horizontal)
         RatatuiRuby.draw { |f| f.render_widget(s, f.area) }
         # Position 0 has thumb at column 1-4
         assert_equal "◄████════►", buffer_content[0]
@@ -66,7 +66,7 @@ module RatatuiRuby
 
     def test_render_styled
       with_test_terminal(10, 1) do
-        s = Scrollbar.new(
+        s = Widgets::Scrollbar.new(
           content_length: 10,
           position: 0,
           orientation: :horizontal,

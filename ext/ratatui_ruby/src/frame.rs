@@ -118,9 +118,10 @@ impl RubyFrame {
         // The ensure_active() check above guarantees we're still in the callback.
         let area = unsafe { (*self.inner.get()).as_ref().area() };
 
-        // Create a Ruby Rect object
+        // Create a Ruby Layout::Rect object
         let module = ruby.define_module("RatatuiRuby")?;
-        let class = module.const_get::<_, magnus::RClass>("Rect")?;
+        let layout_mod = module.const_get::<_, magnus::RModule>("Layout")?;
+        let class = layout_mod.const_get::<_, magnus::RClass>("Rect")?;
         class.funcall("new", (area.x, area.y, area.width, area.height))
     }
 

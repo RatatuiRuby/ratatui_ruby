@@ -71,7 +71,7 @@ class TestWidgetMapDemo < Minitest::Test
     view = @app.view(session, 0.0, :braille, nil)
 
     # Verify labels are included in the shapes (default show_labels: true)
-    label_shapes = view.shapes.select { |s| s.is_a?(RatatuiRuby::Shape::Label) }
+    label_shapes = view.shapes.select { |s| s.is_a?(RatatuiRuby::Widgets::Shape::Label) }
     assert_equal 5, label_shapes.size, "Should have 5 city labels"
     assert label_shapes.any? { |l| l.text == "London" }, "Should have London label"
     assert label_shapes.any? { |l| l.text == "Tokyo" }, "Should have Tokyo label"

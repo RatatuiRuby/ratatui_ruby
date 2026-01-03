@@ -16,19 +16,19 @@ module RatatuiRuby
 
     def test_chart_rendering
       datasets = [
-        Dataset.new(
+        Widgets::Dataset.new(
           name: "TestDS",
           data: [[0.0, 0.0], [10.0, 10.0]],
-          style: Style.new(fg: :red),
+          style: Style::Style.new(fg: :red),
           marker: :dot,
         ),
       ]
 
-      chart = Chart.new(
+      chart = Widgets::Chart.new(
         datasets:,
-        x_axis: Axis.new(title: "Time", bounds: [0.0, 10.0], labels: %w[0 10]),
-        y_axis: Axis.new(title: "Value", bounds: [0.0, 10.0], labels: %w[0 10]),
-        block: Block.new(title: "Test Chart"),
+        x_axis: Widgets::Axis.new(title: "Time", bounds: [0.0, 10.0], labels: %w[0 10]),
+        y_axis: Widgets::Axis.new(title: "Value", bounds: [0.0, 10.0], labels: %w[0 10]),
+        block: Widgets::Block.new(title: "Test Chart"),
       )
 
       RatatuiRuby.draw { |f| f.render_widget(chart, f.area) }
@@ -48,30 +48,30 @@ module RatatuiRuby
 
     def test_axis_labels_alignment
       datasets = [
-        Dataset.new(
+        Widgets::Dataset.new(
           name: "TestDS",
           data: [[0.0, 0.0], [10.0, 10.0]],
-          style: Style.new(fg: :green),
+          style: Style::Style.new(fg: :green),
           marker: :dot,
         ),
       ]
 
       # Test with centered X-axis labels and right-aligned Y-axis labels
-      chart = Chart.new(
+      chart = Widgets::Chart.new(
         datasets:,
-        x_axis: Axis.new(
+        x_axis: Widgets::Axis.new(
           title: "Time",
           bounds: [0.0, 10.0],
           labels: %w[0 5 10],
           labels_alignment: :center,
         ),
-        y_axis: Axis.new(
+        y_axis: Widgets::Axis.new(
           title: "Value",
           bounds: [0.0, 10.0],
           labels: %w[0 5 10],
           labels_alignment: :right,
         ),
-        block: Block.new(title: "Aligned Chart"),
+        block: Widgets::Block.new(title: "Aligned Chart"),
       )
 
       RatatuiRuby.draw { |f| f.render_widget(chart, f.area) }
@@ -86,19 +86,19 @@ module RatatuiRuby
 
     def test_line_chart_backward_compatibility
       datasets = [
-        Dataset.new(
+        Widgets::Dataset.new(
           name: "TestDS",
           data: [[0.0, 0.0], [10.0, 10.0]],
-          style: Style.new(fg: :blue),
+          style: Style::Style.new(fg: :blue),
         ),
       ]
 
-      line_chart = LineChart.new(
+      line_chart = Widgets::Chart.new(
         datasets:,
         x_labels: %w[X0 X10],
         y_labels: %w[Y0 Y10],
         y_bounds: [0.0, 10.0],
-        block: Block.new(title: "Legacy Chart"),
+        block: Widgets::Block.new(title: "Legacy Chart"),
       )
 
       RatatuiRuby.draw { |f| f.render_widget(line_chart, f.area) }

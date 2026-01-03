@@ -23,7 +23,7 @@ class TestRatatuiRuby < Minitest::Test
   def test_draw
     # Use the test backend to verify rendering
     RatatuiRuby.init_test_terminal(10, 5)
-    p = RatatuiRuby::Paragraph.new(text: "Hello")
+    p = RatatuiRuby::Widgets::Paragraph.new(text: "Hello")
     RatatuiRuby.draw { |f| f.render_widget(p, f.area) }
 
     lines = RatatuiRuby.get_buffer_content.split("\n")
@@ -39,7 +39,7 @@ class TestRatatuiRuby < Minitest::Test
   def test_draw_block
     RatatuiRuby.init_test_terminal(10, 5)
     RatatuiRuby.draw do |frame|
-      p = RatatuiRuby::Paragraph.new(text: "Block")
+      p = RatatuiRuby::Widgets::Paragraph.new(text: "Block")
       frame.render_widget(p, frame.area)
     end
 
@@ -51,7 +51,7 @@ class TestRatatuiRuby < Minitest::Test
 
   def test_draw_validation
     assert_raises(ArgumentError) do
-      RatatuiRuby.draw(RatatuiRuby::Paragraph.new(text: "Both")) { |it| puts it.inspect }
+      RatatuiRuby.draw(RatatuiRuby::Widgets::Paragraph.new(text: "Both")) { |it| puts it.inspect }
     end
 
     assert_raises(ArgumentError) { RatatuiRuby.draw }
@@ -60,7 +60,7 @@ class TestRatatuiRuby < Minitest::Test
   def test_resize
     RatatuiRuby.init_test_terminal(10, 5)
     RatatuiRuby.resize_terminal(20, 3)
-    p = RatatuiRuby::Paragraph.new(text: "Widened")
+    p = RatatuiRuby::Widgets::Paragraph.new(text: "Widened")
     RatatuiRuby.draw { |f| f.render_widget(p, f.area) }
 
     lines = RatatuiRuby.get_buffer_content.split("\n")

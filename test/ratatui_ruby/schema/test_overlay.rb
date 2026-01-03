@@ -8,17 +8,17 @@ require "test_helper"
 class TestOverlay < Minitest::Test
   include RatatuiRuby::TestHelper
   def test_overlay_creation
-    l1 = RatatuiRuby::Paragraph.new(text: "L1")
-    l2 = RatatuiRuby::Paragraph.new(text: "L2")
-    overlay = RatatuiRuby::Overlay.new(layers: [l1, l2])
+    l1 = RatatuiRuby::Widgets::Paragraph.new(text: "L1")
+    l2 = RatatuiRuby::Widgets::Paragraph.new(text: "L2")
+    overlay = RatatuiRuby::Widgets::Overlay.new(layers: [l1, l2])
     assert_equal [l1, l2], overlay.layers
   end
 
   def test_render
     with_test_terminal(20, 5) do
-      l1 = RatatuiRuby::Paragraph.new(text: "Back")
-      l2 = RatatuiRuby::Paragraph.new(text: "Fore")
-      overlay = RatatuiRuby::Overlay.new(layers: [l1, l2])
+      l1 = RatatuiRuby::Widgets::Paragraph.new(text: "Back")
+      l2 = RatatuiRuby::Widgets::Paragraph.new(text: "Fore")
+      overlay = RatatuiRuby::Widgets::Overlay.new(layers: [l1, l2])
       RatatuiRuby.draw { |f| f.render_widget(overlay, f.area) }
       assert_equal "Fore                ", buffer_content[0]
       assert_equal "                    ", buffer_content[1]

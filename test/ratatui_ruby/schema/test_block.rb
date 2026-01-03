@@ -8,21 +8,21 @@ require "test_helper"
 class TestBlock < Minitest::Test
   include RatatuiRuby::TestHelper
   def test_block_creation
-    b = RatatuiRuby::Block.new(title: "Title", borders: [:top, :bottom], border_color: "red")
+    b = RatatuiRuby::Widgets::Block.new(title: "Title", borders: [:top, :bottom], border_color: "red")
     assert_equal "Title", b.title
     assert_equal [:top, :bottom], b.borders
     assert_equal "red", b.border_color
   end
 
   def test_block_creation_with_style
-    b = RatatuiRuby::Block.new(style: { fg: "blue" })
+    b = RatatuiRuby::Widgets::Block.new(style: { fg: "blue" })
     assert_equal({ fg: "blue" }, b.style)
   end
 
   def test_render_with_style_hash
     with_test_terminal(20, 3) do
       # Should not raise NoMethodError
-      b = RatatuiRuby::Block.new(borders: [:all], style: { fg: "blue" })
+      b = RatatuiRuby::Widgets::Block.new(borders: [:all], style: { fg: "blue" })
       RatatuiRuby.draw { |f| f.render_widget(b, f.area) }
       # Content check is tricky without color inspection support in test helper,
       # but successful execution confirms the fix.
@@ -33,22 +33,22 @@ class TestBlock < Minitest::Test
   end
 
   def test_block_creation_with_title_alignment
-    b = RatatuiRuby::Block.new(title: "Title", title_alignment: :center)
+    b = RatatuiRuby::Widgets::Block.new(title: "Title", title_alignment: :center)
     assert_equal :center, b.title_alignment
   end
 
   def test_block_creation_with_border_type
-    b = RatatuiRuby::Block.new(border_type: :rounded)
+    b = RatatuiRuby::Widgets::Block.new(border_type: :rounded)
     assert_equal :rounded, b.border_type
   end
 
   def test_block_creation_with_title_style
-    b = RatatuiRuby::Block.new(title_style: { fg: "yellow" })
+    b = RatatuiRuby::Widgets::Block.new(title_style: { fg: "yellow" })
     assert_equal({ fg: "yellow" }, b.title_style)
   end
 
   def test_block_defaults
-    b = RatatuiRuby::Block.new
+    b = RatatuiRuby::Widgets::Block.new
     assert_nil b.title
     assert_equal [], b.titles
     assert_nil b.title_style
@@ -61,7 +61,7 @@ class TestBlock < Minitest::Test
 
   def test_render
     with_test_terminal(20, 3) do
-      b = RatatuiRuby::Block.new(borders: [:all], title: "Title")
+      b = RatatuiRuby::Widgets::Block.new(borders: [:all], title: "Title")
       RatatuiRuby.draw { |f| f.render_widget(b, f.area) }
       assert_equal "┌Title─────────────┐", buffer_content[0]
       assert_equal "│                  │", buffer_content[1]
@@ -72,7 +72,7 @@ class TestBlock < Minitest::Test
 
   def test_render_title_alignment_center
     with_test_terminal(20, 3) do
-      b = RatatuiRuby::Block.new(borders: [:all], title: "Title", title_alignment: :center)
+      b = RatatuiRuby::Widgets::Block.new(borders: [:all], title: "Title", title_alignment: :center)
       RatatuiRuby.draw { |f| f.render_widget(b, f.area) }
       # Available width 18. Title 5. (18-5)/2 = 6. 6 spaces left, 7 right.
       assert_equal "┌──────Title───────┐", buffer_content[0]
@@ -83,7 +83,7 @@ class TestBlock < Minitest::Test
 
   def test_render_title_alignment_right
     with_test_terminal(20, 3) do
-      b = RatatuiRuby::Block.new(borders: [:all], title: "Title", title_alignment: :right)
+      b = RatatuiRuby::Widgets::Block.new(borders: [:all], title: "Title", title_alignment: :right)
       RatatuiRuby.draw { |f| f.render_widget(b, f.area) }
       # Available width 18. Title 5. 13 spaces left.
       assert_equal "┌─────────────Title┐", buffer_content[0]
@@ -94,7 +94,7 @@ class TestBlock < Minitest::Test
 
   def test_render_rounded
     with_test_terminal(20, 3) do
-      b = RatatuiRuby::Block.new(borders: [:all], border_type: :rounded)
+      b = RatatuiRuby::Widgets::Block.new(borders: [:all], border_type: :rounded)
       RatatuiRuby.draw { |f| f.render_widget(b, f.area) }
       assert_equal "╭──────────────────╮", buffer_content[0]
       assert_equal "│                  │", buffer_content[1]
@@ -104,7 +104,7 @@ class TestBlock < Minitest::Test
 
   def test_render_double
     with_test_terminal(20, 3) do
-      b = RatatuiRuby::Block.new(borders: [:all], border_type: :double)
+      b = RatatuiRuby::Widgets::Block.new(borders: [:all], border_type: :double)
       RatatuiRuby.draw { |f| f.render_widget(b, f.area) }
       assert_equal "╔══════════════════╗", buffer_content[0]
       assert_equal "║                  ║", buffer_content[1]
@@ -114,7 +114,7 @@ class TestBlock < Minitest::Test
 
   def test_render_thick
     with_test_terminal(20, 3) do
-      b = RatatuiRuby::Block.new(borders: [:all], border_type: :thick)
+      b = RatatuiRuby::Widgets::Block.new(borders: [:all], border_type: :thick)
       RatatuiRuby.draw { |f| f.render_widget(b, f.area) }
       assert_equal "┏━━━━━━━━━━━━━━━━━━┓", buffer_content[0]
       assert_equal "┃                  ┃", buffer_content[1]
@@ -125,8 +125,8 @@ class TestBlock < Minitest::Test
   def test_render_with_padding_uniform
     with_test_terminal(20, 5) do
       # 1px padding on all sides
-      b = RatatuiRuby::Block.new(borders: [:all], padding: 1)
-      p = RatatuiRuby::Paragraph.new(text: "Hello", block: b)
+      b = RatatuiRuby::Widgets::Block.new(borders: [:all], padding: 1)
+      p = RatatuiRuby::Widgets::Paragraph.new(text: "Hello", block: b)
       RatatuiRuby.draw { |f| f.render_widget(p, f.area) }
 
       assert_equal "┌──────────────────┐", buffer_content[0]
@@ -140,8 +140,8 @@ class TestBlock < Minitest::Test
   def test_render_with_padding_array
     with_test_terminal(20, 5) do
       # Left: 2, Right: 0, Top: 1, Bottom: 0
-      b = RatatuiRuby::Block.new(borders: [:all], padding: [2, 0, 1, 0])
-      p = RatatuiRuby::Paragraph.new(text: "Hello", block: b)
+      b = RatatuiRuby::Widgets::Block.new(borders: [:all], padding: [2, 0, 1, 0])
+      p = RatatuiRuby::Widgets::Paragraph.new(text: "Hello", block: b)
       RatatuiRuby.draw { |f| f.render_widget(p, f.area) }
 
       assert_equal "┌──────────────────┐", buffer_content[0]
@@ -155,7 +155,7 @@ class TestBlock < Minitest::Test
 
   def test_render_titles
     with_test_terminal(20, 3) do
-      b = RatatuiRuby::Block.new(
+      b = RatatuiRuby::Widgets::Block.new(
         borders: [:all],
         titles: [
           { content: "TopLeft", alignment: :left, position: :top },
@@ -172,7 +172,7 @@ class TestBlock < Minitest::Test
   end
 
   def test_block_creation_with_titles
-    b = RatatuiRuby::Block.new(
+    b = RatatuiRuby::Widgets::Block.new(
       titles: [
         { content: "Title 1", alignment: :left, position: :top },
         { content: "Title 2", alignment: :right, position: :bottom },
@@ -185,7 +185,7 @@ class TestBlock < Minitest::Test
 
   def test_render_titles_top
     with_test_terminal(20, 3) do
-      b = RatatuiRuby::Block.new(
+      b = RatatuiRuby::Widgets::Block.new(
         borders: [:all],
         titles: [
           { content: "Left", alignment: :left },
@@ -207,7 +207,7 @@ class TestBlock < Minitest::Test
 
   def test_render_titles_bottom
     with_test_terminal(20, 3) do
-      b = RatatuiRuby::Block.new(
+      b = RatatuiRuby::Widgets::Block.new(
         borders: [:all],
         titles: [
           { content: "Bot", alignment: :center, position: :bottom },
@@ -223,7 +223,7 @@ class TestBlock < Minitest::Test
 
   def test_render_mixed_titles
     with_test_terminal(20, 3) do
-      b = RatatuiRuby::Block.new(
+      b = RatatuiRuby::Widgets::Block.new(
         borders: [:all],
         titles: [
           "Top", # Default top-left string
@@ -239,21 +239,21 @@ class TestBlock < Minitest::Test
 
   def test_block_creation_with_border_set
     set = { top_left: "1", top_right: "2", bottom_left: "3", bottom_right: "4" }
-    b = RatatuiRuby::Block.new(border_set: set)
+    b = RatatuiRuby::Widgets::Block.new(border_set: set)
     assert_equal set, b.border_set
   end
 
   def test_block_creation_with_border_set_short_keys
     set = { tl: "1", tr: "2", bl: "3", br: "4" }
     expected = { top_left: "1", top_right: "2", bottom_left: "3", bottom_right: "4" }
-    b = RatatuiRuby::Block.new(border_set: set)
+    b = RatatuiRuby::Widgets::Block.new(border_set: set)
     assert_equal expected, b.border_set
   end
 
   def test_block_creation_with_border_set_mixed_keys
     set = { tl: "1", tr: "2", bottom_left: "3", br: "4" }
     expected = { top_left: "1", top_right: "2", bottom_left: "3", bottom_right: "4" }
-    b = RatatuiRuby::Block.new(border_set: set)
+    b = RatatuiRuby::Widgets::Block.new(border_set: set)
     assert_equal expected, b.border_set
   end
 
@@ -270,7 +270,7 @@ class TestBlock < Minitest::Test
         horizontal_top: "7",
         horizontal_bottom: "8",
       }
-      b = RatatuiRuby::Block.new(borders: [:all], border_set: set)
+      b = RatatuiRuby::Widgets::Block.new(borders: [:all], border_set: set)
       RatatuiRuby.draw { |f| f.render_widget(b, f.area) }
       assert_equal "17777777777777777772", buffer_content[0]
       assert_equal "5                  6", buffer_content[1]
@@ -281,7 +281,7 @@ class TestBlock < Minitest::Test
   def test_render_with_partial_border_set
     with_test_terminal(20, 3) do
       set = { top_left: "@" }
-      b = RatatuiRuby::Block.new(borders: [:all], border_set: set)
+      b = RatatuiRuby::Widgets::Block.new(borders: [:all], border_set: set)
       RatatuiRuby.draw { |f| f.render_widget(b, f.area) }
       assert_equal "@──────────────────┐", buffer_content[0]
       assert_equal "│                  │", buffer_content[1]

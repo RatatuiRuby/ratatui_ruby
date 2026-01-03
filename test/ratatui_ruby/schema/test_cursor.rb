@@ -8,7 +8,7 @@ require "test_helper"
 class TestCursor < Minitest::Test
   include RatatuiRuby::TestHelper
   def test_cursor_creation
-    cursor = RatatuiRuby::Cursor.new(x: 10, y: 5)
+    cursor = RatatuiRuby::Widgets::Cursor.new(x: 10, y: 5)
     assert_equal 10, cursor.x
     assert_equal 5, cursor.y
   end
@@ -17,7 +17,7 @@ class TestCursor < Minitest::Test
     with_test_terminal(10, 5) do
       # Cursor is a ghost widget, it shouldn't affect the buffer content (cells).
       # It sets the cursor state.
-      cursor = RatatuiRuby::Cursor.new(x: 5, y: 2)
+      cursor = RatatuiRuby::Widgets::Cursor.new(x: 5, y: 2)
       RatatuiRuby.draw { |f| f.render_widget(cursor, f.area) }
 
       assert_equal({ x: 5, y: 2 }, cursor_position)

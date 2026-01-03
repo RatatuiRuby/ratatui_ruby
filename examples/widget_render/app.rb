@@ -21,7 +21,7 @@ class DiagonalWidget
         area.x + i,
         area.y + i,
         "\\",
-        RatatuiRuby::Style.new(fg: :red, modifiers: [:bold])
+        RatatuiRuby::Style::Style.new(fg: :red, modifiers: [:bold])
       )
     end
   end
@@ -47,7 +47,7 @@ class CheckerboardWidget
           area.x + col,
           area.y + row,
           @char,
-          RatatuiRuby::Style.new(fg: :cyan)
+          RatatuiRuby::Style::Style.new(fg: :cyan)
         )
       end
     end
@@ -63,7 +63,7 @@ end
 class BorderWidget
   def render(area)
     result = []
-    style = RatatuiRuby::Style.new(fg: :green)
+    style = RatatuiRuby::Style::Style.new(fg: :green)
 
     # Top and bottom
     (0...area.width).each do |x| # rubocop:disable Lint/AmbiguousRange

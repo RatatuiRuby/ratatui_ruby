@@ -9,14 +9,14 @@ class TestSparkline < Minitest::Test
   include RatatuiRuby::TestHelper
   def test_sparkline_creation
     data = [1, 2, 3]
-    sparkline = RatatuiRuby::Sparkline.new(data:, max: 10)
+    sparkline = RatatuiRuby::Widgets::Sparkline.new(data:, max: 10)
     assert_equal data, sparkline.data
     assert_equal 10, sparkline.max
   end
 
   def test_sparkline_defaults
     data = [1, 2, 3]
-    sparkline = RatatuiRuby::Sparkline.new(data:)
+    sparkline = RatatuiRuby::Widgets::Sparkline.new(data:)
     assert_equal data, sparkline.data
     assert_nil sparkline.max
     assert_nil sparkline.style
@@ -25,7 +25,7 @@ class TestSparkline < Minitest::Test
 
   def test_render
     with_test_terminal(10, 3) do
-      spark = RatatuiRuby::Sparkline.new(data: [1, 2, 3, 4])
+      spark = RatatuiRuby::Widgets::Sparkline.new(data: [1, 2, 3, 4])
       RatatuiRuby.draw { |f| f.render_widget(spark, f.area) }
       assert_equal "  ▂█      ", buffer_content[0]
       assert_equal " ▄██      ", buffer_content[1]
@@ -34,13 +34,13 @@ class TestSparkline < Minitest::Test
   end
 
   def test_direction_default
-    sparkline = RatatuiRuby::Sparkline.new(data: [1, 2, 3])
+    sparkline = RatatuiRuby::Widgets::Sparkline.new(data: [1, 2, 3])
     assert_equal :left_to_right, sparkline.direction
   end
 
   def test_direction_right_to_left
     with_test_terminal(10, 3) do
-      spark = RatatuiRuby::Sparkline.new(data: [1, 2, 3, 4], direction: :right_to_left)
+      spark = RatatuiRuby::Widgets::Sparkline.new(data: [1, 2, 3, 4], direction: :right_to_left)
       RatatuiRuby.draw { |f| f.render_widget(spark, f.area) }
       # Data renders right-to-left: from right edge, filling leftward
       assert_equal "      █▂  ", buffer_content[0]
@@ -50,7 +50,7 @@ class TestSparkline < Minitest::Test
   end
 
   def test_absent_value_symbol
-    sparkline = RatatuiRuby::Sparkline.new(
+    sparkline = RatatuiRuby::Widgets::Sparkline.new(
       data: [1, 2, 3],
       absent_value_symbol: "·"
     )
@@ -58,8 +58,8 @@ class TestSparkline < Minitest::Test
   end
 
   def test_absent_value_style
-    style = RatatuiRuby::Style.new(fg: :red)
-    sparkline = RatatuiRuby::Sparkline.new(
+    style = RatatuiRuby::Style::Style.new(fg: :red)
+    sparkline = RatatuiRuby::Widgets::Sparkline.new(
       data: [1, 2, 3],
       absent_value_style: style
     )
@@ -70,7 +70,7 @@ class TestSparkline < Minitest::Test
     with_test_terminal(5, 1) do
       # Data with absent (nil) values: [1, nil, 2, nil, 3]
       # nil marks an absent value, distinct from 0
-      spark = RatatuiRuby::Sparkline.new(
+      spark = RatatuiRuby::Widgets::Sparkline.new(
         data: [1, nil, 2, nil, 3],
         absent_value_symbol: "-"
       )
