@@ -22,10 +22,10 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 - [x] Ensure IDE autocomplete works
 
 ## Phase 3: Table Enhancements
-- [ ] Implement `Widgets::Cell` (content + style)
-- [ ] Move Row to `Widgets::Row`
-- [ ] Add `table_row` and `table_cell` helpers to Session
-- [ ] Update table.rs for new types
+- [x] Implement `Widgets::Cell` (content + style)
+- [x] Move Row to `Widgets::Row`
+- [x] Add `table_row` and `table_cell` helpers to Session
+- [x] Update table.rs for new types
 
 ## Phase 4: Fix Examples
 - [ ] Update all examples to use Session API
