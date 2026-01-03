@@ -10,6 +10,7 @@ require "ratatui_ruby"
 class VerifyQuickstartLayout
   def run
     RatatuiRuby.run do |tui|
+      # [SYNC:START:main]
       loop do
         tui.draw do |frame|
           # 1. Split the screen
@@ -62,6 +63,7 @@ class VerifyQuickstartLayout
           # Ignore other events
         end
       end
+      # [SYNC:END:main]
     end
   end
 end

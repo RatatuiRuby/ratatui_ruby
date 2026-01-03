@@ -12,11 +12,7 @@ Audit of ratatui_ruby `examples/` directory for v1.0.0 readiness.
 ## [P0: Critical (Must Fix Before v1.0.0) ](./examples_audit/p0_critical.md)
 
 
-1. **[Add README.md to 34 Examples](./examples_audit/p0_critical.md#1-add-readmemd-to-34-examples)**
-   - Template for widget examples
-   - Reference comprehensive examples
-
-2. **[Migrate Example Tests to Snapshot API](./examples_audit/p0_critical.md#2-migrate-example-tests-to-snapshot-api)**
+1. **[Migrate Example Tests to Snapshot API](./examples_audit/p0_critical.md#2-migrate-example-tests-to-snapshot-api)**
    - Pattern change (old vs new)
    - Why snapshots are better
    - Example update pattern

@@ -10,6 +10,7 @@ require "ratatui_ruby"
 class VerifyQuickstartDsl
   def run
     # 1. Initialize the terminal, start the run loop, and ensure the terminal is restored.
+    # [SYNC:START:main]
     RatatuiRuby.run do |tui|
       loop do
         # 2. Create your UI with methods instead of classes.
@@ -39,6 +40,7 @@ class VerifyQuickstartDsl
         end
       end
     end
+    # [SYNC:END:main]
   end
 end
 

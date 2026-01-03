@@ -9,6 +9,7 @@ require "ratatui_ruby"
 
 class VerifyQuickstartLifecycle
   def run
+    # [SYNC:START:main]
     # 1. Initialize the terminal
     RatatuiRuby.init_terminal
 
@@ -42,6 +43,7 @@ class VerifyQuickstartLifecycle
       # 5. Restore the terminal to its original state
       RatatuiRuby.restore_terminal
     end
+    # [SYNC:END:main]
   end
 end
 

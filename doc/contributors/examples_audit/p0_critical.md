@@ -11,52 +11,7 @@ Blocking issues that prevent examples from meeting v1.0.0 quality standards.
 
 
 
-## 1. Add README.md to 34 Examples
-
-**Status:** 🔴 CRITICAL — Prevents discoverability and learning
-
-**32 of 34 examples lack README.md** (only app_all_events and app_color_picker have them).
-
-Users discover examples by browsing `examples/` directory. READMEs explain purpose, architecture, and learning outcomes.
-
-### Template for widget examples
-
-```markdown
-# {Widget Name} Example
-
-{1-2 sentence description of what problem this solves}
-
-## Features Demonstrated
-
-- {Concept 1}
-- {Concept 2}
-- {Concept 3}
-
-## Hotkeys
-
-- {key}: {Action}
-- q: Quit
-
-## Usage
-
-\`\`\`bash
-ruby examples/widget_foo_demo/app.rb
-\`\`\`
-
-## Learning Outcomes
-
-Use this example if you need to...
-- {Goal 1}
-- {Goal 2}
-```
-
-For complex examples, follow the style of:
-- `examples/app_color_picker/README.md`
-- `examples/app_all_events/README.md`
-
----
-
-## 2. Migrate Example Tests to Snapshot API
+## 1. Migrate Example Tests to Snapshot API
 
 **Status:** 🔴 CRITICAL — Tests don't meet mutation-testing standards
 
@@ -128,7 +83,7 @@ end
 ## Completion Checklist
 
 - [x] Fix developing_examples.md (5 corrections)
-- [ ] Add README.md to 34 examples
+- [x] Add README.md to all 34 examples
 - [ ] Migrate 34 tests to snapshot API
 
 **Blocking:** All three must be done before v1.0.0 release.

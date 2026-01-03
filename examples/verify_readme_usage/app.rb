@@ -8,6 +8,7 @@ $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 class VerifyReadmeUsage
   def run
+    # [SYNC:START:main]
     RatatuiRuby.run do |tui|
       loop do
         tui.draw do |frame|
@@ -28,6 +29,7 @@ class VerifyReadmeUsage
         break if event == "q" || event == :ctrl_c
       end
     end
+    # [SYNC:END:main]
   end
 end
 

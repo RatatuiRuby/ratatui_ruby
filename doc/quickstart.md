@@ -35,12 +35,11 @@ gem install ratatui_ruby
 
 Here is a "Hello World" application that demonstrates the core lifecycle of a **ratatui_ruby** app.
 
+<!-- SYNC:START:../examples/verify_quickstart_lifecycle/app.rb:main -->
 ```ruby
-require "ratatui_ruby"
- 
 # 1. Initialize the terminal
 RatatuiRuby.init_terminal
- 
+
 begin
   # The Main Loop
   loop do
@@ -57,12 +56,12 @@ begin
         style: { fg: "white" }
       )
     )
- 
+
     # 3. Draw the UI
     RatatuiRuby.draw do |frame|
       frame.render_widget(view, frame.area)
     end
- 
+
     # 4. Poll for events
     event = RatatuiRuby.poll_event
     break if event.key? && event.code == "q"
@@ -72,6 +71,7 @@ ensure
   RatatuiRuby.restore_terminal
 end
 ```
+<!-- SYNC:END -->
 
 ![quickstart_lifecycle](./images/verify_quickstart_lifecycle.png)
 
@@ -87,10 +87,8 @@ end
 
 You can simplify your code by using `RatatuiRuby.run`. This method handles the terminal lifecycle for you, yielding a `Session` object with factory methods for widgets.
 
-```rb
-require "ratatui_ruby"
-
-# 1. Initialize the terminal and ensure it is restored.
+<!-- SYNC:START:../examples/verify_quickstart_dsl/app.rb:main -->
+```ruby
 RatatuiRuby.run do |tui|
   loop do
     # 2. Create your UI with methods instead of classes.
@@ -121,6 +119,7 @@ RatatuiRuby.run do |tui|
   end
 end
 ```
+<!-- SYNC:END -->
 
 #### How it works
 
@@ -135,64 +134,62 @@ For a deeper dive into the available application architectures (Manual vs Manage
 
 Real-world applications often need to split the screen into multiple areas. `RatatuiRuby::Layout` lets you do this easily.
 
+<!-- SYNC:START:../examples/verify_quickstart_layout/app.rb:main -->
 ```ruby
-require "ratatui_ruby"
+loop do
+  tui.draw do |frame|
+    # 1. Split the screen
+    top, bottom = tui.layout_split(
+      frame.area,
+      direction: :vertical,
+      constraints: [
+        tui.constraint_percentage(75),
+        tui.constraint_percentage(25),
+      ]
+    )
 
-RatatuiRuby.run do |tui|
-  loop do
-    tui.draw do |frame|
-      # 1. Split the screen
-      top, bottom = tui.layout_split(
-        frame.area,
-        direction: :vertical,
-        constraints: [
-          tui.constraint_percentage(75),
-          tui.constraint_percentage(25),
-        ]
-      )
+    # 2. Render Top Widget
+    frame.render_widget(
+      tui.paragraph(
+        text: "Hello, Ratatui!",
+        alignment: :center,
+        block: tui.block(title: "Content", borders: [:all], border_color: "cyan")
+      ),
+      top
+    )
 
-      # 2. Render Top Widget
-      frame.render_widget(
-        tui.paragraph(
-          text: "Hello, Ratatui!",
-          alignment: :center,
-          block: tui.block(title: "Content", borders: [:all], border_color: "cyan")
+    # 3. Render Bottom Widget with Styled Text
+    # We use a Line of Spans to style specific characters
+    text_line = tui.text_line(
+      spans: [
+        tui.text_span(content: "Press '"),
+        tui.text_span(
+          content: "q",
+          style: tui.style(modifiers: [:bold, :underlined])
         ),
-        top
-      )
+        tui.text_span(content: "' to quit."),
+      ],
+      alignment: :center
+    )
 
-      # 3. Render Bottom Widget with Styled Text
-      # We use a Line of Spans to style specific characters
-      text_line = tui.text_line(
-        spans: [
-          tui.text_span(content: "Press '"),
-          tui.text_span(
-            content: "q",
-            style: tui.style(modifiers: [:bold, :underlined])
-          ),
-          tui.text_span(content: "' to quit."),
-        ],
-        alignment: :center
-      )
+    frame.render_widget(
+      tui.paragraph(
+        text: text_line,
+        block: tui.block(title: "Controls", borders: [:all])
+      ),
+      bottom
+    )
+  end
 
-      frame.render_widget(
-        tui.paragraph(
-          text: text_line,
-          block: tui.block(title: "Controls", borders: [:all])
-        ),
-        bottom
-      )
-    end
-
-    case tui.poll_event
-    in { type: :key, code: "q" }
-      break
-    else
-      # Ignore other events
-    end
+  case tui.poll_event
+  in { type: :key, code: "q" }
+    break
+  else
+    # Ignore other events
   end
 end
 ```
+<!-- SYNC:END -->
 
 #### How it works
 

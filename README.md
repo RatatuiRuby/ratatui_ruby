@@ -63,8 +63,8 @@ gem install ratatui_ruby
 
 **ratatui_ruby** uses an immediate-mode API. You describe your UI using Ruby objects and call `draw` in a loop.
 
+<!-- SYNC:START:examples/verify_readme_usage/app.rb:main -->
 ```ruby
-require "ratatui_ruby"
 RatatuiRuby.run do |tui|
   loop do
     tui.draw do |frame|
@@ -86,6 +86,7 @@ RatatuiRuby.run do |tui|
   end
 end
 ```
+<!-- SYNC:END -->
 
 For a full tutorial, see [the Quickstart](./doc/quickstart.md). For an explanation of the application architecture, see [Application Architecture](./doc/application_architecture.md).
 

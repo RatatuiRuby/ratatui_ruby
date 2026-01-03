@@ -7,15 +7,16 @@ require_relative "autodoc/inventory"
 require_relative "autodoc/notice"
 require_relative "autodoc/rbs"
 require_relative "autodoc/rdoc"
+require_relative "autodoc/examples"
 
 namespace :autodoc do
-  desc "Generate all autodoc findings"
-  task all: [:rbs, :rdoc]
+  desc "Update all automatically generated documentation"
+  task all: [:rbs, :rdoc, :examples]
 
-  desc "Generate all RBS findings"
+  desc "Update all automatically generated RBS signatures"
   task rbs: ["rbs:session"]
 
-  desc "Generate all RDoc findings"
+  desc "Update all automatically generated RDoc files"
   task rdoc: ["rdoc:session"]
 
   namespace :rbs do
@@ -41,7 +42,12 @@ namespace :autodoc do
       ).write(Autodoc::Inventory.new)
     end
   end
+
+  desc "Sync code snippets in example READMEs with source files"
+  task :examples do
+    Autodoc::Examples.sync
+  end
 end
 
-desc "Generate all autodoc findings"
+desc "Update all automatically generated documentation"
 task autodoc: "autodoc:all"
