@@ -18,12 +18,20 @@ module RatatuiRuby
         inject_keys("f1")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "f1", event.code
+        assert event.f1?
+
+        # Kind
+        assert_equal :function, event.kind
+        assert event.function?
+        refute event.media?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        # Method missing creates predicates for F-keys too
-        assert event.f1?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -34,8 +42,14 @@ module RatatuiRuby
       with_test_terminal do
         inject_keys("f2")
         event = RatatuiRuby.poll_event
+        # Precise
         assert_equal "f2", event.code
         assert event.f2?
+
+        # Kind
+        assert_equal :function, event.kind
+        assert event.function?
+        refute event.standard?
       end
     end
 
@@ -43,8 +57,14 @@ module RatatuiRuby
       with_test_terminal do
         inject_keys("f3")
         event = RatatuiRuby.poll_event
+        # Precise
         assert_equal "f3", event.code
         assert event.f3?
+
+        # Kind
+        assert_equal :function, event.kind
+        assert event.function?
+        refute event.modifier?
       end
     end
 
@@ -52,8 +72,14 @@ module RatatuiRuby
       with_test_terminal do
         inject_keys("f4")
         event = RatatuiRuby.poll_event
+        # Precise
         assert_equal "f4", event.code
         assert event.f4?
+
+        # Kind
+        assert_equal :function, event.kind
+        assert event.function?
+        refute event.system?
       end
     end
 
@@ -61,8 +87,14 @@ module RatatuiRuby
       with_test_terminal do
         inject_keys("f5")
         event = RatatuiRuby.poll_event
+        # Precise
         assert_equal "f5", event.code
         assert event.f5?
+
+        # Kind
+        assert_equal :function, event.kind
+        assert event.function?
+        refute event.media?
       end
     end
 
@@ -70,8 +102,14 @@ module RatatuiRuby
       with_test_terminal do
         inject_keys("f6")
         event = RatatuiRuby.poll_event
+        # Precise
         assert_equal "f6", event.code
         assert event.f6?
+
+        # Kind
+        assert_equal :function, event.kind
+        assert event.function?
+        refute event.standard?
       end
     end
 
@@ -79,8 +117,14 @@ module RatatuiRuby
       with_test_terminal do
         inject_keys("f7")
         event = RatatuiRuby.poll_event
+        # Precise
         assert_equal "f7", event.code
         assert event.f7?
+
+        # Kind
+        assert_equal :function, event.kind
+        assert event.function?
+        refute event.modifier?
       end
     end
 
@@ -88,8 +132,14 @@ module RatatuiRuby
       with_test_terminal do
         inject_keys("f8")
         event = RatatuiRuby.poll_event
+        # Precise
         assert_equal "f8", event.code
         assert event.f8?
+
+        # Kind
+        assert_equal :function, event.kind
+        assert event.function?
+        refute event.system?
       end
     end
 
@@ -97,8 +147,14 @@ module RatatuiRuby
       with_test_terminal do
         inject_keys("f9")
         event = RatatuiRuby.poll_event
+        # Precise
         assert_equal "f9", event.code
         assert event.f9?
+
+        # Kind
+        assert_equal :function, event.kind
+        assert event.function?
+        refute event.media?
       end
     end
 
@@ -106,8 +162,14 @@ module RatatuiRuby
       with_test_terminal do
         inject_keys("f10")
         event = RatatuiRuby.poll_event
+        # Precise
         assert_equal "f10", event.code
         assert event.f10?
+
+        # Kind
+        assert_equal :function, event.kind
+        assert event.function?
+        refute event.standard?
       end
     end
 
@@ -115,8 +177,14 @@ module RatatuiRuby
       with_test_terminal do
         inject_keys("f11")
         event = RatatuiRuby.poll_event
+        # Precise
         assert_equal "f11", event.code
         assert event.f11?
+
+        # Kind
+        assert_equal :function, event.kind
+        assert event.function?
+        refute event.modifier?
       end
     end
 
@@ -124,8 +192,14 @@ module RatatuiRuby
       with_test_terminal do
         inject_keys("f12")
         event = RatatuiRuby.poll_event
+        # Precise
         assert_equal "f12", event.code
         assert event.f12?
+
+        # Kind
+        assert_equal :function, event.kind
+        assert event.function?
+        refute event.system?
       end
     end
 
@@ -133,8 +207,14 @@ module RatatuiRuby
       with_test_terminal do
         inject_keys("f13")
         event = RatatuiRuby.poll_event
+        # Precise
         assert_equal "f13", event.code
         assert event.f13?
+
+        # Kind
+        assert_equal :function, event.kind
+        assert event.function?
+        refute event.media?
       end
     end
 
@@ -142,8 +222,14 @@ module RatatuiRuby
       with_test_terminal do
         inject_keys("f24")
         event = RatatuiRuby.poll_event
+        # Precise
         assert_equal "f24", event.code
         assert event.f24?
+
+        # Kind
+        assert_equal :function, event.kind
+        assert event.function?
+        refute event.modifier?
       end
     end
 
@@ -170,7 +256,16 @@ module RatatuiRuby
       with_test_terminal do
         inject_event(RatatuiRuby::Event::Key.new(code: "f1", modifiers: ["alt"]))
         event = RatatuiRuby.poll_event
+        # Precise
         assert_equal "f1", event.code
+        refute event.f1?
+
+        # Kind
+        assert_equal :function, event.kind
+        assert event.function?
+        refute event.system?
+
+        # Modifiers
         assert event.alt?
         assert event.alt_f1?
       end

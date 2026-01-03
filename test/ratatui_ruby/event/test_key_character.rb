@@ -18,12 +18,20 @@ module RatatuiRuby
         inject_keys("a")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "a", event.code
+        assert event.a?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.media?
+
+        # Text
         assert event.text?
         assert_equal "a", event.char
 
-        # Predicate for 'a' (dynamic)
-        assert event.a?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -35,13 +43,23 @@ module RatatuiRuby
         inject_keys("A")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "A", event.code
+        assert event.A?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.function?
+
+        # Text
         assert event.text?
         assert_equal "A", event.char
 
-        # Predicate for 'A' (dynamic)
-        assert event.A?
-        assert_equal "A", event.char
+        # Modifiers
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
       end
     end
 
@@ -50,9 +68,23 @@ module RatatuiRuby
         inject_keys("1")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "1", event.code
+        assert event.send(:"1?")
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.modifier?
+
+        # Text
         assert event.text?
         assert_equal "1", event.char
+
+        # Modifiers
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
       end
     end
 
@@ -61,9 +93,23 @@ module RatatuiRuby
         inject_keys("@")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "@", event.code
+        assert event.send(:"@?")
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.system?
+
+        # Text
         assert event.text?
         assert_equal "@", event.char
+
+        # Modifiers
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
       end
     end
 
@@ -72,9 +118,23 @@ module RatatuiRuby
         inject_keys(" ")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal " ", event.code
+        assert event.send(:" ?")
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.media?
+
+        # Text
         assert event.text?
         assert_equal " ", event.char
+
+        # Modifiers
+        refute event.ctrl?
+        refute event.alt?
+        refute event.shift?
       end
     end
   end

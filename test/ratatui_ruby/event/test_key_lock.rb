@@ -18,11 +18,20 @@ module RatatuiRuby
         inject_keys("caps_lock")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "caps_lock", event.code
+        assert event.caps_lock?
+
+        # Kind
+        assert_equal :system, event.kind
+        assert event.system?
+        refute event.standard?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.caps_lock?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -34,11 +43,20 @@ module RatatuiRuby
         inject_keys("num_lock")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "num_lock", event.code
+        assert event.num_lock?
+
+        # Kind
+        assert_equal :system, event.kind
+        assert event.system?
+        refute event.function?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.num_lock?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -50,11 +68,20 @@ module RatatuiRuby
         inject_keys("scroll_lock")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "scroll_lock", event.code
+        assert event.scroll_lock?
+
+        # Kind
+        assert_equal :system, event.kind
+        assert event.system?
+        refute event.media?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.scroll_lock?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?

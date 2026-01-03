@@ -23,15 +23,29 @@ module RatatuiRuby
         inject_keys("left_shift")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "left_shift", event.code
+        assert event.left_shift?
+
+        # DWIM
+        assert event.shift?
+
+        # Kind
+        assert_equal :modifier, event.kind
+        assert event.modifier?
+        refute event.standard?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.left_shift?
+        # Modifiers -- keys themselves do not inherently set modifier flags
         refute event.ctrl?
-        # Modifier keys themselves do not inherently set modifier flags
         refute event.alt?
-        refute event.shift?
+        # shift? now matches via DWIM (removed refutation)
+        refute event.super?
+        refute event.hyper?
+        refute event.meta?
       end
     end
 
@@ -40,14 +54,29 @@ module RatatuiRuby
         inject_keys("left_control")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "left_control", event.code
+        assert event.left_control?
+
+        # DWIM
+        assert event.ctrl?
+
+        # Kind
+        assert_equal :modifier, event.kind
+        assert event.modifier?
+        refute event.function?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.left_control?
-        refute event.ctrl?
+        # Modifiers -- keys themselves do not inherently set modifier flags
+        # ctrl? now matches via DWIM (removed refutation)
         refute event.alt?
         refute event.shift?
+        refute event.super?
+        refute event.hyper?
+        refute event.meta?
       end
     end
 
@@ -56,14 +85,29 @@ module RatatuiRuby
         inject_keys("left_alt")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "left_alt", event.code
+        assert event.left_alt?
+
+        # DWIM
+        assert event.alt?
+
+        # Kind
+        assert_equal :modifier, event.kind
+        assert event.modifier?
+        refute event.media?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.left_alt?
+        # Modifiers -- keys themselves do not inherently set modifier flags
         refute event.ctrl?
-        refute event.alt?
+        # alt? now matches via DWIM (removed refutation)
         refute event.shift?
+        refute event.super?
+        refute event.hyper?
+        refute event.meta?
       end
     end
 
@@ -72,14 +116,33 @@ module RatatuiRuby
         inject_keys("left_super")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "left_super", event.code
+        assert event.left_super?
+
+        # DWIM
+        assert event.super?
+        assert event.win?
+        assert event.command?
+        assert event.cmd?
+        assert event.tux?
+
+        # Kind
+        assert_equal :modifier, event.kind
+        assert event.modifier?
+        refute event.system?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.left_super?
+        # Modifiers -- keys themselves do not inherently set modifier flags
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
+        # super? now matches via DWIM (removed refutation)
+        refute event.hyper?
+        refute event.meta?
       end
     end
 
@@ -88,14 +151,28 @@ module RatatuiRuby
         inject_keys("left_hyper")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "left_hyper", event.code
+        assert event.left_hyper?
+
+        # DWIM
+        assert event.hyper?
+
+        # Kind
+        assert_equal :modifier, event.kind
+        assert event.modifier?
+        refute event.standard?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.left_hyper?
+        # Modifiers -- keys themselves do not inherently set modifier flags
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
+        # hyper? now matches via DWIM (removed refutation)
+        refute event.meta?
       end
     end
 
@@ -104,14 +181,28 @@ module RatatuiRuby
         inject_keys("left_meta")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "left_meta", event.code
+        assert event.left_meta?
+
+        # DWIM
+        assert event.meta?
+
+        # Kind
+        assert_equal :modifier, event.kind
+        assert event.modifier?
+        refute event.function?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.left_meta?
+        # Modifiers -- keys themselves do not inherently set modifier flags
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
+        refute event.hyper?
+        # meta? now matches via DWIM (removed refutation)
       end
     end
 
@@ -120,14 +211,25 @@ module RatatuiRuby
         inject_keys("right_shift")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "right_shift", event.code
+        assert event.right_shift?
+
+        # Kind
+        assert_equal :modifier, event.kind
+        assert event.modifier?
+        refute event.media?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.right_shift?
+        # Modifiers -- keys themselves do not inherently set modifier flags
         refute event.ctrl?
         refute event.alt?
-        refute event.shift?
+        # shift? now matches via DWIM (removed refutation)
+        refute event.hyper?
+        refute event.meta?
       end
     end
 
@@ -136,14 +238,25 @@ module RatatuiRuby
         inject_keys("right_control")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "right_control", event.code
+        assert event.right_control?
+
+        # Kind
+        assert_equal :modifier, event.kind
+        assert event.modifier?
+        refute event.system?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.right_control?
-        refute event.ctrl?
+        # Modifiers -- keys themselves do not inherently set modifier flags
+        # ctrl? now matches via DWIM (removed refutation)
         refute event.alt?
         refute event.shift?
+        refute event.hyper?
+        refute event.meta?
       end
     end
 
@@ -152,14 +265,25 @@ module RatatuiRuby
         inject_keys("right_alt")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "right_alt", event.code
+        assert event.right_alt?
+
+        # Kind
+        assert_equal :modifier, event.kind
+        assert event.modifier?
+        refute event.standard?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.right_alt?
+        # Modifiers -- keys themselves do not inherently set modifier flags
         refute event.ctrl?
-        refute event.alt?
+        # alt? now matches via DWIM (removed refutation)
         refute event.shift?
+        refute event.hyper?
+        refute event.meta?
       end
     end
 
@@ -168,14 +292,25 @@ module RatatuiRuby
         inject_keys("right_super")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "right_super", event.code
+        assert event.right_super?
+
+        # Kind
+        assert_equal :modifier, event.kind
+        assert event.modifier?
+        refute event.function?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.right_super?
+        # Modifiers -- keys themselves do not inherently set modifier flags
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
+        refute event.hyper?
+        refute event.meta?
       end
     end
 
@@ -184,11 +319,20 @@ module RatatuiRuby
         inject_keys("right_hyper")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "right_hyper", event.code
+        assert event.right_hyper?
+
+        # Kind
+        assert_equal :modifier, event.kind
+        assert event.modifier?
+        refute event.media?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.right_hyper?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -200,11 +344,20 @@ module RatatuiRuby
         inject_keys("right_meta")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "right_meta", event.code
+        assert event.right_meta?
+
+        # Kind
+        assert_equal :modifier, event.kind
+        assert event.modifier?
+        refute event.system?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.right_meta?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -216,11 +369,20 @@ module RatatuiRuby
         inject_keys("iso_level3_shift")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "iso_level3_shift", event.code
+        assert event.iso_level3_shift?
+
+        # Kind
+        assert_equal :modifier, event.kind
+        assert event.modifier?
+        refute event.standard?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.iso_level3_shift?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -232,11 +394,20 @@ module RatatuiRuby
         inject_keys("iso_level5_shift")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "iso_level5_shift", event.code
+        assert event.iso_level5_shift?
+
+        # Kind
+        assert_equal :modifier, event.kind
+        assert event.modifier?
+        refute event.function?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.iso_level5_shift?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?

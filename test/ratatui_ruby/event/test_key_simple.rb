@@ -19,11 +19,23 @@ module RatatuiRuby
         inject_keys("backspace")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "backspace", event.code
+        assert event.backspace?
+
+        # DWIM
+        assert event.back?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.media?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.backspace?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -35,11 +47,23 @@ module RatatuiRuby
         inject_keys("enter")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "enter", event.code
+        assert event.enter?
+
+        # DWIM
+        assert event.return?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.function?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.enter?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -51,11 +75,20 @@ module RatatuiRuby
         inject_keys("left")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "left", event.code
+        assert event.left?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.modifier?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.left?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -67,11 +100,20 @@ module RatatuiRuby
         inject_keys("right")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "right", event.code
+        assert event.right?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.system?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.right?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -83,11 +125,20 @@ module RatatuiRuby
         inject_keys("up")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "up", event.code
+        assert event.up?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.media?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.up?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -99,11 +150,20 @@ module RatatuiRuby
         inject_keys("down")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "down", event.code
+        assert event.down?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.function?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.down?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -115,11 +175,20 @@ module RatatuiRuby
         inject_keys("home")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "home", event.code
+        assert event.home?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.modifier?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.home?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -131,11 +200,20 @@ module RatatuiRuby
         inject_keys("end")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "end", event.code
+        assert event.end?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.system?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.end?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -147,11 +225,24 @@ module RatatuiRuby
         inject_keys("page_up")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "page_up", event.code
+        assert event.page_up?
+
+        # DWIM
+        assert event.pageup? # Underscore-insensitive
+        assert event.pgup?   # Keyboard legend
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.media?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.page_up?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -163,11 +254,24 @@ module RatatuiRuby
         inject_keys("page_down")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "page_down", event.code
+        assert event.page_down?
+
+        # DWIM
+        assert event.pagedown? # Underscore-insensitive
+        assert event.pgdn?     # Keyboard legend
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.function?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.page_down?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -179,12 +283,21 @@ module RatatuiRuby
         inject_keys("tab")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "tab", event.code
+        assert event.tab?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.modifier?
+
+        # Text
         # Tab is not considered printable text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.tab?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -196,11 +309,25 @@ module RatatuiRuby
         inject_keys("back_tab")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "back_tab", event.code
+        assert event.back_tab?
+
+        # DWIM
+        assert event.backtab?     # Underscore-insensitive
+        assert event.reverse_tab? # Conceptual alias
+        refute event.back?        # Should not match (different key)
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.system?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.back_tab?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         # BackTab often implies shift in terminals, but we just verify the injected code here
@@ -213,11 +340,23 @@ module RatatuiRuby
         inject_keys("delete")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "delete", event.code
+        assert event.delete?
+
+        # DWIM
+        assert event.del?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.media?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.delete?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -229,11 +368,23 @@ module RatatuiRuby
         inject_keys("insert")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "insert", event.code
+        assert event.insert?
+
+        # DWIM
+        assert event.ins?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.function?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.insert?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -245,11 +396,20 @@ module RatatuiRuby
         inject_keys("null")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "null", event.code
+        assert event.null?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.modifier?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.null?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -261,11 +421,23 @@ module RatatuiRuby
         inject_keys("esc")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "esc", event.code
+        assert event.esc?
+
+        # DWIM
+        assert event.escape?
+
+        # Kind
+        assert_equal :system, event.kind
+        assert event.system?
+        refute event.standard?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.esc?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -276,9 +448,18 @@ module RatatuiRuby
       with_test_terminal do
         inject_event(RatatuiRuby::Event::Key.new(code: "home", modifiers: ["ctrl"]))
         event = RatatuiRuby.poll_event
+
+        # Precise
         assert_equal "home", event.code
-        assert event.ctrl?
         assert event.ctrl_home?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.media?
+
+        # Modifiers
+        assert event.ctrl?
       end
     end
 
@@ -286,9 +467,18 @@ module RatatuiRuby
       with_test_terminal do
         inject_event(RatatuiRuby::Event::Key.new(code: "end", modifiers: ["ctrl"]))
         event = RatatuiRuby.poll_event
+
+        # Precise
         assert_equal "end", event.code
-        assert event.ctrl?
         assert event.ctrl_end?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.function?
+
+        # Modifiers
+        assert event.ctrl?
       end
     end
 
@@ -296,9 +486,18 @@ module RatatuiRuby
       with_test_terminal do
         inject_event(RatatuiRuby::Event::Key.new(code: "page_up", modifiers: ["ctrl"]))
         event = RatatuiRuby.poll_event
+
+        # Precise
         assert_equal "page_up", event.code
-        assert event.ctrl?
         assert event.ctrl_page_up?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.modifier?
+
+        # Modifiers
+        assert event.ctrl?
       end
     end
 
@@ -306,9 +505,18 @@ module RatatuiRuby
       with_test_terminal do
         inject_event(RatatuiRuby::Event::Key.new(code: "page_down", modifiers: ["ctrl"]))
         event = RatatuiRuby.poll_event
+
+        # Precise
         assert_equal "page_down", event.code
-        assert event.ctrl?
         assert event.ctrl_page_down?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.system?
+
+        # Modifiers
+        assert event.ctrl?
       end
     end
 
@@ -316,9 +524,18 @@ module RatatuiRuby
       with_test_terminal do
         inject_event(RatatuiRuby::Event::Key.new(code: "insert", modifiers: ["ctrl"]))
         event = RatatuiRuby.poll_event
+
+        # Precise
         assert_equal "insert", event.code
-        assert event.ctrl?
         assert event.ctrl_insert?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.media?
+
+        # Modifiers
+        assert event.ctrl?
       end
     end
 
@@ -326,9 +543,18 @@ module RatatuiRuby
       with_test_terminal do
         inject_event(RatatuiRuby::Event::Key.new(code: "delete", modifiers: ["ctrl"]))
         event = RatatuiRuby.poll_event
+
+        # Precise
         assert_equal "delete", event.code
-        assert event.ctrl?
         assert event.ctrl_delete?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.function?
+
+        # Modifiers
+        assert event.ctrl?
       end
     end
 
@@ -336,9 +562,18 @@ module RatatuiRuby
       with_test_terminal do
         inject_event(RatatuiRuby::Event::Key.new(code: "up", modifiers: ["shift"]))
         event = RatatuiRuby.poll_event
+
+        # Precise
         assert_equal "up", event.code
-        assert event.shift?
         assert event.shift_up?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.modifier?
+
+        # Modifiers
+        assert event.shift?
       end
     end
 
@@ -346,9 +581,18 @@ module RatatuiRuby
       with_test_terminal do
         inject_event(RatatuiRuby::Event::Key.new(code: "down", modifiers: ["shift"]))
         event = RatatuiRuby.poll_event
+
+        # Precise
         assert_equal "down", event.code
-        assert event.shift?
         assert event.shift_down?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.system?
+
+        # Modifiers
+        assert event.shift?
       end
     end
 
@@ -356,9 +600,18 @@ module RatatuiRuby
       with_test_terminal do
         inject_event(RatatuiRuby::Event::Key.new(code: "left", modifiers: ["shift"]))
         event = RatatuiRuby.poll_event
+
+        # Precise
         assert_equal "left", event.code
-        assert event.shift?
         assert event.shift_left?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.media?
+
+        # Modifiers
+        assert event.shift?
       end
     end
 
@@ -366,9 +619,18 @@ module RatatuiRuby
       with_test_terminal do
         inject_event(RatatuiRuby::Event::Key.new(code: "right", modifiers: ["shift"]))
         event = RatatuiRuby.poll_event
+
+        # Precise
         assert_equal "right", event.code
-        assert event.shift?
         assert event.shift_right?
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.function?
+
+        # Modifiers
+        assert event.shift?
       end
     end
 
@@ -376,7 +638,16 @@ module RatatuiRuby
       with_test_terminal do
         inject_event(RatatuiRuby::Event::Key.new(code: "delete", modifiers: %w[ctrl alt shift]))
         event = RatatuiRuby.poll_event
+
+        # Precise
         assert_equal "delete", event.code
+
+        # Kind
+        assert_equal :standard, event.kind
+        assert event.standard?
+        refute event.modifier?
+
+        # Modifiers
         assert_includes event.modifiers, "ctrl"
         assert_includes event.modifiers, "alt"
         assert_includes event.modifiers, "shift"

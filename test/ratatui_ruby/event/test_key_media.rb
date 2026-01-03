@@ -23,13 +23,25 @@ module RatatuiRuby
         inject_keys("media_play")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "media_play", event.code
+        assert event.media_play?
+
+        # DWIM
+        assert event.play?
+        assert event.play_pause? # Bidirectional: play matches play_pause?
+
+        # Kind
         assert_equal :media, event.kind
+        assert event.media?
+        refute event.system?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.media_play?
-        assert event.media?
+
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -41,13 +53,24 @@ module RatatuiRuby
         inject_keys("media_pause")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "media_pause", event.code
+        assert event.media_pause?
+
+        #DWIM
+        assert event.pause?
+        assert event.play_pause? # Bidirectional: pause matches play_pause?
+
+        # Kind
         assert_equal :media, event.kind
+        assert event.media?
+        refute event.standard?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.media_pause?
-        assert event.media?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -59,13 +82,25 @@ module RatatuiRuby
         inject_keys("media_play_pause")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "media_play_pause", event.code
+        assert event.media_play_pause?
+
+        # DWIM
+        assert event.play_pause?
+        assert event.play?  # Bidirectional: play_pause matches play?
+        assert event.pause? # Bidirectional: play_pause matches pause?
+
+        # Kind
         assert_equal :media, event.kind
+        assert event.media?
+        refute event.function?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.media_play_pause?
-        assert event.media?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -77,13 +112,23 @@ module RatatuiRuby
         inject_keys("media_reverse")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "media_reverse", event.code
+        assert event.media_reverse?
+
+        # DWIM
+        assert event.reverse?
+
+        # Kind
         assert_equal :media, event.kind
+        assert event.media?
+        refute event.modifier?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.media_reverse?
-        assert event.media?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -95,13 +140,23 @@ module RatatuiRuby
         inject_keys("media_stop")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "media_stop", event.code
+        assert event.media_stop?
+
+        # DWIM
+        assert event.stop?
+
+        # Kind
         assert_equal :media, event.kind
+        assert event.media?
+        refute event.system?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.media_stop?
-        assert event.media?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -113,13 +168,23 @@ module RatatuiRuby
         inject_keys("media_fast_forward")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "media_fast_forward", event.code
+        assert event.media_fast_forward?
+
+        # DWIM
+        assert event.fast_forward?
+
+        # Kind
         assert_equal :media, event.kind
+        assert event.media?
+        refute event.standard?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.media_fast_forward?
-        assert event.media?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -131,13 +196,23 @@ module RatatuiRuby
         inject_keys("media_rewind")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "media_rewind", event.code
+        assert event.media_rewind?
+
+        # DWIM
+        assert event.rewind?
+
+        # Kind
         assert_equal :media, event.kind
+        assert event.media?
+        refute event.function?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.media_rewind?
-        assert event.media?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -149,13 +224,23 @@ module RatatuiRuby
         inject_keys("media_track_next")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "media_track_next", event.code
+        assert event.media_track_next?
+
+        # DWIM
+        assert event.track_next?
+
+        # Kind
         assert_equal :media, event.kind
+        assert event.media?
+        refute event.modifier?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.media_track_next?
-        assert event.media?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -167,13 +252,23 @@ module RatatuiRuby
         inject_keys("media_track_previous")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "media_track_previous", event.code
+        assert event.media_track_previous?
+
+        # DWIM
+        assert event.track_previous?
+
+        # Kind
         assert_equal :media, event.kind
+        assert event.media?
+        refute event.system?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.media_track_previous?
-        assert event.media?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -185,13 +280,23 @@ module RatatuiRuby
         inject_keys("media_record")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "media_record", event.code
+        assert event.media_record?
+
+        # DWIM
+        assert event.record?
+
+        # Kind
         assert_equal :media, event.kind
+        assert event.media?
+        refute event.standard?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.media_record?
-        assert event.media?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -203,13 +308,23 @@ module RatatuiRuby
         inject_keys("media_lower_volume")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "media_lower_volume", event.code
+        assert event.media_lower_volume?
+
+        # DWIM
+        assert event.lower_volume?
+
+        # Kind
         assert_equal :media, event.kind
+        assert event.media?
+        refute event.function?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.media_lower_volume?
-        assert event.media?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -221,13 +336,23 @@ module RatatuiRuby
         inject_keys("media_raise_volume")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "media_raise_volume", event.code
+        assert event.media_raise_volume?
+
+        # DWIM
+        assert event.raise_volume?
+
+        # Kind
         assert_equal :media, event.kind
+        assert event.media?
+        refute event.modifier?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.media_raise_volume?
-        assert event.media?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
@@ -239,13 +364,23 @@ module RatatuiRuby
         inject_keys("media_mute_volume")
         event = RatatuiRuby.poll_event
 
+        # Precise
         assert_equal "media_mute_volume", event.code
+        assert event.media_mute_volume?
+
+        # DWIM
+        assert event.mute_volume?
+
+        # Kind
         assert_equal :media, event.kind
+        assert event.media?
+        refute event.system?
+
+        # Text
         refute event.text?
         assert_equal "", event.char
 
-        assert event.media_mute_volume?
-        assert event.media?
+        # Modifiers
         refute event.ctrl?
         refute event.alt?
         refute event.shift?
