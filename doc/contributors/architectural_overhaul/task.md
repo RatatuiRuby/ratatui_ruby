@@ -29,9 +29,9 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 ## Phase 4: Fix Examples and Documentation
 - [x] Update all examples, RDoc, and *.md to use new namespaces and TUI API
-- [ ] Update CHANGELOG with migration guide
+- [x] Update CHANGELOG with migration guide
 
 ## Definition of Done
 - [x] `bin/agent_rake` passes
-- [ ] CHANGELOG updated with breaking changes
+- [x] CHANGELOG updated with breaking changes
 
