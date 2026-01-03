@@ -44,6 +44,12 @@ Architecture:
   - **Usage:**
     - Runs default task (compile + test + lint): `bin/agent_rake`
     - Runs specific task: `bin/agent_rake test:ruby` (for example)
+- **Snapshot Testing:** When tests fail due to intentional behavior changes (not bugs), update snapshots:
+  - **Command:** `UPDATE_SNAPSHOTS=1 bin/agent_rake test:ruby`
+  - This regenerates all `snapshot/*{txt,ansi}` files to match current output
+  - **When to use:** After modifying widget rendering, changing default values, or updating UI behavior
+  - **When NOT to use:** For actual test failures that indicate bugs in your code
+  - After updating, verify the changes make sense by reviewing the diff of `.snapshot` files
 - **Setup:** `bin/setup` must handle both Bundler and Cargo dependencies.
 - **Git:** ALWAYS set `PAGER=cat` with `git`, `git`, etc.. **THIS IS CRITICAL!**
 - **Rake:** Our rake tasks use `git ls-files`, so errors happen when you move or delete files. In this case, ask the user to stage changes for you.

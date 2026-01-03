@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::{parse_block, parse_style};
+use crate::text::parse_span;
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, Value};
 use ratatui::{layout::Rect, widgets::Gauge, Frame};
@@ -17,8 +18,14 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let mut gauge = Gauge::default().ratio(ratio).use_unicode(use_unicode);
 
     if !label_val.is_nil() {
-        let label_str: String = label_val.funcall("to_s", ())?;
-        gauge = gauge.label(label_str);
+        // Try to parse as a Span (rich text)
+        if let Ok(span) = parse_span(label_val) {
+            gauge = gauge.label(span);
+        } else {
+            // Fallback to string
+            let label_str: String = label_val.funcall("to_s", ())?;
+            gauge = gauge.label(label_str);
+        }
     }
 
     if !style_val.is_nil() {

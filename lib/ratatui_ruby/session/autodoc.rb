@@ -338,6 +338,11 @@ module RatatuiRuby
     #
     # Factory for RatatuiRuby::List.new.
     #
+    # :method: list_item
+    # :call-seq: list_item(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::ListItem.new.
+    #
     # :method: list_state
     # :call-seq: list_state(*args, **kwargs, &block)
     #

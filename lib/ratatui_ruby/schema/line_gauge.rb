@@ -26,7 +26,7 @@ module RatatuiRuby
 
     ##
     # :attr_reader: label
-    # Optional label.
+    # Optional label (String or Text::Span for rich styling).
 
     ##
     # :attr_reader: style
@@ -55,7 +55,7 @@ module RatatuiRuby
     # Creates a new LineGauge.
     #
     # [ratio] Float (0.0 - 1.0).
-    # [label] String (optional).
+    # [label] String or Text::Span (optional).
     # [style] Style (optional, base style for the gauge).
     # [filled_style] Style.
     # [unfilled_style] Style.

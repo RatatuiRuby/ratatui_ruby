@@ -1,24 +1,24 @@
 List Widget Demo - Interactive Attribute Cycling                                
-┌Programming | Sel: none | Offset: 10──────────────────────────────────────────┐
+┌Programming | Sel: 7 | Offset: auto───────────────────────────────────────────┐
+│   Ruby                                                                       │
+│   Rust                                                                       │
+│   Python                                                                     │
+│   JavaScript                                                                 │
+│   Go                                                                         │
+│   C++                                                                        │
+│   C#                                                                         │
+│>> Java                                                                       │
+│   Kotlin                                                                     │
+│   Swift                                                                      │
 │   Objective-C                                                                │
 │   PHP                                                                        │
 │   TypeScript                                                                 │
-│   Perl                                                                       │
-│   Lua                                                                        │
-│   R                                                                          │
-│   Scala                                                                      │
-│   Haskell                                                                    │
-│   Elixir                                                                     │
-│   Clojure                                                                    │
-│   Groovy                                                                     │
-│   Closure                                                                    │
-│   VB.NET                                                                     │
 └──────────────────────────────────────────────────────────────────────────────┘
 ┌Controls──────────────────────────────────────────────────────────────────────┐
 │i: Items  ↑/↓: Navigate  x: Select  h: Highlight (Blue on White Bold)         │
 │y: Symbol (>> )  d: Direction (Top to Bottom)                                 │
 │s: Spacing (Always)  p: Scroll Padding (1 item)                               │
 │b: Base (None)  r: Repeat (Off)                                               │
-│o: Offset Mode (Offset Only)  q: Quit                                         │
+│o: Offset Mode (Auto (No Offset))  q: Quit                                    │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘

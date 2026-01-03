@@ -30,7 +30,10 @@ module RatatuiRuby
   class List < Data.define(:items, :selected_index, :offset, :style, :highlight_style, :highlight_symbol, :repeat_highlight_symbol, :highlight_spacing, :direction, :scroll_padding, :block)
     ##
     # :attr_reader: items
-    # The items to display (Array of Strings).
+    # The items to display.
+    #
+    # Accepts Array of Strings, Text::Spans, Text::Lines, or ListItem objects.
+    # For styled individual rows, use ListItem with a style.
 
     ##
     # :attr_reader: selected_index
@@ -92,7 +95,7 @@ module RatatuiRuby
     #
     # Integer parameters accept any object responding to +to_int+ or +to_i+ (duck-typed).
     #
-    # [items] Array of Strings.
+    # [items] Array of Strings, Text::Spans, Text::Lines, or ListItem objects.
     # [selected_index] Numeric (nullable, coerced to Integer).
     # [offset] Numeric (nullable, coerced to Integer). Forces scroll position when set.
     # [style] Style object.

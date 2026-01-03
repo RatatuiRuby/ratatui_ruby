@@ -26,16 +26,17 @@ class WidgetListDemo
   # Initializes the demo with example data and default configuration.
   def initialize
     Faker::Config.random = Random.new(12345)
-    @selected_index = 0
+    @selected_index = 6 # Start at C# to avoid highlighting the rich text examples
+    @tui_for_setup = nil
 
     @item_sets = [
       {
         name: "Programming",
         items: [
-          "Ruby",
-          "Rust",
-          "Python",
-          "JavaScript",
+          :ruby_styled, # Will be replaced with rich text in run()
+          :rust_styled, # Will be replaced with rich text in run()
+          :python_styled, # Will be replaced with rich text in run()
+          :javascript_styled, # Will be replaced with rich text in run()
           "Go",
           "C++",
           "C#",
@@ -138,7 +139,7 @@ class WidgetListDemo
       { name: "Offset Only", offset: 10, allow_selection: false },
       { name: "Selection + Offset (Conflict)", offset: 0, allow_selection: true },
     ]
-    @offset_mode_index = 1
+    @offset_mode_index = 0
   end
 
   # Runs the demo application.
@@ -147,6 +148,42 @@ class WidgetListDemo
   def run
     RatatuiRuby.run do |tui|
       @tui = tui
+
+      # Create rich text for "Ruby" - each letter with a different red style
+      ruby_line = @tui.text_line(spans: [
+        @tui.text_span(content: "R", style: @tui.style(fg: :red, modifiers: [:underlined])),
+        @tui.text_span(content: "u", style: @tui.style(fg: :light_red, modifiers: [:bold])),
+        @tui.text_span(content: "b", style: @tui.style(fg: :red, modifiers: [:italic])),
+        @tui.text_span(content: "y", style: @tui.style(fg: :light_red, modifiers: [:reversed])),
+      ])
+
+      # Create rich text for "Rust" - single styled Span
+      rust_span = @tui.text_span(
+        content: "Rust",
+        style: @tui.style(fg: :magenta, modifiers: [:bold, :underlined])
+      )
+
+      # Create ListItem for "Python" - demonstrates content + row background
+      python_item = @tui.list_item(
+        content: @tui.text_span(content: "Python", style: @tui.style(fg: :yellow)),
+        style: @tui.style(bg: :dark_gray)
+      )
+
+      # Create ListItem for "JavaScript" - demonstrates styled text with row background
+      javascript_item = @tui.list_item(
+        content: @tui.text_line(spans: [
+          @tui.text_span(content: "Java", style: @tui.style(fg: :yellow, modifiers: [:bold])),
+          @tui.text_span(content: "Script", style: @tui.style(fg: :light_yellow, modifiers: [:italic])),
+        ]),
+        style: @tui.style(bg: :blue)
+      )
+
+      # Replace the styled placeholders
+      @item_sets[0][:items][0] = ruby_line
+      @item_sets[0][:items][1] = rust_span
+      @item_sets[0][:items][2] = python_item
+      @item_sets[0][:items][3] = javascript_item
+
       # Initialize styles that require @tui
       @highlight_styles = [
         { name: "Blue on White Bold", style: @tui.style(fg: :blue, bg: :white, modifiers: [:bold]) },

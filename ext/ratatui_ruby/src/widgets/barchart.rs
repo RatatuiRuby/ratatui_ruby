@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::{parse_bar_set, parse_block, parse_style};
+use crate::text::{parse_line, parse_span};
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, RArray, Symbol, Value};
 use ratatui::{
@@ -11,6 +12,7 @@ use ratatui::{
     Frame,
 };
 
+#[allow(clippy::too_many_lines)]
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let bump = Bump::new();
     let data_val: Value = node.funcall("data", ())?;
@@ -66,16 +68,32 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
                 let label_val: Value = bar_obj.funcall("label", ())?;
                 if !label_val.is_nil() {
-                    let s: String = label_val.funcall("to_s", ())?;
-                    let s_ref = bump.alloc_str(&s) as &str;
-                    bar = bar.label(Line::from(s_ref));
+                    // Try to parse as Line (rich text)
+                    if let Ok(line) = parse_line(label_val) {
+                        bar = bar.label(line);
+                    } else if let Ok(span) = parse_span(label_val) {
+                        bar = bar.label(Line::from(vec![span]));
+                    } else {
+                        // Fallback to string
+                        let s: String = label_val.funcall("to_s", ())?;
+                        let s_ref = bump.alloc_str(&s) as &str;
+                        bar = bar.label(Line::from(s_ref));
+                    }
                 }
 
                 let text_val: Value = bar_obj.funcall("text_value", ())?;
                 if !text_val.is_nil() {
-                    let s: String = text_val.funcall("to_s", ())?;
-                    let s_ref = bump.alloc_str(&s) as &str;
-                    bar = bar.text_value(s_ref);
+                    // Try to parse as Line (rich text)
+                    if let Ok(line) = parse_line(text_val) {
+                        bar = bar.text_value(line);
+                    } else if let Ok(span) = parse_span(text_val) {
+                        bar = bar.text_value(Line::from(vec![span]));
+                    } else {
+                        // Fallback to string
+                        let s: String = text_val.funcall("to_s", ())?;
+                        let s_ref = bump.alloc_str(&s) as &str;
+                        bar = bar.text_value(s_ref);
+                    }
                 }
 
                 let style_val: Value = bar_obj.funcall("style", ())?;

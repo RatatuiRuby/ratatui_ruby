@@ -90,7 +90,7 @@ pub fn parse_text(value: Value) -> Result<Vec<Line<'static>>, Error> {
 }
 
 /// Parses a Ruby Span object into a ratatui Span.
-fn parse_span(value: Value) -> Result<Span<'static>, Error> {
+pub fn parse_span(value: Value) -> Result<Span<'static>, Error> {
     let ruby = magnus::Ruby::get().unwrap();
 
     // Get class name

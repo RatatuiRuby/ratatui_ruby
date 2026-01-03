@@ -17,7 +17,7 @@ module RatatuiRuby
 
       ##
       # :attr_reader: label
-      # The label of the bar (optional String).
+      # The label of the bar (optional String, Text::Span, or Text::Line for rich styling).
 
       ##
       # :attr_reader: style
@@ -29,7 +29,7 @@ module RatatuiRuby
 
       ##
       # :attr_reader: text_value
-      # The text to display as the value (optional String).
+      # The text to display as the value (optional String, Text::Span, or Text::Line for rich styling).
 
       def initialize(value:, label: nil, style: nil, value_style: nil, text_value: nil)
         super(

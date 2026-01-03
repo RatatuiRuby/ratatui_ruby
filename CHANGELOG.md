@@ -12,6 +12,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **Rich Text Support**: `List`, `Gauge`, `LineGauge`, and `BarChart` widgets now accept rich text objects (`Text::Span`, `Text::Line`) in addition to plain strings. This enables per-character styling, multi-colored labels, and complex text formatting matching Ratatui 0.30.0 capabilities.
+- **ListItem Wrapper**: New `ListItem` data class allows applying row-level styling (background color) independent of text content. `List` items can now be `String`, `Text::Span`, `Text::Line`, or `ListItem` objects.
 - **Non-Blocking Event Polling**: `RatatuiRuby.poll_event` now accepts an optional `timeout:` parameter (Float seconds). Use `timeout: 0.0` for non-blocking checks, or `timeout: 0.1` for fixed timesteps. Defaults to `0.016` (16ms) to preserve existing behavior.
 - **Cursor Positioning**: `Frame#set_cursor_position(x, y)` sets the terminal's hardware cursor position. Using this method is essential for input fields where the user expects visual feedback on their cursor location.
 - **Text Measurement**: `RatatuiRuby::Text.width(string)` calculates the display width of a string in terminal cells, correctly handling unicode including ASCII (1 cell), CJK full-width characters (2 cells), emoji (typically 2 cells), and zero-width combining marks (0 cells). This is essential for auto-sizing widgets and responsive layouts. Delegates to the same unicode-width logic that Ratatui uses internally.

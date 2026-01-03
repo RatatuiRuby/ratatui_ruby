@@ -28,6 +28,8 @@ module RatatuiRuby
     # :attr_reader: label
     # Text label to display (optional).
     #
+    # Accepts String or Text::Span for rich styling.
+    #
     # If nil, it often displays the percentage automatically depending on renderer logic,
     # but explicit labels are preferred.
 
@@ -52,7 +54,7 @@ module RatatuiRuby
     #
     # [ratio] Float (0.0 - 1.0).
     # [percent] Integer (0 - 100), alternative to ratio.
-    # [label] String (optional).
+    # [label] String or Text::Span (optional).
     # [style] Style object for the background (optional).
     # [gauge_style] Style object for the filled bar (optional).
     # [block] Block widget (optional).

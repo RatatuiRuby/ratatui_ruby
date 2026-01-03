@@ -4,12 +4,12 @@
 module RatatuiRuby
   class Gauge < Data
     attr_reader ratio: Float
-    attr_reader label: String?
+    attr_reader label: (String | Text::Span)?
     attr_reader style: Style?
     attr_reader gauge_style: Style?
     attr_reader block: Block?
 
     attr_reader use_unicode: bool
-    def self.new: (?ratio: Numeric?, ?percent: Numeric?, ?label: String?, ?style: Style?, ?gauge_style: Style?, ?block: Block?, ?use_unicode: bool) -> Gauge
+    def self.new: (?ratio: Numeric?, ?percent: Numeric?, ?label: String | Text::Span | nil, ?style: Style?, ?gauge_style: Style?, ?block: Block?, ?use_unicode: bool) -> Gauge
   end
 end

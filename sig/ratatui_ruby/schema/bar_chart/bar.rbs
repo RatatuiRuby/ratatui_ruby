@@ -5,12 +5,12 @@ module RatatuiRuby
   class BarChart
     class Bar < Data
       attr_reader value: Integer
-      attr_reader label: String?
+      attr_reader label: (String | Text::Span | Text::Line)?
       attr_reader style: Style?
       attr_reader value_style: Style?
-      attr_reader text_value: String?
+      attr_reader text_value: (String | Text::Span | Text::Line)?
 
-      def self.new: (value: Numeric, ?label: String?, ?style: Style?, ?value_style: Style?, ?text_value: String?) -> Bar
+      def self.new: (value: Numeric, ?label: String | Text::Span | Text::Line | nil, ?style: Style?, ?value_style: Style?, ?text_value: String | Text::Span | Text::Line | nil) -> Bar
     end
   end
 end

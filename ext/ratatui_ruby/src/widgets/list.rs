@@ -2,13 +2,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::{parse_block, parse_style};
+use crate::text::{parse_line, parse_span};
 use crate::widgets::list_state::RubyListState;
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, Symbol, TryConvert, Value};
 use ratatui::{
     layout::Rect,
     text::Line,
-    widgets::{HighlightSpacing, List, ListState},
+    widgets::{HighlightSpacing, List, ListItem, ListState},
     Frame,
 };
 
@@ -28,11 +29,12 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let scroll_padding_val: Value = node.funcall("scroll_padding", ())?;
     let block_val: Value = node.funcall("block", ())?;
 
-    let mut items: Vec<String> = Vec::new();
+    let mut items: Vec<ListItem> = Vec::new();
     for i in 0..items_array.len() {
         let index = isize::try_from(i)
             .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
-        let item: String = items_array.entry(index)?;
+        let item_val: Value = items_array.entry(index)?;
+        let item = parse_list_item(item_val)?;
         items.push(item);
     }
 
@@ -129,11 +131,12 @@ pub fn render_stateful(
     let items_array = magnus::RArray::from_value(items_val)
         .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array"))?;
 
-    let mut items: Vec<String> = Vec::new();
+    let mut items: Vec<ListItem> = Vec::new();
     for i in 0..items_array.len() {
         let index = isize::try_from(i)
             .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
-        let item: String = items_array.entry(index)?;
+        let item_val: Value = items_array.entry(index)?;
+        let item = parse_list_item(item_val)?;
         items.push(item);
     }
 
@@ -211,6 +214,67 @@ pub fn render_stateful(
     // Borrow is now released
 
     Ok(())
+}
+
+/// Parses a Ruby list item into a ratatui `ListItem`.
+///
+/// Accepts:
+/// - `String`: Plain text item
+/// - `Text::Span`: A single styled fragment
+/// - `Text::Line`: A line composed of multiple spans
+/// - `RatatuiRuby::ListItem`: A `ListItem` object with content and optional style
+fn parse_list_item(value: Value) -> Result<ListItem<'static>, Error> {
+    let ruby = magnus::Ruby::get().unwrap();
+
+    // Check if it's a RatatuiRuby::ListItem
+    if let Ok(class_obj) = value.funcall::<_, _, Value>("class", ()) {
+        if let Ok(class_name) = class_obj.funcall::<_, _, String>("name", ()) {
+            if class_name.contains("ListItem") {
+                // Extract content and style from the ListItem
+                let content_val: Value = value.funcall("content", ())?;
+                let style_val: Value = value.funcall("style", ())?;
+
+                // Parse content as a Line
+                let line = if let Ok(s) = String::try_convert(content_val) {
+                    Line::from(s)
+                } else if let Ok(line) = parse_line(content_val) {
+                    line
+                } else if let Ok(span) = parse_span(content_val) {
+                    Line::from(vec![span])
+                } else {
+                    Line::from("")
+                };
+
+                // Parse and apply style if present
+                let mut item = ListItem::new(line);
+                if !style_val.is_nil() {
+                    item = item.style(parse_style(style_val)?);
+                }
+                return Ok(item);
+            }
+        }
+    }
+
+    // Try as String
+    if let Ok(s) = String::try_convert(value) {
+        return Ok(ListItem::new(Line::from(s)));
+    }
+
+    // Try as Line
+    if let Ok(line) = parse_line(value) {
+        return Ok(ListItem::new(line));
+    }
+
+    // Try as Span
+    if let Ok(span) = parse_span(value) {
+        return Ok(ListItem::new(Line::from(vec![span])));
+    }
+
+    // Fallback
+    Err(Error::new(
+        ruby.exception_type_error(),
+        "expected String, Text::Span, Text::Line, or ListItem",
+    ))
 }
 
 #[cfg(test)]

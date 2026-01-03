@@ -75,6 +75,7 @@ module RatatuiRuby
     def line_chart: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def line_gauge: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def list: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def list_item: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def list_state: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def list_state_new: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def overlay: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped

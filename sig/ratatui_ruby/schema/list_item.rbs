@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class ListItem < Data
+    attr_reader content: String | Text::Span | Text::Line
+    attr_reader style: Style?
+    def self.new: (content: String | Text::Span | Text::Line, ?style: Style?) -> ListItem
+  end
+end
