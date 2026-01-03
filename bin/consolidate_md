@@ -1,0 +1,246 @@
+#!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+####
+# ======================================================================
+# consolidate_md - Merge multiple markdown files into one
+# ======================================================================
+#
+# SYNOPSIS
+#     consolidate_md [OPTIONS] OUTPUT_FILE INPUT_FILE...
+#
+# DESCRIPTION
+#     Combine multiple markdown files into a single consolidated file.
+#
+#     Related documentation often spans multiple files. Consolidating
+#     them improves discoverability and reduces navigation. This tool
+#     decreases heading levels in each file (so section titles become
+#     subsections), replaces the header with an H1 containing the
+#     filename, and concatenates everything with horizontal rule
+#     separators between sections.
+#
+#     The output file receives an SPDX header with year(s) derived from
+#     the input files' existing SPDX headers (or current year if none).
+#
+# ARGUMENTS
+#     OUTPUT_FILE        Path to the output markdown file (created,
+#                        overwritten, or appended to).
+#     INPUT_FILE...      One or more markdown files to consolidate.
+#                        Order is preserved in output.
+#
+# OPTIONS
+#     -a, --append       Append to existing OUTPUT_FILE instead of
+#                        overwriting. A horizontal rule separator is
+#                        added before the new content.
+#     -d, --delete       Delete source files after successful
+#                        consolidation.
+#     -s, --strip N      Strip the first N lines from each input file
+#                        before processing. Default: 5 (for SPDX
+#                        license headers). Use 0 to strip nothing.
+#     -h, --help         Show this help message.
+#
+# TRANSFORMATIONS
+#     Each input file is transformed as follows:
+#     1. First N lines are stripped (default 5, for SPDX headers)
+#     2. Heading levels decrease by one (# -> ##, ## -> ###, etc.)
+#     3. H1 with the filename (without .md extension) is prepended
+#     4. Files are joined with horizontal rules (---)
+#
+# EXIT STATUS
+#     0                  Success
+#     1                  Error (missing arguments, file not found)
+#
+# EXAMPLES
+#     Consolidate two files:
+#         consolidate_md doc/combined.md doc/part1.md doc/part2.md
+#
+#     Consolidate with glob and delete sources:
+#         consolidate_md --delete doc/audit.md doc/audit_*.md
+#
+#     Append a new file to existing consolidated file:
+#         consolidate_md --append --delete doc/chats.md doc/chat_new.md
+#
+#     Consolidate files without SPDX headers (strip 0 lines):
+#         consolidate_md --strip 0 doc/out.md doc/no_header.md
+#
+#     Strip a custom number of header lines:
+#         consolidate_md --strip 10 doc/out.md doc/long_header.md
+#
+# ======================================================================
+###
+# This program was created with significant assistance from Antigravity,
+# using generative AI. https://declare-ai.org/1.0.0/creative.html
+
+set -euo pipefail
+
+show_help() {
+  sed -n '/^####$/,/^###$/p' "$0" | sed '1d;$d;s/^# \?//'
+}
+
+DELETE_SOURCES=false
+APPEND_MODE=false
+STRIP_LINES=5
+CURRENT_YEAR=$(date +%Y)
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      show_help
+      exit 0
+      ;;
+    -d|--delete)
+      DELETE_SOURCES=true
+      shift
+      ;;
+    -a|--append)
+      APPEND_MODE=true
+      shift
+      ;;
+    -s|--strip)
+      if [[ -z "${2:-}" || ! "$2" =~ ^[0-9]+$ ]]; then
+        echo "Error: --strip requires a numeric argument" >&2
+        exit 1
+      fi
+      STRIP_LINES="$2"
+      shift 2
+      ;;
+    -*)
+      echo "Error: Unknown option: $1" >&2
+      echo "Use --help for usage information." >&2
+      exit 1
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+if [[ $# -lt 2 ]]; then
+  echo "Error: Requires OUTPUT_FILE and at least one INPUT_FILE" >&2
+  echo "Use --help for usage information." >&2
+  exit 1
+fi
+
+OUTPUT_FILE="$1"
+shift
+INPUT_FILES=("$@")
+
+# Verify all input files exist
+for f in "${INPUT_FILES[@]}"; do
+  if [[ ! -f "$f" ]]; then
+    echo "Error: Input file not found: $f" >&2
+    exit 1
+  fi
+done
+
+# In append mode, verify output file exists
+if [[ "$APPEND_MODE" == true && ! -f "$OUTPUT_FILE" ]]; then
+  echo "Error: Cannot append to non-existent file: $OUTPUT_FILE" >&2
+  echo "Use without --append to create a new file." >&2
+  exit 1
+fi
+
+# Extract years from SPDX headers of all input files
+extract_years() {
+  local all_years=()
+  for f in "${INPUT_FILES[@]}"; do
+    # Look for SPDX-FileCopyrightText line and extract year(s)
+    local years
+    years=$(head -5 "$f" | grep -oE 'SPDX-FileCopyrightText:.*' | grep -oE '[0-9]{4}' || true)
+    if [[ -n "$years" ]]; then
+      while IFS= read -r year; do
+        all_years+=("$year")
+      done <<< "$years"
+    fi
+  done
+  
+  # If no years found, use current year
+  if [[ ${#all_years[@]} -eq 0 ]]; then
+    echo "$CURRENT_YEAR"
+    return
+  fi
+  
+  # Find min and max years
+  local min_year="${all_years[0]}"
+  local max_year="${all_years[0]}"
+  for year in "${all_years[@]}"; do
+    if [[ "$year" -lt "$min_year" ]]; then
+      min_year="$year"
+    fi
+    if [[ "$year" -gt "$max_year" ]]; then
+      max_year="$year"
+    fi
+  done
+  
+  # Return range or single year
+  if [[ "$min_year" == "$max_year" ]]; then
+    echo "$min_year"
+  else
+    echo "${min_year}-${max_year}"
+  fi
+}
+
+# Process each input file
+for f in "${INPUT_FILES[@]}"; do
+  # Strip first N lines
+  if [[ "$STRIP_LINES" -gt 0 ]]; then
+    tail -n +"$((STRIP_LINES + 1))" "$f" > "$f.tmp" && mv "$f.tmp" "$f"
+  fi
+
+  # Decrease heading levels (bottom-up to avoid double-processing)
+  sed -i '' 's/^##### /######  /g' "$f"
+  sed -i '' 's/^#### /##### /g' "$f"
+  sed -i '' 's/^### /#### /g' "$f"
+  sed -i '' 's/^## /### /g' "$f"
+  sed -i '' 's/^# /## /g' "$f"
+
+  # Add H1 with filename (without extension)
+  basename="${f##*/}"
+  basename="${basename%.md}"
+  sed -i '' "1i\\
+# $basename
+" "$f"
+done
+
+# Initialize output file or prepare for append
+if [[ "$APPEND_MODE" == true ]]; then
+  # Start with separator before first appended file
+  first=false
+else
+  # Get year range from input files
+  YEAR_RANGE=$(extract_years)
+  
+  # Create output file with SPDX header
+  cat > "$OUTPUT_FILE" << SPDX_HEADER
+<!--
+SPDX-FileCopyrightText: ${YEAR_RANGE} Kerrick Long <me@kerricklong.com>
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+
+SPDX_HEADER
+  first=true
+fi
+
+for f in "${INPUT_FILES[@]}"; do
+  if [[ "$first" == true ]]; then
+    first=false
+  else
+    echo -e "\n\n---\n\n" >> "$OUTPUT_FILE"
+  fi
+  cat "$f" >> "$OUTPUT_FILE"
+done
+
+if [[ "$APPEND_MODE" == true ]]; then
+  echo "Appended to: $OUTPUT_FILE (now $(wc -l < "$OUTPUT_FILE" | tr -d ' ') lines)"
+else
+  echo "Created: $OUTPUT_FILE ($(wc -l < "$OUTPUT_FILE" | tr -d ' ') lines)"
+fi
+
+# Delete source files if requested
+if [[ "$DELETE_SOURCES" == true ]]; then
+  for f in "${INPUT_FILES[@]}"; do
+    rm "$f"
+    echo "Deleted: $f"
+  done
+fi
