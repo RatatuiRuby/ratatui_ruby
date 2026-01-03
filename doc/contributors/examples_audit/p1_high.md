@@ -9,58 +9,7 @@ Important for v1.0.0 quality and ecosystem goals. Not blocking release, but reco
 
 ---
 
-## 1. Fix API Violations in 6 Examples
-
-**Status:** Important for API consistency — Examples currently violate established patterns
-
-### Event Handling (5 examples)
-
-widget_block_demo (merged), widget_cell_demo, widget_scroll_text
-
-**Current (WRONG):**
-```ruby
-break if event == "q" || event == :ctrl_c
-```
-
-**Should be:**
-```ruby
-case @tui.poll_event
-in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
-  break
-else
-  nil
-end
-```
-
-### Session API (2 examples)
-
-widget_block_demo (merged), widget_cell_demo
-
-**Current (WRONG):**
-```ruby
-RatatuiRuby::Block.new(...)
-RatatuiRuby::Layout.split(...)
-RatatuiRuby::Constraint.length(...)
-```
-
-**Should use:**
-```ruby
-@tui.block(...)
-@tui.layout_split(...)
-@tui.constraint_length(...)
-```
-
-### Other Fixes
-
-**widget_block_demo:** Use `tui.constraint_length(10)`
-
-**widget_cell_demo:** Rename `main` method to `run`
-
-**widget_scroll_text, widget_table_demo:** Remove executable bit (`chmod -x`)
-
----
-
-## 2. Improve Default States
+## 1. Improve Default States
 
 **Status:** Important for visual polish — Examples should look impressive on first launch
 
@@ -88,7 +37,7 @@ Several examples use plain or minimal defaults that don't showcase the library w
 
 ---
 
-## 3. Ensure All Widgets Have Examples
+## 2. Ensure All Widgets Have Examples
 
 **Status:** Important for completeness — Every widget type should be demonstrable
 

@@ -29,8 +29,12 @@ RatatuiRuby.run do |tui|
         frame.area
       )
     end
-    event = tui.poll_event
-    break if event == "q" || event == :ctrl_c
+    case tui.poll_event
+    in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
+      break
+    else
+      nil
+    end
   end
 end
 ```

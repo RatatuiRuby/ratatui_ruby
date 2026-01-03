@@ -11,9 +11,6 @@ Current State:
                                                                                 
                                                                                 
                                                                                 
-                                                                                
-                                                                                
-                                                                                
 ────────────────────────────────────────────────────────────────────────────────
 ┌Controls──────────────────────────────────────────────────────────────────────┐
 │t: Title (None)  a: Alignment (Right)  s: Title Style (Cyan Bold)             │
@@ -21,4 +18,7 @@ Current State:
 │b: Borders (Top/Bottom)  y: Border Type (Rounded)                             │
 │c: Border Style (Magenta Bold)  p: Padding (None (0))                         │
 │f: Base Style (Dark Gray)  q: Quit                                            │
+│                                                                              │
+│                                                                              │
+│                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘

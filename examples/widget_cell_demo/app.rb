@@ -9,15 +9,19 @@ require "ratatui_ruby"
 
 # A custom widget that fills its area with a checkered pattern using Cell objects.
 class CheckeredBackground
+  def initialize(tui)
+    @tui = tui
+  end
+
   def render(area)
-    cell = RatatuiRuby::Cell.new(char: "░", fg: :dark_gray)
+    cell = @tui.cell(char: "░", fg: :dark_gray)
     commands = []
     area.height.times do |y|
       area.width.times do |x|
         # Checkerboard logic
         if (x + y).even?
           # Use a dim cell for the background pattern
-          commands << RatatuiRuby::Draw.cell(area.x + x, area.y + y, cell)
+          commands << @tui.draw_cell(area.x + x, area.y + y, cell)
         end
       end
     end
@@ -26,12 +30,13 @@ class CheckeredBackground
 end
 
 class WidgetCellDemo
-  def main
+  def run
     RatatuiRuby.run do |tui|
+      @tui = tui
       # Define some reusable cells for our table
-      ok_cell = RatatuiRuby::Cell.new(char: "OK", fg: :green)
-      fail_cell = RatatuiRuby::Cell.new(char: "FAIL", fg: :red, modifiers: ["bold"])
-      pending_cell = RatatuiRuby::Cell.new(char: "...", fg: :yellow, modifiers: ["dim"])
+      ok_cell = @tui.cell(char: "OK", fg: :green)
+      fail_cell = @tui.cell(char: "FAIL", fg: :red, modifiers: ["bold"])
+      pending_cell = @tui.cell(char: "...", fg: :yellow, modifiers: ["dim"])
 
       # A mix of Strings and Cells in rows
       rows = [
@@ -39,47 +44,47 @@ class WidgetCellDemo
         ["Cache", ok_cell],
         ["Worker", fail_cell],
         ["Analytics", pending_cell],
-        ["Web Server", RatatuiRuby::Cell.new(char: "RESTARTING", fg: :blue, modifiers: ["rapid_blink"])],
+        ["Web Server", @tui.cell(char: "RESTARTING", fg: :blue, modifiers: ["rapid_blink"])],
       ]
 
-      table = RatatuiRuby::Table.new(
-        header: ["Service", RatatuiRuby::Cell.new(char: "Status", modifiers: ["underlined"])],
+      table = @tui.table(
+        header: ["Service", @tui.cell(char: "Status", modifiers: ["underlined"])],
         rows:,
         widths: [
-          RatatuiRuby::Constraint.percentage(70),
-          RatatuiRuby::Constraint.percentage(30),
+          @tui.constraint_percentage(70),
+          @tui.constraint_percentage(30),
         ],
-        block: RatatuiRuby::Block.new(title: "System Status", borders: :all),
+        block: @tui.block(title: "System Status", borders: :all),
         column_spacing: 1
       )
 
       # Main loop
       loop do
-        tui.draw do |frame|
+        @tui.draw do |frame|
           # Create a layout that holds both widgets
           # We use a vertical layout:
           # Top: Custom CheckeredBackground with specific height
           # Bottom: Table using remaining space
-          top_area, bottom_area = RatatuiRuby::Layout.split(
+          top_area, bottom_area = @tui.layout_split(
             frame.area,
             direction: :vertical,
             constraints: [
-              RatatuiRuby::Constraint.length(10), # Top section
-              RatatuiRuby::Constraint.min(0), # Bottom section
+              @tui.constraint_length(10), # Top section
+              @tui.constraint_min(0), # Bottom section
             ]
           )
 
           # Top Child: An Overlay of Paragraph on top of CheckeredBackground
-          overlay = RatatuiRuby::Overlay.new(
+          overlay = @tui.overlay(
             layers: [
-              CheckeredBackground.new,
-              RatatuiRuby::Center.new(
+              CheckeredBackground.new(@tui),
+              @tui.center(
                 width_percent: 50,
                 height_percent: 50,
-                child: RatatuiRuby::Paragraph.new(
+                child: @tui.paragraph(
                   text: "Custom Widget Demo\n(CheckeredBackground)",
                   alignment: :center,
-                  block: RatatuiRuby::Block.new(borders: :all, title: "Overlay")
+                  block: @tui.block(borders: :all, title: "Overlay")
                 )
               ),
             ]
@@ -90,9 +95,11 @@ class WidgetCellDemo
           frame.render_widget(table, bottom_area)
         end
 
-        event = RatatuiRuby.poll_event
-        if event.is_a?(RatatuiRuby::Event::Key) && (event.code == "q" || (event.code == "c" && event.modifiers.include?("ctrl")))
+        case @tui.poll_event
+        in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
           break
+        else
+          nil
         end
       end
     end
@@ -100,5 +107,5 @@ class WidgetCellDemo
 end
 
 if __FILE__ == $0
-  WidgetCellDemo.new.main
+  WidgetCellDemo.new.run
 end

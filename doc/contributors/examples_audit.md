@@ -20,18 +20,13 @@ All P0 critical items have been completed:
 
 ## [P1: High (Polish)](./examples_audit/p1_high.md)
 
-1. **[Fix API Violations in 6 Examples](./examples_audit/p1_high.md#1-fix-api-violations-in-6-examples)** (API consistency/polish)
-   - Event handling (5 examples)
-   - Session API (2 examples)
-   - Other fixes (constraint calls, method names, permissions)
-
-2. **[Improve Default States](./examples_audit/p1_high.md#2-improve-default-states)** (Visual polish)
+1. **[Improve Default States](./examples_audit/p1_high.md#1-improve-default-states)** (Visual polish)
    - widget_barchart_demo (enable grouped visualization)
    - widget_sparkline_demo (interesting data patterns)
    - widget_list_styles (visible selection state)
    - widget_block_padding, widget_block_titles (visually striking layouts)
 
-3. **[Ensure All Widgets Have Examples](./examples_audit/p1_high.md#3-ensure-all-widgets-have-examples)** (Completeness)
+2. **[Ensure All Widgets Have Examples](./examples_audit/p1_high.md#2-ensure-all-widgets-have-examples)** (Completeness)
    - Check widget manifest against example inventory
    - Create examples for any missing widgets
 
@@ -39,7 +34,7 @@ All P0 critical items have been completed:
 
 ## [P2: Moderate (Quality)](./examples_audit/p2_moderate.md)
 
-1. **[Add RDoc Cross-Links](./examples_audit/p2_moderate.md#3-add-rdoc-cross-links-examples--aliases)** (Documentation discoverability)
+1. **[Add RDoc Cross-Links](./examples_audit/p2_moderate.md#1-add-rdoc-cross-links-examples--aliases)** (Documentation discoverability)
    - Link library classes/methods to examples
    - Link DWIM/TIMTOWTDI aliases
    - Create consistent pattern across public APIs

@@ -14,7 +14,7 @@ class TestWidgetCellDemo < Minitest::Test
   def test_render
     with_test_terminal(timeout: 5) do
       inject_key("q")
-      WidgetCellDemo.new.main
+      WidgetCellDemo.new.run
 
       assert_snapshot("render")
       assert_rich_snapshot("render")

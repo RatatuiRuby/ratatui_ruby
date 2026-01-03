@@ -63,8 +63,12 @@ begin
     end
 
     # 4. Poll for events
-    event = RatatuiRuby.poll_event
-    break if event.key? && event.code == "q"
+    case RatatuiRuby.poll_event
+    in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
+      break
+    else
+      nil
+    end
   end
 ensure
   # 5. Restore the terminal to its original state

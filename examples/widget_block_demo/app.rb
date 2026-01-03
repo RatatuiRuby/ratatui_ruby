@@ -149,7 +149,7 @@ set: {
         direction: :vertical,
         constraints: [
           @tui.constraint_fill(1),
-          @tui.constraint_length(7),
+          @tui.constraint_length(10),
         ]
       )
 
