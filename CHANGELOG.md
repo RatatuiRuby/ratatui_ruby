@@ -34,6 +34,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - *(and all other widgets)*
 - **Session → TUI Rename (Breaking)**: `RatatuiRuby::Session` renamed to `RatatuiRuby::TUI` to better reflect its role as a facade/DSL. The `TUI` class now uses explicit factory methods (no metaprogramming) for improved IDE autocomplete support.
 - **Buffer::Cell vs Widgets::Cell (Breaking)**: `RatatuiRuby::Cell` (buffer inspection) renamed to `RatatuiRuby::Buffer::Cell`. New `RatatuiRuby::Widgets::Cell` added for table cell construction.
+- **Text::Line style field (Breaking)**: `Text::Line` now accepts a `style:` parameter for line-level styling, matching Ratatui's `Line` struct which has `style`, `alignment`, and `spans` fields.
+- **Table highlight_style → row_highlight_style (Breaking)**: `Table` parameter `highlight_style:` renamed to `row_highlight_style:` to match Ratatui's API naming convention.
 
 ### Fixed
 

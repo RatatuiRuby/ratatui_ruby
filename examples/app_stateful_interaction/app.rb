@@ -161,7 +161,7 @@ class AppStatefulInteraction
         borders: [:all],
         border_style: is_active ? @style_active : @style_inactive
       ),
-      highlight_style: @style_highlight
+      row_highlight_style: @style_highlight
     )
 
     frame.render_stateful_widget(table, area, @table_state)

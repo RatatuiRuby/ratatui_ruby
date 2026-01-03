@@ -23,7 +23,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let widths_val: Value = node.funcall("widths", ())?;
     let widths_array = magnus::RArray::from_value(widths_val)
         .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for widths"))?;
-    let highlight_style_val: Value = node.funcall("highlight_style", ())?;
+    let row_highlight_style_val: Value = node.funcall("row_highlight_style", ())?;
     let column_highlight_style_val: Value = node.funcall("column_highlight_style", ())?;
     let cell_highlight_style_val: Value = node.funcall("cell_highlight_style", ())?;
     let highlight_symbol_val: Value = node.funcall("highlight_symbol", ())?;
@@ -74,8 +74,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         table = table.block(parse_block(block_val, &bump)?);
     }
 
-    if !highlight_style_val.is_nil() {
-        table = table.row_highlight_style(parse_style(highlight_style_val)?);
+    if !row_highlight_style_val.is_nil() {
+        table = table.row_highlight_style(parse_style(row_highlight_style_val)?);
     }
 
     if !column_highlight_style_val.is_nil() {
@@ -159,7 +159,7 @@ pub fn render_stateful(
     // Build table (ignoring selected_row, selected_column, offset — State is truth)
     let header_val: Value = node.funcall("header", ())?;
     let footer_val: Value = node.funcall("footer", ())?;
-    let highlight_style_val: Value = node.funcall("highlight_style", ())?;
+    let row_highlight_style_val: Value = node.funcall("row_highlight_style", ())?;
     let column_highlight_style_val: Value = node.funcall("column_highlight_style", ())?;
     let cell_highlight_style_val: Value = node.funcall("cell_highlight_style", ())?;
     let highlight_symbol_val: Value = node.funcall("highlight_symbol", ())?;
@@ -197,8 +197,8 @@ pub fn render_stateful(
     if !block_val.is_nil() {
         table = table.block(parse_block(block_val, &bump)?);
     }
-    if !highlight_style_val.is_nil() {
-        table = table.row_highlight_style(parse_style(highlight_style_val)?);
+    if !row_highlight_style_val.is_nil() {
+        table = table.row_highlight_style(parse_style(row_highlight_style_val)?);
     }
     if !column_highlight_style_val.is_nil() {
         table = table.column_highlight_style(parse_style(column_highlight_style_val)?);

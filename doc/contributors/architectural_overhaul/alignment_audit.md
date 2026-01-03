@@ -26,5 +26,7 @@
 
 ## MISALIGNED (non-additive, breaking)
 
-- Text::Line missing `style:` field
-- Widgets::Table uses `highlight_style:` (deprecated → `row_highlight_style:`)
+**All items fixed in v0.7.0:**
+
+- ~~Text::Line missing `style:` field~~ ✅ Added
+- ~~Widgets::Table uses `highlight_style:`~~ ✅ Renamed to `row_highlight_style:`

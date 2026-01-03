@@ -20,7 +20,7 @@ module RatatuiRuby
   # Run the interactive demo from the terminal:
   #
   #   ruby examples/widget_table_flex/app.rb
-  class Table < Data.define(:header, :rows, :widths, :highlight_style, :highlight_symbol, :highlight_spacing, :column_highlight_style, :cell_highlight_style, :selected_row, :selected_column, :offset, :block, :footer, :flex, :style, :column_spacing)
+  class Table < Data.define(:header, :rows, :widths, :row_highlight_style, :highlight_symbol, :highlight_spacing, :column_highlight_style, :cell_highlight_style, :selected_row, :selected_column, :offset, :block, :footer, :flex, :style, :column_spacing)
     ##
     # :attr_reader: header
     # Header row content (Array of Strings, Text::Spans, Text::Lines, or Paragraphs).
@@ -34,7 +34,7 @@ module RatatuiRuby
     # Column width constraints (Array of Constraint).
 
     ##
-    # :attr_reader: highlight_style
+    # :attr_reader: row_highlight_style
     # Style for the selected row.
 
     ##
@@ -102,7 +102,7 @@ module RatatuiRuby
     # [header] Array of strings, Text::Spans, Text::Lines, or paragraphs.
     # [rows] 2D Array where each cell is String, Text::Span, Text::Line, Paragraph, or Cell.
     # [widths] Array of Constraints.
-    # [highlight_style] Style object.
+    # [row_highlight_style] Style object.
     # [highlight_symbol] String.
     # [highlight_spacing] Symbol (optional, default: <tt>:when_selected</tt>).
     # [column_highlight_style] Style object.
@@ -115,12 +115,12 @@ module RatatuiRuby
     # [flex] Symbol (optional, default: <tt>:legacy</tt>).
     # [style] Style object or Hash (optional).
     # [column_spacing] Integer (optional, default: 1).
-    def initialize(header: nil, rows: [], widths: [], highlight_style: nil, highlight_symbol: "> ", highlight_spacing: :when_selected, column_highlight_style: nil, cell_highlight_style: nil, selected_row: nil, selected_column: nil, offset: nil, block: nil, footer: nil, flex: :legacy, style: nil, column_spacing: 1)
+    def initialize(header: nil, rows: [], widths: [], row_highlight_style: nil, highlight_symbol: "> ", highlight_spacing: :when_selected, column_highlight_style: nil, cell_highlight_style: nil, selected_row: nil, selected_column: nil, offset: nil, block: nil, footer: nil, flex: :legacy, style: nil, column_spacing: 1)
       super(
         header:,
         rows:,
         widths:,
-        highlight_style:,
+        row_highlight_style:,
         highlight_symbol:,
         highlight_spacing:,
         column_highlight_style:,

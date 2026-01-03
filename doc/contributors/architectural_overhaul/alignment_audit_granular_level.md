@@ -17,27 +17,23 @@ This document audits alignment between RatatuiRuby v0.7.0 and the upstream Ratat
 
 These require breaking changes before v1.0.0.
 
-### `Text::Line` — Missing `style` Field
+### `Text::Line` — ~~Missing `style` Field~~ ✅ Fixed
 
-| Current Ruby API | Ratatui API | Issue |
-|------------------|-------------|-------|
-| `Line.new(spans:, alignment:)` | `Line { style, alignment, spans }` | Missing `style` parameter |
+| Current Ruby API | Ratatui API | Status |
+|------------------|-------------|--------|
+| `Line.new(spans:, alignment:, style:)` | `Line { style, alignment, spans }` | ✅ Aligned |
 
-**Impact**: Users cannot set a line-level style that applies uniformly across all spans.
-
-**Required Fix**: Add `style:` parameter: `Line.new(spans:, alignment:, style:)`
+**Fixed in v0.7.0**: Added `style:` parameter.
 
 ---
 
-### `Widgets::Table` — Deprecated Parameter Name
+### `Widgets::Table` — ~~Deprecated Parameter Name~~ ✅ Fixed
 
 | Ruby Parameter | Ratatui Parameter | Status |
 |----------------|-------------------|--------|
-| `highlight_style:` | `row_highlight_style` | ⚠️ Ratatui deprecated `highlight_style` |
+| `row_highlight_style:` | `row_highlight_style` | ✅ Aligned |
 
-**Impact**: The Ruby API uses the deprecated Ratatui name. This should be renamed before v1.0.0 for forward compatibility.
-
-**Required Fix**: Rename `highlight_style:` → `row_highlight_style:` (or add alias and deprecation warning).
+**Fixed in v0.7.0**: Renamed `highlight_style:` → `row_highlight_style:`.
 
 ---
 
@@ -234,12 +230,12 @@ Ruby exposes all crossterm `ModifierKeyCode` variants:
 
 | Category | Count | Priority |
 |----------|-------|----------|
-| **MISALIGNED** (breaking) | 2 | ⚠️ Must fix before v1.0.0 |
+| **MISALIGNED** (breaking) | ~~2~~ 0 | ✅ All fixed in v0.7.0 |
 | **MISSING methods** | ~25 | Low (additive) |
 | **MISSING parameters** | ~10 | Low (additive) |
 | **MISSING widgets** | Gauge, LineGauge | Medium (new features) |
 
 ### Pre-v1.0.0 Checklist
 
-- [ ] Add `style:` parameter to `Text::Line`
-- [ ] Rename `highlight_style:` → `row_highlight_style:` in `Widgets::Table`
+- [x] Add `style:` parameter to `Text::Line`
+- [x] Rename `highlight_style:` → `row_highlight_style:` in `Widgets::Table`

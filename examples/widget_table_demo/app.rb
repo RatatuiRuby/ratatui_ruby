@@ -93,7 +93,7 @@ class WidgetTableDemo
     ]
 
     # Create highlight style (yellow text)
-    highlight_style = @tui.style(fg: :yellow)
+    row_highlight_style = @tui.style(fg: :yellow)
 
     current_style_entry = @styles[@current_style_index]
     current_spacing_entry = HIGHLIGHT_SPACINGS[@highlight_spacing_index]
@@ -114,7 +114,7 @@ class WidgetTableDemo
       selected_row: effective_selection,
       selected_column: @selected_col,
       offset: effective_offset,
-      highlight_style:,
+      row_highlight_style:,
       highlight_symbol: "> ",
       highlight_spacing: current_spacing_entry[:spacing],
       column_highlight_style: @show_column_highlight ? @column_highlight_style : nil,
