@@ -142,7 +142,23 @@ module RatatuiRuby
 
           if !File.exist?(snapshot_path) || update_snapshots
             FileUtils.mkdir_p(File.dirname(snapshot_path))
-            File.write(snapshot_path, "#{actual_lines.join("\n")}\n")
+
+            content_to_write = "#{actual_lines.join("\n")}\n"
+
+            begin
+              # Delete old file first to avoid git index stale-read issues
+              FileUtils.rm_f(snapshot_path)
+
+              # Write with explicit mode to ensure clean write
+              File.write(snapshot_path, content_to_write, mode: "w")
+
+              # Flush filesystem buffers to ensure durability
+              File.open(snapshot_path, "r", &:fsync) if File.exist?(snapshot_path)
+            rescue => e
+              warn "Failed to write snapshot #{snapshot_path}: #{e.message}"
+              raise
+            end
+
             if update_snapshots
               puts "Updated snapshot: #{snapshot_path}"
             else
@@ -200,7 +216,21 @@ module RatatuiRuby
 
         if !File.exist?(snapshot_path) || update_snapshots
           FileUtils.mkdir_p(File.dirname(snapshot_path))
-          File.write(snapshot_path, actual_content)
+
+          begin
+            # Delete old file first to avoid git index stale-read issues
+            FileUtils.rm_f(snapshot_path)
+
+            # Write with explicit mode to ensure clean write
+            File.write(snapshot_path, actual_content, mode: "w")
+
+            # Flush filesystem buffers to ensure durability
+            File.open(snapshot_path, "r", &:fsync) if File.exist?(snapshot_path)
+          rescue => e
+            warn "Failed to write rich snapshot #{snapshot_path}: #{e.message}"
+            raise
+          end
+
           puts (update_snapshots ? "Updated" : "Created") + " rich snapshot: #{snapshot_path}"
 
         end
