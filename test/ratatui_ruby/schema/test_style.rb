@@ -12,4 +12,11 @@ class TestStyle < Minitest::Test
     assert_equal :blue, s.bg
     assert_equal [:bold], s.modifiers
   end
+
+  def test_style_creation_with_integers
+    # 5 is Magenta in Xterm 256
+    s = RatatuiRuby::Style.new(fg: 5, bg: 10)
+    assert_equal 5, s.fg
+    assert_equal 10, s.bg
+  end
 end

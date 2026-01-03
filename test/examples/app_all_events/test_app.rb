@@ -156,12 +156,14 @@ class TestAppAllEvents < Minitest::Test
   end
 
   private def assert_normalized_snapshot(snapshot_name)
-    assert_snapshot(snapshot_name) do |actual|
-      # Normalize actual lines
-      actual.map do |line|
+    normalizer = proc do |lines|
+      lines.map do |line|
         line.gsub(TIME_PATTERN, "XX:XX:XX")
           .gsub(/0x[0-9a-f]+/, "0xXXXXXX")
       end
     end
+
+    assert_snapshot(snapshot_name, &normalizer)
+    assert_rich_snapshot(snapshot_name, &normalizer)
   end
 end

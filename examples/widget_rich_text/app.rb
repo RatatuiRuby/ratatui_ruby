@@ -12,6 +12,7 @@ require "ratatui_ruby"
 class WidgetRichText
   def initialize
     @scroll_pos = 0
+    @color_index = 0
   end
 
   def run
@@ -44,38 +45,52 @@ class WidgetRichText
   private def simple_text_line_example
     # Example 1: A line with mixed styles
     @tui.paragraph(
-      text: @tui.text_line(
-        spans: [
-          @tui.text_span(
-            content: "Normal text, ",
-            style: nil
-          ),
-          @tui.text_span(
-            content: "Bold Text",
-            style: @tui.style(modifiers: [:bold])
-          ),
-          @tui.text_span(
-            content: ", ",
-            style: nil
-          ),
-          @tui.text_span(
-            content: "Italic Text",
-            style: @tui.style(modifiers: [:italic])
-          ),
-          @tui.text_span(
-            content: ", ",
-            style: nil
-          ),
-          @tui.text_span(
-            content: "Red Text",
-            style: @tui.style(fg: :red)
-          ),
-          @tui.text_span(
-            content: ".",
-            style: nil
-          ),
-        ]
-      ),
+      text: [
+        @tui.text_line(
+          spans: [
+            @tui.text_span(
+              content: "Normal text, ",
+              style: nil
+            ),
+            @tui.text_span(
+              content: "Bold Text",
+              style: @tui.style(modifiers: [:bold])
+            ),
+            @tui.text_span(
+              content: ", ",
+              style: nil
+            ),
+            @tui.text_span(
+              content: "Italic Text",
+              style: @tui.style(modifiers: [:italic])
+            ),
+            @tui.text_span(
+              content: ", ",
+              style: nil
+            ),
+            @tui.text_span(
+              content: "Red Text",
+              style: @tui.style(fg: :red)
+            ),
+            @tui.text_span(
+              content: ".",
+              style: nil
+            ),
+          ]
+        ),
+        @tui.text_line(spans: []),
+        @tui.text_line(
+          spans: [
+            @tui.text_span(content: "Integer Color Test: "),
+            @tui.text_span(content: "Color #{@color_index}", style: @tui.style(fg: @color_index)),
+            @tui.text_span(content: " (Use "),
+            @tui.text_span(content: "↑ ↓", style: @tui.style(modifiers: [:bold])),
+            @tui.text_span(content: " for +/- 1,", style: nil),
+            @tui.text_span(content: "→ ←", style: @tui.style(modifiers: [:bold])),
+            @tui.text_span(content: " for +/- 10)", style: nil),
+          ]
+        ),
+      ],
       block: @tui.block(
         title: "Simple Rich Text",
         borders: [:all]
@@ -113,7 +128,11 @@ class WidgetRichText
           spans: [
             @tui.text_span(content: "Press ", style: nil),
             @tui.text_span(content: "Q", style: @tui.style(modifiers: [:bold])),
-            @tui.text_span(content: " to quit", style: nil),
+            @tui.text_span(content: " to quit, ", style: nil),
+            @tui.text_span(content: "↑ ↓", style: @tui.style(modifiers: [:bold])),
+            @tui.text_span(content: " to adjust color by 1, ", style: nil),
+            @tui.text_span(content: "← →", style: @tui.style(modifiers: [:bold])),
+            @tui.text_span(content: " to adjust color by 10.", style: nil),
           ]
         ),
       ],
@@ -127,6 +146,16 @@ class WidgetRichText
   private def handle_input
     event = @tui.poll_event
     return :quit if event == "q" || event == :esc || event == :ctrl_c
+
+    if event.left?
+      @color_index = (@color_index - 10) % 256
+    elsif event.right?
+      @color_index = (@color_index + 10) % 256
+    elsif event.up?
+      @color_index = (@color_index + 1) % 256
+    elsif event.down?
+      @color_index = (@color_index - 1) % 256
+    end
 
     nil
   end

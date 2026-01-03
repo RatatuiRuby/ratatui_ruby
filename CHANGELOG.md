@@ -23,6 +23,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Smart Predicates (DWIM)**: Key predicates now "Do What I Mean" for media keys. `pause?` returns `true` for both system `pause` and `media_pause` keys. For strict matching, use `media_pause?` or compare `event.code` directly. This reduces boilerplate when responding to conceptual actions regardless of input method.
 - **Modifier Key Predicates**: New methods `super?`, `hyper?`, and `meta?` check for these modifier keys. Platform aliases are provided for `super?`: `command?`/`cmd?` (macOS), `win?` (Windows), and `tux?` (Linux). These work for both modifier flags AND individual modifier key events (e.g., `left_super`). Additionally, `control?` aliases `ctrl?` and `option?` aliases `alt?`.
 - **Navigation Aliases**: Convenient predicate aliases for common keys: `return?` for Enter, `back?` for Backspace, `del?` for Delete, `ins?` for Insert, `escape?` for Esc, `pgup?`/`pageup?` for Page Up, `pgdn?`/`pagedown?` for Page Down. The special `reverse_tab?` predicate matches both the `back_tab` key and `shift+tab` combinations.
+- **Indexed Color Support**: `Style` now supports `Integer` values for `fg` and `bg`, allowing use of the Xterm 256-color palette (0-255). This includes standard ANSI colors (0-15), the 6x6x6 color cube (16-231), and the grayscale ramp (232-255).
+- **Rich Snapshots**: `RatatuiRuby::TestHelper#assert_rich_snapshot` validates both content and styling by comparing against stored ANSI snapshots. This allows for visual regression testing that respects colors, bold, italics, and other terminal modifiers.
+- **Semantic Style Assertions**: New testing helpers `assert_color(expected, x:, y:)`, `assert_cell_style(x, y, **style)`, and `assert_area_style(area, **style)` allow precise verification of terminal cell attributes without full-screen snapshots.
+- **Buffer Debugging**: `RatatuiRuby::TestHelper#print_buffer` outputs the current terminal state to STDOUT with full ANSI color support, making it easier to debug rendering issues during test execution.
 
 
 ### Changed

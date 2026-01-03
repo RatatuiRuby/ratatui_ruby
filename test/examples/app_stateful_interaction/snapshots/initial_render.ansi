@@ -1,0 +1,24 @@
+[0m[0m[33m┌ Tables ──────────────▲[0m[90m┌ Users Data ──────────────────────────────────────────▲[0m
+[0m[0m[33m│[97m[44m> Users               [33m▐[0m[90m│  Name             Email                Role          [90m▐[0m
+[0m[0m[33m│[0m  Orders              [0m[33m▐[0m[90m│[0m[97m[44m> Brittany Klocko  lyndon_rempel@schumm Viewer        [0m[90m▐[0m
+[0m[0m[33m│[0m  Products            [0m[33m▐[0m[90m│  Dan Kutch        chauncey.welch@russe Admin         [90m▐[0m
+[0m[0m[33m│[0m  Invoices            [0m[33m▐[0m[90m│  Ms. Meryl Herman malcom.reynolds@weim Viewer        [90m▐[0m
+[0m[0m[33m│[0m  Audit Logs          [0m[33m▐[0m[90m│  Rupert Shanahan  carey_keebler@robert Viewer        [90m▐[0m
+[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  Barbar Sanford   berry@green.example  Admin         [90m▐[0m
+[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  Shannon Kuhn     hal_stoltenberg@durg Admin         [90m║[0m
+[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  Marguerite Littl grace.hoeger@langosh Viewer        [90m║[0m
+[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  Doria Balistreri roscoe_graham@welch- Editor        [90m║[0m
+[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  Joey Frami CPA   christia@hayes-dougl Viewer        [90m║[0m
+[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  Miss Evette Mull kristel_abernathy@re Viewer        [90m║[0m
+[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  Ms. Jan Koepp    clark@johnston-ziema Viewer        [90m║[0m
+[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  Rep. Gaston Ritc raymundo@tillman.tes Viewer        [90m║[0m
+[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  Valrie Murray I  sonja.williamson@aue Admin         [90m║[0m
+[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  Tyree Heaney     dana_kshlerin@durgan Viewer        [90m║[0m
+[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  Mervin Hegmann J fae@ziemann.test     Editor        [90m║[0m
+[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  Caron Walter     marlon@jaskolski.tes Admin         [90m║[0m
+[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  Hector Durgan    pamella.jacobi@leusc Editor        [90m║[0m
+[0m[0m[33m│[0m                      [0m[33m║[0m[90m│  Ms. Cary Paucek  nan.glover@mayert-er Editor        [90m║[0m
+[0m[0m[33m│[0m                      [0m[33m║[0m[90m│  Sen. Maud Becker loan@stamm-gutkowski Editor        [90m║[0m
+[0m[0m[33m│[0m                      [0m[33m║[0m[90m│  Miles Monahan    rachele_gleason@reil Editor        [90m║[0m
+[0m[0m[33m└──────────────────────▼[0m[90m└──────────────────────────────────────────────────────▼[0m
+[0mq: Quit | Tab/Arrows: Nav | Mouse: Click rows (Try it!)                         [0m

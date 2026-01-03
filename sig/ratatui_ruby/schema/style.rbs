@@ -3,11 +3,11 @@
 
 module RatatuiRuby
   class Style < Data
-    attr_reader fg: (String | Symbol)?
-    attr_reader bg: (String | Symbol)?
+    attr_reader fg: (String | Symbol | Integer)?
+    attr_reader bg: (String | Symbol | Integer)?
     attr_reader modifiers: Array[Symbol]
 
-    def self.new: (?fg: (String | Symbol)?, ?bg: (String | Symbol)?, ?modifiers: Array[Symbol]) -> Style
+    def self.new: (?fg: (String | Symbol | Integer)?, ?bg: (String | Symbol | Integer)?, ?modifiers: Array[Symbol]) -> Style
     def self.default: () -> Style
   end
 end

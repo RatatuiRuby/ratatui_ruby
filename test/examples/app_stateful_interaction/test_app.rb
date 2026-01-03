@@ -28,6 +28,7 @@ class TestAppStatefulInteraction < Minitest::Test
       @app.run
 
       assert_snapshot("initial_render")
+      assert_rich_snapshot("initial_render")
     end
   end
 
@@ -41,6 +42,7 @@ class TestAppStatefulInteraction < Minitest::Test
       @app.run
 
       assert_snapshot("scroll_down")
+      assert_rich_snapshot("scroll_down")
     end
   end
 end

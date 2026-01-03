@@ -380,5 +380,253 @@ module RatatuiRuby
           "#{msg}: Line #{i + 1} mismatch.\nExpected: #{expected_line.inspect}\nActual:   #{actual_line.inspect}"
       end
     end
+
+    ##
+    # Asserts that the color at a specific coordinate matches the expected value.
+    #
+    #   assert_color(:red, x: 10, y: 5)
+    #   assert_color(5, x: 10, y: 5, layer: :bg)
+    #   assert_color("#ff00ff", x: 10, y: 5)
+    #
+    # [expected] Symbol, Integer, or String (Hex) color.
+    # [x] Integer x-coordinate.
+    # [y] Integer y-coordinate.
+    # [layer] Symbol :fg (default) or :bg.
+    def assert_color(expected, x:, y:, layer: :fg)
+      cell = get_cell(x, y)
+      actual = cell.public_send(layer)
+
+      # Normalize expected integer to symbol if needed (RatatuiRuby returns :indexed_N)
+      expected_normalized = if expected.is_a?(Integer)
+        :"indexed_#{expected}"
+      else
+        expected
+      end
+
+      assert_equal expected_normalized, actual,
+        "Expected #{layer} at (#{x}, #{y}) to be #{expected.inspect}, but got #{actual.inspect}"
+    end
+
+    ##
+    # Asserts that an entire area matches the specified style attributes.
+    #
+    #   header = RatatuiRuby::Rect.new(x: 0, y: 0, width: 80, height: 1)
+    #   assert_area_style(header, bg: :blue, modifiers: [:bold])
+    #
+    #   # Also accepts x, y, width, height hash or object
+    #   assert_area_style({x:0, y:0, w:10, h:1}, fg: :red)
+    #
+    # [area] Rect-like object (must respond to x, y, width, height) or Hash.
+    # [attributes] Style attributes to verify (fg, bg, modifiers).
+    def assert_area_style(area, **attributes)
+      # Normalize area to something with x,y,width,height
+      if area.is_a?(Hash)
+        x = area[:x] || 0
+        y = area[:y] || 0
+        w = area[:width] || area[:w] || 0
+        h = area[:height] || area[:h] || 0
+      else
+        x = area.x
+        y = area.y
+        w = area.width
+        h = area.height
+      end
+
+      (y...(y + h)).each do |row|
+        (x...(x + w)).each do |col|
+          assert_cell_style(col, row, **attributes)
+        end
+      end
+    end
+
+    ##
+    # Prints the current buffer to STDOUT with full ANSI colors.
+    # useful for debugging ("YESSSSS").
+    def print_buffer
+      puts _render_buffer_with_ansi
+    end
+
+    ##
+    # Asserts that the current screen content (including colors!) matches a stored ANSI snapshot.
+    #
+    # Generates/Compares against a file with `.ansi` extension.
+    # You can `cat` this file to see exactly what the screen looked like.
+    #
+    #   assert_rich_snapshot("login_screen")
+    #
+    # [name] String snapshot name.
+    # [msg] String optional failure message.
+    def assert_rich_snapshot(name, msg = nil)
+      caller_path = caller_locations(1, 1).first.path
+      snapshot_dir = File.join(File.dirname(caller_path), "snapshots")
+      snapshot_path = File.join(snapshot_dir, "#{name}.ansi")
+
+      actual_content = _render_buffer_with_ansi
+
+      if block_given?
+        lines = actual_content.split("\n")
+        # Yield lines to user block for modification (e.g. masking IDs/Times)
+        lines = yield(lines)
+        actual_content = "#{lines.join("\n")}\n"
+      end
+
+      update_snapshots = ENV["UPDATE_SNAPSHOTS"] == "1" || ENV["UPDATE_SNAPSHOTS"] == "true"
+
+      if !File.exist?(snapshot_path) || update_snapshots
+        FileUtils.mkdir_p(File.dirname(snapshot_path))
+        File.write(snapshot_path, actual_content)
+        puts (update_snapshots ? "Updated" : "Created") + " rich snapshot: #{snapshot_path}"
+      end
+
+      expected_content = File.read(snapshot_path)
+
+      # Compare byte-for-byte first
+      if expected_content != actual_content
+        # Fallback to line-by-line diff for better error messages
+        expected_lines = expected_content.split("\n")
+        actual_lines = actual_content.split("\n")
+
+        assert_equal expected_lines.size, actual_lines.size, "#{msg}: Line count mismatch"
+
+        expected_lines.each_with_index do |exp, i|
+          act = actual_lines[i]
+          assert_equal exp, act, "#{msg}: Rich content mismatch at line #{i + 1}"
+        end
+      end
+    end
+
+    private def _render_buffer_with_ansi
+      RatatuiRuby.get_buffer_content # Ensure buffer is fresh if needed
+
+      lines = buffer_content
+      height = lines.size
+      width = lines.first&.length || 0
+
+      output = String.new
+
+      (0...height).each do |y|
+        current_fg = nil
+        current_bg = nil
+        current_modifiers = []
+
+        # Reset at start of line
+        output << "\e[0m"
+
+        (0...width).each do |x|
+          cell = RatatuiRuby.get_cell_at(x, y)
+          char = cell.char || " "
+
+          # Check for changes
+          fg_changed = cell.fg != current_fg
+          bg_changed = cell.bg != current_bg
+          mod_changed = cell.modifiers != current_modifiers
+
+          if fg_changed || bg_changed || mod_changed
+            # If modifiers change, easiest is to reset and re-apply everything
+            # because removing a modifier (e.g. bold) requires reset usually.
+            if mod_changed
+              output << "\e[0m"
+              output << _ansi_for_modifiers(cell.modifiers)
+              # Force re-apply colors after reset
+              output << _ansi_for_color(cell.fg, :fg)
+              output << _ansi_for_color(cell.bg, :bg)
+            else
+              # Modifiers same, just update colors if needed
+              output << _ansi_for_color(cell.fg, :fg) if fg_changed
+              output << _ansi_for_color(cell.bg, :bg) if bg_changed
+            end
+
+            current_fg = cell.fg
+            current_bg = cell.bg
+            current_modifiers = cell.modifiers
+          end
+
+          output << char
+        rescue
+          output << " "
+        end
+        output << "\e[0m\n" # Reset at end of line
+      end
+      output
+    end
+
+    private def _ansi_for_color(color, layer)
+      return "" if color.nil?
+
+      base = (layer == :fg) ? 38 : 48
+
+      case color
+      when Symbol
+        if color.to_s.start_with?("indexed_")
+          # Extracted indexed color :indexed_5 -> 5
+          idx = color.to_s.split("_").last.to_i
+          "\e[#{base};5;#{idx}m"
+        else
+          # Named colors
+          _ansi_named_color(color, layer == :fg)
+        end
+      when String
+        if color.start_with?("#")
+          # Hex color: #RRGGBB -> r;g;b
+          r = color[1..2].to_i(16)
+          g = color[3..4].to_i(16)
+          b = color[5..6].to_i(16)
+          "\e[#{base};2;#{r};#{g};#{b}m"
+        else
+          ""
+        end
+      else
+        ""
+      end
+    end
+
+    private def _ansi_named_color(name, is_fg)
+      # Map symbol to standard ANSI code offset
+      # FG: 30-37 (dim), 90-97 (bright)
+      # BG: 40-47 (dim), 100-107 (bright)
+
+      offset = is_fg ? 30 : 40
+
+      case name
+      when :black   then "\e[#{offset}m"
+      when :red     then "\e[#{offset + 1}m"
+      when :green   then "\e[#{offset + 2}m"
+      when :yellow  then "\e[#{offset + 3}m"
+      when :blue    then "\e[#{offset + 4}m"
+      when :magenta then "\e[#{offset + 5}m"
+      when :cyan    then "\e[#{offset + 6}m"
+      when :gray    then is_fg ? "\e[90m" : "\e[100m" # Dark gray usually
+      when :dark_gray then is_fg ? "\e[90m" : "\e[100m"
+      when :light_red     then "\e[#{offset + 60 + 1}m"
+      when :light_green   then "\e[#{offset + 60 + 2}m"
+      when :light_yellow  then "\e[#{offset + 60 + 3}m"
+      when :light_blue    then "\e[#{offset + 60 + 4}m"
+      when :light_magenta then "\e[#{offset + 60 + 5}m"
+      when :light_cyan    then "\e[#{offset + 60 + 6}m"
+      when :white         then "\e[#{offset + 60 + 7}m"
+      else ""
+      end
+    end
+
+    private def _ansi_for_modifiers(modifiers)
+      return "" if modifiers.nil? || modifiers.empty?
+
+      seq = []
+      seq << "1" if modifiers.include?(:bold)
+      seq << "2" if modifiers.include?(:dim)
+      seq << "3" if modifiers.include?(:italic)
+      seq << "4" if modifiers.include?(:underlined)
+      seq << "5" if modifiers.include?(:slow_blink)
+      seq << "6" if modifiers.include?(:rapid_blink)
+      seq << "7" if modifiers.include?(:reversed)
+      seq << "8" if modifiers.include?(:hidden)
+      seq << "9" if modifiers.include?(:crossed_out)
+
+      if seq.any?
+        "\e[#{seq.join(';')}m"
+      else
+        ""
+      end
+    end
   end
 end

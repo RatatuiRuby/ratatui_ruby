@@ -20,18 +20,38 @@ module RatatuiRuby
   #
   #   # Hex colors
   #   Style.new(fg: "#ff00ff")
+  #
+  # === Supported Colors
+  #
+  # ==== Integer
+  # Represents an indexed color from the Xterm 256-color palette (0-255).
+  # * <tt>0</tt>–<tt>15</tt>: Standard and bright ANSI colors.
+  # * <tt>16</tt>–<tt>231</tt>: {6x6x6 Color Cube}[https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit].
+  # * <tt>232</tt>–<tt>255</tt>: Grayscale ramp.
+  #
+  # ==== Symbol
+  # Represents a named color from the standard ANSI palette. Supported values:
+  # * <tt>:black</tt>, <tt>:red</tt>, <tt>:green</tt>, <tt>:yellow</tt>,
+  #   <tt>:blue</tt>, <tt>:magenta</tt>, <tt>:cyan</tt>, <tt>:gray</tt>
+  # * <tt>:dark_gray</tt>, <tt>:light_red</tt>, <tt>:light_green</tt>,
+  #   <tt>:light_yellow</tt>, <tt>:light_blue</tt>, <tt>:light_magenta</tt>,
+  #   <tt>:light_cyan</tt>, <tt>:white</tt>
+  #
+  # ==== String
+  # Represents a specific RGB color using a Hex code (<tt>"#RRGGBB"</tt>).
+  # Requires a terminal emulator with "True Color" (24-bit color) support.
   class Style < Data.define(:fg, :bg, :modifiers)
     ##
     # :attr_reader: fg
     # Foreground color.
     #
-    # Symbol (<tt>:red</tt>) or Hex String (<tt>"#ffffff"</tt>).
+    # Symbol (<tt>:red</tt>), Hex String (<tt>"#ffffff"</tt>), or Integer (0-255).
 
     ##
     # :attr_reader: bg
     # Background color.
     #
-    # Symbol (<tt>:black</tt>) or Hex String (<tt>"#000000"</tt>).
+    # Symbol (<tt>:black</tt>), Hex String (<tt>"#000000"</tt>), or Integer (0-255).
 
     ##
     # :attr_reader: modifiers
@@ -42,8 +62,8 @@ module RatatuiRuby
 
     # Creates a new Style.
     #
-    # [fg] Color (Symbol/String).
-    # [bg] Color (Symbol/String).
+    # [fg] Color (Symbol/String/Integer).
+    # [bg] Color (Symbol/String/Integer).
     # [modifiers] Array of Symbols.
     def initialize(fg: nil, bg: nil, modifiers: [])
       super
