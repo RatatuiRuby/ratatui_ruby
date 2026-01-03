@@ -70,7 +70,7 @@ module RatatuiRuby
 
         # Precise
         assert_equal "1", event.code
-        assert event.send(:"1?")
+        assert event.public_send(:"1?")
 
         # Kind
         assert_equal :standard, event.kind
@@ -95,7 +95,7 @@ module RatatuiRuby
 
         # Precise
         assert_equal "@", event.code
-        assert event.send(:"@?")
+        assert event.public_send(:"@?")
 
         # Kind
         assert_equal :standard, event.kind
@@ -120,7 +120,7 @@ module RatatuiRuby
 
         # Precise
         assert_equal " ", event.code
-        assert event.send(:" ?")
+        assert event.public_send(:" ?")
 
         # Kind
         assert_equal :standard, event.kind

@@ -117,7 +117,7 @@ module RatatuiRuby
 
       # Special key
       event_enter = Event::Key.new(code: "enter")
-      assert_equal "", event_enter.char
+      assert_nil event_enter.char
 
       # Space
       event_space = Event::Key.new(code: " ")

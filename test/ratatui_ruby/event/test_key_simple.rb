@@ -33,7 +33,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -61,7 +61,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -86,7 +86,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -111,7 +111,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -136,7 +136,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -161,7 +161,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -186,7 +186,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -211,7 +211,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -240,7 +240,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -269,7 +269,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -295,7 +295,7 @@ module RatatuiRuby
         # Text
         # Tab is not considered printable text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -325,7 +325,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -354,7 +354,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -382,7 +382,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -407,7 +407,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -435,7 +435,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?

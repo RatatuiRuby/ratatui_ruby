@@ -37,7 +37,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers -- keys themselves do not inherently set modifier flags
         refute event.ctrl?
@@ -68,7 +68,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers -- keys themselves do not inherently set modifier flags
         # ctrl? now matches via DWIM (removed refutation)
@@ -99,7 +99,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers -- keys themselves do not inherently set modifier flags
         refute event.ctrl?
@@ -134,7 +134,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers -- keys themselves do not inherently set modifier flags
         refute event.ctrl?
@@ -165,7 +165,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers -- keys themselves do not inherently set modifier flags
         refute event.ctrl?
@@ -195,7 +195,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers -- keys themselves do not inherently set modifier flags
         refute event.ctrl?
@@ -222,7 +222,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers -- keys themselves do not inherently set modifier flags
         refute event.ctrl?
@@ -249,7 +249,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers -- keys themselves do not inherently set modifier flags
         # ctrl? now matches via DWIM (removed refutation)
@@ -276,7 +276,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers -- keys themselves do not inherently set modifier flags
         refute event.ctrl?
@@ -303,7 +303,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers -- keys themselves do not inherently set modifier flags
         refute event.ctrl?
@@ -330,7 +330,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -355,7 +355,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -380,7 +380,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -405,7 +405,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?

@@ -38,8 +38,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
-
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -57,7 +56,7 @@ module RatatuiRuby
         assert_equal "media_pause", event.code
         assert event.media_pause?
 
-        #DWIM
+        # DWIM
         assert event.pause?
         assert event.play_pause? # Bidirectional: pause matches play_pause?
 
@@ -68,7 +67,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -98,7 +97,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -126,7 +125,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -154,7 +153,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -182,7 +181,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -210,7 +209,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -238,7 +237,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -266,7 +265,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -294,7 +293,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -322,7 +321,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -350,7 +349,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
@@ -378,7 +377,7 @@ module RatatuiRuby
 
         # Text
         refute event.text?
-        assert_equal "", event.char
+        assert_nil event.char
 
         # Modifiers
         refute event.ctrl?
