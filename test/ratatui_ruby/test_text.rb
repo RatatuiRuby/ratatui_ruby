@@ -65,7 +65,7 @@ module RatatuiRuby
 
     def test_session_text_width
       # Verify Session DSL delegates text_width to RatatuiRuby::Text.width
-      session = RatatuiRuby::Session.new
+      session = RatatuiRuby::TUI.new
       assert_equal 5, session.text_width("hello")
       assert_equal 4, session.text_width("你好")
       assert_equal 8, session.text_width("Hello 👍")

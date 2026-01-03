@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  class Session
+  class TUI
     # Core terminal methods delegated to RatatuiRuby module.
     #
     # These are the fundamental operations for the render loop:

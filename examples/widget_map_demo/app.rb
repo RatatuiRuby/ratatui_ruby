@@ -15,7 +15,7 @@ class WidgetMapDemo
 
   # Returns a Canvas view for the map demo with the given circle radius.
   #
-  # +tui+:: The RatatuiRuby::Session instance.
+  # +tui+:: The RatatuiRuby::TUI instance.
   # +radius+:: The radius of the animated circle.
   # +marker+:: The marker type.
   # +background_color+:: The background color of the canvas.

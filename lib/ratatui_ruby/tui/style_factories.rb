@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  class Session
+  class TUI
     # Style factory methods for Session.
     #
     # Provides convenient access to Style::Style without fully

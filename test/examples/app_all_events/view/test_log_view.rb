@@ -13,7 +13,7 @@ require_relative "../../../../examples/app_all_events/update"
 
 class TestLogView < Minitest::Test
   def setup
-    @tui = RatatuiRuby::Session.new
+    @tui = RatatuiRuby::TUI.new
     @frame = RatatuiRuby::TestHelper::MockFrame.new
     @area = RatatuiRuby::TestHelper::StubRect.new(height: 24)
   end

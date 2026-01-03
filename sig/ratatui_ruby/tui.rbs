@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  # Terminal User Interface facade providing a concise DSL for building TUI applications.
+  #
+  # Combines all factory mixins to provide convenient access to widgets, layouts,
+  # styles, and terminal operations without verbose class name qualification.
+  class TUI
+    include Core
+    include LayoutFactories
+    include StyleFactories
+    include WidgetFactories
+    include TextFactories
+    include StateFactories
+    include CanvasFactories
+    include BufferFactories
+  end
+end

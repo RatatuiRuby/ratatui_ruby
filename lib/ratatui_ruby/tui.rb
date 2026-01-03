@@ -3,14 +3,14 @@
 # SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-require_relative "session/core"
-require_relative "session/layout_factories"
-require_relative "session/style_factories"
-require_relative "session/widget_factories"
-require_relative "session/text_factories"
-require_relative "session/state_factories"
-require_relative "session/canvas_factories"
-require_relative "session/buffer_factories"
+require_relative "tui/core"
+require_relative "tui/layout_factories"
+require_relative "tui/style_factories"
+require_relative "tui/widget_factories"
+require_relative "tui/text_factories"
+require_relative "tui/state_factories"
+require_relative "tui/canvas_factories"
+require_relative "tui/buffer_factories"
 
 module RatatuiRuby
   # Manages the terminal lifecycle and provides a concise API for the render loop.
@@ -62,7 +62,7 @@ module RatatuiRuby
   #       break if event == "q" || event == :ctrl_c
   #     end
   #   end
-  class Session
+  class TUI
     include Core
     include LayoutFactories
     include StyleFactories

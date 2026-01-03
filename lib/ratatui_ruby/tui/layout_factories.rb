@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  class Session
+  class TUI
     # Layout factory methods for Session.
     #
     # Provides convenient access to Layout::Rect, Layout::Constraint,

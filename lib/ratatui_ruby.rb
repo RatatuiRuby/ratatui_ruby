@@ -209,7 +209,7 @@ module RatatuiRuby
   #
   # Managing generic setup/teardown (raw mode, alternate screen) manualy is error-prone. If your app crashes, the terminal might be left in a broken state.
   #
-  # This method handles the safety net. It initializes the terminal, yields a {Session}, and ensures the terminal state is restored even if exceptions occur.
+  # This method handles the safety net. It initializes the terminal, yields a {TUI}, and ensures the terminal state is restored even if exceptions occur.
   #
   # === Example
   #
@@ -218,9 +218,9 @@ module RatatuiRuby
   #     sleep 1
   #   end
   def self.run(focus_events: true, bracketed_paste: true)
-    require_relative "ratatui_ruby/session"
+    require_relative "ratatui_ruby/tui"
     init_terminal(focus_events:, bracketed_paste:)
-    yield Session.new
+    yield TUI.new
   ensure
     restore_terminal
   end

@@ -4,9 +4,9 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 require "test_helper"
-require "ratatui_ruby/session"
+require "ratatui_ruby/tui"
 
-class TestSession < Minitest::Test
+class TestTUI < Minitest::Test
   include RatatuiRuby::TestHelper
   def test_session_delegation
     with_test_terminal(20, 1) do
@@ -22,7 +22,7 @@ class TestSession < Minitest::Test
   end
 
   def test_session_shape_methods
-    tui = RatatuiRuby::Session.new
+    tui = RatatuiRuby::TUI.new
 
     point = tui.shape_point(x: 1.0, y: 2.0)
     assert_instance_of RatatuiRuby::Widgets::Shape::Point, point
@@ -45,7 +45,7 @@ class TestSession < Minitest::Test
   end
 
   def test_session_text_methods
-    tui = RatatuiRuby::Session.new
+    tui = RatatuiRuby::TUI.new
 
     span = tui.text_span(content: "hello")
     assert_instance_of RatatuiRuby::Text::Span, span
@@ -57,7 +57,7 @@ class TestSession < Minitest::Test
   end
 
   def test_session_class_method_wrapping
-    tui = RatatuiRuby::Session.new
+    tui = RatatuiRuby::TUI.new
 
     # Test Layout.split -> layout_split
     # We pass a mock or simple rect to avoid complex setup, just asserting delegation works
@@ -79,7 +79,7 @@ class TestSession < Minitest::Test
   end
 
   def test_session_bar_chart_methods
-    tui = RatatuiRuby::Session.new
+    tui = RatatuiRuby::TUI.new
 
     bar = tui.bar_chart_bar(value: 10, label: "Bar 1")
     assert_equal RatatuiRuby::Widgets::BarChart::Bar.new(value: 10, label: "Bar 1"), bar
@@ -94,7 +94,7 @@ class TestSession < Minitest::Test
   def test_session_is_not_ractor_shareable
     # Session is an I/O handle with side effects (draw, poll_event).
     # It is intentionally NOT Ractor-shareable. Do not cache it in TEA Models.
-    tui = RatatuiRuby::Session.new
+    tui = RatatuiRuby::TUI.new
     refute Ractor.shareable?(tui),
       "Session should NOT be Ractor.shareable? — it's an I/O handle, not data"
   end

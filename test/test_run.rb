@@ -38,7 +38,7 @@ class TestRun < Minitest::Test
     RatatuiRuby.run do |tui|
       yielded = tui
     end
-    assert_kind_of RatatuiRuby::Session, yielded
+    assert_kind_of RatatuiRuby::TUI, yielded
   end
 
   def test_run_returns_block_result

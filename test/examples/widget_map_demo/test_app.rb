@@ -67,7 +67,7 @@ class TestWidgetMapDemo < Minitest::Test
 
   def test_view_shapes
     # Unit test of the view method
-    session = RatatuiRuby::Session.new
+    session = RatatuiRuby::TUI.new
     view = @app.view(session, 0.0, :braille, nil)
 
     # Verify labels are included in the shapes (default show_labels: true)
