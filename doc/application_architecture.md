@@ -93,7 +93,7 @@ Writing UI trees involves nesting many widgets.
 
 **The Problem:** Explicitly namespacing `RatatuiRuby::` for every widget (e.g., `RatatuiRuby::Widgets::Paragraph.new`) is tedious. It creates visual noise that hides your layout structure.
 
-**The Solution:** The Session API (`tui`) provides shorthand factories for every widget. It yields a session object to your block.
+**The Solution:** The TUI API (`tui`) provides shorthand factories for every widget. It yields a TUI object to your block.
 
 ```ruby
 RatatuiRuby.run do |tui|

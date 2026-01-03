@@ -106,7 +106,7 @@ end
 `Layout.split` computes layout geometry without rendering. It returns an array of `Rect` objects. While you can call `RatatuiRuby::Layout.split` directly, we recommend using the `TUI` helper (`tui.layout_split`) for cleaner application code.
 
 ```ruby
-# Preferred (Session API)
+# Preferred (TUI API)
 left, right = tui.layout_split(area, constraints: [...])
 
 # Manual (Core API)
