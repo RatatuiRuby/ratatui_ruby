@@ -16,76 +16,53 @@ class TestWidgetTextWidth < Minitest::Test
     @app = WidgetTextWidth.new
   end
 
-  def test_initial_render_shows_sample
+  def test_initial_render
     with_test_terminal do
       inject_key(:q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "ASCII"
-      assert_includes content, "Hello, World!"
+      assert_snapshot("initial_render")
+      assert_rich_snapshot("initial_render")
     end
   end
 
   def test_navigation_up
     with_test_terminal do
-      inject_key(:up)
-      inject_key(:q)
+      inject_keys(:up, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # Pressing up from index 0 should wrap to last sample (Empty at index 4)
-      assert_includes content, "Empty"
+      assert_snapshot("after_nav_up")
+      assert_rich_snapshot("after_nav_up")
     end
   end
 
   def test_navigation_down
     with_test_terminal do
-      inject_key(:down)
-      inject_key(:q)
+      inject_keys(:down, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # Pressing down from index 0 should go to index 1 (CJK)
-      assert_includes content, "CJK"
+      assert_snapshot("after_nav_down")
+      assert_rich_snapshot("after_nav_down")
     end
   end
 
-  def test_cjk_width_calculation
+  def test_cjk_sample
     with_test_terminal do
-      inject_key(:down) # Move to CJK sample
-      inject_key(:q)
+      inject_keys(:down, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # "你好世界" = 4 CJK characters × 2 cells each = 8 cells
-      assert_includes content, "Display Width: 8 cells"
+      assert_snapshot("cjk_sample")
+      assert_rich_snapshot("cjk_sample")
     end
   end
 
-  def test_mixed_content_width
+  def test_mixed_sample
     with_test_terminal do
-      # Navigate to Mixed sample (index 3)
-      inject_key(:down)
-      inject_key(:down)
-      inject_key(:down)
-      inject_key(:q)
+      inject_keys(:down, :down, :down, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # "Hi 你好 👍" = 2 + 1 + 4 + 1 + 2 = 10 cells
-      assert_includes content, "Display Width: 10 cells"
-    end
-  end
-
-  def test_shows_controls
-    with_test_terminal do
-      inject_key(:q)
-      @app.run
-
-      content = buffer_content.join("\n")
-      assert_includes content, "Select"
-      assert_includes content, "Quit"
+      assert_snapshot("mixed_sample")
+      assert_rich_snapshot("mixed_sample")
     end
   end
 end

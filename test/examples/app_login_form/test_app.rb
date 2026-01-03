@@ -16,36 +16,33 @@ class TestLoginForm < Minitest::Test
     @app = AppLoginForm.new
   end
 
-  def test_render_initial_state
+  def test_initial_render
     with_test_terminal do
-      # Queue quit
       inject_keys(:esc)
-
       @app.run
 
-      assert buffer_content.any? { |line| line.include?("Enter Username:") }
+      assert_snapshot("initial_render")
+      assert_rich_snapshot("initial_render")
     end
   end
 
   def test_input_handling
     with_test_terminal do
-      # Type 'a' then quit
       inject_keys("a", :esc)
-
       @app.run
 
-      assert buffer_content.any? { |line| line.include?("Enter Username: [ a ]") }
+      assert_snapshot("after_input")
+      assert_rich_snapshot("after_input")
     end
   end
 
   def test_popup_flow
     with_test_terminal do
-      # Enter username 'user', press Enter, then quit
       inject_keys("u", "s", "e", "r", :enter, :q)
-
       @app.run
 
-      assert buffer_content.any? { |line| line.include?("Successful!") }
+      assert_snapshot("after_submit")
+      assert_rich_snapshot("after_submit")
     end
   end
 end

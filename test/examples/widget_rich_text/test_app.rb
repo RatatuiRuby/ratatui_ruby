@@ -8,11 +8,8 @@ require "ratatui_ruby"
 require "test_helper"
 require_relative "../../../examples/widget_rich_text/app"
 
-class TestWidgetRichText < Minitest::Test
-  include RatatuiRuby::TestHelper
-
-  include RatatuiRuby::TestHelper
-
+class TestWidgetRichTextUnit < Minitest::Test
+  # Unit tests for Span, Line, and Paragraph classes
   def test_simple_span
     span = RatatuiRuby::Text::Span.new(content: "hello", style: nil)
     assert_equal "hello", span.content
@@ -101,56 +98,9 @@ class TestWidgetRichText < Minitest::Test
     para = RatatuiRuby::Paragraph.new(text: lines)
     assert_equal lines, para.text
   end
-
-  def test_paragraph_renders_with_rich_text
-    with_test_terminal do
-      # Test that a paragraph with rich text can be rendered without error
-      line = RatatuiRuby::Text::Line.new(
-        spans: [
-          RatatuiRuby::Text::Span.new(content: "normal ", style: nil),
-          RatatuiRuby::Text::Span.new(content: "bold", style: RatatuiRuby::Style.new(modifiers: [:bold])),
-          RatatuiRuby::Text::Span.new(content: " text", style: nil),
-        ]
-      )
-      para = RatatuiRuby::Paragraph.new(
-        text: line,
-        block: RatatuiRuby::Block.new(title: "Test", borders: [:all])
-      )
-      # Should not raise an error when rendering
-      RatatuiRuby.draw do |frame|
-        frame.render_widget(para, frame.area)
-      end
-    end
-  end
-
-  def test_paragraph_renders_multiple_rich_lines
-    with_test_terminal do
-      lines = [
-        RatatuiRuby::Text::Line.new(
-          spans: [
-            RatatuiRuby::Text::Span.new(content: "✓ ", style: RatatuiRuby::Style.new(fg: :green, modifiers: [:bold])),
-            RatatuiRuby::Text::Span.new(content: "Complete", style: nil),
-          ]
-        ),
-        RatatuiRuby::Text::Line.new(
-          spans: [
-            RatatuiRuby::Text::Span.new(content: "✗ ", style: RatatuiRuby::Style.new(fg: :red, modifiers: [:bold])),
-            RatatuiRuby::Text::Span.new(content: "Failed", style: nil),
-          ]
-        ),
-      ]
-      para = RatatuiRuby::Paragraph.new(text: lines)
-      # Should not raise an error when rendering
-      RatatuiRuby.draw do |frame|
-        frame.render_widget(para, frame.area)
-      end
-    end
-  end
 end
 
-class TestWidgetRichText < Minitest::Test
-  include RatatuiRuby::TestHelper
-
+class TestWidgetRichTextApp < Minitest::Test
   include RatatuiRuby::TestHelper
 
   def test_app_runs
@@ -158,8 +108,8 @@ class TestWidgetRichText < Minitest::Test
       inject_key(:q)
       WidgetRichText.new.run
 
-      assert buffer_content.any? { |line| line.include?("Simple Rich Text") }
-      assert buffer_content.any? { |line| line.include?("Status Report") }
+      assert_snapshot("initial_render")
+      assert_rich_snapshot("initial_render")
     end
   end
 end

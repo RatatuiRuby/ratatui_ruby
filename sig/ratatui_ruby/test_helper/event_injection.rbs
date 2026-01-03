@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  module TestHelper
+    module EventInjection
+      def inject_event: (Event::Base event) -> void
+      def inject_mouse: (x: Integer, y: Integer, ?kind: Symbol, ?modifiers: Array[String], ?button: Symbol) -> void
+      def inject_click: (x: Integer, y: Integer, ?modifiers: Array[String]) -> void
+      def inject_right_click: (x: Integer, y: Integer, ?modifiers: Array[String]) -> void
+      def inject_drag: (x: Integer, y: Integer, ?modifiers: Array[String], ?button: Symbol) -> void
+      def inject_keys: (*(String | Symbol | (Hash[Symbol, untyped]) | Event::Key) args) -> void
+      alias inject_key inject_keys
+    end
+  end
+end

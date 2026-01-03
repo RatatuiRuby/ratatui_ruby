@@ -1,0 +1,24 @@
+┌Processes | Sel: 1 | Offset: auto | Flex: Legacy (Default)────────────────────┐
+│  PID      Name            CPU                                                │
+│  1234     ruby            15.2%                                              │
+│> 5678     postgres        8.7%                                               │
+│  9012     nginx           3.1%                                               │
+│  3456     redis           12.4%                                              │
+│  7890     sidekiq         22.8%                                              │
+│  2345     webpack         45.3%                                              │
+│  6789     node            18.9%                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│  Total: 7 Total CPU: 126.                                                    │
+└──────────────────────────────────────────────────────────────────────────────┘
+┌Controls──────────────────────────────────────────────────────────────────────┐
+│↑/↓: Nav Row  ←/→: Nav Col  x: Toggle Row (1)  q: Quit                        │
+│s: Style (Cyan)  p: Spacing (Always)                                          │
+│+/-: Col Space (1)  c: Col Highlight (On)  f: Flex Mode (Legacy (Default))    │
+│z: Cell Highlight (On)  o: Offset Mode (Auto (No Offset))                     │
+└──────────────────────────────────────────────────────────────────────────────┘

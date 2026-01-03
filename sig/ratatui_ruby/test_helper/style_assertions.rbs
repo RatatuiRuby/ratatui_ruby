@@ -1,0 +1,64 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  module TestHelper
+    module StyleAssertions
+      def assert_cell_style: (Integer x, Integer y, **untyped expected_attributes) -> void
+      def assert_color: (Symbol | Integer | String expected, x: Integer, y: Integer, ?layer: Symbol) -> void
+      def assert_area_style: (Rect | Hash[Symbol, Integer] area, **untyped attributes) -> void
+      def assert_fg_color: (Symbol | Integer | String expected, Integer x, Integer y) -> void
+      alias assert_fg assert_fg_color
+      def assert_bg_color: (Symbol | Integer | String expected, Integer x, Integer y) -> void
+      alias assert_bg assert_bg_color
+      def assert_bold: (Integer x, Integer y) -> void
+      def assert_italic: (Integer x, Integer y) -> void
+      def assert_underlined: (Integer x, Integer y) -> void
+      alias assert_underline assert_underlined
+      def assert_dim: (Integer x, Integer y) -> void
+      def assert_reversed: (Integer x, Integer y) -> void
+      alias assert_inverse assert_reversed
+      alias assert_inverse_video assert_reversed
+      def assert_crossed_out: (Integer x, Integer y) -> void
+      alias assert_strikethrough assert_crossed_out
+      alias assert_strike assert_crossed_out
+      def assert_hidden: (Integer x, Integer y) -> void
+      def assert_slow_blink: (Integer x, Integer y) -> void
+      alias assert_blink assert_slow_blink
+      def assert_rapid_blink: (Integer x, Integer y) -> void
+
+      def assert_black: (Integer x, Integer y) -> void
+      def assert_bg_black: (Integer x, Integer y) -> void
+      def assert_red: (Integer x, Integer y) -> void
+      def assert_bg_red: (Integer x, Integer y) -> void
+      def assert_green: (Integer x, Integer y) -> void
+      def assert_bg_green: (Integer x, Integer y) -> void
+      def assert_yellow: (Integer x, Integer y) -> void
+      def assert_bg_yellow: (Integer x, Integer y) -> void
+      def assert_blue: (Integer x, Integer y) -> void
+      def assert_bg_blue: (Integer x, Integer y) -> void
+      def assert_magenta: (Integer x, Integer y) -> void
+      def assert_bg_magenta: (Integer x, Integer y) -> void
+      def assert_cyan: (Integer x, Integer y) -> void
+      def assert_bg_cyan: (Integer x, Integer y) -> void
+      def assert_gray: (Integer x, Integer y) -> void
+      def assert_bg_gray: (Integer x, Integer y) -> void
+      def assert_dark_gray: (Integer x, Integer y) -> void
+      def assert_bg_dark_gray: (Integer x, Integer y) -> void
+      def assert_light_red: (Integer x, Integer y) -> void
+      def assert_bg_light_red: (Integer x, Integer y) -> void
+      def assert_light_green: (Integer x, Integer y) -> void
+      def assert_bg_light_green: (Integer x, Integer y) -> void
+      def assert_light_yellow: (Integer x, Integer y) -> void
+      def assert_bg_light_yellow: (Integer x, Integer y) -> void
+      def assert_light_blue: (Integer x, Integer y) -> void
+      def assert_bg_light_blue: (Integer x, Integer y) -> void
+      def assert_light_magenta: (Integer x, Integer y) -> void
+      def assert_bg_light_magenta: (Integer x, Integer y) -> void
+      def assert_light_cyan: (Integer x, Integer y) -> void
+      def assert_bg_light_cyan: (Integer x, Integer y) -> void
+      def assert_white: (Integer x, Integer y) -> void
+      def assert_bg_white: (Integer x, Integer y) -> void
+    end
+  end
+end

@@ -21,27 +21,18 @@ class TestWidgetRatatuiMascotDemo < Minitest::Test
       inject_key(:q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Ratatui Mascot" # Title implying block is on
-      assert_includes content, "Toggle Block (On)"
-      # Mascot contains block characters
-      assert_includes content, "█"
+      assert_snapshot("initial_render")
+      assert_rich_snapshot("initial_render")
     end
   end
 
   def test_toggle_block
     with_test_terminal do
-      inject_key("b")
-      inject_key(:q)
+      inject_keys("b", :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Toggle Block (Off)"
-      # Title should be gone if block is gone (unless internal rendering keeps it, but our logic removes the block)
-      # Wait, if block is nil, no border/title.
-      refute_includes content, "Ratatui Mascot"
-      # Mascot should still be there
-      assert_includes content, "█"
+      assert_snapshot("after_block_toggle")
+      assert_rich_snapshot("after_block_toggle")
     end
   end
 end

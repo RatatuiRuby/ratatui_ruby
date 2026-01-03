@@ -16,64 +16,63 @@ class TestWidgetBarchartDemo < Minitest::Test
     @app = WidgetBarchartDemo.new
   end
 
-  def test_render_initial_state
+  def test_initial_render
     with_test_terminal do
       inject_key(:q)
       @app.run
 
-      assert buffer_content.any? { |line| line.include?("BarChart Demo: Simple Hash") }
-      assert buffer_content.any? { |line| line.include?("Controls") }
+      assert_snapshot("initial_render")
+      assert_rich_snapshot("initial_render")
     end
   end
 
   def test_data_cycling
     with_test_terminal do
-      # Cycle data (d) -> Styled Array -> Groups -> Simple Hash
       inject_keys(:d, :q)
       @app.run
-      assert buffer_content.any? { |line| line.include?("BarChart Demo: Styled Array") }
-    end
 
-    with_test_terminal do
-      inject_keys(:d, :q)
-      @app.run
-      assert buffer_content.any? { |line| line.include?("BarChart Demo: Groups") }
+      assert_snapshot("after_data_cycle")
+      assert_rich_snapshot("after_data_cycle")
     end
   end
 
   def test_direction_toggle
     with_test_terminal do
-      # Toggle direction (v)
       inject_keys(:v, :q)
       @app.run
-      assert buffer_content.any? { |line| line.include?("Direction (horizontal)") }
+
+      assert_snapshot("after_direction_toggle")
+      assert_rich_snapshot("after_direction_toggle")
     end
   end
 
   def test_width_gap_controls
     with_test_terminal do
-      # Change width (w), gap (a), group gap (g)
       inject_keys(:w, :a, :g, :q)
       @app.run
-      # Verify execution without crash
+
+      assert_snapshot("after_width_gap_changes")
+      assert_rich_snapshot("after_width_gap_changes")
     end
   end
 
   def test_styles_controls
     with_test_terminal do
-      # Change style (s), label (x), value (z), set (b)
       inject_keys(:s, :x, :z, :b, :q)
       @app.run
-      # Verify execution without crash
+
+      assert_snapshot("after_style_changes")
+      assert_rich_snapshot("after_style_changes")
     end
   end
 
   def test_mode_toggle
     with_test_terminal do
-      # Toggle mini mode (m)
       inject_keys(:m, :q)
       @app.run
-      assert buffer_content.any? { |line| line.include?("Mode (Mini)") }
+
+      assert_snapshot("after_mode_toggle")
+      assert_rich_snapshot("after_mode_toggle")
     end
   end
 end

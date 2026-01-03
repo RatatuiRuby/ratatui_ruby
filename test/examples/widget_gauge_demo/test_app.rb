@@ -21,85 +21,68 @@ class TestGaugeDemo < Minitest::Test
       inject_key(:q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Interactive Gauge"
-      assert_includes content, "Inverse"
-      assert_includes content, "Min Threshold"
+      assert_snapshot("initial_render")
+      assert_rich_snapshot("initial_render")
     end
   end
 
   def test_ratio_increment
     with_test_terminal do
-      inject_key(:right)
-      inject_key(:q)
+      inject_keys(:right, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # After pressing right from index 3 (0.65), should be at index 4 (0.80)
-      assert_includes content, "0.80"
+      assert_snapshot("after_ratio_increment")
+      assert_rich_snapshot("after_ratio_increment")
     end
   end
 
   def test_ratio_decrement
     with_test_terminal do
-      inject_key(:left)
-      inject_key(:q)
+      inject_keys(:left, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # After pressing left from index 3 (0.65), should be at index 2 (0.50)
-      assert_includes content, "0.50"
+      assert_snapshot("after_ratio_decrement")
+      assert_rich_snapshot("after_ratio_decrement")
     end
   end
 
   def test_gauge_color_cycling
     with_test_terminal do
-      inject_key(:g)
-      inject_key(:q)
+      inject_keys(:g, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # After pressing g from index 0 (Green), should be at index 1 (Yellow)
-      assert_includes content, "Yellow"
-      refute_includes content, "Green"
+      assert_snapshot("after_color_cycle")
+      assert_rich_snapshot("after_color_cycle")
     end
   end
 
   def test_background_style_cycling
     with_test_terminal do
-      inject_key(:b)
-      inject_key(:q)
+      inject_keys(:b, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # After pressing b from index 1 (Dark Gray BG), should be at index 2 (White on Black)
-      assert_includes content, "White on Black"
-      refute_includes content, "Dark Gray BG"
+      assert_snapshot("after_background_cycle")
+      assert_rich_snapshot("after_background_cycle")
     end
   end
 
   def test_unicode_toggle
     with_test_terminal do
-      inject_key(:u)
-      inject_key(:q)
+      inject_keys(:u, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # After toggling unicode, should still show gauge controls
-      assert_includes content, "Off"
+      assert_snapshot("after_unicode_toggle")
+      assert_rich_snapshot("after_unicode_toggle")
     end
   end
 
   def test_label_mode_cycling
     with_test_terminal do
-      inject_key(:l)
-      inject_key(:q)
+      inject_keys(:l, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # After pressing l from index 0 (Percentage), should be at index 1 (Ratio decimal)
-      # The gauge should show decimal format instead of percentage
-      assert_includes content, "0.65"
+      assert_snapshot("after_label_cycle")
+      assert_rich_snapshot("after_label_cycle")
     end
   end
 
@@ -108,13 +91,8 @@ class TestGaugeDemo < Minitest::Test
       inject_keys(:right, :g, :b, :u, :l, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # Verify all controls are visible
-      assert_includes content, "Adjust Ratio"
-      assert_includes content, "Color"
-      assert_includes content, "Background"
-      assert_includes content, "Unicode"
-      assert_includes content, "Label"
+      assert_snapshot("after_multiple_interactions")
+      assert_rich_snapshot("after_multiple_interactions")
     end
   end
 end

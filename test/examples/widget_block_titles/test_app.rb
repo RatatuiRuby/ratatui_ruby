@@ -21,14 +21,8 @@ class TestBlockTitles < Minitest::Test
       inject_key(:q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Top Left"
-      assert_includes content, "Top Right"
-      assert_includes content, "Bottom Left"
-      assert_includes content, "Bottom Center"
-      assert_includes content, "Bottom Right"
-      assert_includes content, "Simple String Title (Top Left Default)"
-      assert_includes content, "Mixed Title"
+      assert_snapshot("render")
+      assert_rich_snapshot("render")
     end
   end
 end

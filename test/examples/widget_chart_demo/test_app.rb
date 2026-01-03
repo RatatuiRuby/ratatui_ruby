@@ -13,7 +13,13 @@ class TestChartDemo < Minitest::Test
   include RatatuiRuby::TestHelper
 
   def setup
+    # Seed random for deterministic scatter plot data
+    ENV["RATA_SEED"] = "42"
     @app = WidgetChartDemo.new
+  end
+
+  def teardown
+    ENV.delete("RATA_SEED")
   end
 
   def test_initial_render
@@ -21,82 +27,58 @@ class TestChartDemo < Minitest::Test
       inject_key(:q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Chart Widget Demo"
-      assert_includes content, "Time"
-      assert_includes content, "Amplitude"
-      assert_includes content, "Line"
-      assert_includes content, "Scatter"
-      assert_includes content, "Controls"
-      # Verify controls are visible
-      assert_includes content, "Marker"
-      assert_includes content, "Style"
-      assert_includes content, "Align"
+      assert_snapshot("initial_render")
+      assert_rich_snapshot("initial_render")
     end
   end
 
   def test_marker_cycling
     with_test_terminal do
-      inject_key("m") # Cycle marker
-      inject_key(:q)
+      inject_keys("m", :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # Should show the chart still renders
-      assert_includes content, "Chart Widget Demo"
-      assert_includes content, "Time"
+      assert_snapshot("after_marker_cycle")
+      assert_rich_snapshot("after_marker_cycle")
     end
   end
 
   def test_style_cycling
     with_test_terminal do
-      inject_key("s")  # Cycle style
-      inject_key(:q)
+      inject_keys("s", :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Chart Widget Demo"
-      assert_includes content, "Time"
+      assert_snapshot("after_style_cycle")
+      assert_rich_snapshot("after_style_cycle")
     end
   end
 
   def test_x_alignment_cycling
     with_test_terminal do
-      inject_key("x")  # Cycle X-axis label alignment
-      inject_key(:q)
+      inject_keys("x", :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Chart Widget Demo"
-      assert_includes content, "Time"
+      assert_snapshot("after_x_align_cycle")
+      assert_rich_snapshot("after_x_align_cycle")
     end
   end
 
   def test_y_alignment_cycling
     with_test_terminal do
-      inject_key("y")  # Cycle Y-axis label alignment
-      inject_key(:q)
+      inject_keys("y", :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Chart Widget Demo"
-      assert_includes content, "Amplitude"
+      assert_snapshot("after_y_align_cycle")
+      assert_rich_snapshot("after_y_align_cycle")
     end
   end
 
   def test_multiple_cycles
     with_test_terminal do
-      inject_key("m")
-      inject_key("s")
-      inject_key("x")
-      inject_key("y")
-      inject_key(:q)
+      inject_keys("m", "s", "x", "y", :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Chart Widget Demo"
-      # Chart and controls should all render
-      assert_includes content, "Controls"
+      assert_snapshot("after_multiple_cycles")
+      assert_rich_snapshot("after_multiple_cycles")
     end
   end
 end

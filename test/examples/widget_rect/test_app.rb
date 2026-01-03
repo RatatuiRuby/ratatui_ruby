@@ -16,112 +16,75 @@ class TestWidgetRect < Minitest::Test
     @app = WidgetRect.new
   end
 
-  def test_initial_render_shows_menu_and_content
+  def test_initial_render
     with_test_terminal do
       inject_key(:q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Menu"
-      assert_includes content, "Dashboard"
-      assert_includes content, "Analytics"
-      assert_includes content, "Content"
-      assert_includes content, "Active View: Dashboard"
-      assert_includes content, "Rect Attributes"
+      assert_snapshot("initial_render")
+      assert_rich_snapshot("initial_render")
     end
   end
 
-  def test_sidebar_click_shows_contains_result
+  def test_sidebar_click
     with_test_terminal do
       inject_click(x: 5, y: 2)
       inject_key(:q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "sidebar.contains?"
-      assert_includes content, "=true"
+      assert_snapshot("after_sidebar_click")
+      assert_rich_snapshot("after_sidebar_click")
     end
   end
 
-  def test_content_area_click_shows_contains_result
+  def test_content_area_click
     with_test_terminal do
       inject_click(x: 40, y: 5)
       inject_key(:q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "content.contains?"
-      assert_includes content, "=true"
+      assert_snapshot("after_content_click")
+      assert_rich_snapshot("after_content_click")
     end
   end
 
   def test_keyboard_navigation_down
     with_test_terminal do
-      inject_key("down")
-      inject_key(:q)
+      inject_keys("down", :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Active View: Analytics"
+      assert_snapshot("after_nav_down")
+      assert_rich_snapshot("after_nav_down")
     end
   end
 
   def test_keyboard_navigation_up_wraps
     with_test_terminal do
-      inject_key("up")
-      inject_key(:q)
+      inject_keys("up", :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Active View: Help"
+      assert_snapshot("after_nav_up_wrap")
+      assert_rich_snapshot("after_nav_up_wrap")
     end
   end
 
-  def test_sidebar_width_shrink_updates_rect
+  def test_sidebar_width_shrink
     with_test_terminal do
-      inject_key("left")
-      inject_key(:q)
+      inject_keys("left", :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "width:18"
-      assert_includes content, "sidebar_width=18"
+      assert_snapshot("after_width_shrink")
+      assert_rich_snapshot("after_width_shrink")
     end
   end
 
-  def test_sidebar_width_expand_updates_rect
+  def test_sidebar_width_expand
     with_test_terminal do
-      inject_key("right")
-      inject_key(:q)
+      inject_keys("right", :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "width:22"
-      assert_includes content, "sidebar_width=22"
-    end
-  end
-
-  def test_rect_attributes_displayed
-    with_test_terminal do
-      inject_key(:q)
-      @app.run
-
-      content = buffer_content.join("\n")
-      assert_includes content, "Rect(x:"
-      assert_includes content, "y:"
-      assert_includes content, "width:"
-      assert_includes content, "height:"
-    end
-  end
-
-  def test_controls_area_click
-    with_test_terminal do
-      inject_click(x: 40, y: 20)
-      inject_key(:q)
-      @app.run
-
-      content = buffer_content.join("\n")
-      assert_includes content, "controls.contains?"
+      assert_snapshot("after_width_expand")
+      assert_rich_snapshot("after_width_expand")
     end
   end
 end

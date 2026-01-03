@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  module TestHelper
+    module Terminal
+      def with_test_terminal: (?Integer width, ?Integer height, ?timeout: Integer?) ?{ () -> void } -> void
+      def buffer_content: () -> Array[String]
+      def cursor_position: () -> { x: Integer, y: Integer }
+      def get_cell: (Integer x, Integer y) -> Cell
+      def print_buffer: () -> void
+    end
+  end
+end

@@ -16,25 +16,23 @@ class TestBoxDemo < Minitest::Test
     @app = WidgetBoxDemo.new
   end
 
-  def test_render_initial_state
+  def test_initial_render
     with_test_terminal do
       inject_key(:q)
       @app.run
 
-      assert buffer_content.any? { |line| line.include?("Box Demo") }
-      assert buffer_content.any? { |line| line.include?("Controls") }
-      assert buffer_content.any? { |line| line.include?("Green") }
+      assert_snapshot("initial_render")
+      assert_rich_snapshot("initial_render")
     end
   end
 
-  def test_color_cycling_changes_color
+  def test_color_cycling
     with_test_terminal do
-      # Pressing up should cycle colors backwards
       inject_keys(:up, :q)
       @app.run
 
-      # At least the Controls section should be rendered
-      assert buffer_content.any? { |line| line.include?("Controls") }
+      assert_snapshot("after_color_cycle")
+      assert_rich_snapshot("after_color_cycle")
     end
   end
 
@@ -43,7 +41,8 @@ class TestBoxDemo < Minitest::Test
       inject_keys(" ", :q)
       @app.run
 
-      assert buffer_content.any? { |line| line.include?("Rounded") }
+      assert_snapshot("after_border_cycle")
+      assert_rich_snapshot("after_border_cycle")
     end
   end
 
@@ -52,27 +51,28 @@ class TestBoxDemo < Minitest::Test
       inject_keys(:enter, :q)
       @app.run
 
-      assert buffer_content.any? { |line| line.include?("Center") }
+      assert_snapshot("after_title_align_cycle")
+      assert_rich_snapshot("after_title_align_cycle")
     end
   end
 
-  def test_content_style_changes
+  def test_content_style_cycling
     with_test_terminal do
       inject_keys(:s, :q)
       @app.run
 
-      # At least the Controls section should be rendered
-      assert buffer_content.any? { |line| line.include?("Controls") }
+      assert_snapshot("after_content_style_cycle")
+      assert_rich_snapshot("after_content_style_cycle")
     end
   end
 
-  def test_title_style_changes
+  def test_title_style_cycling
     with_test_terminal do
       inject_keys(:t, :q)
       @app.run
 
-      # At least the Controls section should be rendered
-      assert buffer_content.any? { |line| line.include?("Controls") }
+      assert_snapshot("after_title_style_cycle")
+      assert_rich_snapshot("after_title_style_cycle")
     end
   end
 
@@ -81,8 +81,8 @@ class TestBoxDemo < Minitest::Test
       inject_keys(:b, :q)
       @app.run
 
-      # At least the Controls section should be rendered
-      assert buffer_content.any? { |line| line.include?("Controls") }
+      assert_snapshot("after_border_style_cycle")
+      assert_rich_snapshot("after_border_style_cycle")
     end
   end
 end

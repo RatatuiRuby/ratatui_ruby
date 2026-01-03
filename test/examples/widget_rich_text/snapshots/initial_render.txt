@@ -1,0 +1,24 @@
+┌Simple Rich Text──────────────────────────────────────────────────────────────┐
+│Normal text, Bold Text, Italic Text, Red Text.                                │
+│                                                                              │
+│Integer Color Test: Color 0 (Use ↑ ↓ for +/- 1,→ ← for +/- 10)                │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+┌Status Report─────────────────────────────────────────────────────────────────┐
+│✓ Feature Complete - All tests passing                                        │
+│⚠ Warning - Documentation pending                                             │
+│✗ Not Started - Performance benchmarks                                        │
+│                                                                              │
+│Press Q to quit, ↑ ↓ to adjust color by 1, ← → to adjust color by 10.         │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘

@@ -21,14 +21,8 @@ class TestQuickstartLayout < Minitest::Test
       inject_key(:q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # Check for content in top block
-      assert_includes content, "Hello, Ratatui!"
-      # Check for content in bottom block
-      assert_includes content, "Press 'q' to quit."
-      # Check for block titles
-      assert_includes content, "Content"
-      assert_includes content, "Controls"
+      assert_snapshot("render")
+      assert_rich_snapshot("render")
     end
   end
 end

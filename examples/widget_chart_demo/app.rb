@@ -53,6 +53,11 @@ class WidgetChartDemo
       @tui = tui
       init_styles
 
+      # Support seeded random for deterministic testing
+      # Set RATA_SEED=42 for reproducible scatter plot data
+      seed = ENV.fetch("RATA_SEED", nil)
+      @rng = seed ? Random.new(seed.to_i) : Random.new
+
       @marker_index = 0
       @dataset_style_index = 0
       @x_alignment_index = 1
@@ -89,9 +94,9 @@ class WidgetChartDemo
       [x, Math.sin(x)]
     end
 
-    # Scatter: Random points
+    # Scatter: Random points (deterministic when RATA_SEED is set)
     scatter_data = (0..20).map do |_|
-      [rand(0.0..10.0), rand(-1.0..1.0)]
+      [@rng.rand(0.0..10.0), @rng.rand(-1.0..1.0)]
     end
 
     style = @dataset_styles[@dataset_style_index][:style]

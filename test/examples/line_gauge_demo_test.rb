@@ -7,8 +7,9 @@ require_relative "../test_helper"
 
 class LineGaugeDemoTest < Minitest::Test
   include RatatuiRuby::TestHelper
-  def test_line_gauge_demo_creates_valid_nodes
-    # Test that the demo creates valid node structures
+
+  # Unit tests for LineGauge data class
+  def test_line_gauge_creates_valid_nodes
     gauge1 = RatatuiRuby::LineGauge.new(
       ratio: 0.3,
       label: "30% - Quick Progress",
@@ -29,7 +30,7 @@ class LineGaugeDemoTest < Minitest::Test
     end
   end
 
-  def test_line_gauge_with_terminal
+  def test_line_gauge_render
     with_test_terminal(40, 10) do
       gauge = RatatuiRuby::LineGauge.new(
         ratio: 0.65,
@@ -51,24 +52,9 @@ class LineGaugeDemoTest < Minitest::Test
       )
 
       RatatuiRuby.draw { |f| f.render_widget(layout, f.area) }
-      content = buffer_content
 
-      # Verify that some rendering occurred
-      assert content.length.positive?
-    end
-  end
-
-  def test_line_gauge_all_configurations
-    gauges = [
-      RatatuiRuby::LineGauge.new(ratio: 0.3, label: "30%"),
-      RatatuiRuby::LineGauge.new(ratio: 0.65, label: "65%"),
-      RatatuiRuby::LineGauge.new(ratio: 0.95, label: "95%"),
-    ]
-
-    assert_equal 3, gauges.length
-    gauges.each_with_index do |gauge, index|
-      assert gauge.is_a?(RatatuiRuby::LineGauge)
-      assert_equal [0.3, 0.65, 0.95][index], gauge.ratio
+      assert_snapshot("line_gauge_render")
+      assert_rich_snapshot("line_gauge_render")
     end
   end
 end

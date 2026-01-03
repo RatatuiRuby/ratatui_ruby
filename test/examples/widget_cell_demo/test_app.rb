@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
-#
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 require "minitest/autorun"
@@ -12,31 +11,13 @@ require_relative "../../../examples/widget_cell_demo/app"
 class TestWidgetCellDemo < Minitest::Test
   include RatatuiRuby::TestHelper
 
-  include RatatuiRuby::TestHelper
-
-  def test_cell_demo_output
-    # Run the demo in a test terminal
-    # We'll inject a 'q' key to exit the loop immediately after the first draw
+  def test_render
     with_test_terminal(timeout: 5) do
       inject_key("q")
       WidgetCellDemo.new.main
 
-      # Verify Custom Widget Output
-      # Check for "░" character from CheckeredBackground
-      # It should be visible around the centered widget
-      assert_includes buffer_content.join("\n"), "░"
-
-      # Verify Table Output
-      # Content strings
-      assert_includes buffer_content.join("\n"), "System Status"
-      assert_includes buffer_content.join("\n"), "Database"
-      assert_includes buffer_content.join("\n"), "Worker"
-
-      # We can't easily grep for "FAIL" with color in simple string content check,
-      # but we can check the text presence.
-      assert_includes buffer_content.join("\n"), "FAIL"
-      assert_includes buffer_content.join("\n"), "OK"
-      assert_includes buffer_content.join("\n"), "RESTARTING"
+      assert_snapshot("render")
+      assert_rich_snapshot("render")
     end
   end
 end

@@ -16,39 +16,23 @@ class TestWidgetPopupDemo < Minitest::Test
     @app = WidgetPopupDemo.new
   end
 
-  def test_render_initial_state
+  def test_initial_render
     with_test_terminal do
-      # Queue quit
       inject_key(:q)
-
       @app.run
 
-      # Should have background text
-      assert buffer_content.any? { |line| line.include?("BACKGROUND RED") }
-
-      # Should have popup with "Clear is DISABLED" message
-      assert buffer_content.any? { |line| line.include?("Clear is DISABLED") }
-      assert buffer_content.any? { |line| line.include?("Style Bleed: Popup is RED!") }
+      assert_snapshot("initial_render")
+      assert_rich_snapshot("initial_render")
     end
   end
 
   def test_toggle_clear
     with_test_terminal do
-      # Toggle Clear on then quit
       inject_keys(" ", :q)
-
       @app.run
 
-      assert buffer_content.any? { |line| line.include?("Clear is ENABLED") }
-      assert buffer_content.any? { |line| line.include?("Resets background to default") }
-    end
-  end
-
-  def test_quit
-    with_test_terminal do
-      inject_key(:q)
-      @app.run
-      # Success
+      assert_snapshot("after_toggle_clear")
+      assert_rich_snapshot("after_toggle_clear")
     end
   end
 end

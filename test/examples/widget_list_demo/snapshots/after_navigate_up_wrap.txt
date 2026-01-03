@@ -1,0 +1,24 @@
+List Widget Demo - Interactive Attribute Cycling                                
+┌Large List | Sel: 199 | Offset: auto──────────────────────────────────────────┐
+│   Item 188                                                                   │
+│   Item 189                                                                   │
+│   Item 190                                                                   │
+│   Item 191                                                                   │
+│   Item 192                                                                   │
+│   Item 193                                                                   │
+│   Item 194                                                                   │
+│   Item 195                                                                   │
+│   Item 196                                                                   │
+│   Item 197                                                                   │
+│   Item 198                                                                   │
+│   Item 199                                                                   │
+│>> Item 200                                                                   │
+└──────────────────────────────────────────────────────────────────────────────┘
+┌Controls──────────────────────────────────────────────────────────────────────┐
+│i: Items  ↑/↓: Navigate  x: Select  h: Highlight (Blue Bold)                  │
+│y: Symbol (>> )  d: Direction (Top to Bottom)                                 │
+│s: Spacing (When Selected)  p: Scroll Padding (None)                          │
+│b: Base (None)  r: Repeat (Off)                                               │
+│o: Offset Mode (Auto (No Offset))  q: Quit                                    │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘

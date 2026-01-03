@@ -21,31 +21,18 @@ class TestWidgetSparklineDemo < Minitest::Test
       inject_key(:q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Sparkline Widget Demo"
-      assert_includes content, "Interactive Sparkline"
-      assert_includes content, "Reversed Data"
+      assert_snapshot("initial_render")
+      assert_rich_snapshot("initial_render")
     end
   end
 
-  def test_cycle_data_set_up
+  def test_cycle_data_set
     with_test_terminal do
       inject_keys(:up, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # Should still render after cycling
-      assert_includes content, "Sparkline Widget Demo"
-    end
-  end
-
-  def test_cycle_data_set_down
-    with_test_terminal do
-      inject_keys(:down, :down, :q)
-      @app.run
-
-      content = buffer_content.join("\n")
-      assert_includes content, "Sparkline Widget Demo"
+      assert_snapshot("after_data_cycle_up")
+      assert_rich_snapshot("after_data_cycle_up")
     end
   end
 
@@ -54,8 +41,8 @@ class TestWidgetSparklineDemo < Minitest::Test
       inject_keys(:d, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Sparkline Widget Demo"
+      assert_snapshot("after_direction_cycle")
+      assert_rich_snapshot("after_direction_cycle")
     end
   end
 
@@ -64,8 +51,8 @@ class TestWidgetSparklineDemo < Minitest::Test
       inject_keys(:c, :c, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Sparkline Widget Demo"
+      assert_snapshot("after_color_cycle")
+      assert_rich_snapshot("after_color_cycle")
     end
   end
 
@@ -74,8 +61,8 @@ class TestWidgetSparklineDemo < Minitest::Test
       inject_keys(:m, :m, :m, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Sparkline Widget Demo"
+      assert_snapshot("after_marker_cycle")
+      assert_rich_snapshot("after_marker_cycle")
     end
   end
 
@@ -84,8 +71,8 @@ class TestWidgetSparklineDemo < Minitest::Test
       inject_keys(:s, :s, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Sparkline Widget Demo"
+      assert_snapshot("after_style_cycle")
+      assert_rich_snapshot("after_style_cycle")
     end
   end
 
@@ -94,14 +81,8 @@ class TestWidgetSparklineDemo < Minitest::Test
       inject_keys(:b, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Sparkline Widget Demo"
-      # Verify render with Numbers set (one_eighth="1", etc.)
-      # Input data [1..12] with implicit max 12.
-      # With Numbers set, we expect digits 1-8 to appear.
-      # Just asserting no crash is a start, but let's check for the label update if possible
-      # The controls footer should update.
-      # assert_includes content, ": Bar Set" # Included in controls
+      assert_snapshot("after_bar_set_cycle")
+      assert_rich_snapshot("after_bar_set_cycle")
     end
   end
 end

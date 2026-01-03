@@ -12,97 +12,72 @@ require_relative "../../../examples/widget_calendar_demo/app"
 class TestWidgetCalendarDemo < Minitest::Test
   include RatatuiRuby::TestHelper
 
+  # Calendar output varies by date, so we need normalization
+  # - Year in title
+  # - Current day highlight (green color)
+  YEAR_PATTERN = /\d{4}/
+  # Green highlight for current day: \e[32m followed by day number, then reset
+  CURRENT_DAY_PATTERN = /\e\[32m\s*\d{1,2}/
+
   def setup
     @app = WidgetCalendarDemo.new
   end
 
-  def test_demo_renders
-    with_test_terminal do
-      inject_keys(:down, :down, :q)
+  private def assert_normalized_snapshot(snapshot_name)
+    normalizer = proc do |lines|
+      lines.map do |line|
+        line
+          .gsub(YEAR_PATTERN, "YYYY")
+          .gsub(CURRENT_DAY_PATTERN, "\e[32m DD")
+      end
+    end
 
+    assert_snapshot(snapshot_name, &normalizer)
+    assert_rich_snapshot(snapshot_name, &normalizer)
+  end
+
+  def test_initial_render
+    with_test_terminal do
+      inject_key(:q)
       @app.run
 
-      content = buffer_content
-      rendered_text = content.join("\n")
-
-      # Verify the bottom controls are present
-      assert_match(%r{h/w/s/e: Toggle Header/Weekdays/Surrounding/Events}, rendered_text)
-      assert_match(/q: Quit/, rendered_text)
-
-      # Verify the calendar content is present
-      assert_match(/#{Time.now.year}/, rendered_text)
-
-      # Verify layout structure (calendar taking up most space, controls at bottom)
-      # The controls are on the last line (index 23 for 24 lines) if the terminal is 24 lines high
-      # but standard terminal might be different. with_test_terminal defaults to 80x24.
-      # assert_match(/q: Quit/, content[23]) if content[23]
+      assert_normalized_snapshot("initial_render")
     end
   end
 
   def test_toggle_weekdays_header
     with_test_terminal do
       inject_keys("w", :q)
-
       @app.run
 
-      content = buffer_content
-      rendered_text = content.join("\n")
-
-      # The app should render successfully with weekdays toggled
-      assert_match(/#{Time.now.year}/, rendered_text)
+      assert_normalized_snapshot("after_weekdays_toggle")
     end
   end
 
   def test_toggle_header
     with_test_terminal do
       inject_keys("h", :q)
-
       @app.run
 
-      content = buffer_content
-      rendered_text = content.join("\n")
-
-      # The app should render successfully with header toggled (hidden)
-      refute_match(/#{Time.now.year}/, rendered_text)
-
-      # Inject h again to show it (h -> off, h -> on)
-      inject_keys("h", "h", :q)
-      @app.run
-      content = buffer_content
-      rendered_text = content.join("\n")
-      assert_match(/#{Time.now.year}/, rendered_text)
+      assert_normalized_snapshot("after_header_toggle")
     end
   end
 
   def test_toggle_surrounding
     with_test_terminal do
       inject_keys("s", :q)
-
       @app.run
 
-      content = buffer_content
-      rendered_text = content.join("\n")
-
-      # The app should render successfully with surrounding toggled
-      assert_match(/#{Time.now.year}/, rendered_text)
+      assert_normalized_snapshot("after_surrounding_toggle")
     end
   end
 
-  def test_events_render
+  def test_toggle_events
     with_test_terminal do
       inject_keys("e", :q)
-
       @app.run
 
-      content = buffer_content
-      # We just check that the app runs without crashing and renders the calendar.
-      # Verifying specific color codes in the buffer content is harder without
-      # exposing the underlying buffer cells' style.
-      # But we can at least assert the content is still correct.
-      assert_match(/#{Time.now.year}/, content.join("\n"))
-
-      # Verify the legend is present and shows Off status after toggle
-      assert_match(/Events: .* \(Off\)/, content.join("\n"))
+      assert_normalized_snapshot("after_events_toggle")
     end
   end
 end

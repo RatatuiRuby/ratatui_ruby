@@ -21,11 +21,8 @@ class TestBlockPadding < Minitest::Test
       inject_key(:q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Uniform Padding (2)"
-      assert_includes content, "This text is padded by 2 on all sides."
-      assert_includes content, "Directional Padding [Left: 4, Right: 0, Top: 2, Bottom: 0]"
-      assert_includes content, "Left: 4, Top: 2."
+      assert_snapshot("render")
+      assert_rich_snapshot("render")
     end
   end
 end

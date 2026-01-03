@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby
 # frozen_string_literal: true
 
 # SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
@@ -10,7 +9,6 @@ require "ratatui_ruby/test_helper"
 require "minitest/autorun"
 require_relative "../../../examples/widget_table_demo/app"
 
-# Tests for the table_select example
 class TestWidgetTableDemo < Minitest::Test
   include RatatuiRuby::TestHelper
 
@@ -18,211 +16,93 @@ class TestWidgetTableDemo < Minitest::Test
     @app = WidgetTableDemo.new
   end
 
-  def test_initial_render_no_selection
+  def test_initial_render
     with_test_terminal do
-      # By default, selection is at index 1 and highlights are on.
       inject_key(:q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # Row 1 (postgres) should be selected.
-      # Default style is Cyan.
-      # "Toggle Row (1)" should be visible in footer.
-      assert_includes content, "Toggle Row (1)"
-      assert_includes content, "Cyan"
-      assert_includes content, "PID"
+      assert_snapshot("initial_render")
+      assert_rich_snapshot("initial_render")
     end
   end
 
   def test_style_switching
-    second_style_name = "Red"
-
     with_test_terminal do
       inject_keys(:s, :q)
       @app.run
 
-      content = buffer_content
-      assert content.any? { |line| line.include?(second_style_name) }
+      assert_snapshot("after_style_switch")
+      assert_rich_snapshot("after_style_switch")
     end
   end
 
-  def test_toggle_selection_on
+  def test_toggle_selection
     with_test_terminal do
-      # Default is ON (1 selected).
-      # Press x to toggle off (none), then quit
       inject_keys(:x, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # "Toggle Row (none)" should be visible.
-      assert_includes content, "Toggle Row (none)"
+      assert_snapshot("after_toggle_selection")
+      assert_rich_snapshot("after_toggle_selection")
     end
   end
 
-  def test_toggle_selection_off
+  def test_navigation_down
     with_test_terminal do
-      # Default is ON.
-      # Press x to toggle off, x again to toggle on (0 selected now because toggle logic resets to 0 if nil?), then quit
-      # Wait, app logic: @selected_index = @selected_index.nil? ? 0 : nil
-      # If default is 1, toggling off makes it nil. Toggling on makes it 0.
-      inject_keys(:x, :x, :q)
-      @app.run
-
-      content = buffer_content.join("\n")
-      assert_includes content, "Toggle Row (0)"
-    end
-  end
-
-  def test_navigation_selects_and_moves
-    with_test_terminal do
-      # Default is 1. Down -> 2.
       inject_keys(:down, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Toggle Row (2)"
+      assert_snapshot("after_navigate_down")
+      assert_rich_snapshot("after_navigate_down")
     end
   end
 
-  def test_navigation_wrapping
+  def test_navigation_up_wrap
     with_test_terminal do
-      # Start 1, down->2... wrap around logic needs check.
-      # Logic: (@selected_index + 1) % length.
-      # To test wrap, need to go to end. Length is 7.
-      # From 1, need 6 downs to wrap? No, just up from 0 wraps to last.
-      # So: up (1->0), up (0->6).
       inject_keys(:up, :up, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      last_index = PROCESSES.length - 1
-      assert_includes content, "Toggle Row (#{last_index})"
+      assert_snapshot("after_navigate_up_wrap")
+      assert_rich_snapshot("after_navigate_up_wrap")
     end
   end
 
   def test_column_navigation
     with_test_terminal do
-      # Default col 1. Right -> 2.
       inject_keys(:right, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Nav Col"
-      # We don't have a label for selected column in the footer anymore?
-      # Wait, I added it in app.rb but removed it in previous step?
-      # In Step 115 I added `col_label` but I didn't verify if I used it in the UI.
-      # Let me check app.rb again. I might have missed adding it to the UI in Step 87 layout fix or Step 115.
-      # Step 115 added `col_label = ...` but did NOT add it to the Paragraph text.
-      # I need to check app.rb to see if `col_label` is rendered.
+      assert_snapshot("after_column_navigate")
+      assert_rich_snapshot("after_column_navigate")
     end
   end
 
-  def test_quit
+  def test_highlight_spacing
     with_test_terminal do
-      inject_key(:q)
-      @app.run
-    end
-  end
-
-  def test_highlight_spacing_cycles_to_next
-    with_test_terminal do
-      # Mode order: [:when_selected, :always, :never]
-      # 'p' goes to :always
       inject_keys(:p, :q)
       @app.run
 
-      content = buffer_content
-      assert content.any? { |line| line.include?("Always") }
+      assert_snapshot("after_spacing_cycle")
+      assert_rich_snapshot("after_spacing_cycle")
     end
   end
 
-  def test_highlight_spacing_cycles_to_never
-    with_test_terminal do
-      # 'p' goes: when_selected -> always -> never
-      inject_keys(:p, :p, :q)
-      @app.run
-
-      content = buffer_content
-      assert content.any? { |line| line.include?("Never") }
-    end
-  end
-
-  def test_highlight_spacing_cycles_back_to_when_selected
-    with_test_terminal do
-      # 'p' goes: when_selected -> always -> never -> when_selected
-      inject_keys(:p, :p, :p, :q)
-      @app.run
-
-      content = buffer_content
-      assert content.any? { |line| line.include?("When Selected") }
-    end
-  end
-
-  def test_column_spacing_increases
+  def test_column_spacing_increase
     with_test_terminal do
       inject_keys("+", :q)
       @app.run
 
-      content = buffer_content
-      assert content.any? { |line| line.include?("Col Space (2)") }
+      assert_snapshot("after_col_space_increase")
+      assert_rich_snapshot("after_col_space_increase")
     end
   end
 
-  def test_column_spacing_decreases
+  def test_offset_mode_cycle
     with_test_terminal do
-      inject_keys("+", "-", :q)
-      @app.run
-
-      content = buffer_content
-      assert content.any? { |line| line.include?("Col Space (1)") }
-    end
-  end
-
-  def test_cycle_offset_mode_to_offset_only
-    with_test_terminal do
-      # Press 'o' to cycle from Auto to Offset Only
       inject_keys(:o, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Offset Only"
-      assert_includes content, "Offset: 3"
-    end
-  end
-
-  def test_cycle_offset_mode_to_conflict
-    with_test_terminal do
-      # Press 'o' twice to reach Conflict mode
-      inject_keys(:o, :o, :q)
-      @app.run
-
-      content = buffer_content.join("\n")
-      assert_includes content, "Conflict"
-      assert_includes content, "Offset: 0"
-    end
-  end
-
-  def test_offset_only_mode_disables_selection
-    with_test_terminal do
-      # Switch to Offset Only mode
-      inject_keys(:o, :q)
-      @app.run
-
-      content = buffer_content.join("\n")
-      # Selection is disabled in Offset Only mode
-      assert_includes content, "Sel: none"
-    end
-  end
-
-  def test_offset_mode_cycles_back_to_auto
-    with_test_terminal do
-      # Press 'o' three times to wrap back to Auto
-      inject_keys(:o, :o, :o, :q)
-      @app.run
-
-      content = buffer_content.join("\n")
-      assert_includes content, "Auto (No Offset)"
-      assert_includes content, "Offset: auto"
+      assert_snapshot("after_offset_mode_cycle")
+      assert_rich_snapshot("after_offset_mode_cycle")
     end
   end
 end

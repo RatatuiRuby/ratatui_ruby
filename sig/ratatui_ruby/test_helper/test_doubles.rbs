@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  module TestHelper
+    module TestDoubles
+      class MockFrame < Data
+        attr_accessor rendered_widgets: Array[{ widget: untyped, area: Rect }]
+        def self.new: (?rendered_widgets: Array[{ widget: untyped, area: Rect }]) -> MockFrame
+        def render_widget: (untyped widget, Rect area) -> void
+      end
+
+      class StubRect < Data
+        attr_accessor x: Integer
+        attr_accessor y: Integer
+        attr_accessor width: Integer
+        attr_accessor height: Integer
+        def self.new: (?x: Integer, ?y: Integer, ?width: Integer, ?height: Integer) -> StubRect
+      end
+    end
+  end
+end

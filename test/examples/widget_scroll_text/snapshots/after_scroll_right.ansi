@@ -1,0 +1,24 @@
+[0m┌Scrollable Text (100 lines)───────────────────────────────────────────────────┐[0m
+[0m│ine 1: This is a long line of text that can be scrolled horizontally. This is │[0m
+[0m│ine 2: This is a long line of text that can be scrolled horizontally. This is │[0m
+[0m│ine 3: This is a long line of text that can be scrolled horizontally. This is │[0m
+[0m│ine 4: This is a long line of text that can be scrolled horizontally. This is │[0m
+[0m│ine 5: This is a long line of text that can be scrolled horizontally. This is │[0m
+[0m│ine 6: This is a long line of text that can be scrolled horizontally. This is │[0m
+[0m│ine 7: This is a long line of text that can be scrolled horizontally. This is │[0m
+[0m│ine 8: This is a long line of text that can be scrolled horizontally. This is │[0m
+[0m│ine 9: This is a long line of text that can be scrolled horizontally. This is │[0m
+[0m│ine 10: This is a long line of text that can be scrolled horizontally. This is│[0m
+[0m│ine 11: This is a long line of text that can be scrolled horizontally. This is│[0m
+[0m│ine 12: This is a long line of text that can be scrolled horizontally. This is│[0m
+[0m│ine 13: This is a long line of text that can be scrolled horizontally. This is│[0m
+[0m│ine 14: This is a long line of text that can be scrolled horizontally. This is│[0m
+[0m│ine 15: This is a long line of text that can be scrolled horizontally. This is│[0m
+[0m│ine 16: This is a long line of text that can be scrolled horizontally. This is│[0m
+[0m│ine 17: This is a long line of text that can be scrolled horizontally. This is│[0m
+[0m└──────────────────────────────────────────────────────────────────────────────┘[0m
+[0m┌Controls──────────────────────────────────────────────────────────────────────┐[0m
+[0m│[0mNAVIGATION (Size: 102x216)[0m                                                    │[0m
+[0m│[0m↑/↓[0m: Vert Scroll (0/102)  [0m←/→[0m: Horz Scroll (1/216)  [0mq[0m: Quit                   │[0m
+[0m│                                                                              │[0m
+[0m└──────────────────────────────────────────────────────────────────────────────┘[0m

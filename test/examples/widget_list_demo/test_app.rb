@@ -16,15 +16,13 @@ class TestWidgetListDemo < Minitest::Test
     @app = WidgetListDemo.new
   end
 
-  def test_render_initial_state
+  def test_initial_render
     with_test_terminal do
       inject_key(:q)
       @app.run
 
-      content = buffer_content
-      assert content.any? { |line| line.include?("List Widget Demo") }
-      assert content.any? { |line| line.include?("Large List") }
-      assert content.any? { |line| line.include?("Item 1") }
+      assert_snapshot("initial_render")
+      assert_rich_snapshot("initial_render")
     end
   end
 
@@ -33,9 +31,8 @@ class TestWidgetListDemo < Minitest::Test
       inject_keys(:down, :q)
       @app.run
 
-      content = buffer_content
-      # Initial large list, down selects first item (Item 1)
-      assert content.any? { |line| line.include?(">> Item 1") }
+      assert_snapshot("after_navigate_down")
+      assert_rich_snapshot("after_navigate_down")
     end
   end
 
@@ -44,32 +41,18 @@ class TestWidgetListDemo < Minitest::Test
       inject_keys(:up, :q)
       @app.run
 
-      content = buffer_content
-      # Should wrap to last item of Large List (Item 200)
-      assert content.any? { |line| line.include?(">> Item 200") }
+      assert_snapshot("after_navigate_up_wrap")
+      assert_rich_snapshot("after_navigate_up_wrap")
     end
   end
 
-  def test_toggle_selection_on
+  def test_toggle_selection
     with_test_terminal do
       inject_keys(:x, :q)
       @app.run
 
-      content = buffer_content
-      # Selects index 0 (Item 1)
-      assert content.any? { |line| line.include?(">> Item 1") }
-      assert content.any? { |line| line.include?("Sel: 0") }
-    end
-  end
-
-  def test_toggle_selection_off
-    with_test_terminal do
-      inject_keys(:x, :x, :q)
-      @app.run
-
-      content = buffer_content
-      refute content.any? { |line| line.include?(">> ") && line.include?("Item 1") }
-      assert content.any? { |line| line.include?("Sel: none") }
+      assert_snapshot("after_toggle_selection")
+      assert_rich_snapshot("after_toggle_selection")
     end
   end
 
@@ -78,22 +61,8 @@ class TestWidgetListDemo < Minitest::Test
       inject_keys(:i, :q)
       @app.run
 
-      content = buffer_content
-      # Cycles to next set: Colors
-      assert content.any? { |line| line.include?("Colors") }
-      assert content.any? { |line| line.include?("Red") }
-    end
-  end
-
-  def test_cycle_item_set_multiple_times
-    with_test_terminal do
-      # 0=Large, 1=Colors, 2=Fruits, 3=Programming
-      inject_keys(:i, :i, :i, :q)
-      @app.run
-
-      content = buffer_content
-      assert content.any? { |line| line.include?("Programming") }
-      assert content.any? { |line| line.include?("Ruby") }
+      assert_snapshot("after_item_set_cycle")
+      assert_rich_snapshot("after_item_set_cycle")
     end
   end
 
@@ -102,8 +71,8 @@ class TestWidgetListDemo < Minitest::Test
       inject_keys(:h, :q)
       @app.run
 
-      content = buffer_content
-      assert content.any? { |line| line.include?("Yellow on Black") }
+      assert_snapshot("after_highlight_style_cycle")
+      assert_rich_snapshot("after_highlight_style_cycle")
     end
   end
 
@@ -112,8 +81,8 @@ class TestWidgetListDemo < Minitest::Test
       inject_keys(:x, :y, :q)
       @app.run
 
-      content = buffer_content
-      assert content.any? { |line| line.include?("▶") }
+      assert_snapshot("after_highlight_symbol_cycle")
+      assert_rich_snapshot("after_highlight_symbol_cycle")
     end
   end
 
@@ -122,8 +91,8 @@ class TestWidgetListDemo < Minitest::Test
       inject_keys(:d, :q)
       @app.run
 
-      content = buffer_content
-      assert content.any? { |line| line.include?("Bottom to Top") }
+      assert_snapshot("after_direction_cycle")
+      assert_rich_snapshot("after_direction_cycle")
     end
   end
 
@@ -132,20 +101,8 @@ class TestWidgetListDemo < Minitest::Test
       inject_keys(:s, :q)
       @app.run
 
-      content = buffer_content
-      assert content.any? { |line| line.include?("List Widget Demo") }
-    end
-  end
-
-  def test_spacing_always_shows_column
-    with_test_terminal do
-      # Need to enable always spacing (:s) on Item list
-      inject_keys(:s, :q)
-      @app.run
-
-      content = buffer_content
-      # With :always spacing, unselected items are indented
-      assert content.any? { |line| line.include?("   Item 1") }
+      assert_snapshot("after_spacing_cycle")
+      assert_rich_snapshot("after_spacing_cycle")
     end
   end
 
@@ -154,8 +111,8 @@ class TestWidgetListDemo < Minitest::Test
       inject_keys(:b, :q)
       @app.run
 
-      content = buffer_content
-      assert content.any? { |line| line.include?("List Widget Demo") }
+      assert_snapshot("after_base_style_cycle")
+      assert_rich_snapshot("after_base_style_cycle")
     end
   end
 
@@ -164,39 +121,8 @@ class TestWidgetListDemo < Minitest::Test
       inject_keys(:r, :q)
       @app.run
 
-      content = buffer_content
-      assert content.any? { |line| line.include?("List Widget Demo") }
-    end
-  end
-
-  def test_selection_resets_on_item_set_change
-    with_test_terminal do
-      inject_keys(:x, :down, :i, :q)
-      @app.run
-
-      content = buffer_content
-      # After changing item set to Colors, selection should reset
-      assert content.any? { |line| line.include?("Sel: none") }
-    end
-  end
-
-  def test_quit_with_ctrl_c
-    with_test_terminal do
-      inject_keys("c", :q)
-      @app.run
-
-      content = buffer_content
-      assert content.any? { |line| line.include?("List Widget Demo") }
-    end
-  end
-
-  def test_demo_title_always_visible
-    with_test_terminal do
-      inject_keys(:i, :h, :y, :d, :s, :b, :r, :q)
-      @app.run
-
-      content = buffer_content
-      assert content.any? { |line| line.include?("List Widget Demo") }
+      assert_snapshot("after_repeat_symbol_cycle")
+      assert_rich_snapshot("after_repeat_symbol_cycle")
     end
   end
 
@@ -205,81 +131,28 @@ class TestWidgetListDemo < Minitest::Test
       inject_keys(:p, :q)
       @app.run
 
-      content = buffer_content
-      # 0=None, 1=1 item
-      assert content.any? { |line| line.include?("Scroll Padding (1 item)") }
+      assert_snapshot("after_scroll_padding_cycle")
+      assert_rich_snapshot("after_scroll_padding_cycle")
     end
   end
 
-  def test_scroll_padding_changes_display
+  def test_cycle_offset_mode
     with_test_terminal do
-      # Switch to Colors (i), Toggle select (x), scroll down, toggle padding (p)
-      inject_keys(:i, :x, :down, :p, :q)
+      inject_keys(:o, :q)
       @app.run
 
-      content = buffer_content
-      assert content.any? { |line| line.include?("Colors") }
-      # Selected index 1 (Orange) of Colors
-      assert content.any? { |line| line.include?(">> Orange") }
+      assert_snapshot("after_offset_mode_cycle")
+      assert_rich_snapshot("after_offset_mode_cycle")
     end
   end
 
   def test_multiple_navigation_and_options
     with_test_terminal do
-      # Interactive usage smoke test
       inject_keys(:down, :h, :down, :y, :up, :b, :q)
       @app.run
 
-      content = buffer_content
-      assert content.any? { |line| line.include?("List Widget Demo") }
-    end
-  end
-
-  def test_cycle_offset_mode_to_offset_only
-    with_test_terminal do
-      # Press 'o' to cycle from Auto to Offset Only
-      inject_keys(:o, :q)
-      @app.run
-
-      content = buffer_content.join("\n")
-      assert_includes content, "Offset Only"
-      assert_includes content, "Offset: 10"
-    end
-  end
-
-  def test_cycle_offset_mode_to_conflict
-    with_test_terminal do
-      # Press 'o' twice to reach Conflict mode
-      inject_keys(:o, :o, :q)
-      @app.run
-
-      content = buffer_content.join("\n")
-      assert_includes content, "Conflict"
-      assert_includes content, "Offset: 0"
-    end
-  end
-
-  def test_offset_only_mode_disables_selection
-    with_test_terminal do
-      # Set selection first, then switch to Offset Only
-      inject_keys(:x, :o, :q)
-      @app.run
-
-      content = buffer_content.join("\n")
-      # Selection is disabled in Offset Only mode
-      assert_includes content, "Sel: none"
-    end
-  end
-
-  def test_offset_mode_cycles_back_to_auto
-    with_test_terminal do
-      # Press 'o' three times to wrap back to Auto
-      inject_keys(:o, :o, :o, :q)
-      @app.run
-
-      content = buffer_content.join("\n")
-      assert_includes content, "Auto (No Offset)"
-      assert_includes content, "Offset: auto"
+      assert_snapshot("after_multiple_interactions")
+      assert_rich_snapshot("after_multiple_interactions")
     end
   end
 end

@@ -16,96 +16,53 @@ class TestListStylesExample < Minitest::Test
     @app = WidgetListStyles.new
   end
 
-  def test_render_initial_state_no_selection
+  def test_initial_render
     with_test_terminal do
       inject_key(:q)
       @app.run
 
-      # Default is :when_selected with no selection, so no highlight symbol column
-      content = buffer_content
-      assert content.any? { |line| line.include?("Item 1") }
-      assert content.any? { |line| line.include?("Item 2") }
-      refute content.any? { |line| line.include?(">>") }
+      assert_snapshot("initial_render")
+      assert_rich_snapshot("initial_render")
     end
   end
 
-  def test_toggle_selection_on
+  def test_toggle_selection
     with_test_terminal do
-      # Press x to toggle on, then quit
       inject_keys(:x, :q)
       @app.run
 
-      content = buffer_content
-      assert content.any? { |line| line.include?(">> Item 1") }
+      assert_snapshot("after_toggle_selection")
+      assert_rich_snapshot("after_toggle_selection")
     end
   end
 
-  def test_toggle_selection_off
-    with_test_terminal do
-      # Press x to toggle on, x again to toggle off, then quit
-      inject_keys(:x, :x, :q)
-      @app.run
-
-      content = buffer_content
-      refute content.any? { |line| line.include?(">>") }
-    end
-  end
-
-  def test_navigation_selects_and_moves
-    with_test_terminal do
-      inject_keys(:down, :q)
-      @app.run
-
-      content = buffer_content
-      assert content.any? { |line| line.include?(">> Item 1") }
-    end
-  end
-
-  def test_navigation_down_twice
+  def test_navigation
     with_test_terminal do
       inject_keys(:down, :down, :q)
       @app.run
 
-      content = buffer_content
-      assert content.any? { |line| line.include?(">> Item 2") }
+      assert_snapshot("after_navigation")
+      assert_rich_snapshot("after_navigation")
     end
   end
 
-  def test_quit
+  def test_highlight_spacing_always
     with_test_terminal do
-      inject_key(:q)
-      @app.run
-    end
-  end
-
-  def test_toggle_highlight_spacing_to_always
-    with_test_terminal do
-      # 's' cycles: when_selected -> always -> never
       inject_keys(:s, :q)
       @app.run
 
-      content = buffer_content
-      assert content.any? { |line| line.include?("Always") }
+      assert_snapshot("after_spacing_always")
+      assert_rich_snapshot("after_spacing_always")
     end
   end
 
-  def test_toggle_highlight_spacing_to_never
+  def test_highlight_spacing_never
     with_test_terminal do
       inject_keys(:s, :s, :q)
       @app.run
 
-      content = buffer_content
-      assert content.any? { |line| line.include?("Never") }
-    end
-  end
-
-  def test_toggle_highlight_spacing_back_to_when_selected
-    with_test_terminal do
-      inject_keys(:s, :s, :s, :q)
-      @app.run
-
-      content = buffer_content
-      assert content.any? { |line| line.include?("When Selected") }
+      assert_snapshot("after_spacing_never")
+      assert_rich_snapshot("after_spacing_never")
     end
   end
 
@@ -114,44 +71,18 @@ class TestListStylesExample < Minitest::Test
       inject_keys(:d, :q)
       @app.run
 
-      content = buffer_content
-      assert content.any? { |line| line.include?("Bottom to Top") }
+      assert_snapshot("after_direction_cycle")
+      assert_rich_snapshot("after_direction_cycle")
     end
   end
 
-  def test_spacing_always_shows_column_without_selection
+  def test_repeat_symbol_toggle
     with_test_terminal do
-      # Set spacing to :always
-      inject_keys(:s, :q)
-      @app.run
-
-      content = buffer_content
-      # With :always, spacing column is shown even without selection
-      assert content.any? { |line| line.include?("   Item 1") }
-    end
-  end
-
-  def test_repeat_highlight_symbol_toggle
-    with_test_terminal do
-      # Press r to toggle repeat mode, then quit
       inject_keys(:r, :q)
       @app.run
 
-      content = buffer_content
-      assert content.any? { |line| line.include?("Repeat Symbol") }
-      assert content.any? { |line| line.include?("On") }
-    end
-  end
-
-  def test_repeat_highlight_symbol_cycles_back
-    with_test_terminal do
-      # Press r twice to cycle back to Off
-      inject_keys(:r, :r, :q)
-      @app.run
-
-      content = buffer_content
-      assert content.any? { |line| line.include?("Repeat Symbol") }
-      assert content.any? { |line| line.include?("Off") }
+      assert_snapshot("after_repeat_toggle")
+      assert_rich_snapshot("after_repeat_toggle")
     end
   end
 end

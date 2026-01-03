@@ -21,9 +21,8 @@ class TestQuickstartDsl < Minitest::Test
       inject_key(:q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Hello, Ratatui!"
-      assert_includes content, "My Ruby TUI App"
+      assert_snapshot("render")
+      assert_rich_snapshot("render")
     end
   end
 end

@@ -16,33 +16,13 @@ class TestWidgetStyleColors < Minitest::Test
     @app = WidgetStyleColors.new
   end
 
-  def test_renders_with_title
+  def test_render
     with_test_terminal do
       inject_key(:q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "Hex Color Gradient"
-    end
-  end
-
-  def test_renders_gradient_cells
-    with_test_terminal do
-      inject_key(:q)
-      @app.run
-
-      content = buffer_content.join("\n")
-      # Should have many spaces (gradient cells)
-      assert content.length > 500
-    end
-  end
-
-  def test_exit_on_q
-    with_test_terminal do
-      inject_key(:q)
-      @app.run
-      # If we get here without hanging, exit worked
-      assert true
+      assert_snapshot("render")
+      assert_rich_snapshot("render")
     end
   end
 end

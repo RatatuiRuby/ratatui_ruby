@@ -1,0 +1,24 @@
+┌Scrollable Text (100 lines)───────────────────────────────────────────────────┐
+│Line 2: This is a long line of text that can be scrolled horizontally. This is│
+│Line 3: This is a long line of text that can be scrolled horizontally. This is│
+│Line 4: This is a long line of text that can be scrolled horizontally. This is│
+│Line 5: This is a long line of text that can be scrolled horizontally. This is│
+│Line 6: This is a long line of text that can be scrolled horizontally. This is│
+│Line 7: This is a long line of text that can be scrolled horizontally. This is│
+│Line 8: This is a long line of text that can be scrolled horizontally. This is│
+│Line 9: This is a long line of text that can be scrolled horizontally. This is│
+│Line 10: This is a long line of text that can be scrolled horizontally. This i│
+│Line 11: This is a long line of text that can be scrolled horizontally. This i│
+│Line 12: This is a long line of text that can be scrolled horizontally. This i│
+│Line 13: This is a long line of text that can be scrolled horizontally. This i│
+│Line 14: This is a long line of text that can be scrolled horizontally. This i│
+│Line 15: This is a long line of text that can be scrolled horizontally. This i│
+│Line 16: This is a long line of text that can be scrolled horizontally. This i│
+│Line 17: This is a long line of text that can be scrolled horizontally. This i│
+│Line 18: This is a long line of text that can be scrolled horizontally. This i│
+└──────────────────────────────────────────────────────────────────────────────┘
+┌Controls──────────────────────────────────────────────────────────────────────┐
+│NAVIGATION (Size: 102x216)                                                    │
+│↑/↓: Vert Scroll (1/102)  ←/→: Horz Scroll (0/216)  q: Quit                   │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘

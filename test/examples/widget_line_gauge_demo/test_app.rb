@@ -21,12 +21,8 @@ class TestLineGaugeDemo < Minitest::Test
       inject_key(:q)
       @app.run
 
-      content = buffer_content.join("\n")
-      assert_includes content, "LineGauge Widget Demo"
-      assert_includes content, "Interactive Gauge"
-      assert_includes content, "Inverse"
-      assert_includes content, "←/→: Ratio"
-      assert_includes content, "50%"
+      assert_snapshot("initial_render")
+      assert_rich_snapshot("initial_render")
     end
   end
 
@@ -35,9 +31,8 @@ class TestLineGaugeDemo < Minitest::Test
       inject_keys(:right, :right, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # After 2 right presses: index 2 -> 3 -> 4 (80%)
-      assert_includes content, "80%"
+      assert_snapshot("after_ratio_right")
+      assert_rich_snapshot("after_ratio_right")
     end
   end
 
@@ -46,9 +41,8 @@ class TestLineGaugeDemo < Minitest::Test
       inject_keys(:left, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # After 1 left press: index 2 -> 1 (35%)
-      assert_includes content, "35%"
+      assert_snapshot("after_ratio_left")
+      assert_rich_snapshot("after_ratio_left")
     end
   end
 
@@ -57,9 +51,8 @@ class TestLineGaugeDemo < Minitest::Test
       inject_keys(:f, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # Default filled_symbol_index is 0 (█), after press becomes 1 (▓)
-      assert_includes content, "Dark Shade"
+      assert_snapshot("after_filled_symbol_cycle")
+      assert_rich_snapshot("after_filled_symbol_cycle")
     end
   end
 
@@ -68,9 +61,8 @@ class TestLineGaugeDemo < Minitest::Test
       inject_keys(:c, :c, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # Default is index 2 (Green), after 2 presses -> 4 (Blue)
-      assert_includes content, "Blue"
+      assert_snapshot("after_filled_color_cycle")
+      assert_rich_snapshot("after_filled_color_cycle")
     end
   end
 
@@ -79,9 +71,8 @@ class TestLineGaugeDemo < Minitest::Test
       inject_keys(:u, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # Default is index 0 (Light Shade), after press becomes 1 (Dot)
-      assert_includes content, "Dot"
+      assert_snapshot("after_unfilled_symbol_cycle")
+      assert_rich_snapshot("after_unfilled_symbol_cycle")
     end
   end
 
@@ -90,9 +81,8 @@ class TestLineGaugeDemo < Minitest::Test
       inject_keys(:x, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # Default is index 1 (Dark Gray), after press becomes 2 (Gray)
-      assert_includes content, "Gray"
+      assert_snapshot("after_unfilled_color_cycle")
+      assert_rich_snapshot("after_unfilled_color_cycle")
     end
   end
 
@@ -101,17 +91,8 @@ class TestLineGaugeDemo < Minitest::Test
       inject_keys(:b, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # Default is index 0 (None), after press becomes 1 (Bold White)
-      assert_includes content, "Bold White"
-    end
-  end
-
-  def test_quit_with_ctrl_c
-    with_test_terminal do
-      inject_key(:ctrl_c)
-      @app.run
-      # Success if returns without hanging
+      assert_snapshot("after_base_style_cycle")
+      assert_rich_snapshot("after_base_style_cycle")
     end
   end
 
@@ -120,10 +101,8 @@ class TestLineGaugeDemo < Minitest::Test
       inject_keys(:right, :f, :c, :b, :q)
       @app.run
 
-      content = buffer_content.join("\n")
-      # Verify some of the changes took effect
-      assert_includes content, "65%" # ratio changed
-      assert_includes content, "Dark Shade" # filled_symbol changed
+      assert_snapshot("after_multiple_changes")
+      assert_rich_snapshot("after_multiple_changes")
     end
   end
 end

@@ -1,0 +1,24 @@
+┌Menu────────────┐┌Content─────────────────────────────────────────────────────┐
+│> Dashboard     ││Active View: Dashboard                                      │
+│  Analytics     ││                                                            │
+│  Settings      ││Rect Attributes (from Layout.split):                        │
+│  Logs          ││  Sidebar: Rect(x:0, y:0, width:18, height:16)              │
+│  Help          ││  Content: Rect(x:18, y:0, width:62, height:16)             │
+│                ││                                                            │
+│                ││Hit Testing (Rect#contains?):                               │
+│                ││  Clicks: 0  |  Layout changed: sidebar_width=18            │
+│                ││                                                            │
+│                ││                                                            │
+│                ││                                                            │
+│                ││                                                            │
+│                ││                                                            │
+│                ││                                                            │
+└────────────────┘└────────────────────────────────────────────────────────────┘
+┌Controls──────────────────────────────────────────────────────────────────────┐
+│LAYOUT  ←: Shrink sidebar  →: Expand sidebar  (width: 18)                     │
+│NAVIGATION  ↑↓: Select menu item  q: Quit                                     │
+│                                                                              │
+│HIT TESTING  Click any panel → Rect#contains?(x, y) determines which rect was │
+│                                                                              │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘

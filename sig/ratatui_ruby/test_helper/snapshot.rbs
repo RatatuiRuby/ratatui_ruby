@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  module TestHelper
+    module Snapshot
+      def assert_snapshot: (String name, ?String? msg) ?{ (Array[String]) -> Array[String] } -> void
+      def assert_screen_matches: (String | Array[String] expected, ?String? msg) ?{ (Array[String]) -> Array[String] } -> void
+      def assert_rich_snapshot: (String name, ?String? msg) ?{ (Array[String]) -> Array[String] } -> void
+    end
+  end
+end

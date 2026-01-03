@@ -1,0 +1,24 @@
+┌Box Demo──────────────────────────────────────────────────────────────────────┐
+│                           Arrow Keys: Change Color                           │
+│                                                                              │
+│                             Current Color: Green                             │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+┌Controls──────────────────────────────────────────────────────────────────────┐
+│↑↓←→: Color (Green)  q: Quit                                                  │
+│space: Border Type (Plain)  c: Border Set (None)                              │
+│s: Style (Blue on White)  b: Border Style (Default (no border style))         │
+│enter: Align Title (Left)  t: Title Style (Default)                           │
+└──────────────────────────────────────────────────────────────────────────────┘

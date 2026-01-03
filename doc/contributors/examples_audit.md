@@ -7,16 +7,14 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 Audit of ratatui_ruby `examples/` directory for v1.0.0 readiness.
 
----
+## P0: Critical (Completed ✓)
 
-## [P0: Critical (Must Fix Before v1.0.0) ](./examples_audit/p0_critical.md)
+All P0 critical items have been completed:
 
-
-1. **[Migrate Example Tests to Snapshot API](./examples_audit/p0_critical.md#2-migrate-example-tests-to-snapshot-api)**
-   - Pattern change (old vs new)
-   - Why snapshots are better
-   - Example update pattern
-   - Handling dynamic content with normalization
+1. **Migrate Example Tests to Snapshot API** ✓
+   - Migrated 31 test files from manual `buffer_content` assertions to `assert_snapshot` and `assert_rich_snapshot`
+   - Added deterministic seeding for tests with random content (Faker, RATA_SEED)
+   - Generates `.txt` (plain) and `.ansi` (styled) snapshots for mutation-testing capability
 
 ---
 

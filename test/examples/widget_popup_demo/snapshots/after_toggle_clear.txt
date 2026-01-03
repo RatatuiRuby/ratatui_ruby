@@ -1,0 +1,24 @@
+BACKGROUND RED BACKGROUND RED BACKGROUND RED BACKGROUND RED BACKGROUND RED      
+BACKGROUND RED BACKGROUND RED BACKGROUND RED BACKGROUND RED BACKGROUND RED      
+BACKGROUND RED BACKGROUND RED BACKGROUND RED BACKGROUND RED BACKGROUND RED      
+BACKGROUND RED BACKGROUND RED BACKGROUND RED BACKGROUND RED BACKGROUND RED      
+BACKGROUND RED BACKGROUND RED BACKGROUND RED BACKGROUND RED BACKGROUND RED      
+BACKGROUND RED BACKGROUND RED BACKGROUND RED BACKGROUND RED BACKGROUND RED      
+BACKGROUND RED B┌Popup Demo (q to quit, space to toggle)───────┐GROUND RED      
+BACKGROUND RED B│              ✓ Clear is ENABLED              │GROUND RED      
+BACKGROUND RED B│                                              │GROUND RED      
+BACKGROUND RED B│         Resets background to default         │GROUND RED      
+BACKGROUND RED B│          (Usually Black/Transparent)         │GROUND RED      
+BACKGROUND RED B│                                              │GROUND RED      
+BACKGROUND RED B│             Press Space to toggle            │GROUND RED      
+BACKGROUND RED B│                                              │GROUND RED      
+BACKGROUND RED B│                                              │GROUND RED      
+BACKGROUND RED B│                                              │GROUND RED      
+BACKGROUND RED B│                                              │GROUND RED      
+BACKGROUND RED B└──────────────────────────────────────────────┘GROUND RED      
+BACKGROUND RED BACKGROUND RED BACKGROUND RED BACKGROUND RED BACKGROUND RED      
+BACKGROUND RED BACKGROUND RED BACKGROUND RED BACKGROUND RED BACKGROUND RED      
+                                                                                
+                                                                                
+                                                                                
+                                                                                
