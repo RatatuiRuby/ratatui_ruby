@@ -12,6 +12,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Removed
+
+## [0.6.0] - 2026-01-03
+
+### Added
+
 - **Rich Text Support**: `List`, `Gauge`, `LineGauge`, and `BarChart` widgets now accept rich text objects (`Text::Span`, `Text::Line`) in addition to plain strings. This enables per-character styling, multi-colored labels, and complex text formatting matching Ratatui 0.30.0 capabilities.
 - **ListItem Wrapper**: New `ListItem` data class allows applying row-level styling (background color) independent of text content. `List` items can now be `String`, `Text::Span`, `Text::Line`, or `ListItem` objects.
 - **Non-Blocking Event Polling**: `RatatuiRuby.poll_event` now accepts an optional `timeout:` parameter (Float seconds). Use `timeout: 0.0` for non-blocking checks, or `timeout: 0.1` for fixed timesteps. Defaults to `0.016` (16ms) to preserve existing behavior.
@@ -312,6 +322,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Testing Support**: Included `RatatuiRuby::TestHelper` and RSpec integration to make testing your TUI applications possible.
 
 [Unreleased]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/HEAD
+[0.6.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.6.0
 [0.5.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.5.0
 [0.4.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.4.0
 [0.3.1]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.3.1
