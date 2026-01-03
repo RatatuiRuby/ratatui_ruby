@@ -83,7 +83,5 @@ module RatatuiRuby
       assert_includes buffer, "Aligned Chart"
       assert_includes buffer, "TestDS"
     end
-
-
   end
 end

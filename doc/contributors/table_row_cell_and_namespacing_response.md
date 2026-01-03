@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+
 Here is an analysis of the situation and the detailed architectural directive for your development agent.
 
 ### Analysis: Why you are nervous, and why you should do it anyway.

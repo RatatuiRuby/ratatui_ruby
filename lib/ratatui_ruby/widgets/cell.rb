@@ -40,7 +40,7 @@ module RatatuiRuby
       # [content] String, Text::Span, or Text::Line.
       # [style] Style::Style object (optional).
       def initialize(content:, style: nil)
-        super(content:, style:)
+        super
       end
     end
   end

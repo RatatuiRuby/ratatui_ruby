@@ -49,8 +49,8 @@ module RatatuiRuby
 
     # Draws the given UI node tree to the terminal.
     # @see RatatuiRuby.draw
-    def draw(tree = nil, &block)
-      RatatuiRuby.draw(tree, &block)
+    def draw(tree = nil, &)
+      RatatuiRuby.draw(tree, &)
     end
 
     # Checks for user input.

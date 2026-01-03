@@ -5,32 +5,32 @@
 
 module RatatuiRuby
   module Widgets
-  # Displays the Ratatui mascot.
-  #
-  # Interfaces without personality feel clinical and dry. Users appreciate a friendly face in their terminal.
-  #
-  # This widget renders the Ratatui mascot (a mouse).
-  #
-  # Use it to add charm to your application, greet users on startup, or as a decorative element in sidebars.
-  #
-  # {rdoc-image:/doc/images/widget_ratatui_mascot_demo.png}[link:/examples/widget_ratatui_mascot_demo/app_rb.html]
-  #
-  # === Example
-  #
-  # Run the interactive demo from the terminal:
-  #
-  #   ruby examples/widget_ratatui_mascot_demo/app.rb
-  class RatatuiMascot < Data.define(:block)
-    ##
-    # :method: new
-    # :call-seq: new(block: nil) -> RatatuiMascot
+    # Displays the Ratatui mascot.
     #
-    # Creates a new RatatuiMascot.
+    # Interfaces without personality feel clinical and dry. Users appreciate a friendly face in their terminal.
     #
-    # @param block [Block, nil] A block to wrap the widget in.
-    def initialize(block: nil)
-      super
+    # This widget renders the Ratatui mascot (a mouse).
+    #
+    # Use it to add charm to your application, greet users on startup, or as a decorative element in sidebars.
+    #
+    # {rdoc-image:/doc/images/widget_ratatui_mascot_demo.png}[link:/examples/widget_ratatui_mascot_demo/app_rb.html]
+    #
+    # === Example
+    #
+    # Run the interactive demo from the terminal:
+    #
+    #   ruby examples/widget_ratatui_mascot_demo/app.rb
+    class RatatuiMascot < Data.define(:block)
+      ##
+      # :method: new
+      # :call-seq: new(block: nil) -> RatatuiMascot
+      #
+      # Creates a new RatatuiMascot.
+      #
+      # @param block [Block, nil] A block to wrap the widget in.
+      def initialize(block: nil)
+        super
+      end
     end
-  end
   end
 end

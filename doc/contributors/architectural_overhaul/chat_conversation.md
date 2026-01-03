@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+
 # Chat Conversation
 
 Note: _This is purely the output of the chat conversation and does not contain any raw data, codebase snippets, etc. used to generate the output._

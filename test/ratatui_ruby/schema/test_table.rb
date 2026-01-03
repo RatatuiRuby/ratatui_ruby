@@ -288,9 +288,9 @@ class TestTable < Minitest::Test
   end
 
   def test_mixed_cell_content
-    # Verify we can mix Strings and Cells in the same row
-    cell = RatatuiRuby::Buffer::Cell.new(char: "X", fg: :red)
-    rows = [["A", cell]]
+    # Verify we can mix Strings and Text::Span (styled) in the same row
+    styled_span = RatatuiRuby::Text::Span.new(content: "X", style: RatatuiRuby::Style::Style.new(fg: :red))
+    rows = [["A", styled_span]]
     widths = [RatatuiRuby::Layout::Constraint.length(1), RatatuiRuby::Layout::Constraint.length(1)]
 
     table = RatatuiRuby::Widgets::Table.new(rows:, widths:)
@@ -301,9 +301,7 @@ class TestTable < Minitest::Test
       # Check content
       assert_equal "A", RatatuiRuby.get_cell_at(0, 0).char
 
-      rendered_cell = RatatuiRuby.get_cell_at(1, 0) # Spacing? default column_spacing is 1
       # A (0) + space (1) + X (2)
-
       rendered_cell = RatatuiRuby.get_cell_at(2, 0)
       assert_equal "X", rendered_cell.char
       assert_equal :red, rendered_cell.fg
@@ -311,14 +309,15 @@ class TestTable < Minitest::Test
   end
 
   def test_header_footer_cells
-    header_cell = RatatuiRuby::Buffer::Cell.new(char: "H", fg: :blue)
-    footer_cell = RatatuiRuby::Buffer::Cell.new(char: "F", fg: :green)
+    # Use Text::Span for styled header/footer content
+    header_span = RatatuiRuby::Text::Span.new(content: "H", style: RatatuiRuby::Style::Style.new(fg: :blue))
+    footer_span = RatatuiRuby::Text::Span.new(content: "F", style: RatatuiRuby::Style::Style.new(fg: :green))
 
     table = RatatuiRuby::Widgets::Table.new(
       rows: [],
       widths: [RatatuiRuby::Layout::Constraint.length(1)],
-      header: [header_cell],
-      footer: [footer_cell]
+      header: [header_span],
+      footer: [footer_span]
     )
 
     with_test_terminal(5, 3) do
@@ -417,7 +416,7 @@ class TestTable < Minitest::Test
   def test_rich_text_cell_with_line
     line = RatatuiRuby::Text::Line.new(spans: [
       RatatuiRuby::Text::Span.new(content: "Hello ", style: RatatuiRuby::Style::Style.new(fg: :green)),
-      RatatuiRuby::Text::Span.new(content: "World", style: RatatuiRuby::Style::Style.new(fg: :blue))
+      RatatuiRuby::Text::Span.new(content: "World", style: RatatuiRuby::Style::Style.new(fg: :blue)),
     ])
     rows = [[line]]
     widths = [RatatuiRuby::Layout::Constraint.length(15)]
@@ -487,4 +486,3 @@ class TestTable < Minitest::Test
     assert_equal 2, row.height
   end
 end
-

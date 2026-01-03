@@ -108,126 +108,6 @@ module RatatuiRuby
     #
     # == Widget Factories
     #
-    # :method: axis
-    # :call-seq: axis(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Axis.new.
-    #
-    # :method: bar_chart
-    # :call-seq: bar_chart(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::BarChart.new.
-    #
-    # :method: bar_chart_bar
-    # :call-seq: bar_chart_bar(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::BarChart::Bar.new.
-    #
-    # :method: bar_chart_bar_group
-    # :call-seq: bar_chart_bar_group(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::BarChart::BarGroup.new.
-    #
-    # :method: block
-    # :call-seq: block(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Block.new.
-    #
-    # :method: calendar
-    # :call-seq: calendar(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Calendar.new.
-    #
-    # :method: canvas
-    # :call-seq: canvas(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Canvas.new.
-    #
-    # :method: cell
-    # :call-seq: cell(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Cell.new.
-    #
-    # :method: cell_char
-    # :call-seq: cell_char(*args, **kwargs, &block)
-    #
-    # Helper for RatatuiRuby::Cell.char.
-    #
-    # :method: cell_default
-    # :call-seq: cell_default(*args, **kwargs, &block)
-    #
-    # Helper for RatatuiRuby::Cell.default.
-    #
-    # :method: cell_empty
-    # :call-seq: cell_empty(*args, **kwargs, &block)
-    #
-    # Helper for RatatuiRuby::Cell.empty.
-    #
-    # :method: cell_symbol
-    # :call-seq: cell_symbol(*args, **kwargs, &block)
-    #
-    # Helper for RatatuiRuby::Cell.symbol.
-    #
-    # :method: center
-    # :call-seq: center(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Center.new.
-    #
-    # :method: chart
-    # :call-seq: chart(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Chart.new.
-    #
-    # :method: clear
-    # :call-seq: clear(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Clear.new.
-    #
-    # :method: constraint
-    # :call-seq: constraint(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Constraint.new.
-    #
-    # :method: constraint_fill
-    # :call-seq: constraint_fill(*args, **kwargs, &block)
-    #
-    # Helper for RatatuiRuby::Constraint.fill.
-    #
-    # :method: constraint_length
-    # :call-seq: constraint_length(*args, **kwargs, &block)
-    #
-    # Helper for RatatuiRuby::Constraint.length.
-    #
-    # :method: constraint_max
-    # :call-seq: constraint_max(*args, **kwargs, &block)
-    #
-    # Helper for RatatuiRuby::Constraint.max.
-    #
-    # :method: constraint_min
-    # :call-seq: constraint_min(*args, **kwargs, &block)
-    #
-    # Helper for RatatuiRuby::Constraint.min.
-    #
-    # :method: constraint_percentage
-    # :call-seq: constraint_percentage(*args, **kwargs, &block)
-    #
-    # Helper for RatatuiRuby::Constraint.percentage.
-    #
-    # :method: constraint_ratio
-    # :call-seq: constraint_ratio(*args, **kwargs, &block)
-    #
-    # Helper for RatatuiRuby::Constraint.ratio.
-    #
-    # :method: cursor
-    # :call-seq: cursor(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Cursor.new.
-    #
-    # :method: dataset
-    # :call-seq: dataset(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Dataset.new.
-    #
     # :method: draw_cell
     # :call-seq: draw_cell(*args, **kwargs, &block)
     #
@@ -308,40 +188,20 @@ module RatatuiRuby
     #
     # Factory for RatatuiRuby::Frame.new.
     #
-    # :method: gauge
-    # :call-seq: gauge(*args, **kwargs, &block)
+    # :method: layout_constraint
+    # :call-seq: layout_constraint(*args, **kwargs, &block)
     #
-    # Factory for RatatuiRuby::Gauge.new.
+    # Factory for RatatuiRuby::Layout::Constraint.new.
     #
-    # :method: layout
-    # :call-seq: layout(*args, **kwargs, &block)
+    # :method: layout_layout
+    # :call-seq: layout_layout(*args, **kwargs, &block)
     #
-    # Factory for RatatuiRuby::Layout.new.
+    # Factory for RatatuiRuby::Layout::Layout.new.
     #
-    # :method: layout_split
-    # :call-seq: layout_split(*args, **kwargs, &block)
+    # :method: layout_rect
+    # :call-seq: layout_rect(*args, **kwargs, &block)
     #
-    # Helper for RatatuiRuby::Layout.split.
-    #
-    # :method: line_chart
-    # :call-seq: line_chart(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::LineChart.new.
-    #
-    # :method: line_gauge
-    # :call-seq: line_gauge(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::LineGauge.new.
-    #
-    # :method: list
-    # :call-seq: list(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::List.new.
-    #
-    # :method: list_item
-    # :call-seq: list_item(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::ListItem.new.
+    # Factory for RatatuiRuby::Layout::Rect.new.
     #
     # :method: list_state
     # :call-seq: list_state(*args, **kwargs, &block)
@@ -353,46 +213,6 @@ module RatatuiRuby
     #
     # Helper for RatatuiRuby::ListState.new.
     #
-    # :method: overlay
-    # :call-seq: overlay(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Overlay.new.
-    #
-    # :method: paragraph
-    # :call-seq: paragraph(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Paragraph.new.
-    #
-    # :method: paragraph_new
-    # :call-seq: paragraph_new(*args, **kwargs, &block)
-    #
-    # Helper for RatatuiRuby::Paragraph.new.
-    #
-    # :method: ratatui_logo
-    # :call-seq: ratatui_logo(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::RatatuiLogo.new.
-    #
-    # :method: ratatui_mascot
-    # :call-seq: ratatui_mascot(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::RatatuiMascot.new.
-    #
-    # :method: rect
-    # :call-seq: rect(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Rect.new.
-    #
-    # :method: row
-    # :call-seq: row(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Row.new.
-    #
-    # :method: scrollbar
-    # :call-seq: scrollbar(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Scrollbar.new.
-    #
     # :method: scrollbar_state
     # :call-seq: scrollbar_state(*args, **kwargs, &block)
     #
@@ -403,55 +223,10 @@ module RatatuiRuby
     #
     # Helper for RatatuiRuby::ScrollbarState.new.
     #
-    # :method: shape_circle
-    # :call-seq: shape_circle(*args, **kwargs, &block)
+    # :method: style_style
+    # :call-seq: style_style(*args, **kwargs, &block)
     #
-    # Factory for RatatuiRuby::Shape::Circle.new.
-    #
-    # :method: shape_label
-    # :call-seq: shape_label(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Shape::Label.new.
-    #
-    # :method: shape_line
-    # :call-seq: shape_line(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Shape::Line.new.
-    #
-    # :method: shape_map
-    # :call-seq: shape_map(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Shape::Map.new.
-    #
-    # :method: shape_point
-    # :call-seq: shape_point(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Shape::Point.new.
-    #
-    # :method: shape_rectangle
-    # :call-seq: shape_rectangle(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Shape::Rectangle.new.
-    #
-    # :method: sparkline
-    # :call-seq: sparkline(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Sparkline.new.
-    #
-    # :method: style
-    # :call-seq: style(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Style.new.
-    #
-    # :method: style_default
-    # :call-seq: style_default(*args, **kwargs, &block)
-    #
-    # Helper for RatatuiRuby::Style.default.
-    #
-    # :method: table
-    # :call-seq: table(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Table.new.
+    # Factory for RatatuiRuby::Style::Style.new.
     #
     # :method: table_state
     # :call-seq: table_state(*args, **kwargs, &block)
@@ -462,11 +237,6 @@ module RatatuiRuby
     # :call-seq: table_state_new(*args, **kwargs, &block)
     #
     # Helper for RatatuiRuby::TableState.new.
-    #
-    # :method: tabs
-    # :call-seq: tabs(*args, **kwargs, &block)
-    #
-    # Factory for RatatuiRuby::Tabs.new.
     #
     # :method: text_width
     # :call-seq: text_width(*args, **kwargs, &block)
@@ -482,6 +252,131 @@ module RatatuiRuby
     # :call-seq: text_span(*args, **kwargs, &block)
     #
     # Factory for RatatuiRuby::Text::Span.new.
+    #
+    # :method: widgets_axis
+    # :call-seq: widgets_axis(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::Axis.new.
+    #
+    # :method: widgets_bar_chart
+    # :call-seq: widgets_bar_chart(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::BarChart.new.
+    #
+    # :method: widgets_block
+    # :call-seq: widgets_block(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::Block.new.
+    #
+    # :method: widgets_calendar
+    # :call-seq: widgets_calendar(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::Calendar.new.
+    #
+    # :method: widgets_canvas
+    # :call-seq: widgets_canvas(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::Canvas.new.
+    #
+    # :method: widgets_cell
+    # :call-seq: widgets_cell(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::Cell.new.
+    #
+    # :method: widgets_center
+    # :call-seq: widgets_center(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::Center.new.
+    #
+    # :method: widgets_chart
+    # :call-seq: widgets_chart(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::Chart.new.
+    #
+    # :method: widgets_clear
+    # :call-seq: widgets_clear(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::Clear.new.
+    #
+    # :method: widgets_cursor
+    # :call-seq: widgets_cursor(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::Cursor.new.
+    #
+    # :method: widgets_dataset
+    # :call-seq: widgets_dataset(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::Dataset.new.
+    #
+    # :method: widgets_gauge
+    # :call-seq: widgets_gauge(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::Gauge.new.
+    #
+    # :method: widgets_line_chart
+    # :call-seq: widgets_line_chart(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::LineChart.new.
+    #
+    # :method: widgets_line_gauge
+    # :call-seq: widgets_line_gauge(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::LineGauge.new.
+    #
+    # :method: widgets_list
+    # :call-seq: widgets_list(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::List.new.
+    #
+    # :method: widgets_list_item
+    # :call-seq: widgets_list_item(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::ListItem.new.
+    #
+    # :method: widgets_overlay
+    # :call-seq: widgets_overlay(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::Overlay.new.
+    #
+    # :method: widgets_paragraph
+    # :call-seq: widgets_paragraph(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::Paragraph.new.
+    #
+    # :method: widgets_ratatui_logo
+    # :call-seq: widgets_ratatui_logo(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::RatatuiLogo.new.
+    #
+    # :method: widgets_ratatui_mascot
+    # :call-seq: widgets_ratatui_mascot(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::RatatuiMascot.new.
+    #
+    # :method: widgets_row
+    # :call-seq: widgets_row(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::Row.new.
+    #
+    # :method: widgets_scrollbar
+    # :call-seq: widgets_scrollbar(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::Scrollbar.new.
+    #
+    # :method: widgets_sparkline
+    # :call-seq: widgets_sparkline(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::Sparkline.new.
+    #
+    # :method: widgets_table
+    # :call-seq: widgets_table(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::Table.new.
+    #
+    # :method: widgets_tabs
+    # :call-seq: widgets_tabs(*args, **kwargs, &block)
+    #
+    # Factory for RatatuiRuby::Widgets::Tabs.new.
     #
   end
 end
