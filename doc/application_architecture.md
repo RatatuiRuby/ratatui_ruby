@@ -44,7 +44,7 @@ Need granular control? You can initialize and restore the terminal yourself. Use
 RatatuiRuby.init_terminal
 begin
   RatatuiRuby.draw do |frame|
-    frame.render_widget(RatatuiRuby::Paragraph.new(text: "Hello"), frame.area)
+    frame.render_widget(RatatuiRuby::Widgets::Paragraph.new(text: "Hello"), frame.area)
   end
 ensure
   RatatuiRuby.restore_terminal
@@ -91,7 +91,7 @@ end
 
 Writing UI trees involves nesting many widgets.
 
-**The Problem:** Explicitly namespacing `RatatuiRuby::` for every widget (e.g., `RatatuiRuby::Paragraph.new`) is tedious. It creates visual noise that hides your layout structure.
+**The Problem:** Explicitly namespacing `RatatuiRuby::` for every widget (e.g., `RatatuiRuby::Widgets::Paragraph.new`) is tedious. It creates visual noise that hides your layout structure.
 
 **The Solution:** The Session API (`tui`) provides shorthand factories for every widget. It yields a session object to your block.
 
@@ -151,27 +151,27 @@ RatatuiRuby.run do
         frame.area,
         direction: :horizontal,
         constraints: [
-          RatatuiRuby::Constraint.length(20),
-          RatatuiRuby::Constraint.min(0)
+          RatatuiRuby::Layout::Constraint.length(20),
+          RatatuiRuby::Layout::Constraint.min(0)
         ]
       )
 
       frame.render_widget(
-        RatatuiRuby::Paragraph.new(
+        RatatuiRuby::Widgets::Paragraph.new(
           text: RatatuiRuby::Text::Line.new(spans: [
-            RatatuiRuby::Text::Span.new(content: "Side", style: RatatuiRuby::Style.new(fg: :blue)),
+            RatatuiRuby::Text::Span.new(content: "Side", style: RatatuiRuby::Style::Style.new(fg: :blue)),
             RatatuiRuby::Text::Span.new(content: "bar")
           ]),
-          block: RatatuiRuby::Block.new(borders: [:all], title: "Nav")
+          block: RatatuiRuby::Widgets::Block.new(borders: [:all], title: "Nav")
         ),
         rects[0]
       )
 
       frame.render_widget(
-        RatatuiRuby::Paragraph.new(
+        RatatuiRuby::Widgets::Paragraph.new(
           text: "Main Content",
-          style: RatatuiRuby::Style.new(fg: :green),
-          block: RatatuiRuby::Block.new(borders: [:all], title: "Content")
+          style: RatatuiRuby::Style::Style.new(fg: :green),
+          block: RatatuiRuby::Widgets::Block.new(borders: [:all], title: "Content")
         ),
         rects[1]
       )
@@ -203,7 +203,7 @@ These have side effects and are intentionally not shareable:
 
 | Object | Valid Usage |
 |--------|-------------|
-| `Session` | Cache in `@tui` during run loop. Don't include in Models. |
+| `TUI` | Cache in `@tui` during run loop. Don't include in Models. |
 | `Frame` | Pass to helpers during draw block. Invalid after block returns. |
 
 ```ruby

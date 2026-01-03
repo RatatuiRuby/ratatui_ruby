@@ -45,7 +45,7 @@ def test_rendering
   # Uses default 80x24 terminal
   with_test_terminal do
     # 1. Instantiate your widget
-    widget = RatatuiRuby::Paragraph.new(text: "Hello World")
+    widget = RatatuiRuby::Widgets::Paragraph.new(text: "Hello World")
     
     # 2. Render it using the Frame API
     RatatuiRuby.draw do |frame|

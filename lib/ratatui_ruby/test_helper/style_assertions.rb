@@ -86,7 +86,7 @@ module RatatuiRuby
       #
       # === Examples
       #
-      #   header = RatatuiRuby::Rect.new(x: 0, y: 0, width: 80, height: 1)
+      #   header = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 80, height: 1)
       #   assert_area_style(header, bg: :blue, modifiers: [:bold])
       #
       #   assert_area_style({ x: 0, y: 0, w: 10, h: 1 }, fg: :red)

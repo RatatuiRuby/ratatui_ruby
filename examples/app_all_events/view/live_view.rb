@@ -24,7 +24,7 @@ class View::Live
   # [model] AppModel containing event data.
   # [tui] RatatuiRuby instance.
   # [frame] RatatuiRuby::Frame being rendered.
-  # [area] RatatuiRuby::Rect defining the widget's bounds.
+  # [area] RatatuiRuby::Layout::Rect defining the widget's bounds.
   #
   # === Example
   #

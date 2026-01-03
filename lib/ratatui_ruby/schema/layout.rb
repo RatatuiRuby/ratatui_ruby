@@ -32,7 +32,7 @@ module RatatuiRuby
     # :attr_reader: constraints
     # Array of rules defining section sizes.
     #
-    # See RatatuiRuby::Constraint.
+    # See RatatuiRuby::Layout::Constraint.
 
     ##
     # :attr_reader: children

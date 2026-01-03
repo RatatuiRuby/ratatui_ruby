@@ -576,7 +576,7 @@ RatatuiRuby::Text::Span
 RatatuiRuby::Text::Line
 
 # Usage examples:
-table = RatatuiRuby::Table.new(
+table = RatatuiRuby::Widgets::Table.new(
   header: [
     RatatuiRuby::Table::Cell.new(
       content: Text::Span.styled("Name", Style.new(modifiers: [:bold])),

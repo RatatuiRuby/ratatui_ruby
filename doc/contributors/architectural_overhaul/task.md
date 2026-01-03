@@ -27,8 +27,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 - [x] Add `table_row` and `table_cell` helpers to Session
 - [x] Update table.rs for new types
 
-## Phase 4: Fix Examples
-- [ ] Update all examples to use Session API
+## Phase 4: Fix Examples and Documentation
+- [x] Update all examples, RDoc, and *.md to use new namespaces and TUI API
 - [ ] Update CHANGELOG with migration guide
 
 ## Definition of Done

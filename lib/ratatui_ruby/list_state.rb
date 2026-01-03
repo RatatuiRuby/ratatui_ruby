@@ -26,7 +26,7 @@ module RatatuiRuby
   #   @list_state.select(2) # Select third item
   #
   #   RatatuiRuby.draw do |frame|
-  #     list = RatatuiRuby::List.new(items: ["A", "B", "C", "D", "E"])
+  #     list = RatatuiRuby::Widgets::List.new(items: ["A", "B", "C", "D", "E"])
   #     frame.render_stateful_widget(list, frame.area, @list_state)
   #   end
   #

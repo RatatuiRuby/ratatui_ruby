@@ -23,7 +23,7 @@ However, you are hitting the limits of a flat namespace.
 * **Business in the Back (The Library):** Strict, deep, modularized namespaces that match Ratatui 1:1. This ensures logic, zero collisions, and perfect documentation mapping.
 * **Party in the Front (The Session):** A flat, ergonomic DSL (`tui.table`, `tui.row`) that hides the ugly namespaces from the user.
 
-If `Session` becomes the primary way users interact with the library (which your Quickstart suggests it is), the verbosity of the underlying classes **does not matter**.
+If `TUI` becomes the primary way users interact with the library (which your Quickstart suggests it is), the verbosity of the underlying classes **does not matter**.
 
 We should pull the trigger. Release v0.7.0 as the "Architecture Shift".
 
@@ -37,7 +37,7 @@ We have reached a breaking point in our flat namespace strategy. The naming coll
 
 We are pivoting.
 
-We will reorganize the entire library to mirror the `ratatui` Rust crate's module structure exactly. We will also refactor `Session` to be a static, explicit facade, removing runtime metaprogramming to improve IDE support.
+We will reorganize the entire library to mirror the `ratatui` Rust crate's module structure exactly. We will also refactor `TUI` to be a static, explicit facade, removing runtime metaprogramming to improve IDE support.
 
 Here is the specification for the overhaul.
 
@@ -130,19 +130,19 @@ end
 
 **Phase 2: The Session Hardening**
 
-1. Rewrite `Session` to explicitly define methods for every widget currently supported.
+1. Rewrite `TUI` to explicitly define methods for every widget currently supported.
 2. Remove the dynamic constant iteration logic.
 
 **Phase 3: Table Enhancements**
 
 1. Implement `Widgets::Cell` and `Widgets::Row`.
-2. Add `table_row` and `table_cell` helpers to `Session`.
+2. Add `table_row` and `table_cell` helpers to `TUI`.
 3. Update the Rust backend (`table.rs`) to parse these new Ruby types.
 
-**Phase 4: Fix Examples**
+**Phase 4: Fix Examples and Documentation**
 
-1. Update all examples to rely **exclusively** on the `Session` (`tui`) API.
-2. Any example instantiating classes directly (e.g., `RatatuiRuby::Rect.new`) must be updated to the new namespace (`RatatuiRuby::Layout::Rect.new`) or switched to the Session API.
+1. Update all examples, RDoc, and *.md files to rely **exclusively** on the `TUI` API.
+2. Any example instantiating classes directly (e.g., `RatatuiRuby::Layout::Rect.new`) must be updated to the new namespace (`RatatuiRuby::Layout::Rect.new`) or switched to the `TUI` API.
 
 ### Execution Constraints
 

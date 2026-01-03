@@ -27,9 +27,9 @@ Widgets (e.g., `RatatuiRuby::List`) are immutable value objects defining the *de
 **Example:**
 ```ruby
 # This is just a piece of data, not a "live" widget
-paragraph = RatatuiRuby::Paragraph.new(
+paragraph = RatatuiRuby::Widgets::Paragraph.new(
   text: "Hello World",
-  style: RatatuiRuby::Style.new(fg: :red),
+  style: RatatuiRuby::Style::Style.new(fg: :red),
   block: nil
 )
 ```
@@ -52,7 +52,7 @@ RatatuiRuby.run do |tui|
     tui.draw do |frame|
       # 2. Define Configuration (Input)
       # (Note: In a real app, you'd probably use `tui.list(...)` helper)
-      list = RatatuiRuby::List.new(items: ["A", "B", "C", "D"])
+      list = RatatuiRuby::Widgets::List.new(items: ["A", "B", "C", "D"])
       
       # 3. Render with both (Side Effect: updates list_state)
       frame.render_stateful_widget(list, frame.area, list_state)
@@ -84,7 +84,7 @@ loop do
   # 3. Construct View Tree & Draw
   RatatuiRuby.draw do |frame|
     frame.render_widget(
-      RatatuiRuby::Paragraph.new(text: "Time: #{Time.now}"),
+      RatatuiRuby::Widgets::Paragraph.new(text: "Time: #{Time.now}"),
       frame.area
     )
   end
