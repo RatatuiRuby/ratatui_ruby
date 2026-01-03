@@ -11,7 +11,8 @@ pub fn render_node(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Err
         let ruby = magnus::Ruby::get().unwrap();
         let ruby_area = {
             let module = ruby.define_module("RatatuiRuby")?;
-            let class = module.const_get::<_, magnus::RClass>("Rect")?;
+            let layout_mod = module.const_get::<_, magnus::RModule>("Layout")?;
+            let class = layout_mod.const_get::<_, magnus::RClass>("Rect")?;
             class.funcall::<_, _, Value>("new", (area.x, area.y, area.width, area.height))?
         };
 
@@ -35,28 +36,28 @@ pub fn render_node(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Err
     let class_name = unsafe { node.class().name() }.into_owned();
 
     match class_name.as_str() {
-        "RatatuiRuby::Paragraph" => widgets::paragraph::render(frame, area, node)?,
-        "RatatuiRuby::Clear" => widgets::clear::render(frame, area, node)?,
-        "RatatuiRuby::Cursor" => widgets::cursor::render(frame, area, node)?,
-        "RatatuiRuby::Overlay" => widgets::overlay::render(frame, area, node)?,
-        "RatatuiRuby::Center" => widgets::center::render(frame, area, node)?,
-        "RatatuiRuby::Layout" => widgets::layout::render(frame, area, node)?,
-        "RatatuiRuby::List" => widgets::list::render(frame, area, node)?,
-        "RatatuiRuby::Gauge" => widgets::gauge::render(frame, area, node)?,
-        "RatatuiRuby::LineGauge" => widgets::line_gauge::render(frame, area, node)?,
-        "RatatuiRuby::Table" => widgets::table::render(frame, area, node)?,
-        "RatatuiRuby::Block" => widgets::block::render(frame, area, node)?,
-        "RatatuiRuby::Tabs" => widgets::tabs::render(frame, area, node)?,
-        "RatatuiRuby::Scrollbar" => widgets::scrollbar::render(frame, area, node)?,
-        "RatatuiRuby::BarChart" => widgets::barchart::render(frame, area, node)?,
-        "RatatuiRuby::Canvas" => widgets::canvas::render(frame, area, node)?,
-        "RatatuiRuby::Calendar" => widgets::calendar::render(frame, area, node)?,
-        "RatatuiRuby::Sparkline" => widgets::sparkline::render(frame, area, node)?,
-        "RatatuiRuby::Chart" | "RatatuiRuby::LineChart" => {
+        "RatatuiRuby::Widgets::Paragraph" => widgets::paragraph::render(frame, area, node)?,
+        "RatatuiRuby::Widgets::Clear" => widgets::clear::render(frame, area, node)?,
+        "RatatuiRuby::Widgets::Cursor" => widgets::cursor::render(frame, area, node)?,
+        "RatatuiRuby::Widgets::Overlay" => widgets::overlay::render(frame, area, node)?,
+        "RatatuiRuby::Widgets::Center" => widgets::center::render(frame, area, node)?,
+        "RatatuiRuby::Layout::Layout" => widgets::layout::render(frame, area, node)?,
+        "RatatuiRuby::Widgets::List" => widgets::list::render(frame, area, node)?,
+        "RatatuiRuby::Widgets::Gauge" => widgets::gauge::render(frame, area, node)?,
+        "RatatuiRuby::Widgets::LineGauge" => widgets::line_gauge::render(frame, area, node)?,
+        "RatatuiRuby::Widgets::Table" => widgets::table::render(frame, area, node)?,
+        "RatatuiRuby::Widgets::Block" => widgets::block::render(frame, area, node)?,
+        "RatatuiRuby::Widgets::Tabs" => widgets::tabs::render(frame, area, node)?,
+        "RatatuiRuby::Widgets::Scrollbar" => widgets::scrollbar::render(frame, area, node)?,
+        "RatatuiRuby::Widgets::BarChart" => widgets::barchart::render(frame, area, node)?,
+        "RatatuiRuby::Widgets::Canvas" => widgets::canvas::render(frame, area, node)?,
+        "RatatuiRuby::Widgets::Calendar" => widgets::calendar::render(frame, area, node)?,
+        "RatatuiRuby::Widgets::Sparkline" => widgets::sparkline::render(frame, area, node)?,
+        "RatatuiRuby::Widgets::Chart" | "RatatuiRuby::LineChart" => {
             widgets::chart::render(frame, area, node)?;
         }
-        "RatatuiRuby::RatatuiLogo" => widgets::ratatui_logo::render(frame, area, node),
-        "RatatuiRuby::RatatuiMascot" => {
+        "RatatuiRuby::Widgets::RatatuiLogo" => widgets::ratatui_logo::render(frame, area, node),
+        "RatatuiRuby::Widgets::RatatuiMascot" => {
             widgets::ratatui_mascot::render_ratatui_mascot(frame, area, node)?;
         }
         _ => {}

@@ -8,8 +8,8 @@ require "test_helper"
 module RatatuiRuby
   class TestRatatuiLogo < Minitest::Test
     def test_initialize
-      logo = RatatuiLogo.new
-      assert_kind_of RatatuiLogo, logo
+      logo = Widgets::RatatuiLogo.new
+      assert_kind_of Widgets::RatatuiLogo, logo
     end
   end
 end

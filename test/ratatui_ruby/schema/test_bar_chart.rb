@@ -9,11 +9,11 @@ class TestBarChart < Minitest::Test
   include RatatuiRuby::TestHelper
   def test_bar_chart_creation
     data = { "a" => 1, "b" => 2 }
-    chart = RatatuiRuby::BarChart.new(data:, bar_width: 5)
+    chart = RatatuiRuby::Widgets::BarChart.new(data:, bar_width: 5)
     assert_equal 2, chart.data.size
 
     group_a = chart.data[0]
-    assert_kind_of RatatuiRuby::BarChart::BarGroup, group_a
+    assert_kind_of RatatuiRuby::Widgets::BarChart::BarGroup, group_a
     assert_equal "a", group_a.label
     assert_equal 1, group_a.bars.first.value
 
@@ -26,7 +26,7 @@ class TestBarChart < Minitest::Test
 
   def test_bar_chart_defaults
     data = { "a" => 1 }
-    chart = RatatuiRuby::BarChart.new(data:)
+    chart = RatatuiRuby::Widgets::BarChart.new(data:)
     assert_equal 1, chart.data.size
     assert_equal 1, chart.data.first.bars.size
     assert_equal "a", chart.data.first.label
@@ -41,9 +41,9 @@ class TestBarChart < Minitest::Test
   end
 
   def test_bar_chart_with_styles
-    label_style = RatatuiRuby::Style.new(fg: :red)
-    value_style = RatatuiRuby::Style.new(fg: :blue)
-    chart = RatatuiRuby::BarChart.new(data: { "a" => 1 }, label_style:, value_style:)
+    label_style = RatatuiRuby::Style::Style.new(fg: :red)
+    value_style = RatatuiRuby::Style::Style.new(fg: :blue)
+    chart = RatatuiRuby::Widgets::BarChart.new(data: { "a" => 1 }, label_style:, value_style:)
     assert_equal label_style, chart.label_style
     assert_equal value_style, chart.value_style
   end
@@ -51,7 +51,7 @@ class TestBarChart < Minitest::Test
   def test_render
     with_test_terminal(20, 5) do
       # 10x5 area
-      chart = RatatuiRuby::BarChart.new(data: { "A" => 1, "B" => 2 }, bar_width: 3)
+      chart = RatatuiRuby::Widgets::BarChart.new(data: { "A" => 1, "B" => 2 }, bar_width: 3)
       RatatuiRuby.draw { |f| f.render_widget(chart, f.area) }
 
       assert_equal "    ███             ", buffer_content[0]
@@ -65,7 +65,7 @@ class TestBarChart < Minitest::Test
   def test_render_horizontal
     with_test_terminal(20, 5) do
       # 20x5 area, horizontal bars
-      chart = RatatuiRuby::BarChart.new(
+      chart = RatatuiRuby::Widgets::BarChart.new(
         data: { "A" => 1, "B" => 2 },
         bar_width: 1,
         direction: :horizontal

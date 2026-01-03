@@ -1,0 +1,118 @@
+# frozen_string_literal: true
+
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  module Layout
+    # Defines a rectangular area in the terminal grid.
+    #
+    # Geometry management involves passing groups of four integers (`x, y, width, height`) repeatedly.
+    # This is verbose and prone to parameter mismatch errors.
+    #
+    # This class encapsulates the geometry. It provides a standard primitive for passing area definitions
+    # between layout engines and rendering functions.
+    #
+    # Use it when manual positioning is required or when querying layout results.
+    #
+    # === Examples
+    #
+    #   area = Layout::Rect.new(x: 0, y: 0, width: 80, height: 24)
+    #   puts area.width # => 80
+    class Rect < Data.define(:x, :y, :width, :height)
+      ##
+      # :attr_reader: x
+      # X coordinate (column) of the top-left corner (Integer, coerced via +to_int+ or +to_i+).
+
+      ##
+      # :attr_reader: y
+      # Y coordinate (row) of the top-left corner (Integer, coerced via +to_int+ or +to_i+).
+
+      ##
+      # :attr_reader: width
+      # Width in characters (Integer, coerced via +to_int+ or +to_i+).
+
+      ##
+      # :attr_reader: height
+      # Height in characters (Integer, coerced via +to_int+ or +to_i+).
+
+      # Creates a new Rect.
+      #
+      # All parameters accept any object responding to +to_int+ or +to_i+ (duck-typed).
+      #
+      # [x] Column index (Numeric).
+      # [y] Row index (Numeric).
+      # [width] Width in columns (Numeric).
+      # [height] Height in rows (Numeric).
+      def initialize(x: 0, y: 0, width: 0, height: 0)
+        super(
+          x: Integer(x),
+          y: Integer(y),
+          width: Integer(width),
+          height: Integer(height)
+        )
+      end
+
+      # Tests whether a point is inside this rectangle.
+      #
+      # Essential for hit testing mouse clicks against layout regions.
+      #
+      #   area = Layout::Rect.new(x: 10, y: 5, width: 20, height: 10)
+      #   area.contains?(15, 8) # => true
+      #   area.contains?(5, 8)  # => false
+      #
+      # [px]
+      #   X coordinate to test (column).
+      # [py]
+      #   Y coordinate to test (row).
+      #
+      # Returns true if the point (px, py) is within the rectangle bounds.
+      def contains?(px, py)
+        px >= x && px < x + width && py >= y && py < y + height
+      end
+
+      # Tests whether this rectangle overlaps with another.
+      #
+      # Essential for determining if a widget is visible within a viewport or clipping area.
+      #
+      #   viewport = Layout::Rect.new(x: 0, y: 0, width: 80, height: 24)
+      #   widget = Layout::Rect.new(x: 70, y: 20, width: 20, height: 10)
+      #   viewport.intersects?(widget) # => true (partial overlap)
+      #
+      # [other]
+      #   Another Rect to test against.
+      #
+      # Returns true if the rectangles overlap.
+      def intersects?(other)
+        x < other.x + other.width &&
+          x + width > other.x &&
+          y < other.y + other.height &&
+          y + height > other.y
+      end
+
+      # Returns the overlapping area between this rectangle and another.
+      #
+      # Essential for calculating visible portions of widgets inside scroll views.
+      #
+      #   viewport = Layout::Rect.new(x: 0, y: 0, width: 80, height: 24)
+      #   widget = Layout::Rect.new(x: 70, y: 20, width: 20, height: 10)
+      #   visible = viewport.intersection(widget)
+      #   # => Rect(x: 70, y: 20, width: 10, height: 4)
+      #
+      # [other]
+      #   Another Rect to intersect with.
+      #
+      # Returns a new Rect representing the intersection, or +nil+ if no overlap.
+      def intersection(other)
+        return nil unless intersects?(other)
+
+        new_x = [x, other.x].max
+        new_y = [y, other.y].max
+        new_right = [x + width, other.x + other.width].min
+        new_bottom = [y + height, other.y + other.height].min
+
+        Rect.new(x: new_x, y: new_y, width: new_right - new_x, height: new_bottom - new_y)
+      end
+    end
+  end
+end

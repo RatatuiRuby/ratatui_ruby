@@ -4,37 +4,19 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 require_relative "ratatui_ruby/version"
-require_relative "ratatui_ruby/schema/rect"
-require_relative "ratatui_ruby/schema/paragraph"
-require_relative "ratatui_ruby/schema/layout"
-require_relative "ratatui_ruby/schema/block"
-require_relative "ratatui_ruby/schema/constraint"
-require_relative "ratatui_ruby/schema/list"
-require_relative "ratatui_ruby/schema/list_item"
-require_relative "ratatui_ruby/schema/style"
-require_relative "ratatui_ruby/schema/gauge"
-require_relative "ratatui_ruby/schema/line_gauge"
-require_relative "ratatui_ruby/schema/table"
-require_relative "ratatui_ruby/schema/tabs"
-require_relative "ratatui_ruby/schema/bar_chart"
-require_relative "ratatui_ruby/schema/bar_chart/bar"
-require_relative "ratatui_ruby/schema/bar_chart/bar_group"
-require_relative "ratatui_ruby/schema/sparkline"
-require_relative "ratatui_ruby/schema/chart"
-require_relative "ratatui_ruby/schema/clear"
-require_relative "ratatui_ruby/schema/cursor"
-require_relative "ratatui_ruby/schema/overlay"
-require_relative "ratatui_ruby/schema/center"
-require_relative "ratatui_ruby/schema/scrollbar"
-require_relative "ratatui_ruby/schema/canvas"
-require_relative "ratatui_ruby/schema/shape/label"
-require_relative "ratatui_ruby/schema/calendar"
-require_relative "ratatui_ruby/schema/ratatui_logo"
-require_relative "ratatui_ruby/schema/ratatui_mascot"
-require_relative "ratatui_ruby/schema/text"
-require_relative "ratatui_ruby/schema/draw"
+
+# New modularized structure (mirrors ratatui Rust crate)
+require_relative "ratatui_ruby/layout"   # Layout::Rect, Layout::Constraint, Layout::Layout
+require_relative "ratatui_ruby/style"    # Style::Style
+require_relative "ratatui_ruby/widgets"  # Widgets::Block, Widgets::Paragraph, etc.
+require_relative "ratatui_ruby/buffer"   # Buffer::Cell (for inspection)
+require_relative "ratatui_ruby/schema/text"  # Text::Span, Text::Line
+require_relative "ratatui_ruby/schema/draw"  # Draw commands
+
+# Event types
 require_relative "ratatui_ruby/event"
-require_relative "ratatui_ruby/cell"
+
+# Frame and state objects
 require_relative "ratatui_ruby/frame"
 require_relative "ratatui_ruby/list_state"
 require_relative "ratatui_ruby/table_state"
@@ -129,19 +111,19 @@ module RatatuiRuby
   # pass a block to manipulate the frame directly. The block receives a
   # {Frame} object for imperative drawing.
   #
-  # [tree] A widget tree (Paragraph, Layout, etc.) to render. Optional if
+  # [tree] A widget tree (Widgets::Paragraph, Layout::Layout, etc.) to render. Optional if
   #        a block is given.
   #
   # === Examples
   #
   # Legacy declarative style (tree-based):
   #
-  #   RatatuiRuby.draw(Paragraph.new(text: "Hello"))
+  #   RatatuiRuby.draw(Widgets::Paragraph.new(text: "Hello"))
   #
   # New imperative style (block-based):
   #
   #   RatatuiRuby.draw do |frame|
-  #     frame.render_widget(Paragraph.new(text: "Hello"), frame.area)
+  #     frame.render_widget(Widgets::Paragraph.new(text: "Hello"), frame.area)
   #   end
   #
   def self.draw(tree = nil, &block)
@@ -227,7 +209,7 @@ module RatatuiRuby
   #
   # Managing generic setup/teardown (raw mode, alternate screen) manualy is error-prone. If your app crashes, the terminal might be left in a broken state.
   #
-  # This method handles the safety net. It initializes the terminal, yields a {Session}, and ensures the terminal state is restored even if exceptions occur.
+  # This method handles the safety net. It initializes the terminal, yields a {TUI}, and ensures the terminal state is restored even if exceptions occur.
   #
   # === Example
   #
@@ -236,9 +218,9 @@ module RatatuiRuby
   #     sleep 1
   #   end
   def self.run(focus_events: true, bracketed_paste: true)
-    require_relative "ratatui_ruby/session"
+    require_relative "ratatui_ruby/tui"
     init_terminal(focus_events:, bracketed_paste:)
-    yield Session.new
+    yield TUI.new
   ensure
     restore_terminal
   end
@@ -249,7 +231,7 @@ module RatatuiRuby
   # When writing tests, you need to verify that your widget drew the correct characters and styles.
   # This method provides deep inspection of the cell's state (symbol, colors, modifiers).
   #
-  # Returns a {Cell} object.
+  # Returns a {Buffer::Cell} object.
   #
   # Values depend on what the backend has rendered. If nothing has been rendered to a cell, it may contain defaults (empty symbol, nil colors).
   #
@@ -262,7 +244,7 @@ module RatatuiRuby
   #
   def self.get_cell_at(x, y)
     raw = _get_cell_at(x, y)
-    Cell.new(
+    Buffer::Cell.new(
       char: raw["char"],
       fg: raw["fg"],
       bg: raw["bg"],
@@ -274,5 +256,5 @@ module RatatuiRuby
   private_class_method :_get_cell_at
 
   # Hide native Layout._split helper
-  Layout.singleton_class.__send__(:private, :_split)
+  Layout::Layout.singleton_class.__send__(:private, :_split)
 end

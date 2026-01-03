@@ -18,7 +18,7 @@ module RatatuiRuby
   #   @table_state.select_column(0) # Select first column
   #
   #   RatatuiRuby.draw do |frame|
-  #     table = RatatuiRuby::Table.new(rows: [...], widths: [...])
+  #     table = RatatuiRuby::Widgets::Table.new(rows: [...], widths: [...])
   #     frame.render_stateful_widget(table, frame.area, @table_state)
   #   end
   #

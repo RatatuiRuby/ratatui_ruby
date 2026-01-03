@@ -45,10 +45,10 @@ begin
   loop do
     # 2. Create your UI (Immediate Mode)
     # We define a Paragraph widget inside a Block with a title and borders.
-    view = RatatuiRuby::Paragraph.new(
+    view = RatatuiRuby::Widgets::Paragraph.new(
       text: "Hello, Ratatui! Press 'q' to quit.",
       alignment: :center,
-      block: RatatuiRuby::Block.new(
+      block: RatatuiRuby::Widgets::Block.new(
         title: "My Ruby TUI App",
         title_alignment: :center,
         borders: [:all],
@@ -89,7 +89,7 @@ end
 
 ### Idiomatic Session
 
-You can simplify your code by using `RatatuiRuby.run`. This method handles the terminal lifecycle for you, yielding a `Session` object with factory methods for widgets.
+You can simplify your code by using `RatatuiRuby.run`. This method handles the terminal lifecycle for you, yielding a `TUI` object with factory methods for widgets.
 
 <!-- SYNC:START:../examples/verify_quickstart_dsl/app.rb:main -->
 ```ruby
@@ -128,7 +128,7 @@ end
 #### How it works
 
 1.  **`RatatuiRuby.run`**: This context manager initializes the terminal before the block starts and ensures `restore_terminal` is called when the block exits (even if an error occurs).
-2.  **Widget Shorthand**: The block yields a `Session` object (here named `tui`). This object provides factory methods for every widget, allowing you to write `tui.paragraph(...)` instead of the more verbose `RatatuiRuby::Paragraph.new(...)`.
+2.  **Widget Shorthand**: The block yields a `TUI` object (here named `tui`). This object provides factory methods for every widget, allowing you to write `tui.paragraph(...)` instead of the more verbose `RatatuiRuby::Widgets::Paragraph.new(...)`.
 3.  **Method Shorthand**: The session object also provides aliases for module functions of `RatatuiRuby`, allowing you to write `tui.draw(...)` instead of the more verbose `RatatuiRuby.draw(...)`.
 4.  **Pattern Matching for Events**: Use `case...in` with pattern matching for elegant event dispatch. Always include an `else` clause at the end to catch unmatched event types (mouse, resize, paste, focus, etc.), otherwise Ruby raises `NoMatchingPatternError`.
 
@@ -197,8 +197,8 @@ end
 
 #### How it works
 
-1.  **`tui.layout_split` (`RatatuiRuby::Layout.split`)**: Takes an area (like `frame.area`) and splits it into multiple sub-areas based on constraints.
-2.  **`tui.constraint_*` (`RatatuiRuby::Constraint`)**: Defines how space is distributed (e.g., `percentage`, `length`, `min`, `max`).
+1.  **`tui.layout_split` (`RatatuiRuby::Layout::Layout.split`)**: Takes an area (like `frame.area`) and splits it into multiple sub-areas based on constraints.
+2.  **`tui.constraint_*` (`RatatuiRuby::Layout::Constraint`)**: Defines how space is distributed (e.g., `percentage`, `length`, `min`, `max`).
 3.  **`Frame#render_widget(widget, rect)`**: You pass the specific area (like `top` or `bottom`) to render the widget into that exact region.
 4.  **`tui.text_span` (`RatatuiRuby::Text::Span`)**: Allows for rich styling within a single line of text.
 

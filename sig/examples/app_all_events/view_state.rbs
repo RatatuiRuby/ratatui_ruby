@@ -10,6 +10,6 @@ class ViewState < Data
   attr_reader border_color: Symbol
   attr_reader area: RatatuiRuby::Rect?
 
-  def self.build(events: Events, focused: bool, tui: RatatuiRuby::Session, _resize_sub_counter: untyped) -> instance
+  def self.build(events: Events, focused: bool, tui: RatatuiRuby::TUI, _resize_sub_counter: untyped) -> instance
   def self.new: (?events: Events, ?focused: bool, ?hotkey_style: RatatuiRuby::Style, ?dimmed_style: RatatuiRuby::Style, ?lit_style: RatatuiRuby::Style, ?border_color: Symbol, ?area: RatatuiRuby::Rect | nil) -> instance
 end

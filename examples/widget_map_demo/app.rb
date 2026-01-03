@@ -8,14 +8,14 @@ require "ratatui_ruby"
 
 # An example of the Canvas widget showing a world map and animated shapes.
 class WidgetMapDemo
-  include RatatuiRuby
+  include RatatuiRuby::Widgets
 
   COLORS = [:black, :blue, :white, nil].freeze
   MARKERS = [:braille, :half_block, :dot, :block, :bar, :quadrant, :sextant, :octant].freeze
 
   # Returns a Canvas view for the map demo with the given circle radius.
   #
-  # +tui+:: The RatatuiRuby::Session instance.
+  # +tui+:: The RatatuiRuby::TUI instance.
   # +radius+:: The radius of the animated circle.
   # +marker+:: The marker type.
   # +background_color+:: The background color of the canvas.

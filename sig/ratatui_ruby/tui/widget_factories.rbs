@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class TUI
+    module WidgetFactories
+      def block: (**top) -> Widgets::Block
+      def paragraph: (**top) -> Widgets::Paragraph
+      def list: (**top) -> Widgets::List
+      def list_item: (**top) -> Widgets::ListItem
+      def table: (**top) -> Widgets::Table
+      def row: (**top) -> Widgets::Row
+      def table_row: (**top) -> Widgets::Row
+      def table_cell: (**top) -> Widgets::Cell
+      def tabs: (**top) -> Widgets::Tabs
+      def gauge: (**top) -> Widgets::Gauge
+      def line_gauge: (**top) -> Widgets::LineGauge
+      def sparkline: (**top) -> Widgets::Sparkline
+      def bar_chart: (**top) -> Widgets::BarChart
+      def bar: (**top) -> Widgets::BarChart::Bar
+      def bar_group: (**top) -> Widgets::BarChart::BarGroup
+      def bar_chart_bar: (**top) -> Widgets::BarChart::Bar
+      def bar_chart_bar_group: (**top) -> Widgets::BarChart::BarGroup
+      def chart: (**top) -> Widgets::Chart
+      def dataset: (**top) -> Widgets::Dataset
+      def axis: (**top) -> Widgets::Axis
+      def scrollbar: (**top) -> Widgets::Scrollbar
+      def calendar: (**top) -> Widgets::Calendar
+      def canvas: (**top) -> Widgets::Canvas
+      def clear: (**top) -> Widgets::Clear
+      def cursor: (**top) -> Widgets::Cursor
+      def overlay: (**top) -> Widgets::Overlay
+      def center: (**top) -> Widgets::Center
+      def ratatui_logo: (**top) -> Widgets::RatatuiLogo
+      def ratatui_mascot: (**top) -> Widgets::RatatuiMascot
+      def shape_label: (**top) -> Widgets::Shape::Label
+    end
+  end
+end

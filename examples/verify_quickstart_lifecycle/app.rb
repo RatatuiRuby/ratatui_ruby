@@ -18,10 +18,10 @@ class VerifyQuickstartLifecycle
       loop do
         # 2. Create your UI (Immediate Mode)
         # We define a Paragraph widget inside a Block with a title and borders.
-        view = RatatuiRuby::Paragraph.new(
+        view = RatatuiRuby::Widgets::Paragraph.new(
           text: "Hello, Ratatui! Press 'q' to quit.",
           alignment: :center,
-          block: RatatuiRuby::Block.new(
+          block: RatatuiRuby::Widgets::Block.new(
             title: "My Ruby TUI App",
             title_alignment: :center,
             borders: [:all],

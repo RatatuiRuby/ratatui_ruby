@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class TUI
+    module StateFactories
+      def list_state: (**top) -> ListState
+      def table_state: (**top) -> TableState
+      def scrollbar_state: (**top) -> ScrollbarState
+    end
+  end
+end

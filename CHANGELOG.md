@@ -10,9 +10,32 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+> [!WARNING]
+> v0.7.0 contains significant breaking changes. See the [Migration Guide](doc/v0.7.0_migration.md) for upgrade instructions.
+
 ### Added
 
+- **Rich Text in Table Cells**: `Table` cells (rows, header, footer) now accept `Text::Span` and `Text::Line` objects for per-character styling, matching List widget capabilities.
+- **Row Wrapper**: New `Widgets::Row` class allows applying row-level styling (background color, style) and layout properties (height, top_margin, bottom_margin) to Table rows. Table rows can now be plain arrays or `Widgets::Row` objects.
+- **Cell Wrapper**: New `Widgets::Cell` class wraps table cell content with optional cell-level styling. Distinct from `Buffer::Cell` which is for buffer inspection.
+- **Line#width Method**: `Text::Line` now has a `width` instance method that calculates the display width in terminal cells using unicode-aware measurement. Useful for layout calculations with rich text.
+
 ### Changed
+
+- **Namespace Restructure (Breaking)**: Classes reorganized to match Ratatui's module hierarchy. See [Migration Guide](doc/v0.7.0_migration.md) for details:
+  - `RatatuiRuby::Rect` → `RatatuiRuby::Layout::Rect`
+  - `RatatuiRuby::Constraint` → `RatatuiRuby::Layout::Constraint`
+  - `RatatuiRuby::Layout` → `RatatuiRuby::Layout::Layout`
+  - `RatatuiRuby::Style` → `RatatuiRuby::Style::Style`
+  - `RatatuiRuby::Paragraph` → `RatatuiRuby::Widgets::Paragraph`
+  - `RatatuiRuby::Block` → `RatatuiRuby::Widgets::Block`
+  - `RatatuiRuby::Table` → `RatatuiRuby::Widgets::Table`
+  - `RatatuiRuby::List` → `RatatuiRuby::Widgets::List`
+  - *(and all other widgets)*
+- **Session → TUI Rename (Breaking)**: `RatatuiRuby::Session` renamed to `RatatuiRuby::TUI` to better reflect its role as a facade/DSL. The `TUI` class now uses explicit factory methods (no metaprogramming) for improved IDE autocomplete support.
+- **Buffer::Cell vs Widgets::Cell (Breaking)**: `RatatuiRuby::Cell` (buffer inspection) renamed to `RatatuiRuby::Buffer::Cell`. New `RatatuiRuby::Widgets::Cell` added for table cell construction.
+- **Text::Line style field (Breaking)**: `Text::Line` now accepts a `style:` parameter for line-level styling, matching Ratatui's `Line` struct which has `style`, `alignment`, and `spans` fields.
+- **Table highlight_style → row_highlight_style (Breaking)**: `Table` parameter `highlight_style:` renamed to `row_highlight_style:` to match Ratatui's API naming convention.
 
 ### Fixed
 

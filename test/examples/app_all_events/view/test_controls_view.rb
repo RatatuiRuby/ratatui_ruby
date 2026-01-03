@@ -12,7 +12,7 @@ require_relative "../../../../examples/app_all_events/model/app_model"
 
 class TestControlsView < Minitest::Test
   def setup
-    @tui = RatatuiRuby::Session.new
+    @tui = RatatuiRuby::TUI.new
     @frame = RatatuiRuby::TestHelper::MockFrame.new
     @area = RatatuiRuby::TestHelper::StubRect.new
   end

@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class TUI
+    module LayoutFactories
+      def rect: (?x: Integer, ?y: Integer, ?width: Integer, ?height: Integer) -> Layout::Rect
+      def constraint: (**top) -> Layout::Constraint
+      def constraint_length: (Integer n) -> Layout::Constraint
+      def constraint_percentage: (Integer n) -> Layout::Constraint
+      def constraint_min: (Integer n) -> Layout::Constraint
+      def constraint_max: (Integer n) -> Layout::Constraint
+      def constraint_fill: (?Integer n) -> Layout::Constraint
+      def constraint_ratio: (Integer numerator, Integer denominator) -> Layout::Constraint
+      def layout: (**top) -> Layout::Layout
+      def layout_split: (Layout::Rect area, ?direction: Symbol, constraints: Array[Layout::Constraint], ?flex: Symbol) -> Array[Layout::Rect]
+    end
+  end
+end

@@ -1,0 +1,37 @@
+<!--
+SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+
+# Architectural Overhaul: Strict Modularization
+
+## Phase 1: The Great Rename
+- [x] Create `lib/ratatui_ruby/layout/` module with Rect, Constraint, Layout
+- [x] Create `lib/ratatui_ruby/widgets/` module with Table, List, Paragraph, Block, etc.
+- [x] Create `lib/ratatui_ruby/style/` module with Style
+- [x] Create `lib/ratatui_ruby/buffer/` module with Cell (renamed from current)
+- [x] Update `lib/ratatui_ruby.rb` requires
+- [x] Update Rust backend for new class names in rendering.rs
+- [x] Update all tests for new namespaces (0 errors, from 471)
+- [x] Fix RuboCop issues
+
+## Phase 2: Session Hardening
+- [x] Rewrite Session with explicit factory methods (no metaprogramming)
+- [x] Add RDoc to each factory method
+- [x] Ensure IDE autocomplete works
+
+## Phase 3: Table Enhancements
+- [x] Implement `Widgets::Cell` (content + style)
+- [x] Move Row to `Widgets::Row`
+- [x] Add `table_row` and `table_cell` helpers to Session
+- [x] Update table.rs for new types
+
+## Phase 4: Fix Examples and Documentation
+- [x] Update all examples, RDoc, and *.md to use new namespaces and TUI API
+- [x] Update CHANGELOG with migration guide
+
+## Definition of Done
+- [x] `bin/agent_rake` passes
+- [x] CHANGELOG updated with breaking changes
+

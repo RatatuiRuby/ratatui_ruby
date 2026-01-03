@@ -3,6 +3,6 @@
 
 module View
   interface _View
-    def call(state: ViewState, tui: RatatuiRuby::Session, frame: RatatuiRuby::Frame, area: RatatuiRuby::Rect) -> void
+    def call(state: ViewState, tui: RatatuiRuby::TUI, frame: RatatuiRuby::Frame, area: RatatuiRuby::Rect) -> void
   end
 end

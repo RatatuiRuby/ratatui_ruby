@@ -36,7 +36,7 @@ class View::App
   # [model] AppModel containing all application data.
   # [tui] RatatuiRuby instance.
   # [frame] RatatuiRuby::Frame being rendered.
-  # [area] RatatuiRuby::Rect defining the total available space.
+  # [area] RatatuiRuby::Layout::Rect defining the total available space.
   #
   # === Example
   #

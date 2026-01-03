@@ -83,7 +83,7 @@ class TestStatefulRendering < Minitest::Test
       state = RatatuiRuby::ListState.new(nil)
       state.select(1)
 
-      list = RatatuiRuby::List.new(items: %w[A B C])
+      list = RatatuiRuby::Widgets::List.new(items: %w[A B C])
 
       RatatuiRuby.draw do |frame|
         frame.render_stateful_widget(list, frame.area, state)
@@ -102,7 +102,7 @@ class TestStatefulRendering < Minitest::Test
       state.select(2) # State says item 2
 
       # Widget says selected_index: 0
-      list = RatatuiRuby::List.new(items: %w[A B C], selected_index: 0)
+      list = RatatuiRuby::Widgets::List.new(items: %w[A B C], selected_index: 0)
 
       RatatuiRuby.draw do |frame|
         frame.render_stateful_widget(list, frame.area, state)
@@ -120,9 +120,9 @@ class TestStatefulRendering < Minitest::Test
       state = RatatuiRuby::TableState.new(nil)
       state.select(0)
 
-      table = RatatuiRuby::Table.new(
+      table = RatatuiRuby::Widgets::Table.new(
         rows: [%w[A B], %w[C D]],
-        widths: [RatatuiRuby::Constraint.length(5), RatatuiRuby::Constraint.length(5)]
+        widths: [RatatuiRuby::Layout::Constraint.length(5), RatatuiRuby::Layout::Constraint.length(5)]
       )
 
       RatatuiRuby.draw do |frame|
@@ -141,7 +141,7 @@ class TestStatefulRendering < Minitest::Test
 
       # For stateful rendering, widget still needs content_length and position,
       # but state takes precedence
-      scrollbar = RatatuiRuby::Scrollbar.new(
+      scrollbar = RatatuiRuby::Widgets::Scrollbar.new(
         content_length: 100,
         position: 0,
         orientation: :vertical_right
@@ -158,7 +158,7 @@ class TestStatefulRendering < Minitest::Test
 
   def test_render_stateful_widget_raises_for_unsupported_combination
     with_test_terminal(20, 5) do
-      paragraph = RatatuiRuby::Paragraph.new(text: "Hello")
+      paragraph = RatatuiRuby::Widgets::Paragraph.new(text: "Hello")
       list_state = RatatuiRuby::ListState.new(nil)
 
       error = assert_raises(ArgumentError) do

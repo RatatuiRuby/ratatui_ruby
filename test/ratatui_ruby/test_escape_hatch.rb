@@ -30,14 +30,14 @@ class TestEscapeHatch < Minitest::Test
 
   def test_custom_widget_in_layout
     with_test_terminal(10, 2) do
-      layout = RatatuiRuby::Layout.new(
+      layout = RatatuiRuby::Layout::Layout.new(
         direction: :vertical,
         constraints: [
-          RatatuiRuby::Constraint.length(1),
-          RatatuiRuby::Constraint.length(1),
+          RatatuiRuby::Layout::Constraint.length(1),
+          RatatuiRuby::Layout::Constraint.length(1),
         ],
         children: [
-          RatatuiRuby::Paragraph.new(text: "Hello"),
+          RatatuiRuby::Widgets::Paragraph.new(text: "Hello"),
           CustomWidget.new,
         ]
       )

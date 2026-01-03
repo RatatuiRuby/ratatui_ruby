@@ -9,13 +9,13 @@ class TestList < Minitest::Test
   include RatatuiRuby::TestHelper
   def test_list_creation
     items = ["a", "b"]
-    list = RatatuiRuby::List.new(items:, selected_index: 1)
+    list = RatatuiRuby::Widgets::List.new(items:, selected_index: 1)
     assert_equal items, list.items
     assert_equal 1, list.selected_index
   end
 
   def test_list_defaults
-    list = RatatuiRuby::List.new
+    list = RatatuiRuby::Widgets::List.new
     assert_equal [], list.items
     assert_nil list.selected_index
     assert_nil list.style
@@ -27,7 +27,7 @@ class TestList < Minitest::Test
 
   def test_render
     with_test_terminal(20, 3) do
-      list = RatatuiRuby::List.new(items: ["Item 1", "Item 2"], selected_index: 0)
+      list = RatatuiRuby::Widgets::List.new(items: ["Item 1", "Item 2"], selected_index: 0)
       RatatuiRuby.draw { |f| f.render_widget(list, f.area) }
 
       assert_equal "> Item 1            ", buffer_content[0]
@@ -37,7 +37,7 @@ class TestList < Minitest::Test
 
   def test_render_with_custom_symbol
     with_test_terminal(20, 5) do
-      list = RatatuiRuby::List.new(
+      list = RatatuiRuby::Widgets::List.new(
         items: ["Item 1", "Item 2"],
         selected_index: 1,
         highlight_symbol: ">> "
@@ -50,7 +50,7 @@ class TestList < Minitest::Test
 
   def test_render_bottom_to_top
     with_test_terminal(20, 3) do
-      list = RatatuiRuby::List.new(
+      list = RatatuiRuby::Widgets::List.new(
         items: ["Item 1", "Item 2"],
         selected_index: 0,
         direction: :bottom_to_top
@@ -64,7 +64,7 @@ class TestList < Minitest::Test
 
   def test_invalid_direction
     assert_raises(ArgumentError) {
-      list = RatatuiRuby::List.new(items: [], direction: :invalid)
+      list = RatatuiRuby::Widgets::List.new(items: [], direction: :invalid)
       with_test_terminal(10, 10) do
         RatatuiRuby.draw { |f| f.render_widget(list, f.area) }
       end
@@ -73,7 +73,7 @@ class TestList < Minitest::Test
 
   def test_highlight_spacing_always
     with_test_terminal(20, 3) do
-      list = RatatuiRuby::List.new(
+      list = RatatuiRuby::Widgets::List.new(
         items: ["Item 1", "Item 2"],
         selected_index: nil,
         highlight_symbol: ">> ",
@@ -89,7 +89,7 @@ class TestList < Minitest::Test
   def test_highlight_spacing_when_selected
     with_test_terminal(20, 3) do
       # With selection
-      list = RatatuiRuby::List.new(
+      list = RatatuiRuby::Widgets::List.new(
         items: ["Item 1", "Item 2"],
         selected_index: 0,
         highlight_symbol: ">> ",
@@ -104,7 +104,7 @@ class TestList < Minitest::Test
   def test_highlight_spacing_when_selected_no_selection
     with_test_terminal(20, 3) do
       # Without selection, no spacing
-      list = RatatuiRuby::List.new(
+      list = RatatuiRuby::Widgets::List.new(
         items: ["Item 1", "Item 2"],
         selected_index: nil,
         highlight_symbol: ">> ",
@@ -118,7 +118,7 @@ class TestList < Minitest::Test
 
   def test_highlight_spacing_never
     with_test_terminal(20, 3) do
-      list = RatatuiRuby::List.new(
+      list = RatatuiRuby::Widgets::List.new(
         items: ["Item 1", "Item 2"],
         selected_index: 0,
         highlight_symbol: ">> ",
@@ -135,7 +135,7 @@ class TestList < Minitest::Test
     # 10 items, terminal height 3, offset forces viewport to start at item 5
     items = (0..9).map { |i| "Item #{i}" }
     with_test_terminal(20, 3) do
-      list = RatatuiRuby::List.new(
+      list = RatatuiRuby::Widgets::List.new(
         items:,
         selected_index: 5,
         offset: 5
@@ -152,7 +152,7 @@ class TestList < Minitest::Test
     # Without offset, Ratatui auto-scrolls to show selection
     items = (0..9).map { |i| "Item #{i}" }
     with_test_terminal(20, 3) do
-      list = RatatuiRuby::List.new(
+      list = RatatuiRuby::Widgets::List.new(
         items:,
         selected_index: 8 # Near the end
       )
@@ -167,7 +167,7 @@ class TestList < Minitest::Test
     # Passive scroll: no selection, just viewing items 5-7
     items = (0..9).map { |i| "Item #{i}" }
     with_test_terminal(20, 3) do
-      list = RatatuiRuby::List.new(
+      list = RatatuiRuby::Widgets::List.new(
         items:,
         selected_index: nil,
         offset: 5

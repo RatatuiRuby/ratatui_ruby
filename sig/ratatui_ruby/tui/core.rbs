@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class TUI
+    module Core
+      def draw: (?Widgets::_Widget? tree) -> void
+              | () { (Frame) -> void } -> void
+      def poll_event: (?timeout: Float) -> Event::event
+      def get_cell_at: (Integer x, Integer y) -> Buffer::Cell
+      def draw_cell: (Integer x, Integer y, Buffer::Cell cell) -> Draw::CellCmd
+    end
+  end
+end

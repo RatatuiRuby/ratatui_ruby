@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use crate::style::{parse_block, parse_style};
+use crate::text::{parse_line, parse_span};
 use crate::widgets::table_state::RubyTableState;
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, Symbol, TryConvert, Value};
@@ -22,7 +23,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let widths_val: Value = node.funcall("widths", ())?;
     let widths_array = magnus::RArray::from_value(widths_val)
         .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for widths"))?;
-    let highlight_style_val: Value = node.funcall("highlight_style", ())?;
+    let row_highlight_style_val: Value = node.funcall("row_highlight_style", ())?;
     let column_highlight_style_val: Value = node.funcall("column_highlight_style", ())?;
     let cell_highlight_style_val: Value = node.funcall("cell_highlight_style", ())?;
     let highlight_symbol_val: Value = node.funcall("highlight_symbol", ())?;
@@ -73,8 +74,8 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         table = table.block(parse_block(block_val, &bump)?);
     }
 
-    if !highlight_style_val.is_nil() {
-        table = table.row_highlight_style(parse_style(highlight_style_val)?);
+    if !row_highlight_style_val.is_nil() {
+        table = table.row_highlight_style(parse_style(row_highlight_style_val)?);
     }
 
     if !column_highlight_style_val.is_nil() {
@@ -158,7 +159,7 @@ pub fn render_stateful(
     // Build table (ignoring selected_row, selected_column, offset — State is truth)
     let header_val: Value = node.funcall("header", ())?;
     let footer_val: Value = node.funcall("footer", ())?;
-    let highlight_style_val: Value = node.funcall("highlight_style", ())?;
+    let row_highlight_style_val: Value = node.funcall("row_highlight_style", ())?;
     let column_highlight_style_val: Value = node.funcall("column_highlight_style", ())?;
     let cell_highlight_style_val: Value = node.funcall("cell_highlight_style", ())?;
     let highlight_symbol_val: Value = node.funcall("highlight_symbol", ())?;
@@ -196,8 +197,8 @@ pub fn render_stateful(
     if !block_val.is_nil() {
         table = table.block(parse_block(block_val, &bump)?);
     }
-    if !highlight_style_val.is_nil() {
-        table = table.row_highlight_style(parse_style(highlight_style_val)?);
+    if !row_highlight_style_val.is_nil() {
+        table = table.row_highlight_style(parse_style(row_highlight_style_val)?);
     }
     if !column_highlight_style_val.is_nil() {
         table = table.column_highlight_style(parse_style(column_highlight_style_val)?);
@@ -228,6 +229,53 @@ pub fn render_stateful(
 
 fn parse_row(row_val: Value) -> Result<Row<'static>, Error> {
     let ruby = magnus::Ruby::get().unwrap();
+
+    // Check if this is a RatatuiRuby::Row object with cells + style + height + margins
+    let class = row_val.class();
+    // SAFETY: Immediate conversion to owned string avoids GC-unsafe borrowed reference.
+    let class_name = unsafe { class.name() }.into_owned();
+
+    if class_name == "RatatuiRuby::Widgets::Row" {
+        let cells_val: Value = row_val.funcall("cells", ())?;
+        let style_val: Value = row_val.funcall("style", ())?;
+        let height_val: Value = row_val.funcall("height", ())?;
+        let top_margin_val: Value = row_val.funcall("top_margin", ())?;
+        let bottom_margin_val: Value = row_val.funcall("bottom_margin", ())?;
+
+        let cells_array = magnus::RArray::from_value(cells_val).ok_or_else(|| {
+            Error::new(ruby.exception_type_error(), "expected array for Row.cells")
+        })?;
+
+        let mut cells = Vec::new();
+        for i in 0..cells_array.len() {
+            let index = isize::try_from(i)
+                .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+            let entry_val: Value = cells_array.entry(index)?;
+            cells.push(parse_cell(entry_val)?);
+        }
+
+        let mut row = Row::new(cells);
+
+        if !style_val.is_nil() {
+            row = row.style(parse_style(style_val)?);
+        }
+        if !height_val.is_nil() {
+            let h: u16 = height_val.funcall("to_int", ())?;
+            row = row.height(h);
+        }
+        if !top_margin_val.is_nil() {
+            let m: u16 = top_margin_val.funcall("to_int", ())?;
+            row = row.top_margin(m);
+        }
+        if !bottom_margin_val.is_nil() {
+            let m: u16 = bottom_margin_val.funcall("to_int", ())?;
+            row = row.bottom_margin(m);
+        }
+
+        return Ok(row);
+    }
+
+    // Fallback: plain array of cells
     let row_array = magnus::RArray::from_value(row_val)
         .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for row"))?;
 
@@ -246,14 +294,28 @@ fn parse_cell(cell_val: Value) -> Result<Cell<'static>, Error> {
     // SAFETY: Immediate conversion to owned string avoids GC-unsafe borrowed reference.
     let class_name = unsafe { class.name() }.into_owned();
 
-    if class_name == "RatatuiRuby::Paragraph" {
+    // Try Text::Line first (contains multiple spans)
+    if class_name.contains("Line") {
+        if let Ok(line) = parse_line(cell_val) {
+            return Ok(Cell::from(line));
+        }
+    }
+
+    // Try Text::Span
+    if class_name.contains("Span") {
+        if let Ok(span) = parse_span(cell_val) {
+            return Ok(Cell::from(ratatui::text::Line::from(vec![span])));
+        }
+    }
+
+    if class_name == "RatatuiRuby::Widgets::Paragraph" {
         let text: String = cell_val.funcall("text", ())?;
         let style_val: Value = cell_val.funcall("style", ())?;
         let cell_style = parse_style(style_val)?;
         Ok(Cell::from(text).style(cell_style))
-    } else if class_name == "RatatuiRuby::Style" {
+    } else if class_name == "RatatuiRuby::Style::Style" {
         Ok(Cell::from("").style(parse_style(cell_val)?))
-    } else if class_name == "RatatuiRuby::Cell" {
+    } else if class_name == "RatatuiRuby::Widgets::Cell" {
         let symbol: String = cell_val.funcall("char", ())?;
         let fg_val: Value = cell_val.funcall("fg", ())?;
         let bg_val: Value = cell_val.funcall("bg", ())?;

@@ -19,9 +19,9 @@ Architecture:
 ## Stability & Compatibility
 
 - **Project Status:** Pre-1.0. 
-- **User Base:** 0 users (internal/experimental).
-- **Breaking Changes:** Backward compatibility is **NOT** a priority at this stage. Since there are no external users, you are encouraged to refactor APIs for better ergonomics and performance even if it breaks existing code.
-- **Requirement:** All breaking changes **MUST** be explicitly documented in the [CHANGELOG.md](CHANGELOG.md)'s **Unreleased** section to ensure transparency as the project evolves toward 1.0.
+- **User Base:** First external users (as of 2026-01-03).
+- **Breaking Changes:** Backward compatibility is **NOT YET** a priority. Since there are few external users, you are encouraged to refactor APIs for better ergonomics and performance even if it breaks existing code. This will when we ship v1.0.0.
+- **Requirement:** All breaking changes **MUST** be explicitly documented in the [CHANGELOG.md](CHANGELOG.md)'s **Unreleased** section to ensure transparency as the project evolves toward 1.0. Migration guides **MUST** be included in `doc/` when we release a new minor version.
 
 ## 1. Standards
 

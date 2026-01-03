@@ -126,14 +126,14 @@ sig/examples/
 
 2. **Use `RatatuiRuby.run` for terminal management.** Never call `init_terminal` or `restore_terminal` directly. The `run` block handles terminal setup/teardown automatically and safely, even if an exception occurs.
 
-3. **Use the Session API (`tui`) for cleaner code.** Accept the `tui` block parameter from `RatatuiRuby.run` and use it throughout your app:
+3. **Use the TUI API (`tui`) for cleaner code.** Accept the `tui` block parameter from `RatatuiRuby.run` and use it throughout your app:
    - `@tui.draw { |frame| ... }` instead of `RatatuiRuby.draw`
    - `@tui.poll_event` instead of `RatatuiRuby.poll_event`
-   - `@tui.style(...)` instead of `RatatuiRuby::Style.new(...)`
-   - `@tui.paragraph(...)` instead of `RatatuiRuby::Paragraph.new(...)`
-   - `@tui.block(...)` instead of `RatatuiRuby::Block.new(...)`
+   - `@tui.style(...)` instead of `RatatuiRuby::Style::Style.new(...)`
+   - `@tui.paragraph(...)` instead of `RatatuiRuby::Widgets::Paragraph.new(...)`
+   - `@tui.block(...)` instead of `RatatuiRuby::Widgets::Block.new(...)`
    - `@tui.layout_split(...)` instead of `RatatuiRuby::Layout.split(...)`
-   - `@tui.constraint_fill(...)` instead of `RatatuiRuby::Constraint.fill(...)`
+   - `@tui.constraint_fill(...)` instead of `RatatuiRuby::Layout::Constraint.fill(...)`
    - `@tui.text_line(...)` instead of `RatatuiRuby::Text::Line.new(...)`
    - `@tui.text_span(...)` instead of `RatatuiRuby::Text::Span.new(...)`
 

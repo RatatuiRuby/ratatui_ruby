@@ -118,9 +118,10 @@ impl RubyFrame {
         // The ensure_active() check above guarantees we're still in the callback.
         let area = unsafe { (*self.inner.get()).as_ref().area() };
 
-        // Create a Ruby Rect object
+        // Create a Ruby Layout::Rect object
         let module = ruby.define_module("RatatuiRuby")?;
-        let class = module.const_get::<_, magnus::RClass>("Rect")?;
+        let layout_mod = module.const_get::<_, magnus::RModule>("Layout")?;
+        let class = layout_mod.const_get::<_, magnus::RClass>("Rect")?;
         class.funcall("new", (area.x, area.y, area.width, area.height))
     }
 
@@ -190,13 +191,13 @@ impl RubyFrame {
         let state_class = unsafe { state.class().name() }.into_owned();
 
         match (widget_class.as_str(), state_class.as_str()) {
-            ("RatatuiRuby::List", "RatatuiRuby::ListState") => {
+            ("RatatuiRuby::Widgets::List", "RatatuiRuby::ListState") => {
                 widgets::list::render_stateful(frame, rect, widget, state)
             }
-            ("RatatuiRuby::Table", "RatatuiRuby::TableState") => {
+            ("RatatuiRuby::Widgets::Table", "RatatuiRuby::TableState") => {
                 widgets::table::render_stateful(frame, rect, widget, state)
             }
-            ("RatatuiRuby::Scrollbar", "RatatuiRuby::ScrollbarState") => {
+            ("RatatuiRuby::Widgets::Scrollbar", "RatatuiRuby::ScrollbarState") => {
                 widgets::scrollbar::render_stateful(frame, rect, widget, state)
             }
             _ => Err(Error::new(

@@ -19,7 +19,7 @@ class TestDraw < Minitest::Test
   end
 
   def test_draw_cell
-    cell = RatatuiRuby::Cell.new(char: "X", fg: :red, bg: :blue, modifiers: ["bold"])
+    cell = RatatuiRuby::Buffer::Cell.new(char: "X", fg: :red, bg: :blue, modifiers: ["bold"])
     widget = CustomWidget.new(cell)
 
     with_test_terminal(10, 5) do
@@ -36,8 +36,8 @@ class TestDraw < Minitest::Test
   class OverwritingWidget
     def render(area)
       [
-        RatatuiRuby::Draw.cell(0, 0, RatatuiRuby::Cell.char("A")),
-        RatatuiRuby::Draw.cell(0, 0, RatatuiRuby::Cell.char("B")),
+        RatatuiRuby::Draw.cell(0, 0, RatatuiRuby::Buffer::Cell.char("A")),
+        RatatuiRuby::Draw.cell(0, 0, RatatuiRuby::Buffer::Cell.char("B")),
       ]
     end
   end
@@ -52,7 +52,7 @@ class TestDraw < Minitest::Test
   class OutOfBoundsWidget
     def render(area)
       # Should not crash
-      [RatatuiRuby::Draw.cell(100, 100, RatatuiRuby::Cell.char("X"))]
+      [RatatuiRuby::Draw.cell(100, 100, RatatuiRuby::Buffer::Cell.char("X"))]
     end
   end
 

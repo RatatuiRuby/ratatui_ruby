@@ -25,7 +25,7 @@ class TestFrame < Minitest::Test
       RatatuiRuby.draw do |frame|
         area = frame.area
 
-        assert_instance_of RatatuiRuby::Rect, area
+        assert_instance_of RatatuiRuby::Layout::Rect, area
         assert_equal 0, area.x
         assert_equal 0, area.y
         assert_equal 80, area.width
@@ -47,8 +47,8 @@ class TestFrame < Minitest::Test
 
   def test_frame_render_widget_renders_to_specified_area
     with_test_terminal(20, 5) do
-      paragraph = RatatuiRuby::Paragraph.new(text: "Hello")
-      area = RatatuiRuby::Rect.new(x: 0, y: 0, width: 10, height: 1)
+      paragraph = RatatuiRuby::Widgets::Paragraph.new(text: "Hello")
+      area = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 10, height: 1)
 
       RatatuiRuby.draw do |frame|
         frame.render_widget(paragraph, area)
@@ -60,9 +60,9 @@ class TestFrame < Minitest::Test
 
   def test_frame_render_widget_respects_area_position
     with_test_terminal(20, 5) do
-      paragraph = RatatuiRuby::Paragraph.new(text: "X")
+      paragraph = RatatuiRuby::Widgets::Paragraph.new(text: "X")
       # Render at position (5, 2)
-      area = RatatuiRuby::Rect.new(x: 5, y: 2, width: 1, height: 1)
+      area = RatatuiRuby::Layout::Rect.new(x: 5, y: 2, width: 1, height: 1)
 
       RatatuiRuby.draw do |frame|
         frame.render_widget(paragraph, area)
@@ -76,11 +76,11 @@ class TestFrame < Minitest::Test
 
   def test_frame_render_widget_multiple_widgets
     with_test_terminal(20, 3) do
-      left_widget = RatatuiRuby::Paragraph.new(text: "LEFT")
-      right_widget = RatatuiRuby::Paragraph.new(text: "RIGHT")
+      left_widget = RatatuiRuby::Widgets::Paragraph.new(text: "LEFT")
+      right_widget = RatatuiRuby::Widgets::Paragraph.new(text: "RIGHT")
 
-      left_area = RatatuiRuby::Rect.new(x: 0, y: 0, width: 10, height: 1)
-      right_area = RatatuiRuby::Rect.new(x: 10, y: 0, width: 10, height: 1)
+      left_area = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 10, height: 1)
+      right_area = RatatuiRuby::Layout::Rect.new(x: 10, y: 0, width: 10, height: 1)
 
       RatatuiRuby.draw do |frame|
         frame.render_widget(left_widget, left_area)
@@ -95,7 +95,7 @@ class TestFrame < Minitest::Test
 
   def test_legacy_draw_with_tree_still_works
     with_test_terminal(20, 5) do
-      paragraph = RatatuiRuby::Paragraph.new(text: "Legacy mode")
+      paragraph = RatatuiRuby::Widgets::Paragraph.new(text: "Legacy mode")
 
       RatatuiRuby.draw(paragraph)
 
@@ -115,7 +115,7 @@ class TestFrame < Minitest::Test
 
   def test_draw_with_both_tree_and_block_raises_error
     with_test_terminal(20, 5) do
-      paragraph = RatatuiRuby::Paragraph.new(text: "Test")
+      paragraph = RatatuiRuby::Widgets::Paragraph.new(text: "Test")
 
       error = assert_raises(ArgumentError) do
         RatatuiRuby.draw(paragraph) { |_frame| nil } # intentionally empty block
@@ -137,8 +137,8 @@ class TestFrame < Minitest::Test
 
   def test_frame_render_widget_returns_nil
     with_test_terminal(20, 5) do
-      paragraph = RatatuiRuby::Paragraph.new(text: "Test")
-      area = RatatuiRuby::Rect.new(x: 0, y: 0, width: 10, height: 1)
+      paragraph = RatatuiRuby::Widgets::Paragraph.new(text: "Test")
+      area = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 10, height: 1)
 
       result = nil
       RatatuiRuby.draw do |frame|
@@ -189,7 +189,7 @@ class TestFrame < Minitest::Test
   end
 
   private def render_paragraph_helper(frame, text)
-    paragraph = RatatuiRuby::Paragraph.new(text:)
+    paragraph = RatatuiRuby::Widgets::Paragraph.new(text:)
     frame.render_widget(paragraph, frame.area)
   end
 end

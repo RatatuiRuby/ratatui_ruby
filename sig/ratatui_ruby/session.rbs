@@ -29,30 +29,6 @@ module RatatuiRuby
     def restore_terminal: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def run: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def warn_experimental_feature: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def axis: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def bar_chart: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def bar_chart_bar: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def bar_chart_bar_group: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def block: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def calendar: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def canvas: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def cell: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def cell_char: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def cell_default: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def cell_empty: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def cell_symbol: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def center: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def chart: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def clear: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def constraint: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def constraint_fill: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def constraint_length: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def constraint_max: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def constraint_min: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def constraint_percentage: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def constraint_ratio: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def cursor: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def dataset: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def draw_cell: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def draw_string: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def draw_cell_cmd: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
@@ -69,39 +45,43 @@ module RatatuiRuby
     def event_paste: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def event_resize: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def frame: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def gauge: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def layout: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def layout_split: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def line_chart: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def line_gauge: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def list: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def list_item: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def layout_constraint: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def layout_layout: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def layout_rect: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def list_state: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def list_state_new: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def overlay: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def paragraph: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def paragraph_new: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def ratatui_logo: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def ratatui_mascot: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def rect: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def scrollbar: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def scrollbar_state: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def scrollbar_state_new: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def shape_circle: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def shape_label: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def shape_line: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def shape_map: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def shape_point: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def shape_rectangle: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def sparkline: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def style: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def style_default: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def table: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def style_style: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def table_state: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def table_state_new: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
-    def tabs: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def text_width: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def text_line: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
     def text_span: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_axis: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_bar_chart: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_block: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_calendar: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_canvas: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_cell: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_center: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_chart: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_clear: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_cursor: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_dataset: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_gauge: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_line_chart: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_line_gauge: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_list: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_list_item: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_overlay: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_paragraph: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_ratatui_logo: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_ratatui_mascot: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_row: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_scrollbar: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_sparkline: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_table: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
+    def widgets_tabs: (*untyped args, **untyped kwargs) ?{ (*untyped) -> untyped } -> untyped
   end
 end

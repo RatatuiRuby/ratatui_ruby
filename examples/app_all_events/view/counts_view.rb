@@ -18,7 +18,7 @@ class View::Counts
   # [model] AppModel containing event data.
   # [tui] RatatuiRuby instance.
   # [frame] RatatuiRuby::Frame being rendered.
-  # [area] RatatuiRuby::Rect defining the widget's bounds.
+  # [area] RatatuiRuby::Layout::Rect defining the widget's bounds.
   def call(model, tui, frame, area)
     dimmed_style = tui.style(fg: :dark_gray)
     lit_style = tui.style(fg: :green, modifiers: [:bold])

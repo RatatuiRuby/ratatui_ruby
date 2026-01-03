@@ -8,13 +8,13 @@ require "test_helper"
 class TestClear < Minitest::Test
   include RatatuiRuby::TestHelper
   def test_clear_creation
-    clear = RatatuiRuby::Clear.new
+    clear = RatatuiRuby::Widgets::Clear.new
     assert_nil clear.block
   end
 
   def test_clear_with_block
-    block = RatatuiRuby::Block.new(title: "Test", borders: [:all])
-    clear = RatatuiRuby::Clear.new(block:)
+    block = RatatuiRuby::Widgets::Block.new(title: "Test", borders: [:all])
+    clear = RatatuiRuby::Widgets::Clear.new(block:)
     assert_equal block, clear.block
   end
 
@@ -22,7 +22,7 @@ class TestClear < Minitest::Test
     with_test_terminal(20, 5) do
       # Create a simple UI that demonstrates Clear widget
       # Without Clear, we just have empty space
-      clear = RatatuiRuby::Clear.new
+      clear = RatatuiRuby::Widgets::Clear.new
       RatatuiRuby.draw { |f| f.render_widget(clear, f.area) }
 
       # Verify entire buffer is cleared (every character)
@@ -37,13 +37,13 @@ class TestClear < Minitest::Test
   def test_render_clears_background
     with_test_terminal(20, 5) do
       # First, draw background text
-      background = RatatuiRuby::Paragraph.new(text: "XXXXXXXXXXXXXXXXXXXX" * 5, wrap: true)
+      background = RatatuiRuby::Widgets::Paragraph.new(text: "XXXXXXXXXXXXXXXXXXXX" * 5, wrap: true)
 
       # Then overlay Clear on top
-      ui = RatatuiRuby::Overlay.new(
+      ui = RatatuiRuby::Widgets::Overlay.new(
         layers: [
           background,
-          RatatuiRuby::Clear.new,
+          RatatuiRuby::Widgets::Clear.new,
         ]
       )
       RatatuiRuby.draw { |f| f.render_widget(ui, f.area) }
@@ -59,8 +59,8 @@ class TestClear < Minitest::Test
 
   def test_render_with_block
     with_test_terminal(20, 5) do
-      clear = RatatuiRuby::Clear.new(
-        block: RatatuiRuby::Block.new(title: "Cleared", borders: [:all])
+      clear = RatatuiRuby::Widgets::Clear.new(
+        block: RatatuiRuby::Widgets::Block.new(title: "Cleared", borders: [:all])
       )
       RatatuiRuby.draw { |f| f.render_widget(clear, f.area) }
 

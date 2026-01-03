@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class TUI
+    module CanvasFactories
+      def shape_map: (**top) -> Widgets::Shape::Map
+      def shape_line: (**top) -> Widgets::Shape::Line
+      def shape_point: (**top) -> Widgets::Shape::Point
+      def shape_circle: (**top) -> Widgets::Shape::Circle
+      def shape_rectangle: (**top) -> Widgets::Shape::Rectangle
+    end
+  end
+end

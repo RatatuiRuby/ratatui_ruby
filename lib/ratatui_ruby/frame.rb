@@ -29,7 +29,7 @@ module RatatuiRuby
   # Basic usage with a single widget:
   #
   #   RatatuiRuby.draw do |frame|
-  #     paragraph = RatatuiRuby::Paragraph.new(text: "Hello, world!")
+  #     paragraph = RatatuiRuby::Widgets::Paragraph.new(text: "Hello, world!")
   #     frame.render_widget(paragraph, frame.area)
   #   end
   #
@@ -40,8 +40,8 @@ module RatatuiRuby
   #       frame.area,
   #       direction: :horizontal,
   #       constraints: [
-  #         RatatuiRuby::Constraint.length(20),
-  #         RatatuiRuby::Constraint.fill(1)
+  #         RatatuiRuby::Layout::Constraint.length(20),
+  #         RatatuiRuby::Layout::Constraint.fill(1)
   #       ]
   #     )
   #
@@ -86,7 +86,7 @@ module RatatuiRuby
     # === Example
     #
     #   RatatuiRuby.draw do |frame|
-    #     para = RatatuiRuby::Paragraph.new(text: "Content")
+    #     para = RatatuiRuby::Widgets::Paragraph.new(text: "Content")
     #     frame.render_widget(para, frame.area)
     #   end
     #
@@ -122,7 +122,7 @@ module RatatuiRuby
     #   @list_state = RatatuiRuby::ListState.new
     #
     #   RatatuiRuby.draw do |frame|
-    #     list = RatatuiRuby::List.new(items: ["A", "B"])
+    #     list = RatatuiRuby::Widgets::List.new(items: ["A", "B"])
     #     frame.render_stateful_widget(list, frame.area, @list_state)
     #   end
     #
@@ -160,9 +160,9 @@ module RatatuiRuby
     #
     #   RatatuiRuby.draw do |frame|
     #     # Render the input field
-    #     prompt = RatatuiRuby::Paragraph.new(
+    #     prompt = RatatuiRuby::Widgets::Paragraph.new(
     #       text: "#{PREFIX}#{username} ]",
-    #       block: RatatuiRuby::Block.new(borders: :all)
+    #       block: RatatuiRuby::Widgets::Block.new(borders: :all)
     #     )
     #     frame.render_widget(prompt, frame.area)
     #

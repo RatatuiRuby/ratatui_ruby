@@ -10,8 +10,8 @@ class TestTable < Minitest::Test
   def test_table_creation
     header = ["A", "B"]
     rows = [["1", "2"], ["3", "4"]]
-    widths = [RatatuiRuby::Constraint.length(5), RatatuiRuby::Constraint.length(5)]
-    t = RatatuiRuby::Table.new(header:, rows:, widths:)
+    widths = [RatatuiRuby::Layout::Constraint.length(5), RatatuiRuby::Layout::Constraint.length(5)]
+    t = RatatuiRuby::Widgets::Table.new(header:, rows:, widths:)
     assert_equal header, t.header
     assert_equal rows, t.rows
     assert_equal widths, t.widths
@@ -20,18 +20,18 @@ class TestTable < Minitest::Test
   end
 
   def test_table_creation_with_style
-    style = RatatuiRuby::Style.new(fg: :red)
-    t = RatatuiRuby::Table.new(rows: [], widths: [], style:, highlight_spacing: :always)
+    style = RatatuiRuby::Style::Style.new(fg: :red)
+    t = RatatuiRuby::Widgets::Table.new(rows: [], widths: [], style:, highlight_spacing: :always)
     assert_equal style, t.style
     assert_equal :always, t.highlight_spacing
   end
 
   def test_render
     with_test_terminal(20, 5) do
-      t = RatatuiRuby::Table.new(
+      t = RatatuiRuby::Widgets::Table.new(
         header: ["Col1", "Col2"],
         rows: [["Val1", "Val2"]],
-        widths: [RatatuiRuby::Constraint.length(8), RatatuiRuby::Constraint.length(8)]
+        widths: [RatatuiRuby::Layout::Constraint.length(8), RatatuiRuby::Layout::Constraint.length(8)]
       )
       RatatuiRuby.draw { |f| f.render_widget(t, f.area) }
       assert_equal "Col1     Col2       ", buffer_content[0]
@@ -44,10 +44,10 @@ class TestTable < Minitest::Test
 
   def test_render_with_selection
     with_test_terminal(20, 5) do
-      t = RatatuiRuby::Table.new(
+      t = RatatuiRuby::Widgets::Table.new(
         header: ["Col1", "Col2"],
         rows: [["Val1", "Val2"], ["Val3", "Val4"]],
-        widths: [RatatuiRuby::Constraint.length(8), RatatuiRuby::Constraint.length(8)],
+        widths: [RatatuiRuby::Layout::Constraint.length(8), RatatuiRuby::Layout::Constraint.length(8)],
         selected_row: 1,
         highlight_symbol: "> "
       )
@@ -60,16 +60,16 @@ class TestTable < Minitest::Test
 
   def test_footer_rendering
     rows = [["Row 1"]]
-    widths = [RatatuiRuby::Constraint.length(10)]
+    widths = [RatatuiRuby::Layout::Constraint.length(10)]
     header = ["Header"]
     footer = ["Footer"]
 
-    table = RatatuiRuby::Table.new(
+    table = RatatuiRuby::Widgets::Table.new(
       header:,
       rows:,
       widths:,
       footer:,
-      block: RatatuiRuby::Block.new(borders: :all)
+      block: RatatuiRuby::Widgets::Block.new(borders: :all)
     )
 
     with_test_terminal(20, 7) do
@@ -93,12 +93,12 @@ class TestTable < Minitest::Test
 
   def test_footer_styling
     rows = [["Row 1"]]
-    widths = [RatatuiRuby::Constraint.length(20)]
+    widths = [RatatuiRuby::Layout::Constraint.length(20)]
     footer = [
-      RatatuiRuby::Paragraph.new(text: "Styled Footer", style: RatatuiRuby::Style.new(fg: :red)),
+      RatatuiRuby::Widgets::Paragraph.new(text: "Styled Footer", style: RatatuiRuby::Style::Style.new(fg: :red)),
     ]
 
-    table = RatatuiRuby::Table.new(
+    table = RatatuiRuby::Widgets::Table.new(
       rows:,
       widths:,
       footer:
@@ -116,10 +116,10 @@ class TestTable < Minitest::Test
     # We can't easily verify the colors in the test terminal output yet,
     # but we can verify it renders without crashing and maintains its layout.
     rows = [["Row 1"]]
-    widths = [RatatuiRuby::Constraint.length(10)]
-    style = RatatuiRuby::Style.new(fg: :blue, bg: :white)
+    widths = [RatatuiRuby::Layout::Constraint.length(10)]
+    style = RatatuiRuby::Style::Style.new(fg: :blue, bg: :white)
 
-    table = RatatuiRuby::Table.new(
+    table = RatatuiRuby::Widgets::Table.new(
       rows:,
       widths:,
       style:
@@ -135,10 +135,10 @@ class TestTable < Minitest::Test
   def test_style_hash_rendering
     # Verify Hash-based style also works
     rows = [["Row 1"]]
-    widths = [RatatuiRuby::Constraint.length(10)]
+    widths = [RatatuiRuby::Layout::Constraint.length(10)]
     style = { fg: :red }
 
-    table = RatatuiRuby::Table.new(
+    table = RatatuiRuby::Widgets::Table.new(
       rows:,
       widths:,
       style:
@@ -153,10 +153,10 @@ class TestTable < Minitest::Test
 
   def test_flex_space_between
     rows = [["A", "B"]]
-    widths = [RatatuiRuby::Constraint.length(1), RatatuiRuby::Constraint.length(1)]
+    widths = [RatatuiRuby::Layout::Constraint.length(1), RatatuiRuby::Layout::Constraint.length(1)]
 
     # SpaceBetween should push columns to edges.
-    table = RatatuiRuby::Table.new(
+    table = RatatuiRuby::Widgets::Table.new(
       rows:,
       widths:,
       flex: :space_between
@@ -173,10 +173,10 @@ class TestTable < Minitest::Test
 
   def test_flex_start
     rows = [["A", "B"]]
-    widths = [RatatuiRuby::Constraint.length(1), RatatuiRuby::Constraint.length(1)]
+    widths = [RatatuiRuby::Layout::Constraint.length(1), RatatuiRuby::Layout::Constraint.length(1)]
 
     # Start should push columns to left
-    table = RatatuiRuby::Table.new(
+    table = RatatuiRuby::Widgets::Table.new(
       rows:,
       widths:,
       flex: :start
@@ -193,10 +193,10 @@ class TestTable < Minitest::Test
 
   def test_column_spacing
     rows = [["A", "B"]]
-    widths = [RatatuiRuby::Constraint.length(1), RatatuiRuby::Constraint.length(1)]
+    widths = [RatatuiRuby::Layout::Constraint.length(1), RatatuiRuby::Layout::Constraint.length(1)]
 
     # column_spacing: 5
-    table = RatatuiRuby::Table.new(
+    table = RatatuiRuby::Widgets::Table.new(
       rows:,
       widths:,
       column_spacing: 5
@@ -212,10 +212,10 @@ class TestTable < Minitest::Test
 
   def test_highlight_spacing_always
     rows = [["A"]]
-    widths = [RatatuiRuby::Constraint.length(1)]
+    widths = [RatatuiRuby::Layout::Constraint.length(1)]
 
     # :always means we should see the spacing even if not selected
-    table = RatatuiRuby::Table.new(
+    table = RatatuiRuby::Widgets::Table.new(
       rows:,
       widths:,
       highlight_spacing: :always,
@@ -232,10 +232,10 @@ class TestTable < Minitest::Test
 
   def test_highlight_spacing_never
     rows = [["A"]]
-    widths = [RatatuiRuby::Constraint.length(1)]
+    widths = [RatatuiRuby::Layout::Constraint.length(1)]
 
     # :never means no reserved space. "A" starts at col 0.
-    table = RatatuiRuby::Table.new(
+    table = RatatuiRuby::Widgets::Table.new(
       rows:,
       widths:,
       highlight_spacing: :never,
@@ -251,10 +251,10 @@ class TestTable < Minitest::Test
 
   def test_highlight_spacing_when_selected_unselected
     rows = [["A"]]
-    widths = [RatatuiRuby::Constraint.length(1)]
+    widths = [RatatuiRuby::Layout::Constraint.length(1)]
 
     # :when_selected (default) + Not selected -> No spacing (like :never)
-    table = RatatuiRuby::Table.new(
+    table = RatatuiRuby::Widgets::Table.new(
       rows:,
       widths:,
       highlight_spacing: :when_selected,
@@ -269,10 +269,10 @@ class TestTable < Minitest::Test
 
   def test_highlight_spacing_when_selected_selected
     rows = [["A"]]
-    widths = [RatatuiRuby::Constraint.length(1)]
+    widths = [RatatuiRuby::Layout::Constraint.length(1)]
 
     # :when_selected (default) + Selected -> Spacing (like :always) + Symbol
-    table = RatatuiRuby::Table.new(
+    table = RatatuiRuby::Widgets::Table.new(
       rows:,
       widths:,
       highlight_spacing: :when_selected,
@@ -288,12 +288,12 @@ class TestTable < Minitest::Test
   end
 
   def test_mixed_cell_content
-    # Verify we can mix Strings and Cells in the same row
-    cell = RatatuiRuby::Cell.new(char: "X", fg: :red)
-    rows = [["A", cell]]
-    widths = [RatatuiRuby::Constraint.length(1), RatatuiRuby::Constraint.length(1)]
+    # Verify we can mix Strings and Text::Span (styled) in the same row
+    styled_span = RatatuiRuby::Text::Span.new(content: "X", style: RatatuiRuby::Style::Style.new(fg: :red))
+    rows = [["A", styled_span]]
+    widths = [RatatuiRuby::Layout::Constraint.length(1), RatatuiRuby::Layout::Constraint.length(1)]
 
-    table = RatatuiRuby::Table.new(rows:, widths:)
+    table = RatatuiRuby::Widgets::Table.new(rows:, widths:)
 
     with_test_terminal(5, 1) do
       RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
@@ -301,9 +301,7 @@ class TestTable < Minitest::Test
       # Check content
       assert_equal "A", RatatuiRuby.get_cell_at(0, 0).char
 
-      rendered_cell = RatatuiRuby.get_cell_at(1, 0) # Spacing? default column_spacing is 1
       # A (0) + space (1) + X (2)
-
       rendered_cell = RatatuiRuby.get_cell_at(2, 0)
       assert_equal "X", rendered_cell.char
       assert_equal :red, rendered_cell.fg
@@ -311,14 +309,15 @@ class TestTable < Minitest::Test
   end
 
   def test_header_footer_cells
-    header_cell = RatatuiRuby::Cell.new(char: "H", fg: :blue)
-    footer_cell = RatatuiRuby::Cell.new(char: "F", fg: :green)
+    # Use Text::Span for styled header/footer content
+    header_span = RatatuiRuby::Text::Span.new(content: "H", style: RatatuiRuby::Style::Style.new(fg: :blue))
+    footer_span = RatatuiRuby::Text::Span.new(content: "F", style: RatatuiRuby::Style::Style.new(fg: :green))
 
-    table = RatatuiRuby::Table.new(
+    table = RatatuiRuby::Widgets::Table.new(
       rows: [],
-      widths: [RatatuiRuby::Constraint.length(1)],
-      header: [header_cell],
-      footer: [footer_cell]
+      widths: [RatatuiRuby::Layout::Constraint.length(1)],
+      header: [header_span],
+      footer: [footer_span]
     )
 
     with_test_terminal(5, 3) do
@@ -348,10 +347,10 @@ class TestTable < Minitest::Test
     # 10 rows, terminal height 5 (header + 4 data rows), offset forces viewport
     rows = (0..9).map { |i| ["Row #{i}"] }
     with_test_terminal(20, 5) do
-      table = RatatuiRuby::Table.new(
+      table = RatatuiRuby::Widgets::Table.new(
         header: ["Header"],
         rows:,
-        widths: [RatatuiRuby::Constraint.length(10)],
+        widths: [RatatuiRuby::Layout::Constraint.length(10)],
         selected_row: 5,
         offset: 5
       )
@@ -366,10 +365,10 @@ class TestTable < Minitest::Test
   def test_offset_nil_allows_auto_scroll
     rows = (0..9).map { |i| ["Row #{i}"] }
     with_test_terminal(20, 4) do
-      table = RatatuiRuby::Table.new(
+      table = RatatuiRuby::Widgets::Table.new(
         header: ["Header"],
         rows:,
-        widths: [RatatuiRuby::Constraint.length(10)],
+        widths: [RatatuiRuby::Layout::Constraint.length(10)],
         selected_row: 8 # Near the end
       )
       RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
@@ -383,10 +382,10 @@ class TestTable < Minitest::Test
     # Passive scroll: no selection, just viewing rows 5+
     rows = (0..9).map { |i| ["Row #{i}"] }
     with_test_terminal(20, 4) do
-      table = RatatuiRuby::Table.new(
+      table = RatatuiRuby::Widgets::Table.new(
         header: ["Header"],
         rows:,
-        widths: [RatatuiRuby::Constraint.length(10)],
+        widths: [RatatuiRuby::Layout::Constraint.length(10)],
         selected_row: nil,
         offset: 5
       )
@@ -396,5 +395,94 @@ class TestTable < Minitest::Test
       assert_includes content, "Row 5"
       assert_includes content, "Row 6"
     end
+  end
+
+  # Feature 1: Table cells now accept Text::Span and Text::Line
+  def test_rich_text_cell_with_span
+    span = RatatuiRuby::Text::Span.new(content: "Styled", style: RatatuiRuby::Style::Style.new(fg: :red))
+    rows = [[span]]
+    widths = [RatatuiRuby::Layout::Constraint.length(10)]
+    table = RatatuiRuby::Widgets::Table.new(rows:, widths:)
+
+    with_test_terminal(10, 1) do
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
+      assert_includes buffer_content.first, "Styled"
+      # Verify style applied
+      cell = RatatuiRuby.get_cell_at(0, 0)
+      assert_equal :red, cell.fg
+    end
+  end
+
+  def test_rich_text_cell_with_line
+    line = RatatuiRuby::Text::Line.new(spans: [
+      RatatuiRuby::Text::Span.new(content: "Hello ", style: RatatuiRuby::Style::Style.new(fg: :green)),
+      RatatuiRuby::Text::Span.new(content: "World", style: RatatuiRuby::Style::Style.new(fg: :blue)),
+    ])
+    rows = [[line]]
+    widths = [RatatuiRuby::Layout::Constraint.length(15)]
+    table = RatatuiRuby::Widgets::Table.new(rows:, widths:)
+
+    with_test_terminal(15, 1) do
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
+      content = buffer_content.first
+      assert_includes content, "Hello"
+      assert_includes content, "World"
+      # Verify styles (green for first part, blue after space)
+      assert_equal :green, RatatuiRuby.get_cell_at(0, 0).fg
+      assert_equal :blue, RatatuiRuby.get_cell_at(6, 0).fg
+    end
+  end
+
+  def test_rich_text_header_with_span
+    header = [RatatuiRuby::Text::Span.new(content: "Title", style: RatatuiRuby::Style::Style.new(modifiers: [:bold]))]
+    rows = [["Data"]]
+    widths = [RatatuiRuby::Layout::Constraint.length(10)]
+    table = RatatuiRuby::Widgets::Table.new(header:, rows:, widths:)
+
+    with_test_terminal(10, 2) do
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
+      assert_includes buffer_content[0], "Title"
+      assert RatatuiRuby.get_cell_at(0, 0).bold?
+    end
+  end
+
+  # Feature 2: Row class for row-level styling
+  def test_row_with_style
+    row = RatatuiRuby::Widgets::Row.new(
+      cells: ["Error", "Something went wrong"],
+      style: RatatuiRuby::Style::Style.new(bg: :red)
+    )
+    rows = [["Normal", "Row"], row]
+    widths = [RatatuiRuby::Layout::Constraint.length(10), RatatuiRuby::Layout::Constraint.length(20)]
+    table = RatatuiRuby::Widgets::Table.new(rows:, widths:)
+
+    with_test_terminal(30, 2) do
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
+      # First row: normal (no background)
+      assert_nil RatatuiRuby.get_cell_at(0, 0).bg
+      # Second row (Row object): red background
+      assert_equal :red, RatatuiRuby.get_cell_at(0, 1).bg
+    end
+  end
+
+  def test_row_with_height
+    row = RatatuiRuby::Widgets::Row.new(cells: ["Tall"], height: 3)
+    rows = [row]
+    widths = [RatatuiRuby::Layout::Constraint.length(10)]
+    table = RatatuiRuby::Widgets::Table.new(rows:, widths:)
+
+    with_test_terminal(10, 5) do
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
+      # The row should occupy 3 lines (content on line 0, blanks on 1-2)
+      assert_includes buffer_content[0], "Tall"
+      # Lines 1 and 2 should be part of the row (empty/reserved space)
+    end
+  end
+
+  def test_row_creation
+    row = RatatuiRuby::Widgets::Row.new(cells: ["A", "B"], style: RatatuiRuby::Style::Style.new(fg: :blue), height: 2)
+    assert_equal ["A", "B"], row.cells
+    assert_equal :blue, row.style.fg
+    assert_equal 2, row.height
   end
 end

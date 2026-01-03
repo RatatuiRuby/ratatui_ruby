@@ -9,13 +9,13 @@ class TestTabs < Minitest::Test
   include RatatuiRuby::TestHelper
   def test_tabs_creation
     titles = ["A", "B"]
-    tabs = RatatuiRuby::Tabs.new(titles:, selected_index: 0)
+    tabs = RatatuiRuby::Widgets::Tabs.new(titles:, selected_index: 0)
     assert_equal titles, tabs.titles
     assert_equal 0, tabs.selected_index
   end
 
   def test_tabs_defaults
-    tabs = RatatuiRuby::Tabs.new
+    tabs = RatatuiRuby::Widgets::Tabs.new
     assert_equal [], tabs.titles
     assert_equal 0, tabs.selected_index
     assert_nil tabs.block
@@ -23,7 +23,7 @@ class TestTabs < Minitest::Test
 
   def test_render
     with_test_terminal(20, 3) do
-      tabs = RatatuiRuby::Tabs.new(titles: ["Tab 1", "Tab 2"], selected_index: 0)
+      tabs = RatatuiRuby::Widgets::Tabs.new(titles: ["Tab 1", "Tab 2"], selected_index: 0)
       RatatuiRuby.draw { |f| f.render_widget(tabs, f.area) }
       assert_equal " Tab 1 │ Tab 2      ", buffer_content[0]
       assert_equal "                    ", buffer_content[1]
@@ -32,11 +32,11 @@ class TestTabs < Minitest::Test
   end
 
   def test_render_tabs_with_divider_and_highlight
-    tabs = RatatuiRuby::Tabs.new(
+    tabs = RatatuiRuby::Widgets::Tabs.new(
       titles: ["Tab1", "Tab2"],
       selected_index: 0,
       divider: "|",
-      highlight_style: RatatuiRuby::Style.new(fg: :red, modifiers: [:bold])
+      highlight_style: RatatuiRuby::Style::Style.new(fg: :red, modifiers: [:bold])
     )
 
     # Render to a buffer of width 50
@@ -57,9 +57,9 @@ class TestTabs < Minitest::Test
   end
 
   def test_tabs_with_style
-    tabs = RatatuiRuby::Tabs.new(
+    tabs = RatatuiRuby::Widgets::Tabs.new(
       titles: ["Tab"],
-      style: RatatuiRuby::Style.new(fg: :red, bg: :blue)
+      style: RatatuiRuby::Style::Style.new(fg: :red, bg: :blue)
     )
     assert_equal :red, tabs.style.fg
     assert_equal :blue, tabs.style.bg
@@ -67,7 +67,7 @@ class TestTabs < Minitest::Test
 
   def test_tabs_padding
     with_test_terminal(20, 1) do
-      tabs = RatatuiRuby::Tabs.new(
+      tabs = RatatuiRuby::Widgets::Tabs.new(
         titles: ["A", "B"],
         padding_left: 3,
         padding_right: 2
@@ -83,20 +83,20 @@ class TestTabs < Minitest::Test
 
   def test_tabs_width
     # Basic width: "A" (1) + "|" (1) + "B" (1) = 3
-    tabs = RatatuiRuby::Tabs.new(titles: ["A", "B"])
+    tabs = RatatuiRuby::Widgets::Tabs.new(titles: ["A", "B"])
     assert_equal 3, tabs.width
 
     # Custom divider: "A" (1) + " - " (3) + "B" (1) = 5
-    tabs = RatatuiRuby::Tabs.new(titles: ["A", "B"], divider: " - ")
+    tabs = RatatuiRuby::Widgets::Tabs.new(titles: ["A", "B"], divider: " - ")
     assert_equal 5, tabs.width
 
     # Padding: 2 + "A" (1) + "|" (1) + "B" (1) + 2 = 7
-    tabs = RatatuiRuby::Tabs.new(titles: ["A", "B"], padding_left: 2, padding_right: 2)
+    tabs = RatatuiRuby::Widgets::Tabs.new(titles: ["A", "B"], padding_left: 2, padding_right: 2)
     assert_equal 7, tabs.width
 
     # Line objects in titles
     line_title = RatatuiRuby::Text::Line.from_string("Foo") # width 3
-    tabs = RatatuiRuby::Tabs.new(titles: [line_title, "Bar"]) # 3 + 1 + 3 = 7
+    tabs = RatatuiRuby::Widgets::Tabs.new(titles: [line_title, "Bar"]) # 3 + 1 + 3 = 7
     assert_equal 7, tabs.width
   end
 end

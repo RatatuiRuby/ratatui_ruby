@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  class TUI
+    module TextFactories
+      def text_span: (?content: String, ?style: Style::Style?) -> Text::Span
+      def span: (?content: String, ?style: Style::Style?) -> Text::Span
+      def text_line: (?spans: Array[Text::Span], ?alignment: Symbol?) -> Text::Line
+      def line: (?spans: Array[Text::Span], ?alignment: Symbol?) -> Text::Line
+      def text_width: (String string) -> Integer
+    end
+  end
+end
