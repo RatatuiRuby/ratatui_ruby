@@ -197,8 +197,8 @@ end
 
 #### How it works
 
-1.  **`tui.layout_split` (`RatatuiRuby::Layout.split`)**: Takes an area (like `frame.area`) and splits it into multiple sub-areas based on constraints.
-2.  **`tui.constraint_*` (`RatatuiRuby::Constraint`)**: Defines how space is distributed (e.g., `percentage`, `length`, `min`, `max`).
+1.  **`tui.layout_split` (`RatatuiRuby::Layout::Layout.split`)**: Takes an area (like `frame.area`) and splits it into multiple sub-areas based on constraints.
+2.  **`tui.constraint_*` (`RatatuiRuby::Layout::Constraint`)**: Defines how space is distributed (e.g., `percentage`, `length`, `min`, `max`).
 3.  **`Frame#render_widget(widget, rect)`**: You pass the specific area (like `top` or `bottom`) to render the widget into that exact region.
 4.  **`tui.text_span` (`RatatuiRuby::Text::Span`)**: Allows for rich styling within a single line of text.
 

@@ -147,7 +147,7 @@ RatatuiRuby.run do
   loop do
     RatatuiRuby.draw do |frame|
       # Manual split
-      rects = RatatuiRuby::Layout.split(
+      rects = RatatuiRuby::Layout::Layout.split(
         frame.area,
         direction: :horizontal,
         constraints: [
