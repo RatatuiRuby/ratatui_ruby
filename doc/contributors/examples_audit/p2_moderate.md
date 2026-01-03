@@ -9,64 +9,7 @@ These are v1.0.0 quality improvements that refine the example suite after P0 is 
 
 ---
 
-## 1. Consolidate 3 Redundant Example Pairs
-
-### 1a. widget_list_styles + widget_list_demo → widget_list_demo
-
-**Overlap:** Both demonstrate List widgets with highlighting and cycling behavior.
-
-**Action:** Merge widget_list_styles styling attributes into widget_list_demo as additional hotkey cycles. Delete widget_list_styles.
-
-**Files to delete:**
-- examples/widget_list_styles/
-- test/examples/widget_list_styles/
-- sig/examples/widget_list_styles/
-
-**Effort:** 2 hours
-
----
-
-### 1c. widget_block_padding + widget_block_titles → widget_block_demo
-
-**Overlap:** Both demonstrate Block widget attributes.
-
-**widget_block_padding:** Uniform and directional padding
-**widget_block_titles:** Titles at multiple positions (top/bottom, left/center/right)
-
-**Action:** Create unified widget_block_demo combining:
-- All padding variations (uniform and directional)
-- All title positions and alignments
-- Interactive cycling via hotkeys
-- Session API throughout
-
-**Files to delete:**
-- examples/widget_block_padding/
-- examples/widget_block_titles/
-- Corresponding test and sig entries
-
-**Effort:** 2 hours
-
----
-
-## Result of Consolidation
-
-- **Before:** 35 examples
-- **After:** 32 examples (3 pairs consolidated)
-- **Examples deleted:** 6 directories
-- **Tests merged:** 3 consolidations
-- **Signatures merged:** 3 consolidations
-
----
-
-## 2. Benefits
-
-- **Reduced maintenance burden** (fewer examples to document, test, maintain)
-- **Cleaner example suite** (no redundant demonstrations)
-- **More comprehensive coverage** (consolidated examples demonstrate more attributes)
-
----
-
-## 3. Add RDoc Cross-Links (Examples & Aliases)
+## 1. Add RDoc Cross-Links (Examples & Aliases)
 
 **Status:** Important for API discoverability — Documentation should link library and examples
 

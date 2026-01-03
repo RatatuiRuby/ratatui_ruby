@@ -1,7 +1,7 @@
 List Widget Demo - Interactive Attribute Cycling                                
-┌Large List | Sel: 0 | Offset: auto────────────────────────────────────────────┐
-│>> Item 1                                                                     │
-│   Item 2                                                                     │
+┌Large List | Sel: 1 | Offset: auto────────────────────────────────────────────┐
+│   Item 1                                                                     │
+│>> Item 2                                                                     │
 │   Item 3                                                                     │
 │   Item 4                                                                     │
 │   Item 5                                                                     │

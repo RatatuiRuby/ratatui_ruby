@@ -1,18 +1,18 @@
 List Widget Demo - Interactive Attribute Cycling                                
-┌Large List | Sel: none | Offset: auto─────────────────────────────────────────┐
-│Item 13                                                                       │
-│Item 12                                                                       │
-│Item 11                                                                       │
-│Item 10                                                                       │
-│Item 9                                                                        │
-│Item 8                                                                        │
-│Item 7                                                                        │
-│Item 6                                                                        │
-│Item 5                                                                        │
-│Item 4                                                                        │
-│Item 3                                                                        │
-│Item 2                                                                        │
-│Item 1                                                                        │
+┌Large List | Sel: 0 | Offset: auto────────────────────────────────────────────┐
+│   Item 13                                                                    │
+│   Item 12                                                                    │
+│   Item 11                                                                    │
+│   Item 10                                                                    │
+│   Item 9                                                                     │
+│   Item 8                                                                     │
+│   Item 7                                                                     │
+│   Item 6                                                                     │
+│   Item 5                                                                     │
+│   Item 4                                                                     │
+│   Item 3                                                                     │
+│   Item 2                                                                     │
+│>> Item 1                                                                     │
 └──────────────────────────────────────────────────────────────────────────────┘
 ┌Controls──────────────────────────────────────────────────────────────────────┐
 │i: Items  ↑/↓: Navigate  x: Select  h: Highlight (Blue Bold)                  │

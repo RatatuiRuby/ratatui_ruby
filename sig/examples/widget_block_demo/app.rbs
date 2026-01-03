@@ -1,0 +1,32 @@
+# frozen_string_literal: true
+#
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+class WidgetBlockDemo
+  @tui: RatatuiRuby::Tui
+  @hotkey_style: RatatuiRuby::Style
+  @title_configs: Array[{name: String, title: String?}]
+  @title_index: Integer
+  @titles_configs: Array[{name: String, titles: Array[RatatuiRuby::Block::title_input]}]
+  @titles_index: Integer
+  @alignment_configs: Array[{name: String, alignment: RatatuiRuby::Alignment}]
+  @alignment_index: Integer
+  @title_styles: Array[{name: String, style: RatatuiRuby::Style?}]
+  @title_style_index: Integer
+  @border_configs: Array[{name: String, borders: Array[RatatuiRuby::Block::border_option]}]
+  @border_index: Integer
+  @border_type_configs: Array[{name: String, type: RatatuiRuby::Block::border_type?, set: Hash[Symbol, String]?}]
+  @border_type_index: Integer
+  @border_styles: Array[{name: String, style: RatatuiRuby::Style?}]
+  @border_style_index: Integer
+  @base_styles: Array[{name: String, style: RatatuiRuby::Style?}]
+  @base_style_index: Integer
+  @padding_configs: Array[{name: String, padding: RatatuiRuby::Block::padding_input}]
+  @padding_index: Integer
+
+  def self.new: () -> WidgetBlockDemo
+  def run: () -> void
+  private def render: () -> void
+  private def handle_input: () -> (:quit)?
+end

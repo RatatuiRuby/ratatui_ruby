@@ -266,8 +266,7 @@ Shows how to use `Overlay`, `Center`, and `Cursor` to build a modal login form w
 These smaller, focused examples demonstrate specific widgets and their configuration options.
 
 *   [Bar Chart](../examples/widget_barchart_demo/app.rb)
-*   [Block Padding](../examples/widget_block_padding/app.rb)
-*   [Block Titles](../examples/widget_block_titles/app.rb)
+*   [Block (Interactive Demo)](../examples/widget_block_demo/app.rb)
 *   [Box (Block/Paragraph)](../examples/widget_box_demo/app.rb)
 *   [Calendar](../examples/widget_calendar_demo/app.rb)
 *   [Chart](../examples/widget_chart_demo/app.rb)

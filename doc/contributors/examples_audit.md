@@ -39,16 +39,7 @@ All P0 critical items have been completed:
 
 ## [P2: Moderate (Quality)](./examples_audit/p2_moderate.md)
 
-1. **[Consolidate 3 Redundant Example Pairs](./examples_audit/p2_moderate.md#1-consolidate-3-redundant-example-pairs)**
-   - widget_list_styles + widget_list_demo
-   - app_table_select + widget_table_flex
-   - widget_block_padding + widget_block_titles
-
-2. **[Result of Consolidation](./examples_audit/p2_moderate.md#result-of-consolidation)** (35 → 32 examples)
-
-3. **[Benefits](./examples_audit/p2_moderate.md#2-benefits)**
-
-4. **[Add RDoc Cross-Links](./examples_audit/p2_moderate.md#3-add-rdoc-cross-links-examples--aliases)** (Documentation discoverability)
+1. **[Add RDoc Cross-Links](./examples_audit/p2_moderate.md#3-add-rdoc-cross-links-examples--aliases)** (Documentation discoverability)
    - Link library classes/methods to examples
    - Link DWIM/TIMTOWTDI aliases
    - Create consistent pattern across public APIs

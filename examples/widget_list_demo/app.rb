@@ -24,7 +24,7 @@ require "ratatui_ruby"
 class WidgetListDemo
   # Initializes the demo with example data and default configuration.
   def initialize
-    @selected_index = nil
+    @selected_index = 0
 
     @item_sets = [
       {
@@ -225,6 +225,7 @@ class WidgetListDemo
       # Initialize styles that require @tui
       @highlight_styles = [
         { name: "Blue Bold", style: @tui.style(fg: :blue, modifiers: [:bold]) },
+        { name: "Blue on White Bold", style: @tui.style(fg: :blue, bg: :white, modifiers: [:bold]) },
         { name: "Yellow on Black", style: @tui.style(fg: :yellow, bg: :black) },
         { name: "Green Italic", style: @tui.style(fg: :green, modifiers: [:italic]) },
         { name: "White Reversed", style: @tui.style(fg: :white, modifiers: [:reversed]) },

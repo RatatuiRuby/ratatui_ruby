@@ -1,18 +1,18 @@
 [0mList Widget Demo - Interactive Attribute Cycling                                [0m
-[0m┌Large List | Sel: none | Offset: auto─────────────────────────────────────────┐[0m
-[0m│Item 1                                                                        │[0m
-[0m│Item 2                                                                        │[0m
-[0m│Item 3                                                                        │[0m
-[0m│Item 4                                                                        │[0m
-[0m│Item 5                                                                        │[0m
-[0m│Item 6                                                                        │[0m
-[0m│Item 7                                                                        │[0m
-[0m│Item 8                                                                        │[0m
-[0m│Item 9                                                                        │[0m
-[0m│Item 10                                                                       │[0m
-[0m│Item 11                                                                       │[0m
-[0m│Item 12                                                                       │[0m
-[0m│Item 13                                                                       │[0m
+[0m┌Large List | Sel: 0 | Offset: auto────────────────────────────────────────────┐[0m
+[0m│[0m[34m>> Item 1                                                                     [0m│[0m
+[0m│   Item 2                                                                     │[0m
+[0m│   Item 3                                                                     │[0m
+[0m│   Item 4                                                                     │[0m
+[0m│   Item 5                                                                     │[0m
+[0m│   Item 6                                                                     │[0m
+[0m│   Item 7                                                                     │[0m
+[0m│   Item 8                                                                     │[0m
+[0m│   Item 9                                                                     │[0m
+[0m│   Item 10                                                                    │[0m
+[0m│   Item 11                                                                    │[0m
+[0m│   Item 12                                                                    │[0m
+[0m│   Item 13                                                                    │[0m
 [0m└──────────────────────────────────────────────────────────────────────────────┘[0m
 [0m┌Controls──────────────────────────────────────────────────────────────────────┐[0m
 [0m│[0mi[0m: Items  [0m↑/↓[0m: Navigate  [0mx[0m: Select  [0mh[0m: Highlight (Blue Bold)                  │[0m

@@ -1,0 +1,24 @@
+╭──────────────────────────────────Main Title──────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│  This paragraph is rendered inside the Block widget.                         │
+│  You can see how padding and base style affect this content.                 │
+│                                                                              │
+│  Current State:                                                              │
+│  • Padding: Uniform (2)                                                      │
+│  • Borders: All                                                              │
+│  • Type: Rounded                                                             │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+┌Controls──────────────────────────────────────────────────────────────────────┐
+│t: Title (Main Title)  a: Alignment (Center)  s: Title Style (Cyan Bold)      │
+│e: Additional Titles (None)                                                   │
+│b: Borders (All)  y: Border Type (Rounded)                                    │
+│c: Border Style (Magenta Bold)  p: Padding (Uniform (2))                      │
+│f: Base Style (Dark Gray)  q: Quit                                            │
+└──────────────────────────────────────────────────────────────────────────────┘

@@ -15,7 +15,7 @@ Important for v1.0.0 quality and ecosystem goals. Not blocking release, but reco
 
 ### Event Handling (5 examples)
 
-widget_block_padding, widget_block_titles, widget_cell_demo, widget_scroll_text
+widget_block_demo (merged), widget_cell_demo, widget_scroll_text
 
 **Current (WRONG):**
 ```ruby
@@ -34,7 +34,7 @@ end
 
 ### Session API (2 examples)
 
-widget_block_padding, widget_cell_demo
+widget_block_demo (merged), widget_cell_demo
 
 **Current (WRONG):**
 ```ruby
@@ -52,7 +52,7 @@ RatatuiRuby::Constraint.length(...)
 
 ### Other Fixes
 
-**widget_block_titles:** Replace `tui.constraint(:length, 10)` with `tui.constraint_length(10)`
+**widget_block_demo:** Use `tui.constraint_length(10)`
 
 **widget_cell_demo:** Rename `main` method to `run`
 
@@ -79,12 +79,12 @@ Several examples use plain or minimal defaults that don't showcase the library w
 ### widget_list_styles
 
 **Current:** Generic numbered items with no visual distinction
-**Improve:** Show selection state visibly (highlight one item)
+**Improve:** Selection state visible on launch in `widget_list_demo` (merged)
 
 ### widget_block_padding, widget_block_titles
 
 **Current:** Minimal styling
-**Improve:** Use colors or visually striking layouts to highlight block features
+**Improve:** Use striking layouts/colors in unified `widget_block_demo`
 
 ---
 
