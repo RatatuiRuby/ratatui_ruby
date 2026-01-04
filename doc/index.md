@@ -8,6 +8,7 @@
 ## Documentation for Users
 
 - [README](../README.md): Project overview and installation
+- [Why RatatuiRuby?](./why.md): Philosophy, comparisons, and what makes us different
 - [Quickstart](./quickstart.md): Build your first TUI app
 - [Application Architecture](./application_architecture.md): Lifecycle patterns and API choices
 - [Event Handling](./event_handling.md): Keyboard, mouse, and terminal events

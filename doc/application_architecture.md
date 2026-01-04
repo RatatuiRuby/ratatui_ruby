@@ -189,7 +189,7 @@ Building for Ruby 4.0's parallel future? Know which objects can travel between R
 
 ### Data Objects (Shareable)
 
-These are deeply frozen and `Ractor.shareable?`. Include them in TEA Models/Messages freely:
+These are deeply frozen and `Ractor.shareable?`. Include them in immutable Models/Messages freely:
 
 | Object | Source |
 |--------|--------|
@@ -224,7 +224,7 @@ Simple scripts work well with valid linear code. Complex apps need structure.
 
 We provide these reference architectures to inspire you:
 
-### Proto-TEA (Model-View-Update)
+### Model-View-Update
 
 **Source:** [examples/app_all_events](../examples/app_all_events/README.md)
 
@@ -236,7 +236,7 @@ This pattern implements unidirectional data flow inspired by The Elm Architectur
 
 Use this when you want predictable state management and easy-to-test logic.
 
-### Proto-Kit (Component-Based)
+### Component-Based
 
 **Source:** [examples/app_color_picker](../examples/app_color_picker/README.md)
 

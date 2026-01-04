@@ -331,6 +331,6 @@ RatatuiRuby.run do |tui|
   loop { render; handle_input }
 end
 
-# NOT OK: Include in TEA Model
+# NOT OK: Include in immutable Model
 Model = Data.define(:tui, :count)  # Don't do this
 ```

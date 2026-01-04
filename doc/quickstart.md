@@ -8,25 +8,7 @@ Welcome to **ratatui_ruby**! This guide will help you get up and running with yo
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem "ratatui_ruby"
-```
-
-
-And then execute:
-
-```bash
-bundle install
-```
-
-
-Or install it yourself as:
-
-```bash
-gem install ratatui_ruby
-```
+See [Installation in the README](../README.md#installation) for setup instructions.
 
 
 ## Tutorials
@@ -77,7 +59,7 @@ end
 ```
 <!-- SYNC:END -->
 
-![quickstart_lifecycle](./images/verify_quickstart_lifecycle.png)
+[![quickstart_lifecycle](./images/verify_quickstart_lifecycle.png)](../examples/verify_quickstart_lifecycle/README.md)
 
 #### How it works
 
@@ -87,12 +69,13 @@ end
 4.  **`RatatuiRuby.poll_event`**: Returns a typed `Event` object with predicates like `key?`, `mouse?`, `resize?`, etc. Returns `RatatuiRuby::Event::None` if no events are pending. Use predicates to check event type without pattern matching.
 5.  **`RatatuiRuby.restore_terminal`**: Essential for leaving raw mode and returning to the shell. Always wrap your loop in `begin...ensure` to guarantee this runs.
 
-### Idiomatic Session
+### Simplified API
 
 You can simplify your code by using `RatatuiRuby.run`. This method handles the terminal lifecycle for you, yielding a `TUI` object with factory methods for widgets.
 
 <!-- SYNC:START:../examples/verify_quickstart_dsl/app.rb:main -->
 ```ruby
+# 1. Initialize the terminal, start the run loop, and ensure the terminal is restored.
 RatatuiRuby.run do |tui|
   loop do
     # 2. Create your UI with methods instead of classes.
@@ -129,7 +112,7 @@ end
 
 1.  **`RatatuiRuby.run`**: This context manager initializes the terminal before the block starts and ensures `restore_terminal` is called when the block exits (even if an error occurs).
 2.  **Widget Shorthand**: The block yields a `TUI` object (here named `tui`). This object provides factory methods for every widget, allowing you to write `tui.paragraph(...)` instead of the more verbose `RatatuiRuby::Widgets::Paragraph.new(...)`.
-3.  **Method Shorthand**: The session object also provides aliases for module functions of `RatatuiRuby`, allowing you to write `tui.draw(...)` instead of the more verbose `RatatuiRuby.draw(...)`.
+3.  **Method Shorthand**: The `TUI` object also provides aliases for module functions of `RatatuiRuby`, allowing you to write `tui.draw(...)` instead of the more verbose `RatatuiRuby.draw(...)`.
 4.  **Pattern Matching for Events**: Use `case...in` with pattern matching for elegant event dispatch. Always include an `else` clause at the end to catch unmatched event types (mouse, resize, paste, focus, etc.), otherwise Ruby raises `NoMatchingPatternError`.
 
 For a deeper dive into the available application architectures (Manual vs Managed), see [Application Architecture](./application_architecture.md).
@@ -202,90 +185,76 @@ end
 3.  **`Frame#render_widget(widget, rect)`**: You pass the specific area (like `top` or `bottom`) to render the widget into that exact region.
 4.  **`tui.text_span` (`RatatuiRuby::Text::Span`)**: Allows for rich styling within a single line of text.
 
+[![quickstart_layout](./images/verify_quickstart_layout.png)](../examples/verify_quickstart_layout/README.md)
+
 ## Examples
 
 These examples showcase the full power of **ratatui_ruby**. You can find their source code in the [examples directory](../examples).
 
-### Sample Applications
-
-Full-featured examples demonstrating complex layouts and real-world TUI patterns.
-
-
-
-#### [All Events](../examples/app_all_events/app.rb)
-
-Handling terminal events is unpredictable. Developers need to know exactly what the terminal sends for `Ctrl+C` or a mouse drag.
-
-This app captures and visualizes every event—keys, mouse, resize, paste, and focus.
-
-Use it to debug your input handling or verify terminal behavior.
-
-**What you'll learn:**
-
-*   **Proto-TEA Architecture**: Implements unidirectional data flow (Model-View-Update) with immutable state and pure functions.
-*   **Event Handling**: Captures and distinguishes all input types, including modifiers (`Ctrl+C`) and focus changes.
-*   **Scalable Structure**: Organizes a non-trivial application into small, focused classes instead of a monolithic script.
-
-![all_events](./images/app_all_events.png)
-
-#### [Color Picker](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/app_color_picker/app.rb)
-
-Interactive tools require complex state. Mapping mouse clicks to widgets and handling modal dialogs creates messy code if handled in the main loop.
-
-This app implements a full Color Picker using a "Proto-Kit (Component-Based)" pattern. Each component encapsulates its own rendering, state, and event handling.
-
-Use it to build forms, editors, and mouse-driven tools.
-
-**What you'll learn:**
-
-*   **Proto-Kit Architecture**: Self-contained components with `render(tui, frame, area)` and `handle_event(event)`.
-*   **Encapsulated Hit Testing**: Components cache their render area and check `contains?` internally.
-*   **Modal Dialogs**: Implements overlay patterns that intercept input via Chain of Responsibility.
-
-#### [Custom Widget (Escape Hatch)](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/app_custom_widget/app.rb)
-
-Demonstrates how to define a custom widget in pure Ruby using the `render(area, buffer)` escape hatch for low-level drawing.
-
-![custom_widget](./images/app_custom_widget.png)
-
-#### [Layout Split Demo](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/widget_layout_split/app.rb)
-
-Demonstrates `Layout.split` with interactive attribute cycling. Features hotkey controls For direction (vertical/horizontal), all 7 flex modes (legacy, start, center, end, space_between, space_around, space_evenly), and constraint types (fill, length, percentage, min, ratio).
-
-![widget_layout_split](./images/widget_layout_split.png)
-
-#### [Login Form](https://git.sr.ht/~kerrick/ratatui_ruby/tree/main/item/examples/app_login_form/app.rb)
-
-Shows how to use `Overlay`, `Center`, and `Cursor` to build a modal login form with text input.
-
-![login_form](./images/app_login_form.png)
-
-
-
-
-
-
 ### Widget Demos
 
-These smaller, focused examples demonstrate specific widgets and their configuration options.
+Focused examples for individual widgets. Each demonstrates a single widget and its configuration options.
 
-*   [Bar Chart](../examples/widget_barchart_demo/app.rb)
-*   [Block (Interactive Demo)](../examples/widget_block_demo/app.rb)
-*   [Box (Block/Paragraph)](../examples/widget_box_demo/app.rb)
-*   [Calendar](../examples/widget_calendar_demo/app.rb)
-*   [Chart](../examples/widget_chart_demo/app.rb)
-*   [Gauge](../examples/widget_gauge_demo/app.rb)
-*   [Line Gauge](../examples/widget_line_gauge_demo/app.rb)
-*   [List](../examples/widget_list_demo/app.rb)
-*   [Map (Canvas)](../examples/widget_map_demo/app.rb)
-*   [Popup (Clear)](../examples/widget_popup_demo/app.rb)
-*   [Rect](../examples/widget_rect/app.rb)
-*   [Ratatui Logo](../examples/widget_ratatui_logo_demo/app.rb)
-*   [Ratatui Mascot](../examples/widget_ratatui_mascot_demo/app.rb)
-*   [Rich Text](../examples/widget_rich_text/app.rb)
-*   [Scrollbar](../examples/widget_scrollbar_demo/app.rb)
-*   [Scroll Text](../examples/widget_scroll_text/app.rb)
-*   [Sparkline](../examples/widget_sparkline_demo/app.rb)
-*   [Table (Selection)](../examples/widget_table_demo/app.rb)
-*   [Tabs](../examples/widget_tabs_demo/app.rb)
-*   [Widget Style Colors](../examples/widget_style_colors/app.rb)
+| Widget | What it demonstrates |
+|--------|---------------------|
+| [Bar Chart](../examples/widget_barchart_demo/app.rb) | Grouped bars, data visualization, custom bar styling |
+| [Block](../examples/widget_block_demo/app.rb) | Borders, titles, padding, nested widgets |
+| [Box](../examples/widget_box_demo/app.rb) | Block + Paragraph composition, text wrapping |
+| [Calendar](../examples/widget_calendar_demo/app.rb) | Date highlighting, month display, event markers |
+| [Chart](../examples/widget_chart_demo/app.rb) | Line/scatter plots, axes, legends, datasets |
+| [Gauge](../examples/widget_gauge_demo/app.rb) | Progress bars, percentage display, unicode blocks |
+| [Layout Split](../examples/widget_layout_split/app.rb) | Constraint types, flex modes, responsive layouts |
+| [Line Gauge](../examples/widget_line_gauge_demo/app.rb) | Horizontal progress, labels, thin-style gauges |
+| [List](../examples/widget_list_demo/app.rb) | Selection, scrolling, highlight styles, rich text items |
+| [Map](../examples/widget_map_demo/app.rb) | Canvas widget, world map rendering, coordinates |
+| [Popup](../examples/widget_popup_demo/app.rb) | Clear widget, modal dialogs, overlay composition |
+| [Ratatui Logo](../examples/widget_ratatui_logo_demo/app.rb) | Decorative branding widget |
+| [Ratatui Mascot](../examples/widget_ratatui_mascot_demo/app.rb) | ASCII art Ferris mascot |
+| [Rect](../examples/widget_rect/app.rb) | Geometry helpers, area calculations, contains/intersection |
+| [Rich Text](../examples/widget_rich_text/app.rb) | Spans, lines, inline styling, mixed colors |
+| [Scrollbar](../examples/widget_scrollbar_demo/app.rb) | Orientations, thumb/track styling, scroll state |
+| [Scroll Text](../examples/widget_scroll_text/app.rb) | Paragraph scrolling, viewport control, long content |
+| [Sparkline](../examples/widget_sparkline_demo/app.rb) | Mini charts, time series, bar sets |
+| [Style Colors](../examples/widget_style_colors/app.rb) | Named colors, RGB, indexed 256-color palette |
+| [Table](../examples/widget_table_demo/app.rb) | Row selection, column widths, per-cell styling |
+| [Tabs](../examples/widget_tabs_demo/app.rb) | Tab navigation, highlighting, dividers |
+| [Text Width](../examples/widget_text_width/app.rb) | Unicode-aware width measurement, CJK support |
+| [Canvas](../examples/widget_canvas_demo/app.rb) | Drawing shapes, markers, custom graphics |
+| [Cell](../examples/widget_cell_demo/app.rb) | Buffer cell inspection, styling attributes |
+| [Center](../examples/widget_center_demo/app.rb) | Centering content, horizontal/vertical alignment |
+| [Overlay](../examples/widget_overlay_demo/app.rb) | Layering widgets, modal backgrounds |
+| [Custom Render](../examples/widget_render/app.rb) | Low-level Draw API, escape hatch for custom widgets |
+
+### Sample Applications
+
+These larger examples combine widgets into complete applications, demonstrating real-world TUI patterns and architectures.
+
+| Application | Architecture | What you'll learn |
+|-------------|--------------|-------------------|
+| [All Events](../examples/app_all_events/app.rb) | Model-View-Update | Event handling, unidirectional data flow, scalable structure |
+| [Color Picker](../examples/app_color_picker/app.rb) | Component-Based | Hit testing, modal dialogs, encapsulated state |
+| [Login Form](../examples/app_login_form/app.rb) | Overlay + Center | Modal forms, cursor positioning, text input |
+| [Stateful Interaction](../examples/app_stateful_interaction/app.rb) | State Objects | ListState/TableState, offset read-back, mouse click-to-row |
+
+#### All Events
+
+[![all_events](./images/app_all_events.png)](../examples/app_all_events/README.md)
+
+#### Color Picker
+
+[![color_picker](./images/app_color_picker.png)](../examples/app_color_picker/README.md)
+
+#### Login Form
+
+[![login_form](./images/app_login_form.png)](../examples/app_login_form/README.md)
+
+
+## Next Steps
+
+Now that you've seen what **ratatui_ruby** can do:
+
+- **Deep dive**: Read the [Application Architecture](./application_architecture.md) guide for scaling patterns
+- **Test your TUI**: See the [Testing Guide](./application_testing.md) for snapshot and style assertions
+- **Explore the API**: Browse the [full RDoc documentation](./index.md)
+- **Learn the philosophy**: Read [Why RatatuiRuby?](./why.md) for comparisons and design decisions
+- **Get help**: Join the [discussion mailing list](https://lists.sr.ht/~kerrick/ratatui_ruby-discuss)
