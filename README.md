@@ -23,7 +23,7 @@ Mailing List: Announcements](https://img.shields.io/badge/mailing_list-announcem
 > [!WARNING]
 > **ratatui_ruby** is currently in **BETA**. The API may change between minor versions.
 
-**[Why RatatuiRuby?](./doc/why.md)** — Native Rust performance, zero runtime overhead, and Ruby's expressiveness. [See how we compare](./doc/why.md) to CharmRuby, raw Rust, and Go.
+**[Why RatatuiRuby?](./doc/getting_started/why.md)** — Native Rust performance, zero runtime overhead, and Ruby's expressiveness. [See how we compare](./doc/getting_started/why.md) to CharmRuby, raw Rust, and Go.
 
 Please join the **announce** mailing list at https://lists.sr.ht/~kerrick/ratatui_ruby-announce to stay up-to-date on new releases and announcements. See the [`trunk` branch](https://git.sr.ht/~kerrick/ratatui_ruby/tree/trunk) for pre-release updates.
 
@@ -96,7 +96,7 @@ end
 
 ![Hello Ratatui](./doc/images/verify_readme_usage.png)
 
-For a full tutorial, see [the Quickstart](./doc/quickstart.md). For an explanation of the application architecture, see [Application Architecture](./doc/application_architecture.md).
+For a full tutorial, see [the Quickstart](./doc/getting_started/quickstart.md). For an explanation of the application architecture, see [Application Architecture](./doc/concepts/application_architecture.md).
 
 
 ## Features
@@ -118,9 +118,9 @@ Plus: flexible layouts with constraints, full keyboard/mouse/paste/resize events
 
 | Resource | Description |
 |----------|-------------|
-| [Quickstart](./doc/quickstart.md) | Get running in 5 minutes |
-| [Widget Gallery](./doc/quickstart.md#widget-demos) | Every widget with examples |
-| [Application Architecture](./doc/application_architecture.md) | Patterns for scaling your app |
+| [Quickstart](./doc/getting_started/quickstart.md) | Get running in 5 minutes |
+| [Widget Gallery](./doc/getting_started/quickstart.md#widget-demos) | Every widget with examples |
+| [Application Architecture](./doc/concepts/application_architecture.md) | Patterns for scaling your app |
 | [API Reference](./doc/index.md) | Full RDoc documentation |
 | [Wiki](https://man.sr.ht/~kerrick/ratatui_ruby) | Guides and community resources |
 

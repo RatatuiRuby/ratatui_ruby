@@ -32,6 +32,9 @@ ruby examples/widget_render/app.rb
 ## Learning Outcomes
 
 Use this example if you need to...
+
 - Build a game (Snake, Tetris) inside the terminal.
 - Create a specialized visualization (Network topology graph).
 - Draw custom UI elements not provided by the library.
+
+[Read the source code →](app.rb)

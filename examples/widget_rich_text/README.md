@@ -30,6 +30,9 @@ ruby examples/widget_rich_text/app.rb
 ## Learning Outcomes
 
 Use this example if you need to...
+
 - Highlight keywords in code (Syntax highlighting).
 - Create status lines with icons (e.g., "✔ Success" where the checkmark is green).
 - Emphasize specific data points in a paragraph.
+
+[Read the source code →](app.rb)

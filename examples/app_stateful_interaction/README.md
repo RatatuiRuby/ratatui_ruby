@@ -31,3 +31,5 @@ In `ratatui_ruby`'s Stateful Rendering:
 | `Tab` / `←` / `→` | Switch active pane (List vs Table) |
 | `Mouse Click` | Select the clicked row (Works with scrolling!) |
 | `q` | Quit |
+
+[Read the source code →](app.rb)

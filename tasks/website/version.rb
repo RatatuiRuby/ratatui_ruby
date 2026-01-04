@@ -13,7 +13,14 @@ class Version
       .sort_by(&:semver)
       .reverse
 
-    [Edge.new] + sorted_versions
+    # Keep only the latest patch for each minor version
+    # e.g., if we have v0.6.0, v0.6.1, v0.6.2, only keep v0.6.2
+    latest_per_minor = sorted_versions
+      .group_by { |v| v.semver.segments[0..1] } # group by [major, minor]
+      .values
+      .map(&:first) # take the first (highest patch) from each group
+
+    [Edge.new] + latest_per_minor
   end
 
   def slug
@@ -85,7 +92,8 @@ class Tagged < Version
   end
 
   def slug
-    @tag
+    segments = semver.segments
+    "v#{segments[0]}.#{segments[1]}"
   end
 
   def name

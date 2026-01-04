@@ -1331,7 +1331,7 @@ Only 3 unique namespace errors remain! Let me fix them:
 
 I found them! Let me fix these final issues:
 
-*User accepted the command `sed -i '' 's/RatatuiRuby::Shape::/RatatuiRuby::Widgets::Shape::/g' test/examples/widget_map_demo/test_app.rb`*
+*User accepted the command `sed -i '' 's/RatatuiRuby::Shape::/RatatuiRuby::Widgets::Shape::/g' test/examples/widget_map/test_app.rb`*
 
 *User accepted the command `sed -i '' 's/assert_kind_of RatatuiLogo/assert_kind_of Widgets::RatatuiLogo/g' test/ratatui_ruby/schema/test_ratatui_logo.rb`*
 
@@ -1355,7 +1355,7 @@ Let me get the full error detail and continue fixing:
 
 Found it! The example app.rb file still has the old namespace. Let me fix that:
 
-*User accepted the command `sed -i '' 's/RatatuiRuby::RatatuiLogo/RatatuiRuby::Widgets::RatatuiLogo/g' examples/widget_ratatui_logo_demo/app.rb`*
+*User accepted the command `sed -i '' 's/RatatuiRuby::RatatuiLogo/RatatuiRuby::Widgets::RatatuiLogo/g' examples/widget_ratatui_logo/app.rb`*
 
 *User accepted the command `bundle exec rake test 2>&1 | grep -E "^[0-9]+ runs"`*
 
@@ -1513,7 +1513,7 @@ The backwards compat test is pointlessly testing legacy LineChart behavior. Sinc
 2. `TestTable#test_mixed_cell_content` — nil vs :red (existing test)
 3. `TestTable#test_header_footer_cells` — nil vs :blue (existing test)
 
-These are not namespace-related — they're pre-existing test issues in the Table cell content. The widget_cell_demo snapshot needs updating. Let me update the task and check these specific failures:
+These are not namespace-related — they're pre-existing test issues in the Table cell content. The widget_cell snapshot needs updating. Let me update the task and check these specific failures:
 
 *Viewed [task.md](file:///Users/kerrick/.gemini/antigravity/brain/922ca3e5-a082-48a5-bcfa-813deff690c5/task.md) *
 
@@ -1597,7 +1597,7 @@ The snapshot issue is a simple update. The Table test failures appear to be abou
 
 *Viewed [test_table.rb](file:///Users/kerrick/Developer/ratatui_ruby/test/ratatui_ruby/schema/test_table.rb) *
 
-*Viewed [test_app.rb](file:///Users/kerrick/Developer/ratatui_ruby/test/examples/widget_cell_demo/test_app.rb) *
+*Viewed [test_app.rb](file:///Users/kerrick/Developer/ratatui_ruby/test/examples/widget_cell/test_app.rb) *
 
 #### Planner Response
 
@@ -1653,7 +1653,7 @@ Good context. The tests using `Buffer::Cell` were part of the original feature i
 
 Now I just need to fix the remaining snapshot failure. The issue shows a difference in ANSI escape codes in the header row. Let me update the snapshot:
 
-*User accepted the command `SNAPSHOTS=update bundle exec ruby -Ilib:test test/examples/widget_cell_demo/test_app.rb 2>&1`*
+*User accepted the command `SNAPSHOTS=update bundle exec ruby -Ilib:test test/examples/widget_cell/test_app.rb 2>&1`*
 
 #### Planner Response
 
@@ -1661,7 +1661,7 @@ The snapshot didn't update - looks like the rich snapshot is the issue. The expe
 
 *Searched filesystem*
 
-*Viewed [render.ansi](file:///Users/kerrick/Developer/ratatui_ruby/test/examples/widget_cell_demo/snapshots/render.ansi) *
+*Viewed [render.ansi](file:///Users/kerrick/Developer/ratatui_ruby/test/examples/widget_cell/snapshots/render.ansi) *
 
 #### Planner Response
 
@@ -1677,7 +1677,7 @@ I see - line 12 has extra `\e[0m` reset codes around "Status" in the expected sn
 
 Right, I should use the snapshot update command instead of manually editing the file:
 
-*User accepted the command `UPDATE_SNAPSHOTS=1 bundle exec ruby -Ilib:test test/examples/widget_cell_demo/test_app.rb 2>&1`*
+*User accepted the command `UPDATE_SNAPSHOTS=1 bundle exec ruby -Ilib:test test/examples/widget_cell/test_app.rb 2>&1`*
 
 #### Planner Response
 
@@ -2388,7 +2388,7 @@ Now I can see exactly what changed in examples. The key findings:
 
 1. **Most changes are just RDoc comments** updating `RatatuiRuby::Rect` → `RatatuiRuby::Layout::Rect` 
 2. **One example (`verify_quickstart_lifecycle`)** used direct class instantiation and was updated
-3. **One example (`widget_map_demo`)** changed `include RatatuiRuby` → `include RatatuiRuby::Widgets` and the comment updated [Session](cci:2://file:///Users/kerrick/Developer/ratatui_ruby/lib/ratatui_ruby/session.rb:44:2-439:5) → `TUI`
+3. **One example (`widget_map`)** changed `include RatatuiRuby` → `include RatatuiRuby::Widgets` and the comment updated [Session](cci:2://file:///Users/kerrick/Developer/ratatui_ruby/lib/ratatui_ruby/session.rb:44:2-439:5) → `TUI`
 4. **One example (`widget_render`)** used `RatatuiRuby::Style.new` directly
 
 Now let me check if every Session method name is preserved in TUI:
@@ -3736,13 +3736,13 @@ I need to update the examples that use `highlight_style:` specifically for Table
 
 *Viewed [app.rb](file:///Users/kerrick/Developer/ratatui_ruby/examples/widget_rect/app.rb) *
 
-*Viewed [app.rb](file:///Users/kerrick/Developer/ratatui_ruby/examples/widget_table_demo/app.rb) *
+*Viewed [app.rb](file:///Users/kerrick/Developer/ratatui_ruby/examples/widget_table/app.rb) *
 
 *Viewed [app.rb](file:///Users/kerrick/Developer/ratatui_ruby/examples/app_stateful_interaction/app.rb) *
 
 #### Planner Response
 
-I see that `highlight_style:` on line 81 of widget_rect is for a **List** widget (not Table), so that should NOT be changed. Same for widget_list_demo and widget_tabs_demo. Only the Table widgets in widget_table_demo and app_stateful_interaction need updating. Let me update only the Table-specific usages:
+I see that `highlight_style:` on line 81 of widget_rect is for a **List** widget (not Table), so that should NOT be changed. Same for widget_list and widget_tabs. Only the Table widgets in widget_table and app_stateful_interaction need updating. Let me update only the Table-specific usages:
 
 *Edited relevant file*
 
@@ -3760,7 +3760,7 @@ I see that `highlight_style:` on line 81 of widget_rect is for a **List** widget
 
 #### Planner Response
 
-The test failed because of an unused variable `highlight_style` in widget_table_demo. I need to fix this:
+The test failed because of an unused variable `highlight_style` in widget_table. I need to fix this:
 
 *Edited relevant file*
 

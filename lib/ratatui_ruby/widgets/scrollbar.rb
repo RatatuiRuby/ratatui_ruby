@@ -15,13 +15,13 @@ module RatatuiRuby
     #
     # Overlay it on top of lists, paragraphs, or tables to provide spatial awareness.
     #
-    # {rdoc-image:/doc/images/widget_scrollbar_demo.png}[link:/examples/widget_scrollbar_demo/app_rb.html]
+    # {rdoc-image:/doc/images/widget_scrollbar.png}[link:/examples/widget_scrollbar/app_rb.html]
     #
     # === Example
     #
     # Run the interactive demo from the terminal:
     #
-    #   ruby examples/widget_scrollbar_demo/app.rb
+    #   ruby examples/widget_scrollbar/app.rb
     class Scrollbar < Data.define(
       :content_length,
       :position,

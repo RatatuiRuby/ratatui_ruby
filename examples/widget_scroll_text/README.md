@@ -32,6 +32,9 @@ ruby examples/widget_scroll_text/app.rb
 ## Learning Outcomes
 
 Use this example if you need to...
+
 - Build a log viewer.
 - Create a "terms and conditions" scrollbox.
 - Display code snippets that might be wider than the terminal.
+
+[Read the source code →](app.rb)

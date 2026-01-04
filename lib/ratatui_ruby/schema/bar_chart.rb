@@ -14,13 +14,13 @@ module RatatuiRuby
   #
   # Use it to compare server loads, sales figures, or any discrete datasets.
   #
-  # {rdoc-image:/doc/images/widget_barchart_demo.png}[link:/examples/widget_barchart_demo/app_rb.html]
+  # {rdoc-image:/doc/images/widget_barchart.png}[link:/examples/widget_barchart/app_rb.html]
   #
   # === Example
   #
   # Run the interactive demo from the terminal:
   #
-  #   ruby examples/widget_barchart_demo/app.rb
+  #   ruby examples/widget_barchart/app.rb
   #
   #   # Grouped Bar Chart
   #   BarChart.new(

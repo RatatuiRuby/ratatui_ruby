@@ -1,0 +1,24 @@
+List Widget - Interactive Attribute Cycling                                     
+┌Programming | Sel: 6 | Offset: auto───────────────────────────────────────────┐
+│   TypeScript                                                                 │
+│   PHP                                                                        │
+│   Objective-C                                                                │
+│   Swift                                                                      │
+│   Kotlin                                                                     │
+│   Java                                                                       │
+│>> C#                                                                         │
+│   C++                                                                        │
+│   Go                                                                         │
+│   JavaScript                                                                 │
+│   Python                                                                     │
+│   Rust                                                                       │
+│   Ruby                                                                       │
+└──────────────────────────────────────────────────────────────────────────────┘
+┌Controls──────────────────────────────────────────────────────────────────────┐
+│i: Items  ↑/↓: Navigate  x: Select  h: Highlight (Blue on White Bold)         │
+│y: Symbol (>> )  d: Direction (Bottom to Top)                                 │
+│s: Spacing (Always)  p: Scroll Padding (1 item)                               │
+│b: Base (None)  r: Repeat (Off)                                               │
+│o: Offset Mode (Auto (No Offset))  q: Quit                                    │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘

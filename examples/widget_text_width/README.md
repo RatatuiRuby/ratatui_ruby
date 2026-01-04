@@ -3,7 +3,7 @@ SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
-# Text Width Calculator
+# Text Width (Unicode Width) Calculator
 
 [![widget_text_width](../../doc/images/widget_text_width.png)](app.rb)
 
@@ -30,6 +30,9 @@ ruby examples/widget_text_width/app.rb
 ## Learning Outcomes
 
 Use this example if you need to...
+
 - Align text correctly in columns.
 - Truncate strings that are too long for a widget.
 - Build your own custom layout engine.
+
+[Read the source code →](app.rb)

@@ -29,6 +29,9 @@ ruby examples/widget_style_colors/app.rb
 ## Learning Outcomes
 
 Use this example if you need to...
+
 - Create meaningful heatmaps.
 - Generate color palettes dynamically.
 - Test your terminal's color support capabilities.
+
+[Read the source code →](app.rb)

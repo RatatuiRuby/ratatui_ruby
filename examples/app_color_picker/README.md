@@ -134,3 +134,5 @@ Use this pattern for forms, editors, and mouse-driven tools.
 Dashboards display data. They rarely require complex mouse interaction. Model-View-Update works best there. State is immutable. Logic is pure. Updates are predictable. This simplifies testing.
 
 Use that pattern for logs, monitors, and data viewers.
+
+[Read the source code →](app.rb)

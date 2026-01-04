@@ -1,0 +1,24 @@
+┌Tabs──────────────────────────────────────────────────────────────────────────┐
+│ Revenue  |  Traffic  |  Errors  |  Quarterly                                 │
+└──────────────────────────────────────────────────────────────────────────────┘
+┌Revenue───────────────────────────────────────────────────────────────────────┐
+│Velit est quis. Inventore et nostrum. Possimus vitae esse. Corrupti pariatur  │
+│accusamus. Ullam illum ex. Totam in quam. Est cupiditate id. Non consequatur  │
+│ea. Rerum harum voluptatem. Occaecati est possimus.                           │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+┌Controls──────────────────────────────────────────────────────────────────────┐
+│←/→: Select Tab  h/l: Pad Left (0)  j/k: Pad Right (0)  q: Quit               │
+│d: Divider ( | )  s: Highlight (Yellow Bold)  b: Base Style (White on Gray)   │
+│Width: 38                                                                     │
+└──────────────────────────────────────────────────────────────────────────────┘

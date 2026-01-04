@@ -43,7 +43,10 @@ ruby examples/app_login_form/app.rb
 ## Learning Outcomes
 
 Use this example if you need to...
+
 - Create a modal dialog or popup.
 - Center a widget on the screen (vertically and horizontally).
 - Implement a simple text input field with cursor management.
 - layer widgets using the `Overlay` widget.
+
+[Read the source code →](app.rb)

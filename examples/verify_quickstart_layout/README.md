@@ -5,7 +5,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Quickstart Layout Verification
 
-Verifies the "Adding Layouts" tutorial in the [Quickstart](../../doc/quickstart.md#adding-layouts).
+Verifies the "Adding Layouts" tutorial in the [Quickstart](../../doc/getting_started/quickstart.md#adding-layouts).
 
 This example exists as a documentation regression test. It ensures the layout and constraints examples remain functional.
 
@@ -68,4 +68,4 @@ end
 ```
 <!-- SYNC:END -->
 
-[![verify_quickstart_layout](../../doc/images/verify_quickstart_layout.png)](../../doc/quickstart.md#adding-layouts)
+[![verify_quickstart_layout](../../doc/images/verify_quickstart_layout.png)](../../doc/getting_started/quickstart.md#adding-layouts)

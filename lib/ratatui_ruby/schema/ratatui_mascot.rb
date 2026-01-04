@@ -14,13 +14,13 @@ module RatatuiRuby
   #
   # Use it to add charm to your application, greet users on startup, or as a decorative element in sidebars.
   #
-  # {rdoc-image:/doc/images/widget_ratatui_mascot_demo.png}[link:/examples/widget_ratatui_mascot_demo/app_rb.html]
+  # {rdoc-image:/doc/images/widget_ratatui_mascot.png}[link:/examples/widget_ratatui_mascot/app_rb.html]
   #
   # === Example
   #
   # Run the interactive demo from the terminal:
   #
-  #   ruby examples/widget_ratatui_mascot_demo/app.rb
+  #   ruby examples/widget_ratatui_mascot/app.rb
   class RatatuiMascot < Data.define(:block)
     ##
     # :method: new

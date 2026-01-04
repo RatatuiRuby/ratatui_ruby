@@ -174,7 +174,7 @@ class WidgetLayoutSplit
 
     # Render title
     title = @tui.paragraph(
-      text: "Layout.split Demo",
+      text: "Layout.split",
       style: @tui.style(modifiers: [:bold])
     )
     frame.render_widget(title, title_area)

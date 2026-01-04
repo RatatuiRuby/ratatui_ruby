@@ -99,3 +99,4 @@ The Color Picker uses a Component-Based pattern. Each component encapsulates its
 
 Use this pattern for forms, editors, and mouse-driven tools.
 
+[Read the source code →](app.rb)

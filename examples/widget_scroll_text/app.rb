@@ -6,7 +6,7 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
 
-# Demo: Scrollable Paragraph
+# Scrollable Paragraph
 # Shows how to scroll through long text content using arrow keys
 #
 # Helper: Disable experimental warnings since we use line_count/line_width

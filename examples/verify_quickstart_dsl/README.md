@@ -5,7 +5,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Quickstart DSL Verification
 
-Verifies the "Simplified API" tutorial in the [Quickstart](../../doc/quickstart.md#simplified-api).
+Verifies the "Simplified API" tutorial in the [Quickstart](../../doc/getting_started/quickstart.md#simplified-api).
 
 This example exists as a documentation regression test. It ensures the recommended TUI facade and managed lifecycle workflow remains functional.
 
@@ -46,4 +46,4 @@ end
 ```
 <!-- SYNC:END -->
 
-[![verify_quickstart_dsl](../../doc/images/verify_quickstart_dsl.png)](../../doc/quickstart.md#simplified-api)
+[![verify_quickstart_dsl](../../doc/images/verify_quickstart_dsl.png)](../../doc/getting_started/quickstart.md#simplified-api)

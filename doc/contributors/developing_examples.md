@@ -62,7 +62,7 @@ MyExampleApp.new.run if __FILE__ == $PROGRAM_NAME
 
 Example directories **must** follow a prefixing convention to categorize them alphabetically:
 - `app_`: Application showcases (e.g., `app_analytics`). Class name: `AppAnalytics`.
-- `widget_`: Widget-focused demonstrations (e.g., `widget_gauge_demo`). Class name: `WidgetGaugeDemo`.
+- `widget_`: Widget-focused demonstrations (e.g., `widget_gauge`). Class name: `WidgetGaugeDemo`.
 - `verify_`: Documentation verification examples (e.g., `verify_readme_usage`). Class name: `VerifyReadmeUsage`.
 
 The directory and class names must match (snake_case directory maps to PascalCase class).
@@ -254,7 +254,7 @@ def test_initial_render
 end
 ```
 
-Snapshot auto-saved to: `test/examples/widget_foo_demo/snapshots/initial_render.txt`
+Snapshot auto-saved to: `test/examples/widget_foo/snapshots/initial_render.txt`
 
 ### With Normalization (for dynamic content)
 
@@ -320,7 +320,7 @@ Examples must use **realistic, meaningful data**—not dummy placeholder text. T
 
 **For small datasets (< 10 items):**
 Use hardcoded realistic data. Examples:
-- Geographic coordinates with city names (see `widget_map_demo/app.rb`)
+- Geographic coordinates with city names (see `widget_map/app.rb`)
 - Real product names or person names
 - Meaningful status values ("Completed", "Pending", "Failed")
 

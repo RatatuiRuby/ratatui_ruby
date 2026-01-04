@@ -16,13 +16,13 @@ module RatatuiRuby
     #
     # Use it in dashboards, headers, or list items to providing trending data at a glance.
     #
-    # {rdoc-image:/doc/images/widget_sparkline_demo.png}[link:/examples/widget_sparkline_demo/app_rb.html]
+    # {rdoc-image:/doc/images/widget_sparkline.png}[link:/examples/widget_sparkline/app_rb.html]
     #
     # === Example
     #
     # Run the interactive demo from the terminal:
     #
-    #   ruby examples/widget_sparkline_demo/app.rb
+    #   ruby examples/widget_sparkline/app.rb
     class Sparkline < Data.define(:data, :max, :style, :block, :direction, :absent_value_symbol, :absent_value_style, :bar_set)
       ##
       # :attr_reader: data

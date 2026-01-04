@@ -3,7 +3,7 @@ SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
-# Layout Split Example
+# Layout (Split, Grid) Example
 
 [![widget_layout_split](../../doc/images/widget_layout_split.png)](app.rb)
 
@@ -38,7 +38,10 @@ ruby examples/widget_layout_split/app.rb
 ## Learning Outcomes
 
 Use this example if you need to...
+
 - Build responsive dashboards.
 - Create 3-column layouts where the middle content fills remaining space.
 - Center a modal dialog on the screen.
 - Distribute buttons evenly across a control bar.
+
+[Read the source code →](app.rb)

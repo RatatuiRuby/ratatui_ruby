@@ -1,0 +1,24 @@
+┌Box───────────────────────────────────────────────────────────────────────────┐
+│                           Arrow Keys: Change Color                           │
+│                                                                              │
+│                            Current Color: Magenta                            │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+┌Controls──────────────────────────────────────────────────────────────────────┐
+│↑↓←→: Color (Magenta)  q: Quit                                                │
+│space: Border Type (Plain)  c: Border Set (None)                              │
+│s: Style (Default)  b: Border Style (Default (no border style))               │
+│enter: Align Title (Left)  t: Title Style (Default)                           │
+└──────────────────────────────────────────────────────────────────────────────┘

@@ -15,13 +15,13 @@ module RatatuiRuby
     #
     # Use it for splash screens, about sections, or terminal dashboards.
     #
-    # {rdoc-image:/doc/images/widget_ratatui_logo_demo.png}[link:/examples/widget_ratatui_logo_demo/app_rb.html]
+    # {rdoc-image:/doc/images/widget_ratatui_logo.png}[link:/examples/widget_ratatui_logo/app_rb.html]
     #
     # === Example
     #
     # Run the interactive demo from the terminal:
     #
-    #   ruby examples/widget_ratatui_logo_demo/app.rb
+    #   ruby examples/widget_ratatui_logo/app.rb
     class RatatuiLogo < Data.define
       ##
       # :method: new

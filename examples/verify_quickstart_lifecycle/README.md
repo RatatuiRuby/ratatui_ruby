@@ -5,7 +5,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Quickstart Lifecycle Verification
 
-Verifies the "Basic Application" tutorial in the [Quickstart](../../doc/quickstart.md#basic-application).
+Verifies the "Basic Application" tutorial in the [Quickstart](../../doc/getting_started/quickstart.md#basic-application).
 
 This example exists as a documentation regression test. It ensures the core lifecycle example presented to new users remains functional.
 
@@ -53,4 +53,4 @@ end
 ```
 <!-- SYNC:END -->
 
-[![verify_quickstart_lifecycle](../../doc/images/verify_quickstart_lifecycle.png)](../../doc/quickstart.md#basic-application)
+[![verify_quickstart_lifecycle](../../doc/images/verify_quickstart_lifecycle.png)](../../doc/getting_started/quickstart.md#basic-application)

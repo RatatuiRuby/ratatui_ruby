@@ -108,13 +108,13 @@ module RatatuiRuby
     #
     # Use it for analytics, scientific data, or monitoring metrics over time.
     #
-    # {rdoc-image:/doc/images/widget_chart_demo.png}[link:/examples/widget_chart_demo/app_rb.html]
+    # {rdoc-image:/doc/images/widget_chart.png}[link:/examples/widget_chart/app_rb.html]
     #
     # === Example
     #
     # Run the interactive demo from the terminal:
     #
-    #   ruby examples/widget_chart_demo/app.rb
+    #   ruby examples/widget_chart/app.rb
     class Chart < Data.define(:datasets, :x_axis, :y_axis, :block, :style, :legend_position, :hidden_legend_constraints)
       ##
       # :attr_reader: datasets

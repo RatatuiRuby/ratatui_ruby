@@ -3,7 +3,7 @@ SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
-# Rect (Geometry) Widget Example
+# Rect (Area, Rectangle) Example
 
 [![widget_rect](../../doc/images/widget_rect.png)](app.rb)
 
@@ -33,6 +33,9 @@ ruby examples/widget_rect/app.rb
 ## Learning Outcomes
 
 Use this example if you need to...
+
 - Handle mouse clicks on specific buttons or areas.
 - Create resizable panes (like a split pane in an IDE).
 - Debug layout issues by inspecting Rect coordinates.
+
+[Read the source code →](app.rb)

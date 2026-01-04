@@ -611,9 +611,275 @@ end
 Rake::Task[:rdoc].enhance do
   Rake::Task[:copy_doc_images].invoke
   Rake::Task[:copy_examples].invoke
+  Rake::Task[:rewrite_examples_link].invoke
 end
 
 Rake::Task[:rerdoc].enhance do
   Rake::Task[:copy_doc_images].invoke
   Rake::Task[:copy_examples].invoke
+  Rake::Task[:rewrite_examples_link].invoke
+end
+
+task :rewrite_examples_link do
+  require "nokogiri"
+
+  rdoc_dir = ENV["RDOC_OUTPUT"] || "tmp/rdoc"
+
+  # Build a mapping of example READMEs to their H1 titles and categories
+  examples_by_category = { "Apps" => [], "Widgets" => [] }
+
+  Dir.glob("examples/*/README.md").each do |readme_path|
+    dir_name = File.dirname(readme_path).sub("examples/", "")
+
+    # Skip verify examples entirely
+    next if dir_name.start_with?("verify_")
+
+    content = File.read(readme_path)
+    if content =~ /^#\s+(.+)$/
+      title = $1.strip.sub(/ Example$/, "") # Remove trailing " Example"
+      rdoc_path = "examples/#{dir_name}/README_md.html"
+
+      # Categorize by prefix
+      category = if dir_name.start_with?("app_")
+        "Apps"
+      elsif dir_name.start_with?("widget_")
+        title = title.sub(/ Widget$/, "") # Also strip trailing " Widget" for widgets
+        "Widgets"
+      else
+        nil
+      end
+
+      if category
+        examples_by_category[category] << { title:, rdoc_path:, dir_name: }
+      end
+    end
+  end
+
+  # Sort each category alphabetically by title
+  examples_by_category.each_value { |list| list.sort_by! { |e| e[:title] } }
+
+  # Process all HTML files
+  Dir.glob("#{rdoc_dir}/**/*.html").each do |file|
+    content = File.read(file)
+    modified = false
+
+    doc = Nokogiri::HTML(content)
+
+    # Find the examples details section to remove from Pages
+    examples_detail = doc.css("details summary").find { |s| s.text.strip.downcase == "examples" }&.parent
+
+    # Find the classindex-section to insert Examples section before it
+    classindex_section = doc.at_css("#classindex-section")
+
+    if examples_detail && classindex_section
+      # Remove examples from Pages section
+      examples_detail.remove
+
+      # Build the new Examples section as a top-level nav-section
+      current_depth = file.sub("#{rdoc_dir}/", "").count("/")
+      prefix = "../" * current_depth
+
+      examples_section = Nokogiri::XML::Node.new("div", doc)
+      examples_section["id"] = "exampleindex-section"
+      examples_section["class"] = "nav-section"
+
+      examples_section.inner_html = <<~HTML
+        <details class="nav-section-collapsible" open>
+          <summary class="nav-section-header">
+            <span class="nav-section-icon">
+              <svg><use href="#icon-layers"></use></svg>
+            </span>
+            <span class="nav-section-title">Examples</span>
+            <span class="nav-section-chevron">
+              <svg><use href="#icon-chevron"></use></svg>
+            </span>
+          </summary>
+          <ul class="link-list nav-list">
+          </ul>
+        </details>
+      HTML
+
+      # Build the category structure
+      examples_ul = examples_section.at_css("ul.link-list")
+
+      examples_by_category.each do |category_name, examples|
+        next if examples.empty?
+
+        cat_li = Nokogiri::XML::Node.new("li", doc)
+        cat_details = Nokogiri::XML::Node.new("details", doc)
+        # Subcategories closed by default
+        cat_summary = Nokogiri::XML::Node.new("summary", doc)
+        cat_summary.content = category_name
+        cat_details.add_child(cat_summary)
+
+        cat_ul = Nokogiri::XML::Node.new("ul", doc)
+        cat_ul["class"] = "link-list nav-list"
+
+        examples.each do |example|
+          li = Nokogiri::XML::Node.new("li", doc)
+          a = Nokogiri::XML::Node.new("a", doc)
+          a["href"] = "#{prefix}#{example[:rdoc_path]}"
+          a.content = example[:title]
+          li.add_child(a)
+          cat_ul.add_child(li)
+        end
+
+        cat_details.add_child(cat_ul)
+        cat_li.add_child(cat_details)
+        examples_ul.add_child(cat_li)
+      end
+
+      # Insert Examples section before Classes and Modules
+      classindex_section.add_previous_sibling(examples_section)
+
+      # --- GUIDES SECTION ---
+      # Build dynamic hierarchical tree from doc/ folder structure
+      guides_tree = build_guides_tree
+
+      # Find and remove the doc details section from Pages
+      doc_detail = doc.css("details summary").find { |s| s.text.strip.downcase == "doc" }&.parent
+      doc_detail&.remove
+
+      # Create the Guides section
+      guides_section = Nokogiri::XML::Node.new("div", doc)
+      guides_section["id"] = "guidesindex-section"
+      guides_section["class"] = "nav-section"
+
+      guides_section.inner_html = <<~HTML
+        <details class="nav-section-collapsible" open>
+          <summary class="nav-section-header">
+            <span class="nav-section-icon">
+              <svg><use href="#icon-file"></use></svg>
+            </span>
+            <span class="nav-section-title">Guides</span>
+            <span class="nav-section-chevron">
+              <svg><use href="#icon-chevron"></use></svg>
+            </span>
+          </summary>
+          <ul class="link-list nav-list">
+          </ul>
+        </details>
+      HTML
+
+      # Get current file path relative to rdoc_dir (e.g. "doc/getting_started/quickstart_md.html")
+      current_file_rel = file.sub("#{rdoc_dir}/", "")
+
+      guides_ul = guides_section.at_css("ul.link-list")
+      build_guides_nav(guides_ul, guides_tree, doc, prefix, current_file_rel, "doc")
+
+      # Insert Guides section before Examples
+      examples_section.add_previous_sibling(guides_section)
+
+      content = doc.to_html
+      modified = true
+    end
+
+    # Also rewrite examples_md.html to examples/index.html
+    if content.include?("examples_md.html")
+      content = content.gsub(/href="([^"]*?)examples_md\.html"/, 'href="\1examples/index.html"')
+      modified = true
+    end
+
+    File.write(file, content) if modified
+  end
+
+  # Delete the now-unused examples_md.html
+  examples_page = "#{rdoc_dir}/examples_md.html"
+  FileUtils.rm_f(examples_page)
+
+  puts "Created Examples and Guides sections in sidebar"
+end
+
+# Build a hierarchical tree structure from doc/**/*.md files
+def build_guides_tree
+  tree = { files: [], subdirs: {} }
+
+  Dir.glob("doc/**/*.md").each do |md_path|
+    # Skip images folder
+    next if md_path.include?("/images/")
+
+    relative = md_path.sub("doc/", "")
+    parts = relative.split("/")
+    filename = parts.pop
+
+    # Get title from H1
+    content = File.read(md_path)
+    title = if content =~ /^#\s+(.+)$/
+      $1.strip
+    else
+      filename.sub(/\.md$/, "").tr("_-", " ").split.map(&:capitalize).join(" ")
+    end
+
+    # Convert to RDoc path
+    rdoc_path = "doc/#{relative.gsub('.', '_')}.html"
+
+    # Navigate to correct position in tree
+    current = tree
+    parts.each do |dir|
+      current[:subdirs][dir] ||= { files: [], subdirs: {} }
+      current = current[:subdirs][dir]
+    end
+
+    current[:files] << { title:, rdoc_path:, filename: }
+  end
+
+  # Sort files in each level alphabetically by title
+  sort_guides_tree(tree)
+  tree
+end
+
+def sort_guides_tree(node)
+  node[:files].sort_by! { |f| f[:title] }
+  node[:subdirs].each_value { |subdir| sort_guides_tree(subdir) }
+end
+
+# Recursively build navigation elements from the tree
+# current_file_rel: path of current HTML file relative to rdoc_dir (e.g. "doc/getting_started/quickstart_md.html")
+# current_tree_path: path in the tree we're building (e.g. "doc", "doc/getting_started")
+def build_guides_nav(parent_ul, tree, doc, prefix, current_file_rel, current_tree_path)
+  # Add files at this level first
+  tree[:files].each do |file|
+    # Check if this file is the current page
+    is_current = (file[:rdoc_path] == current_file_rel)
+
+    li = Nokogiri::XML::Node.new("li", doc)
+    a = Nokogiri::XML::Node.new("a", doc)
+    a["href"] = "#{prefix}#{file[:rdoc_path]}"
+    if is_current
+      a["class"] = "active"
+      strong = Nokogiri::XML::Node.new("strong", doc)
+      strong.content = file[:title]
+      a.add_child(strong)
+    else
+      a.content = file[:title]
+    end
+    li.add_child(a)
+    parent_ul.add_child(li)
+  end
+
+  # Add subdirectories as collapsible details
+  tree[:subdirs].each do |dir_name, subtree|
+    subdir_path = "#{current_tree_path}/#{dir_name}"
+
+    # Check if current file is inside this subdirectory
+    # current_file_rel might be "doc/getting_started/quickstart_md.html"
+    # subdir_path would be "doc/getting_started"
+    is_current_in_subdir = current_file_rel.start_with?("#{subdir_path}/")
+
+    li = Nokogiri::XML::Node.new("li", doc)
+    details = Nokogiri::XML::Node.new("details", doc)
+    # Open if current file is inside this subdir
+    details["open"] = "open" if is_current_in_subdir
+    summary = Nokogiri::XML::Node.new("summary", doc)
+    summary.content = dir_name.tr("_-", " ").split.map(&:capitalize).join(" ")
+    details.add_child(summary)
+
+    subdir_ul = Nokogiri::XML::Node.new("ul", doc)
+    subdir_ul["class"] = "link-list nav-list"
+    build_guides_nav(subdir_ul, subtree, doc, prefix, current_file_rel, subdir_path)
+
+    details.add_child(subdir_ul)
+    li.add_child(details)
+    parent_ul.add_child(li)
+  end
 end
