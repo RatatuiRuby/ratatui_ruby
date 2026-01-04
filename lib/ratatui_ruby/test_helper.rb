@@ -7,8 +7,10 @@ require_relative "test_helper/event_injection"
 require_relative "test_helper/style_assertions"
 require_relative "test_helper/test_doubles"
 
+#--
 # SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
+#++
 
 module RatatuiRuby
   ##
