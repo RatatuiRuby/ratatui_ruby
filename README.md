@@ -23,6 +23,8 @@ Mailing List: Announcements](https://img.shields.io/badge/mailing_list-announcem
 > [!WARNING]
 > **ratatui_ruby** is currently in **BETA**. The API may change between minor versions.
 
+**[Why RatatuiRuby?](./doc/why.md)** — Native Rust performance, zero runtime overhead, and Ruby's expressiveness. [See how we compare](./doc/why.md) to CharmRuby, raw Rust, and Go.
+
 Please join the **announce** mailing list at https://lists.sr.ht/~kerrick/ratatui_ruby-announce to stay up-to-date on new releases and announcements. See the [`trunk` branch](https://git.sr.ht/~kerrick/ratatui_ruby/tree/trunk) for pre-release updates.
 
 
@@ -92,12 +94,35 @@ end
 ```
 <!-- SYNC:END -->
 
+![Hello Ratatui](./doc/images/verify_readme_usage.png)
+
 For a full tutorial, see [the Quickstart](./doc/quickstart.md). For an explanation of the application architecture, see [Application Architecture](./doc/application_architecture.md).
+
+
+## Features
+
+**ratatui_ruby** gives you 20+ widgets out of the box:
+
+| Category | Widgets |
+|----------|---------|
+| **Data Display** | Table, List, Chart, Bar Chart, Sparkline, Calendar |
+| **Layout** | Block, Tabs, Scrollbar, Center, Overlay, Clear |
+| **Input** | Gauge, Line Gauge |
+| **Text** | Paragraph, Rich Text (Spans + Lines), Cursor |
+| **Canvas** | Shapes (Line, Circle, Rectangle, Map), Custom Drawing |
+
+Plus: flexible layouts with constraints, full keyboard/mouse/paste/resize events, snapshot testing, and hex/RGB/256-color support.
 
 
 ## Documentation
 
-For the full documentation on how to use **ratatui_ruby**, see the [documentation](./doc/index.md).  For other information, see the [wiki](https://man.sr.ht/~kerrick/ratatui_ruby).
+| Resource | Description |
+|----------|-------------|
+| [Quickstart](./doc/quickstart.md) | Get running in 5 minutes |
+| [Widget Gallery](./doc/quickstart.md#widget-demos) | Every widget with examples |
+| [Application Architecture](./doc/application_architecture.md) | Patterns for scaling your app |
+| [API Reference](./doc/index.md) | Full RDoc documentation |
+| [Wiki](https://man.sr.ht/~kerrick/ratatui_ruby) | Guides and community resources |
 
 
 ## Contributing

@@ -7,7 +7,7 @@ require_relative "timestamp"
 require_relative "event_entry"
 require_relative "event_color_cycle"
 
-# Immutable application state for the Proto-TEA architecture.
+# Immutable application state for the Model-View-Update architecture.
 #
 # The Elm Architecture requires a single immutable Model. State changes return
 # a new Model instance. This consolidates all app state into one place.

@@ -23,7 +23,7 @@ require_relative "view/app_view"
 #
 # === Architecture
 #
-# This example uses the Proto-TEA (Model-View-Update) pattern:
+# This example uses the Model-View-Update pattern:
 # - **Model**: Immutable AppModel holds all state
 # - **Msg**: Semantic message types decouple events from logic
 # - **Update**: Pure function computes next state

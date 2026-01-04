@@ -3,7 +3,7 @@
 # SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-# Semantic message types for the Proto-TEA architecture.
+# Semantic message types for the Model-View-Update architecture.
 #
 # Raw events from the terminal are converted to semantic Msg types. This
 # decouples the Update function from the event system, making it easier

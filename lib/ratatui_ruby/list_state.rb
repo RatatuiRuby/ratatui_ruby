@@ -18,7 +18,7 @@ module RatatuiRuby
   # == Thread/Ractor Safety
   #
   # ListState is *not* Ractor-shareable. It contains mutable internal state.
-  # Store it in instance variables, not in immutable TEA Models.
+  # Store it in instance variables, not in immutable Models.
   #
   # == Example
   #

@@ -19,7 +19,7 @@ require_relative "main_container"
 #
 # === Architecture
 #
-# This example uses the Proto-Kit (Component-Based) pattern:
+# This example uses a Component-Based pattern:
 # - **Components**: Self-contained UI elements with `render`, `handle_event`, and optional `tick`
 # - **Container**: Owns layout, delegates to children, routes events via Chain of Responsibility
 # - **Mediator**: Container interprets symbolic signals (`:consumed`, `:submitted`) for cross-component effects

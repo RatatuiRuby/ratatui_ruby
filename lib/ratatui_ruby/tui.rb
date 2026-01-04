@@ -29,7 +29,7 @@ module RatatuiRuby
   # Session is an *I/O handle*, not a data object. It has side effects (draw,
   # poll_event) and is intentionally *not* Ractor-shareable. Caching it in
   # instance variables (<tt>@tui = tui</tt>) during your application's run loop
-  # is fine. However, do not include it in immutable TEA Models/Messages or
+  # is fine. However, do not include it in immutable Models/Messages or
   # pass it to other Ractors.
   #
   # == Included Mixins

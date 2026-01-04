@@ -9,7 +9,7 @@ require_relative "model/event_entry"
 require_relative "model/timestamp"
 require_relative "model/event_color_cycle"
 
-# Pure update function for the Proto-TEA architecture.
+# Pure update function for the Model-View-Update architecture.
 #
 # Given a Msg and the current AppModel, returns the next AppModel.
 # This function is pure: it does not mutate arguments, draw to the screen,
