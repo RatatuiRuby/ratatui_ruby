@@ -1,0 +1,863 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+####
+# ======================================================================
+# announce_tui - TUI for release announcements (experimental)
+# ======================================================================
+#
+# SYNOPSIS
+#     bin/announce_tui [OPTIONS] [VERSION]
+#
+# DESCRIPTION
+#     A TUI for managing release announcements. Displays email preview,
+#     commit preview, and a release checklist with action controls.
+#
+# OPTIONS
+#     -w, --wiki-dir PATH    Path to wiki repo (default: ../ratatui_ruby-wiki)
+#     -n, --builds N         Number of builds to show (default: 4)
+#     -h, --help             Show this help message
+#
+# ======================================================================
+
+$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
+require "ratatui_ruby"
+require "uri"
+require "optparse"
+require "fileutils"
+require "tmpdir"
+# Flag value objects with display methods
+PathFlag = Data.define(:value) do
+  def to_s = value
+
+  def to_short
+    home = Dir.home
+    value.start_with?(home) ? value.sub(home, "~") : value
+  end
+end
+
+BoolFlag = Data.define(:value) do
+  def to_s = value.to_s
+  def to_short = value ? "yes" : "no"
+end
+
+IntFlag = Data.define(:value) do
+  def to_s = value.to_s
+  def to_short = value.to_s
+end
+
+# Global CLI flags singleton
+module CLIFlags
+  class << self
+    attr_accessor :dry_run, :wiki_dir, :builds, :version
+  end
+  self.dry_run = BoolFlag.new(false)
+  self.builds = IntFlag.new(4)
+end
+
+# Domain object for reading announcement files
+class Announcement
+  attr_reader :subject, :body, :path
+
+  def initialize(wiki_dir, version)
+    @path = File.join(wiki_dir, "announcements", "#{version}.md")
+    @subject = nil
+    @body = nil
+    parse
+  end
+
+  def exists?
+    File.exist?(@path)
+  end
+
+  def commit_message
+    <<~MSG
+      docs: add #{File.basename(@path, '.md')} release announcement
+
+      Generated with [Antigravity](https://antigravity.google)
+
+      Co-Authored-By: Claude Opus 4 <noreply@anthropic.com>
+    MSG
+  end
+
+  private def parse
+    unless exists?
+      @subject = "(Announcement file not found)"
+      @body = "Expected file: #{@path}"
+      return
+    end
+
+    content = File.read(@path)
+    lines = content.lines
+
+    subject_line = lines.find { |l| l.start_with?("Subject: ") }
+    if subject_line
+      @subject = subject_line.sub(/^Subject: /, "").strip
+      subject_index = lines.index(subject_line)
+      body_lines = lines[(subject_index + 1)..]
+        .reject { |l| l.match?(/^<!--/) || l.match?(/-->/) }
+      @body = body_lines.join.strip
+    else
+      @subject = "(No subject found)"
+      @body = content
+    end
+  end
+end
+
+# Domain object for main git repo
+class GitRepo
+  CACHE_FILE = File.join(Dir.tmpdir, "ratatui_git_tag_pushed.txt")
+  attr_reader :version, :tag_pushed
+
+  def initialize
+    @version = `git describe --tags --abbrev=0 2>/dev/null`.strip
+    @version = nil if @version.empty?
+    @tag_pushed = nil
+    @loading = true
+    @check_pid = nil
+
+    # Spawn background process BEFORE TUI enters raw mode
+    start_background_check if @version
+  end
+
+  def loading?
+    return false unless @loading
+
+    # Poll for background process completion
+    if @check_pid
+      _pid, status = Process.waitpid2(@check_pid, Process::WNOHANG)
+      if status
+        # Process completed, read result
+        @tag_pushed = File.exist?(CACHE_FILE) && File.read(CACHE_FILE).strip == "true"
+        @loading = false
+        @check_pid = nil
+      end
+    end
+    @loading
+  end
+
+  def refresh
+    @loading = true
+    @version = `git describe --tags --abbrev=0 2>/dev/null`.strip
+    @version = nil if @version.empty?
+    @tag_pushed = check_tag_pushed_sync
+    @loading = false
+  end
+
+  def refresh_async
+    @loading = true
+    start_background_check if @version
+  end
+
+  private def start_background_check
+    # Spawn process that runs git and writes result to temp file
+    @check_pid = Process.spawn(
+      "git ls-remote --tags origin 2>/dev/null | grep -q '#{@version}' && echo true > #{CACHE_FILE} || echo false > #{CACHE_FILE}"
+    )
+  end
+
+  private def check_tag_pushed_sync
+    return false unless @version
+    remote_tags = `git ls-remote --tags origin 2>/dev/null`.strip
+    remote_tags.include?(@version)
+  end
+end
+
+# Domain object for SourceHut builds
+class SourceHut
+  attr_reader :builds
+
+  def initialize(max_builds: 4)
+    @max_builds = max_builds
+    @builds = []
+    @loading = true
+    refresh_async
+  end
+
+  def loading?
+    @loading
+  end
+
+  def refresh
+    @loading = true
+    output = `hut builds list 2>/dev/null | head -#{@max_builds * 10}`.strip
+    @builds = parse_builds(output)
+    @loading = false
+  end
+
+  def refresh_async
+    Thread.new { refresh }
+  end
+
+  def all_passed?
+    @builds.all? { |b| b[:status] == :success }
+  end
+
+  def any_running?
+    @builds.any? { |b| b[:status] == :running }
+  end
+
+  def any_failed?
+    @builds.any? { |b| b[:status] == :failed }
+  end
+
+  private def parse_builds(output)
+    # Parse hut builds list output
+    builds = []
+    output.scan(/#(\d+).*?(SUCCESS|FAILED|RUNNING)/i) do |id, status|
+      builds << {
+        id:,
+        status: status.downcase.to_sym,
+      }
+    end
+    builds.first(@max_builds)
+  end
+end
+
+# Domain object for RubyGems
+class RubyGemsInfo
+  attr_reader :published_version
+
+  def initialize(gem_name)
+    @gem_name = gem_name
+    @published_version = nil
+    @loading = true
+    refresh_async
+  end
+
+  def loading?
+    @loading
+  end
+
+  def refresh
+    @loading = true
+    output = `gem info #{@gem_name} -r 2>/dev/null`.strip
+    match = output.match(/#{@gem_name} \(([^)]+)\)/)
+    @published_version = match[1] if match
+    @loading = false
+  end
+
+  def refresh_async
+    Thread.new { refresh }
+  end
+
+  def published?(version)
+    @published_version == version.delete_prefix("v")
+  end
+end
+
+# Domain object for wiki repo
+class WikiRepo
+  attr_reader :committed, :pushed
+
+  def initialize(wiki_dir, announcement_path)
+    @wiki_dir = wiki_dir
+    @relative_path = announcement_path.sub("#{wiki_dir}/", "")
+    @committed = false
+    @pushed = false
+    @loading = true
+    refresh_async
+  end
+
+  def loading?
+    @loading
+  end
+
+  def refresh
+    @loading = true
+    Dir.chdir(@wiki_dir) do
+      # Check if committed (not in diff or untracked)
+      diff_clean = system("git diff --quiet #{@relative_path} 2>/dev/null")
+      cached_clean = system("git diff --cached --quiet #{@relative_path} 2>/dev/null")
+      tracked = system("git ls-files --error-unmatch #{@relative_path} >/dev/null 2>&1")
+      @committed = diff_clean && cached_clean && tracked
+
+      # Check if pushed
+      if @committed
+        unpushed = `git log origin/HEAD..HEAD --oneline 2>/dev/null`.strip
+        @pushed = unpushed.empty?
+      else
+        @pushed = false
+      end
+    end
+    @loading = false
+  end
+
+  def refresh_async
+    Thread.new { refresh }
+  end
+
+  def commit!(message)
+    return if CLIFlags.dry_run.value
+
+    Dir.chdir(@wiki_dir) do
+      system("git", "add", @relative_path)
+      system("git", "commit", "-m", message)
+    end
+    refresh
+  end
+
+  def push!
+    return if CLIFlags.dry_run.value
+
+    Dir.chdir(@wiki_dir) do
+      system("git", "push")
+    end
+    refresh
+  end
+end
+
+# Domain object for sending emails
+class Emailer
+  EMATE_PATH = "/Applications/MailMate.app/Contents/Resources/emate"
+
+  def initialize(to_address, subject, body)
+    @to_address = to_address
+    @subject = subject
+    @body = body
+  end
+
+  def emate_available?
+    File.executable?(EMATE_PATH)
+  end
+
+  def send_via_emate!
+    return true if CLIFlags.dry_run.value
+
+    return false unless emate_available?
+
+    IO.popen([
+      EMATE_PATH,
+      "mailto",
+      "--to",
+      @to_address,
+      "--subject",
+      @subject,
+      "--send-now",
+    ], "w") do |io|
+      io.write(@body)
+    end
+    true
+  end
+
+  def send_via_mailto!
+    encoded_subject = URI.encode_www_form_component(@subject).gsub("+", "%20")
+    encoded_body = URI.encode_www_form_component(@body).gsub("+", "%20")
+    mailto = "mailto:#{@to_address}?subject=#{encoded_subject}&body=#{encoded_body}"
+    system("open", mailto)
+  end
+end
+
+# TUI for release announcements
+class AnnounceTUI
+  TABS = ["Preview Email", "Preview Commit", "Announce"].freeze
+  TO_ADDRESS = "~kerrick/ratatui_ruby-announce@lists.sr.ht"
+
+  def initialize
+    @current_tab = 0
+    @scroll_positions = Hash.new { |h, k| h[k] = [0, 0] } # [scroll_y, scroll_x] per tab
+    @show_help = false
+
+    # Initialize domain objects (all caching happens here)
+    @git_repo = GitRepo.new
+    @version = CLIFlags.version || @git_repo.version
+
+    @announcement = Announcement.new(CLIFlags.wiki_dir.value, @version)
+    @sourcehut = SourceHut.new(max_builds: CLIFlags.builds.value)
+    @rubygems = RubyGemsInfo.new("ratatui_ruby")
+    @wiki_repo = WikiRepo.new(CLIFlags.wiki_dir.value, @announcement.path)
+    @emailer = Emailer.new(TO_ADDRESS, @announcement.subject, @announcement.body)
+  end
+
+  def run
+    RatatuiRuby.run do |tui|
+      @tui = tui
+      init_styles
+
+      loop do
+        render
+        break if handle_input == :quit
+      end
+    end
+  end
+
+  private def init_styles
+    @hotkey_style = @tui.style(modifiers: [:bold, :underlined])
+    @ok_style = @tui.style(fg: :green)
+    @pending_style = @tui.style(fg: :yellow)
+    @error_style = @tui.style(fg: :red)
+    @border_style = @tui.style(fg: :dark_gray)
+    @title_style = @tui.style(fg: :cyan)
+    @email_client_style = @tui.style(fg: :yellow)
+  end
+
+  private def render
+    @tui.draw do |frame|
+      # Layout: tabs at top, content in middle, bottom panel at bottom
+      @tabs_area, content_area, bottom_area = @tui.layout_split(
+        frame.area,
+        direction: :vertical,
+        constraints: [
+          @tui.constraint_length(3),
+          @tui.constraint_fill(1),
+          @tui.constraint_length(5),
+        ],
+      )
+
+      # Split bottom area: controls on left, CLI flags on right
+      @controls_area, flags_area = @tui.layout_split(
+        bottom_area,
+        direction: :horizontal,
+        constraints: [
+          @tui.constraint_percentage(60),
+          @tui.constraint_percentage(40),
+        ],
+      )
+
+      render_tabs(frame, @tabs_area)
+      render_content(frame, content_area)
+      render_controls(frame, @controls_area)
+      render_cli_flags(frame, flags_area)
+
+      # Overlay on top
+      render_help_overlay(frame) if @show_help
+    end
+  end
+
+  private def render_tabs(frame, area)
+    email_client = @emailer.emate_available? ? "emate" : "mailto"
+    tabs = @tui.tabs(
+      titles: TABS,
+      selected_index: @current_tab,
+      divider: @tui.text_span(content: " ▸ ", style: @border_style),
+      block: @tui.block(
+        titles: [
+          { content: "Announce #{@version}" },
+          { content: @tui.text_line(spans: [@tui.text_span(content: email_client, style: @email_client_style)]), position: :top, alignment: :right },
+        ],
+        borders: [:all],
+        border_style: @border_style,
+      ),
+      highlight_style: @tui.style(fg: :magenta, modifiers: [:bold]),
+    )
+    frame.render_widget(tabs, area)
+  end
+
+  private def render_content(frame, area)
+    case @current_tab
+    when 0 then render_email_preview(frame, area)
+    when 1 then render_commit_preview(frame, area)
+    when 2 then render_checklist(frame, area)
+    end
+  end
+
+  private def render_email_preview(frame, area)
+    email_text = <<~EMAIL
+      To: #{TO_ADDRESS}
+      Subject: #{@announcement.subject}
+
+      #{@announcement.body}
+    EMAIL
+
+    lines = email_text.lines
+    content_length = lines.size
+
+    paragraph = @tui.paragraph(
+      text: email_text,
+      scroll: [scroll_y, scroll_x],
+      block: @tui.block(title: "Email Preview", borders: [:all], border_style: @border_style, title_style: @title_style),
+    )
+    frame.render_widget(paragraph, area)
+
+    scrollbar = @tui.scrollbar(
+      content_length:,
+      position: scroll_y,
+      orientation: :vertical,
+    )
+    frame.render_widget(scrollbar, area)
+  end
+
+  private def render_commit_preview(frame, area)
+    content = @announcement.commit_message
+    content_length = content.lines.size
+
+    paragraph = @tui.paragraph(
+      text: content,
+      scroll: [scroll_y, scroll_x],
+      block: @tui.block(title: "Commit Preview", borders: [:all], border_style: @border_style, title_style: @title_style),
+    )
+    frame.render_widget(paragraph, area)
+
+    scrollbar = @tui.scrollbar(
+      content_length:,
+      position: scroll_y,
+      orientation: :vertical,
+    )
+    frame.render_widget(scrollbar, area)
+  end
+
+  private def render_checklist(frame, area)
+    lines = checklist_items.map { |item| checklist_line(item) }
+
+    paragraph = @tui.paragraph(
+      text: lines,
+      block: @tui.block(title: "Release Checklist", borders: [:all], border_style: @border_style, title_style: @title_style),
+    )
+    frame.render_widget(paragraph, area)
+  end
+
+  private def checklist_items
+    # Build checklist from domain objects (reads cached data only)
+    # Each item shows loading if its domain object is still loading
+
+    # Git repo checks
+    tag_status = if @git_repo.loading? || @git_repo.tag_pushed.nil?
+      { value: "Loading...", status: :loading }
+    elsif @git_repo.tag_pushed
+      { value: "Yes", status: :ok }
+    else
+      { value: "No", status: :error }
+    end
+
+    # SourceHut builds
+    builds_item = if @sourcehut.loading?
+      { value: "Loading...", status: :loading }
+    else
+      builds_status = if @sourcehut.any_running?
+        :pending
+      elsif @sourcehut.all_passed?
+        :ok
+      else
+        :error
+      end
+      builds_value = @sourcehut.builds.map { |b| "##{b[:id]} #{b[:status]}" }.join(", ")
+      { value: builds_value.empty? ? "None" : builds_value, status: builds_status }
+    end
+
+    # RubyGems
+    gem_item = if @rubygems.loading?
+      { value: "Loading...", status: :loading }
+    else
+      { value: @rubygems.published_version || "Unknown", status: @rubygems.published?(@version) ? :ok : :pending }
+    end
+
+    # Wiki repo
+    wiki_committed = if @wiki_repo.loading?
+      { value: "Loading...", status: :loading }
+    else
+      { value: @wiki_repo.committed ? "Yes" : "No", status: @wiki_repo.committed ? :ok : :pending }
+    end
+
+    wiki_pushed = if @wiki_repo.loading?
+      { value: "Loading...", status: :loading }
+    else
+      { value: @wiki_repo.pushed ? "Yes" : "No", status: @wiki_repo.pushed ? :ok : :pending }
+    end
+
+    [
+      { label: "Latest tag", value: @version || "None", status: @version ? :ok : :error },
+      { label: "Tag pushed", **tag_status },
+      { label: "Builds (#{@sourcehut.builds.size})", **builds_item },
+      { label: "Gem published", **gem_item },
+      { label: "Wiki committed", **wiki_committed },
+      { label: "Wiki pushed", **wiki_pushed },
+    ]
+  end
+
+  private def checklist_line(item)
+    icon = case item[:status]
+           when :ok then "✓"
+           when :error then "✗"
+           when :pending then "●"
+           when :loading then "…"
+           else "?"
+    end
+    style = case item[:status]
+            when :ok then @ok_style
+            when :error then @error_style
+            when :pending, :loading then @pending_style
+    end
+
+    @tui.text_line(spans: [
+      @tui.text_span(content: "#{icon} ", style:),
+      @tui.text_span(content: "#{item[:label]}: "),
+      @tui.text_span(content: item[:value].to_s),
+    ])
+  end
+
+  private def render_controls(frame, area)
+    controls_text = if @current_tab == 2
+      # Announce tab controls
+      [
+        control_line([
+          ["c", "Commit & Push Wiki"],
+          ["s", "Send Email"],
+        ]),
+        control_line([
+          ["r", "Refresh"],
+          ["?", "Help"],
+          ["q", "Quit"],
+        ]),
+      ]
+    else
+      # Preview tab controls
+      [
+        control_line([
+          ["?", "Help"],
+          ["q", "Quit"],
+        ]),
+      ]
+    end
+
+    controls = @tui.paragraph(
+      text: controls_text,
+      block: @tui.block(title: "Controls", borders: [:all], border_style: @border_style, title_style: @title_style),
+    )
+    frame.render_widget(controls, area)
+  end
+
+  private def control_line(pairs)
+    spans = pairs.flat_map do |key, desc|
+      [
+        @tui.text_span(content: key, style: @hotkey_style),
+        @tui.text_span(content: ": #{desc}  "),
+      ]
+    end
+    @tui.text_line(spans:)
+  end
+
+  private def render_help_overlay(frame)
+    # Clear the area first
+    frame.render_widget(@tui.clear, frame.area)
+
+    help_text = <<~HELP
+      Navigation
+        ←/→ or h/l   Switch tabs
+        [/] or Tab   Switch tabs (alternate)
+        ↑/↓ or j/k   Scroll one line
+        PgUp/PgDn    Scroll 10 lines
+        Home/End     Scroll to top/bottom
+        Mouse wheel  Scroll 3 lines
+
+      Actions (Announce tab only)
+        c            Commit & Push Wiki
+        s            Send Email
+        r            Refresh all data
+
+      General
+        ?            Toggle this help
+        q or Ctrl+C  Quit
+    HELP
+
+    content = @tui.paragraph(
+      text: help_text,
+      block: @tui.block(title: "Help (press Esc to close)", borders: [:all]),
+    )
+
+    center_widget = @tui.center(
+      child: content,
+      width_percent: 80,
+      height_percent: 80,
+    )
+    frame.render_widget(center_widget, frame.area)
+  end
+
+  private def render_cli_flags(frame, area)
+    flags_lines = [
+      flag_line("dry-run", CLIFlags.dry_run),
+      flag_line("wiki-dir", CLIFlags.wiki_dir),
+      flag_line("builds", CLIFlags.builds),
+    ]
+
+    paragraph = @tui.paragraph(
+      text: flags_lines,
+      block: @tui.block(title: "CLI Flags", borders: [:all], border_style: @border_style, title_style: @title_style),
+    )
+    frame.render_widget(paragraph, area)
+  end
+
+  private def flag_line(name, flag)
+    @tui.text_line(spans: [
+      @tui.text_span(content: "--#{name}: ", style: @tui.style(modifiers: [:dim])),
+      @tui.text_span(content: flag.to_short),
+    ])
+  end
+
+  private def handle_input
+    event = @tui.poll_event
+
+    # When help overlay is open, only ? closes it (but q/Ctrl+C still quit)
+    if @show_help
+      case event
+      in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
+        return :quit
+      in { type: :key, code: "?" } | { type: :key, code: "esc" }
+        @show_help = false
+      else
+        # Ignore all other input
+      end
+      return
+    end
+
+    case event
+    in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
+      :quit
+    in { type: :key, code: "right" } | { type: :key, code: "l" } | { type: :key, code: "]" } | { type: :key, code: "tab", modifiers: ["ctrl"] }
+      @current_tab = (@current_tab + 1) % TABS.size
+    in { type: :key, code: "left" } | { type: :key, code: "h" } | { type: :key, code: "[" } | { type: :key, code: "backtab" }
+      @current_tab = (@current_tab - 1) % TABS.size
+    in { type: :key, code: "up" } | { type: :key, code: "k" }
+      self.scroll_y = [scroll_y - 1, 0].max
+    in { type: :key, code: "down" } | { type: :key, code: "j" }
+      self.scroll_y += 1
+    in { type: :key, code: "home" }
+      self.scroll_y = 0
+    in { type: :key, code: "end" }
+      self.scroll_y = 9999 # Large value, actual content length limits display
+    in { type: :key, code: "page_up" }
+      self.scroll_y = [scroll_y - 10, 0].max
+    in { type: :key, code: "page_down" }
+      self.scroll_y += 10
+    in { type: :key, code: "?" }
+      @show_help = !@show_help
+    in { type: :key, code: "c" } if @current_tab == 2
+      commit_and_push_wiki
+    in { type: :key, code: "s" } if @current_tab == 2
+      send_email
+    in { type: :key, code: "r" } if @current_tab == 2
+      refresh_all
+    in { type: :mouse, kind: "scroll_down" }
+      self.scroll_y += 3
+    in { type: :mouse, kind: "scroll_up" }
+      self.scroll_y = [scroll_y - 3, 0].max
+    in { type: :mouse, kind: "down", x:, y: }
+      handle_click(x, y)
+    else
+      # Ignore other events
+    end
+  end
+
+  private def handle_click(col, row)
+    # Check if click is in tabs area
+    if @tabs_area && in_area?(col, row, @tabs_area)
+      handle_tab_click(col)
+    # Check if click is in controls area
+    elsif @controls_area && in_area?(col, row, @controls_area)
+      handle_control_click(col, row)
+    end
+  end
+
+  private def in_area?(col, row, area)
+    col >= area.x && col < area.x + area.width &&
+      row >= area.y && row < area.y + area.height
+  end
+
+  private def handle_tab_click(col)
+    # Calculate tab positions based on actual title widths
+    # Layout: [border] [Tab1] [ | ] [Tab2] [ | ] [Tab3] [border]
+    divider = " | "
+    x = @tabs_area.x + 1 # Skip left border
+
+    TABS.each_with_index do |title, i|
+      tab_width = title.length
+      if col >= x && col < x + tab_width
+        @current_tab = i if i != @current_tab
+        break
+      end
+      x += tab_width + divider.length
+    end
+  end
+
+  private def handle_control_click(col, row)
+    return unless @current_tab == 2 # Only handle clicks on Announce tab
+
+    # Estimate control positions based on the control layout
+    # Row 1: ←/→ Tab, c Commit, s Send emate, m Send mailto
+    # Row 2: r Refresh, q Quit
+    relative_row = row - @controls_area.y - 1 # -1 for border
+
+    case relative_row
+    when 0
+      # First row of controls
+      if col < 25 then commit_and_push_wiki
+      else send_email
+      end
+    when 1
+      # Second row
+      if col < 15 then refresh_all
+      elsif col < 25 then :quit
+      end
+    end
+  end
+
+  private def scroll_y = @scroll_positions[@current_tab][0]
+  private def scroll_x = @scroll_positions[@current_tab][1]
+
+  private def scroll_y=(val)
+    @scroll_positions[@current_tab][0] = val
+  end
+
+  private def scroll_x=(val)
+    @scroll_positions[@current_tab][1] = val
+  end
+
+  # Actions
+  private def commit_and_push_wiki
+    @wiki_repo.commit!(@announcement.commit_message)
+    @wiki_repo.push!
+  end
+
+  private def send_email
+    if @emailer.emate_available?
+      @emailer.send_via_emate!
+    else
+      @emailer.send_via_mailto!
+    end
+  end
+
+  private def refresh_all
+    @git_repo.refresh
+    @sourcehut.refresh
+    @rubygems.refresh
+    @wiki_repo.refresh
+  end
+end
+
+if __FILE__ == $PROGRAM_NAME
+  # Parse CLI options
+  script_dir = File.dirname(File.expand_path(__FILE__))
+
+  OptionParser.new do |opts|
+    opts.banner = "Usage: bin/announce_tui [OPTIONS] [VERSION]"
+
+    opts.on("-w", "--wiki-dir PATH", "Path to wiki repo") do |path|
+      CLIFlags.wiki_dir = PathFlag.new(File.expand_path(path))
+    end
+
+    opts.on("-n", "--builds N", Integer, "Number of builds to show") do |n|
+      CLIFlags.builds = IntFlag.new(n)
+    end
+
+    opts.on("-d", "--dry-run", "Stub dangerous actions (emate, git commit/push)") do
+      CLIFlags.dry_run = BoolFlag.new(true)
+    end
+
+    opts.on("-h", "--help", "Show this help") do
+      puts opts
+      exit
+    end
+  end.parse!
+
+  # Set defaults and determine version
+  CLIFlags.wiki_dir ||= PathFlag.new(File.join(script_dir, "..", "..", "ratatui_ruby-wiki"))
+  CLIFlags.version = ARGV[0] || `git describe --tags --abbrev=0 2>/dev/null`.strip
+  if CLIFlags.version.empty?
+    warn "Error: No git tags found and no version specified."
+    exit 1
+  end
+
+  AnnounceTUI.new.run
+end
