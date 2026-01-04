@@ -93,7 +93,7 @@ class TestTUI < Minitest::Test
 
   def test_session_is_not_ractor_shareable
     # Session is an I/O handle with side effects (draw, poll_event).
-    # It is intentionally NOT Ractor-shareable. Do not cache it in TEA Models.
+    # It is intentionally NOT Ractor-shareable. Do not cache it in immutable Models.
     tui = RatatuiRuby::TUI.new
     refute Ractor.shareable?(tui),
       "Session should NOT be Ractor.shareable? — it's an I/O handle, not data"
@@ -107,6 +107,26 @@ class TestTUI < Minitest::Test
       app.run
     end
     assert app.ran_successfully, "Session should work when cached in @tui"
+  end
+
+  # v0.7.0: table_row() and table_cell() factory methods
+  def test_session_table_methods
+    tui = RatatuiRuby::TUI.new
+
+    # table_row() creates Widgets::Row
+    row = tui.table_row(cells: ["A", "B", "C"])
+    assert_instance_of RatatuiRuby::Widgets::Row, row
+    assert_equal ["A", "B", "C"], row.cells
+
+    # table_cell() creates Widgets::Cell
+    cell = tui.table_cell(content: "X", style: RatatuiRuby::Style::Style.new(fg: :red))
+    assert_instance_of RatatuiRuby::Widgets::Cell, cell
+    assert_equal "X", cell.content
+    assert_equal :red, cell.style.fg
+
+    # row() is alias for table_row()
+    row2 = tui.row(cells: ["D", "E"])
+    assert_instance_of RatatuiRuby::Widgets::Row, row2
   end
 end
 

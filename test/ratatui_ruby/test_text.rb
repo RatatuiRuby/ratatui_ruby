@@ -7,6 +7,7 @@ require "test_helper"
 
 module RatatuiRuby
   class TestText < Minitest::Test
+    include RatatuiRuby::TestHelper
     def test_width_ascii
       # ASCII characters are 1 cell each
       assert_equal 5, RatatuiRuby::Text.width("hello")
@@ -104,6 +105,25 @@ module RatatuiRuby
     def test_line_width_from_string
       line = RatatuiRuby::Text::Line.from_string("Test")
       assert_equal 4, line.width
+    end
+
+    # v0.7.0: Text::Line style: parameter should be applied during rendering
+    def test_line_style_rendering
+      with_test_terminal(10, 1) do
+        # Create a Line with line-level style (should apply to all spans)
+        line = RatatuiRuby::Text::Line.new(
+          spans: [RatatuiRuby::Text::Span.new(content: "Hello")],
+          style: RatatuiRuby::Style::Style.new(bg: :blue)
+        )
+
+        paragraph = RatatuiRuby::Widgets::Paragraph.new(text: [line])
+        RatatuiRuby.draw { |f| f.render_widget(paragraph, f.area) }
+
+        # The line-level style should apply blue background to all cells
+        cell = RatatuiRuby.get_cell_at(0, 0)
+        assert_equal "H", cell.char
+        assert_equal :blue, cell.bg, "Line-level style bg should be applied"
+      end
     end
   end
 end

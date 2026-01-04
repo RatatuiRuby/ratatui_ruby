@@ -485,4 +485,72 @@ class TestTable < Minitest::Test
     assert_equal :blue, row.style.fg
     assert_equal 2, row.height
   end
+
+  # Feature 3: Widgets::Cell for per-cell styling
+  def test_cell_creation
+    cell = RatatuiRuby::Widgets::Cell.new(content: "Error", style: RatatuiRuby::Style::Style.new(bg: :red))
+    assert_equal "Error", cell.content
+    assert_equal :red, cell.style.bg
+  end
+
+  def test_cell_with_span_content
+    span = RatatuiRuby::Text::Span.new(content: "Warning", style: RatatuiRuby::Style::Style.new(fg: :yellow))
+    cell = RatatuiRuby::Widgets::Cell.new(content: span, style: RatatuiRuby::Style::Style.new(bg: :dark_gray))
+    assert_equal span, cell.content
+  end
+
+  def test_cell_rendering_in_table
+    cell = RatatuiRuby::Widgets::Cell.new(content: "Styled", style: RatatuiRuby::Style::Style.new(bg: :blue))
+    rows = [[cell]]
+    widths = [RatatuiRuby::Layout::Constraint.length(10)]
+    table = RatatuiRuby::Widgets::Table.new(rows:, widths:)
+
+    with_test_terminal(10, 1) do
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
+      assert_includes buffer_content.first, "Styled"
+      # Verify cell-level style applied
+      assert_equal :blue, RatatuiRuby.get_cell_at(0, 0).bg
+    end
+  end
+
+  def test_cell_in_row
+    # Widgets::Cell inside Widgets::Row
+    styled_cell = RatatuiRuby::Widgets::Cell.new(content: "X", style: RatatuiRuby::Style::Style.new(fg: :green))
+    row = RatatuiRuby::Widgets::Row.new(cells: ["A", styled_cell])
+    rows = [row]
+    widths = [RatatuiRuby::Layout::Constraint.length(3), RatatuiRuby::Layout::Constraint.length(3)]
+    table = RatatuiRuby::Widgets::Table.new(rows:, widths:)
+
+    with_test_terminal(10, 1) do
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
+      # "X" at column 4 (after "A" + spacing)
+      x_cell = RatatuiRuby.get_cell_at(4, 0)
+      assert_equal "X", x_cell.char
+      assert_equal :green, x_cell.fg
+    end
+  end
+
+  # v0.7.0: row_highlight_style renamed from highlight_style
+  def test_row_highlight_style_rendering
+    with_test_terminal(20, 3) do
+      rows = [["Row 1"], ["Row 2"]]
+      widths = [RatatuiRuby::Layout::Constraint.length(10)]
+      table = RatatuiRuby::Widgets::Table.new(
+        rows:,
+        widths:,
+        selected_row: 1,
+        row_highlight_style: RatatuiRuby::Style::Style.new(bg: :yellow)
+      )
+
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
+
+      # Selected row (row 1 in data = line 1 in buffer) should have yellow bg
+      cell = RatatuiRuby.get_cell_at(0, 1)
+      assert_equal :yellow, cell.bg, "row_highlight_style should apply to selected row"
+
+      # Unselected row should not have the highlight style
+      unselected_cell = RatatuiRuby.get_cell_at(0, 0)
+      refute_equal :yellow, unselected_cell.bg
+    end
+  end
 end

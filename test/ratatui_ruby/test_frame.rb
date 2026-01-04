@@ -151,7 +151,7 @@ class TestFrame < Minitest::Test
 
   def test_frame_is_not_ractor_shareable
     # Frame is an I/O handle with side effects (render_widget, set_cursor_position).
-    # It is intentionally NOT Ractor-shareable. Do not cache it in TEA Models.
+    # It is intentionally NOT Ractor-shareable. Do not cache it in immutable Models.
     with_test_terminal(20, 5) do
       RatatuiRuby.draw do |frame|
         refute Ractor.shareable?(frame),
@@ -191,5 +191,27 @@ class TestFrame < Minitest::Test
   private def render_paragraph_helper(frame, text)
     paragraph = RatatuiRuby::Widgets::Paragraph.new(text:)
     frame.render_widget(paragraph, frame.area)
+  end
+
+  # v0.6.0: Frame#set_cursor_position for input field cursor placement
+  def test_set_cursor_position
+    with_test_terminal(20, 5) do
+      RatatuiRuby.draw do |frame|
+        # Setting cursor position should not raise
+        frame.set_cursor_position(5, 2)
+      end
+      # The test passes if no error is raised — cursor position
+      # is a terminal-level concept that doesn't affect the buffer content
+    end
+  end
+
+  def test_set_cursor_position_with_invalid_coordinates
+    with_test_terminal(20, 5) do
+      RatatuiRuby.draw do |frame|
+        # Out-of-bounds coordinates should be handled gracefully
+        # (either clamped or ignored by the terminal backend)
+        frame.set_cursor_position(100, 100)
+      end
+    end
   end
 end

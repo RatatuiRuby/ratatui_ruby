@@ -60,6 +60,7 @@ module RatatuiRuby
 
         # DWIM
         assert event.ctrl?
+        assert event.control?, "control? should alias ctrl?"
 
         # Kind
         assert_equal :modifier, event.kind
@@ -91,6 +92,7 @@ module RatatuiRuby
 
         # DWIM
         assert event.alt?
+        assert event.option?, "option? should alias alt?"
 
         # Kind
         assert_equal :modifier, event.kind
