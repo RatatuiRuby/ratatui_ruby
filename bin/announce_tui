@@ -29,14 +29,33 @@ require "uri"
 require "optparse"
 require "fileutils"
 require "tmpdir"
+# Flag value objects with display methods
+PathFlag = Data.define(:value) do
+  def to_s = value
+
+  def to_short
+    home = Dir.home
+    value.start_with?(home) ? value.sub(home, "~") : value
+  end
+end
+
+BoolFlag = Data.define(:value) do
+  def to_s = value.to_s
+  def to_short = value ? "yes" : "no"
+end
+
+IntFlag = Data.define(:value) do
+  def to_s = value.to_s
+  def to_short = value.to_s
+end
 
 # Global CLI flags singleton
 module CLIFlags
   class << self
     attr_accessor :dry_run, :wiki_dir, :builds, :version
   end
-  self.dry_run = false
-  self.builds = 4
+  self.dry_run = BoolFlag.new(false)
+  self.builds = IntFlag.new(4)
 end
 
 # Domain object for reading announcement files
@@ -272,7 +291,7 @@ class WikiRepo
   end
 
   def commit!(message)
-    return if CLIFlags.dry_run
+    return if CLIFlags.dry_run.value
 
     Dir.chdir(@wiki_dir) do
       system("git", "add", @relative_path)
@@ -282,7 +301,7 @@ class WikiRepo
   end
 
   def push!
-    return if CLIFlags.dry_run
+    return if CLIFlags.dry_run.value
 
     Dir.chdir(@wiki_dir) do
       system("git", "push")
@@ -306,7 +325,7 @@ class Emailer
   end
 
   def send_via_emate!
-    return true if CLIFlags.dry_run
+    return true if CLIFlags.dry_run.value
 
     return false unless emate_available?
 
@@ -346,10 +365,10 @@ class AnnounceTUI
     @git_repo = GitRepo.new
     @version = CLIFlags.version || @git_repo.version
 
-    @announcement = Announcement.new(CLIFlags.wiki_dir, @version)
-    @sourcehut = SourceHut.new(max_builds: CLIFlags.builds)
+    @announcement = Announcement.new(CLIFlags.wiki_dir.value, @version)
+    @sourcehut = SourceHut.new(max_builds: CLIFlags.builds.value)
     @rubygems = RubyGemsInfo.new("ratatui_ruby")
-    @wiki_repo = WikiRepo.new(CLIFlags.wiki_dir, @announcement.path)
+    @wiki_repo = WikiRepo.new(CLIFlags.wiki_dir.value, @announcement.path)
     @emailer = Emailer.new(TO_ADDRESS, @announcement.subject, @announcement.body)
   end
 
@@ -374,8 +393,8 @@ class AnnounceTUI
 
   private def render
     @tui.draw do |frame|
-      # Layout: tabs at top, content in middle, controls at bottom
-      @tabs_area, content_area, @controls_area = @tui.layout_split(
+      # Layout: tabs at top, content in middle, bottom panel at bottom
+      @tabs_area, content_area, bottom_area = @tui.layout_split(
         frame.area,
         direction: :vertical,
         constraints: [
@@ -385,9 +404,20 @@ class AnnounceTUI
         ],
       )
 
+      # Split bottom area: controls on left, CLI flags on right
+      @controls_area, flags_area = @tui.layout_split(
+        bottom_area,
+        direction: :horizontal,
+        constraints: [
+          @tui.constraint_percentage(60),
+          @tui.constraint_percentage(40),
+        ],
+      )
+
       render_tabs(frame, @tabs_area)
       render_content(frame, content_area)
       render_controls(frame, @controls_area)
+      render_cli_flags(frame, flags_area)
     end
   end
 
@@ -566,6 +596,27 @@ class AnnounceTUI
     @tui.text_line(spans:)
   end
 
+  private def render_cli_flags(frame, area)
+    flags_lines = [
+      flag_line("dry-run", CLIFlags.dry_run),
+      flag_line("wiki-dir", CLIFlags.wiki_dir),
+      flag_line("builds", CLIFlags.builds),
+    ]
+
+    paragraph = @tui.paragraph(
+      text: flags_lines,
+      block: @tui.block(title: "CLI Flags", borders: [:all]),
+    )
+    frame.render_widget(paragraph, area)
+  end
+
+  private def flag_line(name, flag)
+    @tui.text_line(spans: [
+      @tui.text_span(content: "--#{name}: ", style: @tui.style(modifiers: [:dim])),
+      @tui.text_span(content: flag.to_short),
+    ])
+  end
+
   private def handle_input
     case @tui.poll_event
     in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
@@ -692,15 +743,15 @@ if __FILE__ == $PROGRAM_NAME
     opts.banner = "Usage: bin/announce_tui [OPTIONS] [VERSION]"
 
     opts.on("-w", "--wiki-dir PATH", "Path to wiki repo") do |path|
-      CLIFlags.wiki_dir = File.expand_path(path)
+      CLIFlags.wiki_dir = PathFlag.new(File.expand_path(path))
     end
 
     opts.on("-n", "--builds N", Integer, "Number of builds to show") do |n|
-      CLIFlags.builds = n
+      CLIFlags.builds = IntFlag.new(n)
     end
 
     opts.on("-d", "--dry-run", "Stub dangerous actions (emate, git commit/push)") do
-      CLIFlags.dry_run = true
+      CLIFlags.dry_run = BoolFlag.new(true)
     end
 
     opts.on("-h", "--help", "Show this help") do
@@ -710,7 +761,7 @@ if __FILE__ == $PROGRAM_NAME
   end.parse!
 
   # Set defaults and determine version
-  CLIFlags.wiki_dir ||= File.join(script_dir, "..", "..", "ratatui_ruby-wiki")
+  CLIFlags.wiki_dir ||= PathFlag.new(File.join(script_dir, "..", "..", "ratatui_ruby-wiki"))
   CLIFlags.version = ARGV[0] || `git describe --tags --abbrev=0 2>/dev/null`.strip
   if CLIFlags.version.empty?
     warn "Error: No git tags found and no version specified."
