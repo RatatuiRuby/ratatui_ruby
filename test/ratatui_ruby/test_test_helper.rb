@@ -64,9 +64,9 @@ class TestTestHelper < Minitest::Test
       RatatuiRuby.draw { |f| f.render_widget(widget, f.area) }
 
       # This should create snapshots/test_rich_snapshot.ansi on first run
-      ENV["UPDATE_SNAPSHOTS"] = "1"
-      assert_rich_snapshot("test_rich_snapshot")
-      ENV.delete("UPDATE_SNAPSHOTS")
+      with_env("UPDATE_SNAPSHOTS", "1") do
+        assert_rich_snapshot("test_rich_snapshot")
+      end
 
       # Second run should pass against file
       assert_rich_snapshot("test_rich_snapshot")
@@ -82,11 +82,11 @@ class TestTestHelper < Minitest::Test
       end
 
       # Create snapshot with masked value
-      ENV["UPDATE_SNAPSHOTS"] = "1"
-      assert_rich_snapshot("test_rich_snapshot_normalized") do |lines|
-        lines.map { |l| l.gsub(/ID: \d+/, "ID: XXXXX") }
+      with_env("UPDATE_SNAPSHOTS", "1") do
+        assert_rich_snapshot("test_rich_snapshot_normalized") do |lines|
+          lines.map { |l| l.gsub(/ID: \d+/, "ID: XXXXX") }
+        end
       end
-      ENV.delete("UPDATE_SNAPSHOTS")
 
       # Now change the rendered value
       RatatuiRuby.draw do |f|
@@ -118,11 +118,8 @@ class TestTestHelper < Minitest::Test
         # With UPDATE_SNAPSHOTS=1, the assertion should:
         # 1. Overwrite the stale file with new content
         # 2. Pass (not fail) because expected now equals actual
-        ENV["UPDATE_SNAPSHOTS"] = "1"
-        begin
+        with_env("UPDATE_SNAPSHOTS", "1") do
           assert_screen_matches(snapshot_path)
-        ensure
-          ENV.delete("UPDATE_SNAPSHOTS")
         end
 
         # Verify the file was actually updated
