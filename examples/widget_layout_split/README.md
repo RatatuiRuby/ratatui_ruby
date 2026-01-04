@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Layout Split Example
 
+[![widget_layout_split](../../doc/images/widget_layout_split.png)](app.rb)
+
 Demonstrates dynamic geometry management with constraints and flex modes.
 
 Terminal screens vary in size. Hardcoded layouts break. `Layout.split` manages space dynamically, ensuring your interface adapts to any window dimension.
@@ -40,5 +42,3 @@ Use this example if you need to...
 - Create 3-column layouts where the middle content fills remaining space.
 - Center a modal dialog on the screen.
 - Distribute buttons evenly across a control bar.
-
-![Demo](/doc/images/widget_layout_split.png)

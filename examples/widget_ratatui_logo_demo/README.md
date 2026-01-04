@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Ratatui Logo Example
 
+[![widget_ratatui_logo_demo](../../doc/images/widget_ratatui_logo_demo.png)](app.rb)
+
 Demonstrates branding with the official logo widget.
 
 A polished application often needs an "About" screen or a splash screen. This widget provides the standardized project branding.
@@ -30,5 +32,3 @@ Use this example if you need to...
 - Create a splash screen.
 - Add an "About" modal to your application.
 - See how to center a widget both vertically and horizontally.
-
-![Demo](/doc/images/widget_ratatui_logo_demo.png)

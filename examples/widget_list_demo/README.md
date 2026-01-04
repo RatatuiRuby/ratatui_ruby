@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # List Widget Example
 
+[![widget_list_demo](../../doc/images/widget_list_demo.png)](app.rb)
+
 Demonstrates a selectable list with extensive configuration options.
 
 Lists are the workhorse of terminal interfaces. Managing selection state, scrolling windows, and highlight styles logic is complex. The `List` widget handles all of this.
@@ -45,5 +47,3 @@ Use this example if you need to...
 - Build a navigation menu.
 - Display a log where users can scroll back to read history.
 - Implement "infinite select" behaviors.
-
-![Demo](/doc/images/widget_list_demo.png)

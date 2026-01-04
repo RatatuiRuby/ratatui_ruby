@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Login Form Example
 
+[![Login Form](../../doc/images/app_login_form.png)](app.rb)
+
 Demonstrates how to create a modal overlay for user input.
 
 Many applications need to block interaction with the main UI while collecting specific information, like a login prompt or confirmation dialog. Managing the z-index and input focus for these overlays can be tricky.

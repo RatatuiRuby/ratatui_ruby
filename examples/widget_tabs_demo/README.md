@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Tabs Widget Example
 
+[![widget_tabs_demo](../../doc/images/widget_tabs_demo.png)](app.rb)
+
 Demonstrates view segregation with interactive navigation.
 
 Screen real estate is limited. You cannot show everything at once. Tabs segregate content into specialized views (modes), allowing users to switch contexts easily.
@@ -37,5 +39,3 @@ Use this example if you need to...
 - Build a multi-pane dashboard.
 - Create a "Settings" screen with different categories.
 - Implement a "wizard" interface with steps.
-
-![Demo](/doc/images/widget_tabs_demo.png)

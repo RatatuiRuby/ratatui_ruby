@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Color Picker Example
 
+[![Color Picker](../../doc/images/app_color_picker.png)](app.rb)
+
 This example demonstrates how to build a **Feature-Rich Interactive Application** using `ratatui_ruby`.
 
 It goes beyond simple widgets to show a complete, real-world architecture for handling:
@@ -13,7 +15,7 @@ It goes beyond simple widgets to show a complete, real-world architecture for ha
 -   **Dynamic Layouts**
 -   **Modal Dialogs**
 
-## Architecture: The "Proto-Kit" Pattern (Component-Based)
+## Architecture: Component-Based
 
 This app uses a **Strict Component-Based Architecture** where every UI element encapsulates its own **Rendering**, **State**, and **Event Handling**.
 
@@ -119,16 +121,16 @@ ruby examples/app_color_picker/app.rb
 
 Complex applications require structured state habits. This Color Picker and the [App All Events](../app_all_events/README.md) example demonstrate two different approaches.
 
-### The Tool Approach (Color Picker - Proto-Kit)
+### The Tool Approach (Color Picker)
 
 Tools require interaction. Users click buttons and drag sliders. Components need to know where they exist on screen for hit testing. The Container orchestrates cross-component effects.
 
-This example uses the **Proto-Kit (Component-Based)** pattern. Each component owns its own state, rendering, and event handling. The Container routes events and mediates communication.
+This example uses a **Component-Based** pattern. Each component owns its own state, rendering, and event handling. The Container routes events and mediates communication.
 
 Use this pattern for forms, editors, and mouse-driven tools.
 
-### The Dashboard Approach (AppAllEvents - Proto-TEA)
+### The Dashboard Approach (AppAllEvents)
 
-Dashboards display data. They rarely require complex mouse interaction. Proto-TEA (Model-View-Update) works best there. State is immutable. Logic is pure. Updates are predictable. This simplifies testing.
+Dashboards display data. They rarely require complex mouse interaction. Model-View-Update works best there. State is immutable. Logic is pure. Updates are predictable. This simplifies testing.
 
 Use that pattern for logs, monitors, and data viewers.

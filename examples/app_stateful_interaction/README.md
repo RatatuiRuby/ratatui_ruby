@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Stateful Interaction Example
 
+[![Stateful Interaction](../../doc/images/app_stateful_interaction.png)](app.rb)
+
 This example demonstrates High-Fidelity Interaction using **Stateful Widget Rendering**.
 
 It showcases a "Database Viewer" layout where:

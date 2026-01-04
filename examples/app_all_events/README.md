@@ -5,9 +5,11 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # App All Events Example
 
-This example application captures and visualizes every event supported by `ratatui_ruby`. It serves as a comprehensive reference for event handling and a demonstration of the Proto-TEA architectural pattern.
+[![App All Events](../../doc/images/app_all_events.png)](app.rb)
 
-## Architecture: Proto-TEA (Model-View-Update)
+This example application captures and visualizes every event supported by `ratatui_ruby`. It serves as a comprehensive reference for event handling and a demonstration of the Model-View-Update architectural pattern.
+
+## Architecture: Model-View-Update
 
 This application demonstrates **unidirectional data flow** inspired by The Elm Architecture. This separation ensures that state management is predictable and easy to test.
 
@@ -85,7 +87,7 @@ Complex applications require structured state habits. `AppAllEvents` and the [Co
 
 ### The Dashboard Approach (AppAllEvents)
 
-Dashboards display data. They rarely require complex mouse interaction. Proto-TEA works best here. State is immutable. Logic is pure. Updates are predictable. This simplifies testing.
+Dashboards display data. They rarely require complex mouse interaction. Model-View-Update works best here. State is immutable. Logic is pure. Updates are predictable. This simplifies testing.
 
 Use this pattern for logs, monitors, and data viewers.
 
@@ -93,7 +95,7 @@ Use this pattern for logs, monitors, and data viewers.
 
 Tools require interaction. Users click buttons and drag sliders. Each UI component needs to know where it exists on screen for hit testing.
 
-The Color Picker uses a "Proto-Kit (Component-Based)" pattern. Each component encapsulates its own rendering, state, and event handling. The Container routes events and coordinates cross-component effects.
+The Color Picker uses a Component-Based pattern. Each component encapsulates its own rendering, state, and event handling. The Container routes events and coordinates cross-component effects.
 
 Use this pattern for forms, editors, and mouse-driven tools.
 

@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Cell Widget Example
 
+[![widget_cell_demo](../../doc/images/widget_cell_demo.png)](app.rb)
+
 Demonstrates using `Cell` objects for granular control over individual character grid units.
 
 Sometimes you need to render specific characters with unique styles outside of standard widgets. The `Cell` primitive allows you to build custom widgets or inject styled content into Tables.
@@ -32,5 +34,3 @@ Use this example if you need to...
 - Create a custom widget (like a game board or specialized graph).
 - Style specific cells in a Table (e.g., Green "OK", Red "FAIL").
 - Understand how to position content precisely with `Cell`.
-
-![Demo](/doc/images/widget_cell_demo.png)

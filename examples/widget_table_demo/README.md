@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Table Widget Example
 
+[![widget_table_demo](../../doc/images/widget_table_demo.png)](app.rb)
+
 Demonstrates advanced options for the `Table` widget, including selection, row-level highlighting, and column-level highlighting.
 
 Data grids are complex. Users expect to navigate them with keys, select rows, and clearly see which cell is active. The `Table` widget provides these features out of the box efficiently.
@@ -44,5 +46,3 @@ Use this example if you need to...
 - Build a file explorer or process list.
 - Create a data-heavy dashboard.
 - Handle conflicting style requirements (e.g., "Highlight this row, but make this error cell red").
-
-![Demo](/doc/images/widget_table_demo.png)

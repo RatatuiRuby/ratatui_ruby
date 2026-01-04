@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Style Colors Example
 
+[![widget_style_colors](../../doc/images/widget_style_colors.png)](app.rb)
+
 Demonstrates high-fidelity color support.
 
 Terminals support millions of colors. This example generates a mathematically precise HSL gradient to prove the rendering engine's color fidelity.
@@ -30,5 +32,3 @@ Use this example if you need to...
 - Create meaningful heatmaps.
 - Generate color palettes dynamically.
 - Test your terminal's color support capabilities.
-
-![Demo](/doc/images/widget_style_colors.png)

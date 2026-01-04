@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Render (Custom Widget) Example
 
+[![widget_render](../../doc/images/widget_render.png)](app.rb)
+
 Demonstrates how to build Custom Widgets using absolute coordinates.
 
 Sometimes standard widgets aren't enough. You need to draw custom shapes, games, or graphs. This example shows how to implement the `render(area)` contract to draw anything you want while respecting layout boundaries.
@@ -33,5 +35,3 @@ Use this example if you need to...
 - Build a game (Snake, Tetris) inside the terminal.
 - Create a specialized visualization (Network topology graph).
 - Draw custom UI elements not provided by the library.
-
-![Demo](/doc/images/widget_render.png)

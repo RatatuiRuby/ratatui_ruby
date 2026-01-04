@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Line Gauge Widget Example
 
+[![widget_line_gauge_demo](../../doc/images/widget_line_gauge_demo.png)](app.rb)
+
 Demonstrates compact progress bars for constrained spaces.
 
 Standard block gauges take up vertical space. Sometimes you only have one line to show status. The `LineGauge` provides a compact, high-density progress indicator.
@@ -37,5 +39,3 @@ Use this example if you need to...
 - Add a progress bar to a list item or table row.
 - Create a status line at the bottom of the screen.
 - Show multiple metrics (CPU, RAM, Net) in a compact list.
-
-![Demo](/doc/images/widget_line_gauge_demo.png)

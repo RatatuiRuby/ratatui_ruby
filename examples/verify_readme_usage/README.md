@@ -40,4 +40,4 @@ end
 ```
 <!-- SYNC:END -->
 
-![verify_readme_usage](../../doc/images/verify_readme_usage.png)
+[![verify_readme_usage](../../doc/images/verify_readme_usage.png)](../../README.md#usage)

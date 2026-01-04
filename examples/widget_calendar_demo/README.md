@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Calendar Widget Example
 
+[![widget_calendar_demo](../../doc/images/widget_calendar_demo.png)](app.rb)
+
 Demonstrates a monthly calendar with customizable headers and event highlighting.
 
 Rendering dates in a grid involves complex calculations for leap years and weekday offsets. This widget handles that logic, letting you focus on displaying dates.
@@ -35,5 +37,3 @@ Use this example if you need to...
 - Display a date picker.
 - Show a schedule or timeline view.
 - Highlight specific dates (deadlines, holidays) on a calendar grid.
-
-![Demo](/doc/images/widget_calendar_demo.png)

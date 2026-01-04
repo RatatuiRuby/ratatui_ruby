@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Rect (Geometry) Widget Example
 
+[![widget_rect](../../doc/images/widget_rect.png)](app.rb)
+
 Demonstrates the Rect geometry primitive and hit-testing patterns.
 
 TUI layouts are composed of rectangles. Understanding how to manipulate `Rect` objects, reuse them from the layout phase, and use them for mouse interaction is critical for building interactive apps.
@@ -34,5 +36,3 @@ Use this example if you need to...
 - Handle mouse clicks on specific buttons or areas.
 - Create resizable panes (like a split pane in an IDE).
 - Debug layout issues by inspecting Rect coordinates.
-
-![Demo](/doc/images/widget_rect.png)

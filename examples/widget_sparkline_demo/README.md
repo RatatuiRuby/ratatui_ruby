@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Sparkline Widget Example
 
+[![widget_sparkline_demo](../../doc/images/widget_sparkline_demo.png)](app.rb)
+
 Demonstrates high-density data visualization in a condensed footprint.
 
 Users need context. A single number ("90% CPU") tells you status, but not the trend. Full charts take up too much space. Sparklines condense history into a single line, perfect for headers and dashboards.
@@ -38,5 +40,3 @@ Use this example if you need to...
 - Add a "CPU Load" graph to your header.
 - Visualize stock price trends in a list row.
 - Monitor memory usage over the last 60 seconds.
-
-![Demo](/doc/images/widget_sparkline_demo.png)

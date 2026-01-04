@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Text Width Calculator
 
+[![widget_text_width](../../doc/images/widget_text_width.png)](app.rb)
+
 Demonstrates string width calculation in a terminal environment.
 
 Not all characters are created equal. In a TUI, "Width" means cell count, not string length. Emoji (`👍`) take 2 cells. Chinese characters (`你`) take 2 cells. The `tui.text_width` helper tells you the visual width of a string.
@@ -31,5 +33,3 @@ Use this example if you need to...
 - Align text correctly in columns.
 - Truncate strings that are too long for a widget.
 - Build your own custom layout engine.
-
-![Demo](/doc/images/widget_text_width.png)

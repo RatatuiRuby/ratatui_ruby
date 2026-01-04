@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Chart Widget Example
 
+[![widget_chart_demo](../../doc/images/widget_chart_demo.png)](app.rb)
+
 Demonstrates Cartesian plotting with interactive styling and configuration.
 
 Trends and patterns are invisible in raw logs. Charts visualize X/Y datasets to reveal the story behind the data.
@@ -37,5 +39,3 @@ Use this example if you need to...
 - Plot real-time data monitoring (CPU history, request latency).
 - Visualize mathematical functions.
 - Compare multiple datasets on the same axis.
-
-![Demo](/doc/images/widget_chart_demo.png)

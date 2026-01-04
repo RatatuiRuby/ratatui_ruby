@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Box (Block) Widget Example
 
+[![widget_box_demo](../../doc/images/widget_box_demo.png)](app.rb)
+
 Demonstrates visual container attributes with interactive cycling.
 
 Widgets often float in a void. Without boundaries, interfaces become a chaotic mess of text. `Block` (often called a Box) provides the structure and visual hierarchy needed to organize information.
@@ -41,5 +43,3 @@ Use this example if you need to...
 - Create distinct "panels" or "cards" in your UI.
 - Style borders to indicate state (e.g., Red border for error state).
 - Understand the difference between `style` (content) and `border_style` (frame).
-
-![Demo](/doc/images/widget_box_demo.png)

@@ -5,14 +5,15 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Quickstart DSL Verification
 
-Verifies the "Idiomatic Session" tutorial in the [Quickstart](../../doc/quickstart.md#idiomatic-session).
+Verifies the "Simplified API" tutorial in the [Quickstart](../../doc/quickstart.md#simplified-api).
 
-This example exists as a documentation regression test. It ensures the recommended DSL and session-based workflow remains functional.
+This example exists as a documentation regression test. It ensures the recommended TUI facade and managed lifecycle workflow remains functional.
 
 ## Usage
 
 <!-- SYNC:START:app.rb:main -->
 ```ruby
+# 1. Initialize the terminal, start the run loop, and ensure the terminal is restored.
 RatatuiRuby.run do |tui|
   loop do
     # 2. Create your UI with methods instead of classes.
@@ -45,4 +46,4 @@ end
 ```
 <!-- SYNC:END -->
 
-![verify_quickstart_dsl](../../doc/images/verify_quickstart_dsl.png)
+[![verify_quickstart_dsl](../../doc/images/verify_quickstart_dsl.png)](../../doc/quickstart.md#simplified-api)

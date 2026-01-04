@@ -68,4 +68,4 @@ end
 ```
 <!-- SYNC:END -->
 
-![verify_quickstart_layout](../../doc/images/verify_quickstart_layout.png)
+[![verify_quickstart_layout](../../doc/images/verify_quickstart_layout.png)](../../doc/quickstart.md#adding-layouts)

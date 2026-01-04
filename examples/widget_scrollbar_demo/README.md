@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Scrollbar Widget Example
 
+[![widget_scrollbar_demo](../../doc/images/widget_scrollbar_demo.png)](app.rb)
+
 Demonstrates explicit scrollbars for navigation feedback.
 
 Content overflows. Users get lost in long lists. Scrollbars provide essential spatial awareness ("How far down am I?") and navigation controls.
@@ -33,5 +35,3 @@ ruby examples/widget_scrollbar_demo/app.rb
 Use this example if you need to...
 - Add visual scroll indicators to Lists or Tables.
 - Implement specialized inputs like sliders or volume controls.
-
-![Demo](/doc/images/widget_scrollbar_demo.png)

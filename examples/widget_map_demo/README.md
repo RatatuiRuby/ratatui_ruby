@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Canvas Widget Example
 
+[![widget_map_demo](../../doc/images/widget_map_demo.png)](app.rb)
+
 Demonstrates drawing custom graphics and maps using the standard Braille and Block patterns.
 
 Standard widgets are great for text, but sometimes you need to draw. The `Canvas` widget gives you a high-resolution coordinate system (x, y) to render shapes, lines, and data visualizations that go beyond the grid.
@@ -35,5 +37,3 @@ Use this example if you need to...
 - Render geographic data (World, USA, Europe).
 - Overlay custom labels and markers on a map.
 - Animate visual elements on top of a static background.
-
-![Demo](/doc/images/widget_map_demo.png)

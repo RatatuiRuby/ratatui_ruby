@@ -4,6 +4,8 @@
 -->
 # Block Widget Demo
 
+[![Block Demo](../../doc/images/widget_block_demo.png)](app.rb)
+
 This example demonstrates the versatile `Block` widget, which provides the visual container, borders, and titles for almost every other widget in `ratatui_ruby`.
 
 ## Key Concepts

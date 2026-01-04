@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # BarChart Widget Example
 
+[![BarChart Demo](../../doc/images/widget_barchart_demo.png)](app.rb)
+
 Visualizes categorical data with interactive attribute cycling.
 
 Comparing magnitudes in raw tables requires mental arithmetic. Bar charts make these comparisons instant and intuitive.
@@ -46,4 +48,3 @@ Use this example if you need to...
 - Create "stats" dashboards with compact visualizations.
 - Understand how `RatatuiRuby::BarChart` handles different data structures.
 
-![Demo](/doc/images/widget_barchart_demo.png)

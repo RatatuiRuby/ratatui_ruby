@@ -5,6 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Ratatui Mascot Example
 
+[![widget_ratatui_mascot_demo](../../doc/images/widget_ratatui_mascot_demo.png)](app.rb)
+
 Demonstrates the project mascot widget for adding personality.
 
 Interfaces can feel clinical. A friendly mascot adds charm and brand identity to your terminal application.
@@ -30,5 +32,3 @@ ruby examples/widget_ratatui_mascot_demo/app.rb
 Use this example if you need to...
 - Add visual flair to your UI.
 - Create a friendly empty state or success screen.
-
-![Demo](/doc/images/widget_ratatui_mascot_demo.png)

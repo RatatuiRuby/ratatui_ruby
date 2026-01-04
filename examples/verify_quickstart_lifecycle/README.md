@@ -53,4 +53,4 @@ end
 ```
 <!-- SYNC:END -->
 
-![verify_quickstart_lifecycle](../../doc/images/verify_quickstart_lifecycle.png)
+[![verify_quickstart_lifecycle](../../doc/images/verify_quickstart_lifecycle.png)](../../doc/quickstart.md#basic-application)
