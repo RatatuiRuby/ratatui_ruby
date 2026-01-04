@@ -288,4 +288,29 @@ class TestBlock < Minitest::Test
       assert_equal "└──────────────────┘", buffer_content[2]
     end
   end
+
+  def test_render_titles_with_styled_line
+    # This test verifies that Text::Line objects with styled spans can be used
+    # as title content, not just plain strings. This exercises the Rust-side
+    # parse_titles function's ability to parse Line objects.
+    with_test_terminal(30, 3) do
+      styled_title = RatatuiRuby::Text::Line.new(
+        spans: [
+          RatatuiRuby::Text::Span.new(content: "emate", style: RatatuiRuby::Style::Style.new(fg: :yellow)),
+        ]
+      )
+      b = RatatuiRuby::Widgets::Block.new(
+        borders: [:all],
+        titles: [
+          { content: "My App" },
+          { content: styled_title, alignment: :right },
+        ]
+      )
+      RatatuiRuby.draw { |f| f.render_widget(b, f.area) }
+      # The styled Line should render as text, not as "#<data RatatuiRuby::Text::Line...>"
+      assert_equal "┌My App─────────────────emate┐", buffer_content[0]
+      refute_includes buffer_content[0], "#<data"
+      refute_includes buffer_content[0], "RatatuiRuby"
+    end
+  end
 end

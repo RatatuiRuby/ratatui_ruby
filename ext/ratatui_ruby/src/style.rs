@@ -12,6 +12,8 @@ use ratatui::{
     widgets::{Block, BorderType, Borders, Padding},
 };
 
+use crate::text::parse_line;
+
 pub fn parse_color(color_str: &str) -> Option<Color> {
     // Try standard ratatui parsing first (named colors, indexed, etc.)
     if let Ok(color) = color_str.parse::<Color>() {
@@ -274,15 +276,22 @@ fn parse_titles(block_val: Value, mut block: Block<'_>) -> Result<Block<'_>, Err
                 let index = isize::try_from(i)
                     .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
                 let title_item: Value = titles_array.entry(index)?;
-                let mut content = String::new();
                 let mut alignment = Alignment::Left;
                 let mut is_bottom = false;
                 let mut style = Style::default();
+                let mut line: Option<Line<'static>> = None;
 
                 if let Some(hash) = magnus::RHash::from_value(title_item) {
                     if let Ok(v) = hash.lookup::<_, Value>(ruby.to_symbol("content")) {
                         if !v.is_nil() {
-                            content = v.funcall("to_s", ())?;
+                            // First, try to parse as a Line object (preserves styling)
+                            if let Ok(parsed_line) = parse_line(v) {
+                                line = Some(parsed_line);
+                            } else {
+                                // Fallback to string
+                                let content: String = v.funcall("to_s", ())?;
+                                line = Some(Line::from(content));
+                            }
                         }
                     }
                     if let Ok(v) = hash.lookup::<_, Value>(ruby.to_symbol("alignment")) {
@@ -307,15 +316,22 @@ fn parse_titles(block_val: Value, mut block: Block<'_>) -> Result<Block<'_>, Err
                         }
                     }
                 } else {
-                    content = title_item.funcall("to_s", ())?;
+                    let content: String = title_item.funcall("to_s", ())?;
+                    line = Some(Line::from(content));
                 }
 
-                let line = Line::from(content).alignment(alignment).style(style);
-                block = if is_bottom {
-                    block.title_bottom(line)
-                } else {
-                    block.title_top(line)
-                };
+                if let Some(mut l) = line {
+                    l = l.alignment(alignment);
+                    // Only apply style if the line doesn't already have styled spans
+                    if style != Style::default() {
+                        l = l.style(style);
+                    }
+                    block = if is_bottom {
+                        block.title_bottom(l)
+                    } else {
+                        block.title_top(l)
+                    };
+                }
             }
         }
     }

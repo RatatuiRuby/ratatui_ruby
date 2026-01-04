@@ -16,6 +16,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+- **Block Title Styling**: `Block` title `content` now correctly renders `Text::Line` objects with styled spans. Previously, passing a styled `Line` as title content displayed its Ruby inspect representation (e.g., `#<data RatatuiRuby::Text::Line...>`) instead of the styled text.
+
 ### Removed
 
 ## [0.7.0] - 2026-01-03
