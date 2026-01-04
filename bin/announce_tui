@@ -272,10 +272,7 @@ class WikiRepo
   end
 
   def commit!(message)
-    if CLIFlags.dry_run
-      warn "[DRY RUN] Would commit: #{@relative_path}"
-      return
-    end
+    return if CLIFlags.dry_run
 
     Dir.chdir(@wiki_dir) do
       system("git", "add", @relative_path)
@@ -285,10 +282,7 @@ class WikiRepo
   end
 
   def push!
-    if CLIFlags.dry_run
-      warn "[DRY RUN] Would push wiki"
-      return
-    end
+    return if CLIFlags.dry_run
 
     Dir.chdir(@wiki_dir) do
       system("git", "push")
@@ -312,13 +306,7 @@ class Emailer
   end
 
   def send_via_emate!
-    if CLIFlags.dry_run
-      warn "[DRY RUN] Would send via emate"
-      warn "To: #{@to_address}"
-      warn "Subject: #{@subject}"
-      warn "Body:\n\n#{@body}"
-      return true
-    end
+    return true if CLIFlags.dry_run
 
     return false unless emate_available?
 

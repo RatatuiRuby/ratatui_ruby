@@ -5,32 +5,46 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Async Operations in TUI Applications
 
-When building TUI applications that need to perform long-running operations (network requests, git commands, API calls), you need async patterns that work with raw terminal mode.
+TUI applications fetch data from APIs, run shell commands, and query databases. These operations take time. Blocking the render loop freezes the interface.
+
+You want responsive UIs. The checklist shows "Loading..." while data arrives. The interface never hangs.
+
+This guide explains async patterns that work with raw terminal mode.
 
 ## The Raw Terminal Problem
 
-When `RatatuiRuby.run` enters raw terminal mode:
+`RatatuiRuby.run` enters raw terminal mode:
 
-- **stdin** is reconfigured for character-by-character input
-- **stdout** is used for terminal escape sequences
-- **External commands** that expect normal terminal I/O may hang or fail
+- stdin reconfigures for character-by-character input
+- stdout carries terminal escape sequences
+- External commands expecting normal terminal I/O fail
 
 ### What Breaks
 
 ```ruby
-# These will NOT work correctly inside a Thread during raw mode:
+# These fail inside a Thread during raw mode:
 `git ls-remote --tags origin`           # Returns empty or hangs
-IO.popen(["git", "ls-remote", ...])     # Same issue
-Open3.capture2("git", "ls-remote", ...) # Same issue
+IO.popen(["git", "ls-remote", ...])     # Same
+Open3.capture2("git", "ls-remote", ...) # Same
 ```
 
-The commands work fine when called directly (synchronously before entering raw mode), but fail when called from a background Thread.
+The commands succeed synchronously. They fail asynchronously. The difference: thread context inherits the parent's raw terminal state.
+
+### Why Threads Fail
+
+Ruby's GIL releases during I/O. But:
+
+1. Subprocesses inherit the parent's terminal state.
+2. Git/SSH try to read credentials from raw-mode stdin.
+3. The read blocks forever. Or returns empty.
+
+`GIT_TERMINAL_PROMPT=0` prevents prompts. Auth fails silently instead of hanging.
 
 ## Solutions
 
-### 1. Pre-Check Before Raw Mode (Simple)
+### Pre-Check Before Raw Mode
 
-Run slow operations synchronously before entering the TUI:
+Run slow operations before entering the TUI:
 
 ```ruby
 def initialize
@@ -38,26 +52,26 @@ def initialize
 end
 ```
 
-**Downside**: Delays TUI startup.
+**Trade-off**: Delays startup.
 
-### 2. Process.spawn with File Output (Recommended)
+### Process.spawn with File Output
 
-Spawn a separate process before entering raw mode. The process runs independently and writes results to a temp file:
+Spawn a separate process before entering raw mode. Write results to a temp file. Poll for completion:
 
 ```ruby
 class AsyncChecker
   CACHE_FILE = File.join(Dir.tmpdir, "my_check_result.txt")
-  
+
   def initialize
     @loading = true
     @result = nil
     @pid = Process.spawn("my-command > #{CACHE_FILE}")
   end
-  
+
   def loading?
     return false unless @loading
-    
-    # Non-blocking poll for process completion
+
+    # Non-blocking poll
     _pid, status = Process.waitpid2(@pid, Process::WNOHANG)
     if status
       @result = File.read(CACHE_FILE).strip
@@ -69,38 +83,31 @@ end
 ```
 
 **Key points**:
-- `Process.spawn` returns immediately, command runs in background
-- `Process::WNOHANG` polls without blocking
-- Results communicated via temp file (avoids pipe issues with raw mode)
 
-### 3. Thread for CPU-Bound Work (Limited)
+- `Process.spawn` returns immediately.
+- The command runs in a separate process, not a thread.
+- Results pass through a temp file. Avoids pipe/terminal issues.
+- `Process::WNOHANG` polls without blocking.
 
-Ruby threads work fine for CPU-bound operations that don't need external I/O:
+### Thread for CPU-Bound Work
+
+Ruby threads work for pure computation:
 
 ```ruby
-Thread.new { @result = expensive_computation }
+Thread.new { @result = expensive_calculation }
 ```
 
-But avoid threads for shell commands during raw mode.
-
-## Why Threads Fail with Shell Commands
-
-Ruby's GIL (Global Interpreter Lock) releases during I/O, but:
-
-1. The subprocess inherits the parent's terminal state
-2. Git/SSH may try to read from the raw-mode terminal for auth prompts
-3. This causes hangs or empty output
-
-`GIT_TERMINAL_PROMPT=0` prevents prompts but causes authentication failures.
+Avoid threads for shell commands.
 
 ## Ractors
 
-Ractors provide true parallelism but have their own complexity:
-- Can't share mutable state
-- Limited to Ractor-safe values
-- May still have terminal I/O issues
+Ractors provide true parallelism. Trade-offs:
 
-For TUI applications, `Process.spawn` is usually the right choice.
+- No mutable shared state.
+- Limited to Ractor-safe values.
+- Terminal I/O issues remain.
+
+For TUI async, `Process.spawn` solves the problem cleanly.
 
 ## Pattern Summary
 
@@ -109,4 +116,45 @@ For TUI applications, `Process.spawn` is usually the right choice.
 | Sync before TUI | Fast checks (<100ms) | Yes |
 | Process.spawn + file | Shell commands, network | Yes |
 | Thread | CPU-bound Ruby code | Yes |
-| Thread + shell | ❌ Shell commands | **No** |
+| Thread + shell | Shell commands | **No** |
+
+## Real Example: Git Tag Check
+
+Check if a tag exists on the remote:
+
+```ruby
+class GitRepo
+  CACHE_FILE = File.join(Dir.tmpdir, "git_tag_pushed.txt")
+
+  def initialize
+    @version = `git describe --tags --abbrev=0`.strip
+    @tag_pushed = nil
+    @loading = true
+    @pid = Process.spawn(
+      "git ls-remote --tags origin | grep -q '#{@version}' " \
+      "&& echo true > #{CACHE_FILE} || echo false > #{CACHE_FILE}"
+    )
+  end
+
+  def loading?
+    return false unless @loading
+
+    _pid, status = Process.waitpid2(@pid, Process::WNOHANG)
+    if status
+      @tag_pushed = File.read(CACHE_FILE).strip == "true"
+      @loading = false
+    end
+    @loading
+  end
+
+  def refresh
+    # Sync version for manual refresh (user presses 'r')
+    @loading = true
+    remote_tags = `git ls-remote --tags origin`.strip
+    @tag_pushed = remote_tags.include?(@version)
+    @loading = false
+  end
+end
+```
+
+The TUI starts instantly. The tag check runs in the background. The checklist updates when the result arrives.
