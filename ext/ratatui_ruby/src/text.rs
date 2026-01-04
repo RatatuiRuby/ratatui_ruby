@@ -131,6 +131,8 @@ pub fn parse_line(value: Value) -> Result<Line<'static>, Error> {
 
     // Extract spans from the Ruby Line
     let spans_val: Value = value.funcall("spans", ())?;
+    // v0.7.0: Extract style from the Ruby Line
+    let style_val: Value = value.funcall("style", ())?;
 
     if spans_val.is_nil() {
         return Ok(Line::from(""));
@@ -164,11 +166,18 @@ pub fn parse_line(value: Value) -> Result<Line<'static>, Error> {
         }
     }
 
-    if spans.is_empty() {
-        Ok(Line::from(""))
+    let mut line = if spans.is_empty() {
+        Line::from("")
     } else {
-        Ok(Line::from(spans))
+        Line::from(spans)
+    };
+
+    // v0.7.0: Apply line-level style if present
+    if !style_val.is_nil() {
+        line = line.style(parse_style(style_val)?);
     }
+
+    Ok(line)
 }
 
 #[cfg(test)]
