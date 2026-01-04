@@ -65,7 +65,10 @@ namespace :sourcehut do
     # This renders a commit SHA that can be pushed to a branch head
     commit_sha = `git rev-parse #{tag_name}^{}`.strip
 
-    # Push the commit to stable branch
+    # Update local stable branch to match
+    sh "git branch -f stable #{commit_sha}"
+
+    # Push the commit to remote stable branch
     # This creates 'stable' if it doesn't exist, or fast-forwards it.
     sh "git push origin #{commit_sha}:stable"
   end
