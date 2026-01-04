@@ -316,34 +316,17 @@ fn parse_cell(cell_val: Value) -> Result<Cell<'static>, Error> {
     } else if class_name == "RatatuiRuby::Style::Style" {
         Ok(Cell::from("").style(parse_style(cell_val)?))
     } else if class_name == "RatatuiRuby::Widgets::Cell" {
-        let symbol: String = cell_val.funcall("char", ())?;
-        let fg_val: Value = cell_val.funcall("fg", ())?;
-        let bg_val: Value = cell_val.funcall("bg", ())?;
-        let modifiers_val: Value = cell_val.funcall("modifiers", ())?;
+        // Widgets::Cell has content (String/Span/Line) and optional style
+        let content_val: Value = cell_val.funcall("content", ())?;
+        let style_val: Value = cell_val.funcall("style", ())?;
 
-        let mut style = ratatui::style::Style::default();
-        if !fg_val.is_nil() {
-            if let Some(color) = crate::style::parse_color_value(fg_val)? {
-                style = style.fg(color);
-            }
+        // Recursively parse the content (could be String, Span, or Line)
+        let mut cell = parse_cell(content_val)?;
+
+        if !style_val.is_nil() {
+            cell = cell.style(parse_style(style_val)?);
         }
-        if !bg_val.is_nil() {
-            if let Some(color) = crate::style::parse_color_value(bg_val)? {
-                style = style.bg(color);
-            }
-        }
-        if let Some(mods_array) = magnus::RArray::from_value(modifiers_val) {
-            let ruby = magnus::Ruby::get().unwrap();
-            for i in 0..mods_array.len() {
-                let index = isize::try_from(i)
-                    .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
-                let mod_str: String = mods_array.entry::<String>(index)?;
-                if let Some(modifier) = crate::style::parse_modifier_str(&mod_str) {
-                    style = style.add_modifier(modifier);
-                }
-            }
-        }
-        Ok(Cell::from(symbol).style(style))
+        Ok(cell)
     } else {
         let cell_str: String = cell_val.funcall("to_s", ())?;
         Ok(Cell::from(cell_str))
