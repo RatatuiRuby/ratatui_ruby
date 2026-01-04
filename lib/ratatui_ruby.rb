@@ -22,6 +22,9 @@ require_relative "ratatui_ruby/list_state"
 require_relative "ratatui_ruby/table_state"
 require_relative "ratatui_ruby/scrollbar_state"
 
+# TUI facade (for external instantiation and caching)
+require_relative "ratatui_ruby/tui"
+
 begin
   require "ratatui_ruby/ratatui_ruby"
 rescue LoadError
@@ -218,7 +221,6 @@ module RatatuiRuby
   #     sleep 1
   #   end
   def self.run(focus_events: true, bracketed_paste: true)
-    require_relative "ratatui_ruby/tui"
     init_terminal(focus_events:, bracketed_paste:)
     yield TUI.new
   ensure

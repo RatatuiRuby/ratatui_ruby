@@ -4,10 +4,21 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 require "test_helper"
-require "ratatui_ruby/tui"
 
 class TestTUI < Minitest::Test
   include RatatuiRuby::TestHelper
+
+  def test_can_be_outside_run_for_widget_caching
+    # App developers cache TUI instances to pre-build layouts and constraint definitions
+    # outside the run loop for performance. This must work.
+    assert defined?(RatatuiRuby::TUI), "TUI should be defined after requiring ratatui_ruby"
+    tui = RatatuiRuby::TUI.new
+    assert_instance_of RatatuiRuby::TUI, tui
+    paragraph = tui.paragraph(text: "Hello World")
+    assert_instance_of RatatuiRuby::Widgets::Paragraph, paragraph
+    assert_equal "Hello World", paragraph.text
+  end
+
   def test_session_delegation
     with_test_terminal(20, 1) do
       RatatuiRuby.run do |tui|
