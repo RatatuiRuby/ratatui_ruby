@@ -84,13 +84,24 @@ class GitRepo
   def initialize
     @version = nil
     @tag_pushed = nil
-    refresh
+    @loading = true
+    refresh_async
+  end
+
+  def loading?
+    @loading
   end
 
   def refresh
+    @loading = true
     @version = `git describe --tags --abbrev=0 2>/dev/null`.strip
     @version = nil if @version.empty?
     @tag_pushed = check_tag_pushed
+    @loading = false
+  end
+
+  def refresh_async
+    Thread.new { refresh }
   end
 
   private def check_tag_pushed
@@ -108,12 +119,23 @@ class SourceHut
   def initialize(max_builds: 4)
     @max_builds = max_builds
     @builds = []
-    refresh
+    @loading = true
+    refresh_async
+  end
+
+  def loading?
+    @loading
   end
 
   def refresh
+    @loading = true
     output = `hut builds list 2>/dev/null | head -#{@max_builds * 10}`.strip
     @builds = parse_builds(output)
+    @loading = false
+  end
+
+  def refresh_async
+    Thread.new { refresh }
   end
 
   def all_passed?
@@ -148,13 +170,24 @@ class RubyGemsInfo
   def initialize(gem_name)
     @gem_name = gem_name
     @published_version = nil
-    refresh
+    @loading = true
+    refresh_async
+  end
+
+  def loading?
+    @loading
   end
 
   def refresh
+    @loading = true
     output = `gem info #{@gem_name} -r 2>/dev/null`.strip
     match = output.match(/#{@gem_name} \(([^)]+)\)/)
     @published_version = match[1] if match
+    @loading = false
+  end
+
+  def refresh_async
+    Thread.new { refresh }
   end
 
   def published?(version)
@@ -171,10 +204,16 @@ class WikiRepo
     @relative_path = announcement_path.sub("#{wiki_dir}/", "")
     @committed = false
     @pushed = false
-    refresh
+    @loading = true
+    refresh_async
+  end
+
+  def loading?
+    @loading
   end
 
   def refresh
+    @loading = true
     Dir.chdir(@wiki_dir) do
       # Check if committed (not in diff or untracked)
       diff_clean = system("git diff --quiet #{@relative_path} 2>/dev/null")
@@ -190,6 +229,11 @@ class WikiRepo
         @pushed = false
       end
     end
+    @loading = false
+  end
+
+  def refresh_async
+    Thread.new { refresh }
   end
 
   def commit!(message)
@@ -363,22 +407,57 @@ class AnnounceTUI
 
   private def checklist_items
     # Build checklist from domain objects (reads cached data only)
-    builds_status = if @sourcehut.any_running?
-      :pending
-    elsif @sourcehut.all_passed?
-      :ok
+    # Each item shows loading if its domain object is still loading
+
+    # Git repo checks
+    tag_status = if @git_repo.loading?
+      { value: "Loading...", status: :loading }
     else
-      :error
+      { value: @git_repo.tag_pushed ? "Yes" : "No", status: @git_repo.tag_pushed ? :ok : :error }
     end
-    builds_value = @sourcehut.builds.map { |b| "##{b[:id]} #{b[:status]}" }.join(", ")
+
+    # SourceHut builds
+    builds_item = if @sourcehut.loading?
+      { value: "Loading...", status: :loading }
+    else
+      builds_status = if @sourcehut.any_running?
+        :pending
+      elsif @sourcehut.all_passed?
+        :ok
+      else
+        :error
+      end
+      builds_value = @sourcehut.builds.map { |b| "##{b[:id]} #{b[:status]}" }.join(", ")
+      { value: builds_value.empty? ? "None" : builds_value, status: builds_status }
+    end
+
+    # RubyGems
+    gem_item = if @rubygems.loading?
+      { value: "Loading...", status: :loading }
+    else
+      { value: @rubygems.published_version || "Unknown", status: @rubygems.published?(@version) ? :ok : :pending }
+    end
+
+    # Wiki repo
+    wiki_committed = if @wiki_repo.loading?
+      { value: "Loading...", status: :loading }
+    else
+      { value: @wiki_repo.committed ? "Yes" : "No", status: @wiki_repo.committed ? :ok : :pending }
+    end
+
+    wiki_pushed = if @wiki_repo.loading?
+      { value: "Loading...", status: :loading }
+    else
+      { value: @wiki_repo.pushed ? "Yes" : "No", status: @wiki_repo.pushed ? :ok : :pending }
+    end
 
     [
-      { label: "Latest tag", value: @version, status: :ok },
-      { label: "Tag pushed", value: @git_repo.tag_pushed ? "Yes" : "No", status: @git_repo.tag_pushed ? :ok : :error },
-      { label: "Builds (#{@sourcehut.builds.size})", value: builds_value.empty? ? "None" : builds_value, status: builds_status },
-      { label: "Gem published", value: @rubygems.published_version || "Unknown", status: @rubygems.published?(@version) ? :ok : :pending },
-      { label: "Wiki committed", value: @wiki_repo.committed ? "Yes" : "No", status: @wiki_repo.committed ? :ok : :pending },
-      { label: "Wiki pushed", value: @wiki_repo.pushed ? "Yes" : "No", status: @wiki_repo.pushed ? :ok : :pending },
+      { label: "Latest tag", value: @version || "None", status: @version ? :ok : :error },
+      { label: "Tag pushed", **tag_status },
+      { label: "Builds (#{@sourcehut.builds.size})", **builds_item },
+      { label: "Gem published", **gem_item },
+      { label: "Wiki committed", **wiki_committed },
+      { label: "Wiki pushed", **wiki_pushed },
     ]
   end
 
@@ -387,12 +466,14 @@ class AnnounceTUI
            when :ok then "✓"
            when :error then "✗"
            when :pending then "●"
+           when :loading then "⏳"
            else "?"
     end
     style = case item[:status]
             when :ok then @ok_style
             when :error then @error_style
             when :pending then @pending_style
+            when :loading then @pending_style
     end
 
     @tui.text_line(spans: [
