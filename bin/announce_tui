@@ -27,6 +27,17 @@ $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 require "ratatui_ruby"
 require "uri"
 require "optparse"
+require "fileutils"
+require "tmpdir"
+
+# Global CLI flags singleton
+module CLIFlags
+  class << self
+    attr_accessor :dry_run, :wiki_dir, :builds, :version
+  end
+  self.dry_run = false
+  self.builds = 4
+end
 
 # Domain object for reading announcement files
 class Announcement
@@ -79,16 +90,33 @@ end
 
 # Domain object for main git repo
 class GitRepo
+  CACHE_FILE = File.join(Dir.tmpdir, "ratatui_git_tag_pushed.txt")
   attr_reader :version, :tag_pushed
 
   def initialize
-    @version = nil
+    @version = `git describe --tags --abbrev=0 2>/dev/null`.strip
+    @version = nil if @version.empty?
     @tag_pushed = nil
     @loading = true
-    refresh_async
+    @check_pid = nil
+
+    # Spawn background process BEFORE TUI enters raw mode
+    start_background_check if @version
   end
 
   def loading?
+    return false unless @loading
+
+    # Poll for background process completion
+    if @check_pid
+      _pid, status = Process.waitpid2(@check_pid, Process::WNOHANG)
+      if status
+        # Process completed, read result
+        @tag_pushed = File.exist?(CACHE_FILE) && File.read(CACHE_FILE).strip == "true"
+        @loading = false
+        @check_pid = nil
+      end
+    end
     @loading
   end
 
@@ -96,17 +124,24 @@ class GitRepo
     @loading = true
     @version = `git describe --tags --abbrev=0 2>/dev/null`.strip
     @version = nil if @version.empty?
-    @tag_pushed = check_tag_pushed
+    @tag_pushed = check_tag_pushed_sync
     @loading = false
   end
 
   def refresh_async
-    Thread.new { refresh }
+    @loading = true
+    start_background_check if @version
   end
 
-  private def check_tag_pushed
-    return false unless @version
+  private def start_background_check
+    # Spawn process that runs git and writes result to temp file
+    @check_pid = Process.spawn(
+      "git ls-remote --tags origin 2>/dev/null | grep -q '#{@version}' && echo true > #{CACHE_FILE} || echo false > #{CACHE_FILE}"
+    )
+  end
 
+  private def check_tag_pushed_sync
+    return false unless @version
     remote_tags = `git ls-remote --tags origin 2>/dev/null`.strip
     remote_tags.include?(@version)
   end
@@ -237,6 +272,11 @@ class WikiRepo
   end
 
   def commit!(message)
+    if CLIFlags.dry_run
+      warn "[DRY RUN] Would commit: #{@relative_path}"
+      return
+    end
+
     Dir.chdir(@wiki_dir) do
       system("git", "add", @relative_path)
       system("git", "commit", "-m", message)
@@ -245,6 +285,11 @@ class WikiRepo
   end
 
   def push!
+    if CLIFlags.dry_run
+      warn "[DRY RUN] Would push wiki"
+      return
+    end
+
     Dir.chdir(@wiki_dir) do
       system("git", "push")
     end
@@ -267,6 +312,14 @@ class Emailer
   end
 
   def send_via_emate!
+    if CLIFlags.dry_run
+      warn "[DRY RUN] Would send via emate"
+      warn "To: #{@to_address}"
+      warn "Subject: #{@subject}"
+      warn "Body:\n\n#{@body}"
+      return true
+    end
+
     return false unless emate_available?
 
     IO.popen([
@@ -296,21 +349,19 @@ class AnnounceTUI
   TABS = ["Preview Email", "Preview Commit", "Announce"].freeze
   TO_ADDRESS = "~kerrick/ratatui_ruby-announce@lists.sr.ht"
 
-  def initialize(options)
-    @options = options
+  def initialize
     @current_tab = 0
     @scroll_y = 0
     @scroll_x = 0
 
     # Initialize domain objects (all caching happens here)
     @git_repo = GitRepo.new
-    @version = options[:version] || @git_repo.version
-    @wiki_dir = options[:wiki_dir]
+    @version = CLIFlags.version || @git_repo.version
 
-    @announcement = Announcement.new(@wiki_dir, @version)
-    @sourcehut = SourceHut.new(max_builds: options[:builds])
+    @announcement = Announcement.new(CLIFlags.wiki_dir, @version)
+    @sourcehut = SourceHut.new(max_builds: CLIFlags.builds)
     @rubygems = RubyGemsInfo.new("ratatui_ruby")
-    @wiki_repo = WikiRepo.new(@wiki_dir, @announcement.path)
+    @wiki_repo = WikiRepo.new(CLIFlags.wiki_dir, @announcement.path)
     @emailer = Emailer.new(TO_ADDRESS, @announcement.subject, @announcement.body)
   end
 
@@ -336,7 +387,7 @@ class AnnounceTUI
   private def render
     @tui.draw do |frame|
       # Layout: tabs at top, content in middle, controls at bottom
-      tabs_area, content_area, controls_area = @tui.layout_split(
+      @tabs_area, content_area, @controls_area = @tui.layout_split(
         frame.area,
         direction: :vertical,
         constraints: [
@@ -346,9 +397,9 @@ class AnnounceTUI
         ],
       )
 
-      render_tabs(frame, tabs_area)
+      render_tabs(frame, @tabs_area)
       render_content(frame, content_area)
-      render_controls(frame, controls_area)
+      render_controls(frame, @controls_area)
     end
   end
 
@@ -410,10 +461,12 @@ class AnnounceTUI
     # Each item shows loading if its domain object is still loading
 
     # Git repo checks
-    tag_status = if @git_repo.loading?
+    tag_status = if @git_repo.loading? || @git_repo.tag_pushed.nil?
       { value: "Loading...", status: :loading }
+    elsif @git_repo.tag_pushed
+      { value: "Yes", status: :ok }
     else
-      { value: @git_repo.tag_pushed ? "Yes" : "No", status: @git_repo.tag_pushed ? :ok : :error }
+      { value: "No", status: :error }
     end
 
     # SourceHut builds
@@ -466,14 +519,13 @@ class AnnounceTUI
            when :ok then "✓"
            when :error then "✗"
            when :pending then "●"
-           when :loading then "⏳"
+           when :loading then "…"
            else "?"
     end
     style = case item[:status]
             when :ok then @ok_style
             when :error then @error_style
-            when :pending then @pending_style
-            when :loading then @pending_style
+            when :pending, :loading then @pending_style
     end
 
     @tui.text_line(spans: [
@@ -548,8 +600,72 @@ class AnnounceTUI
       send_via_mailto
     in { type: :key, code: "r" } if @current_tab == 2
       refresh_all
+    in { type: :mouse, kind: "scroll_down" }
+      @scroll_y += 3
+    in { type: :mouse, kind: "scroll_up" }
+      @scroll_y = [@scroll_y - 3, 0].max
+    in { type: :mouse, kind: "down", x:, y: }
+      handle_click(x, y)
     else
       # Ignore other events
+    end
+  end
+
+  private def handle_click(col, row)
+    # Check if click is in tabs area
+    if @tabs_area && in_area?(col, row, @tabs_area)
+      handle_tab_click(col)
+    # Check if click is in controls area
+    elsif @controls_area && in_area?(col, row, @controls_area)
+      handle_control_click(col, row)
+    end
+  end
+
+  private def in_area?(col, row, area)
+    col >= area.x && col < area.x + area.width &&
+      row >= area.y && row < area.y + area.height
+  end
+
+  private def handle_tab_click(col)
+    # Calculate tab positions based on actual title widths
+    # Layout: [border] [Tab1] [ | ] [Tab2] [ | ] [Tab3] [border]
+    divider = " | "
+    x = @tabs_area.x + 1 # Skip left border
+
+    TABS.each_with_index do |title, i|
+      tab_width = title.length
+      if col >= x && col < x + tab_width
+        if i != @current_tab
+          @current_tab = i
+          reset_scroll
+        end
+        break
+      end
+      x += tab_width + divider.length
+    end
+  end
+
+  private def handle_control_click(col, row)
+    return unless @current_tab == 2 # Only handle clicks on Announce tab
+
+    # Estimate control positions based on the control layout
+    # Row 1: ←/→ Tab, c Commit, s Send emate, m Send mailto
+    # Row 2: r Refresh, q Quit
+    relative_row = row - @controls_area.y - 1 # -1 for border
+
+    case relative_row
+    when 0
+      # First row of controls
+      if col < 20 then nil # Tab navigation - ignore
+      elsif col < 40 then commit_and_push_wiki
+      elsif col < 60 then send_via_emate
+      else send_via_mailto
+      end
+    when 1
+      # Second row
+      if col < 15 then refresh_all
+      elsif col < 25 then :quit
+      end
     end
   end
 
@@ -580,35 +696,38 @@ class AnnounceTUI
   end
 end
 
-# Parse CLI options
-script_dir = File.dirname(File.expand_path(__FILE__))
-options = {
-  wiki_dir: File.join(script_dir, "..", "..", "ratatui_ruby-wiki"),
-  builds: 4,
-}
+if __FILE__ == $PROGRAM_NAME
+  # Parse CLI options
+  script_dir = File.dirname(File.expand_path(__FILE__))
 
-OptionParser.new do |opts|
-  opts.banner = "Usage: bin/announce_tui [OPTIONS] [VERSION]"
+  OptionParser.new do |opts|
+    opts.banner = "Usage: bin/announce_tui [OPTIONS] [VERSION]"
 
-  opts.on("-w", "--wiki-dir PATH", "Path to wiki repo") do |path|
-    options[:wiki_dir] = File.expand_path(path)
+    opts.on("-w", "--wiki-dir PATH", "Path to wiki repo") do |path|
+      CLIFlags.wiki_dir = File.expand_path(path)
+    end
+
+    opts.on("-n", "--builds N", Integer, "Number of builds to show") do |n|
+      CLIFlags.builds = n
+    end
+
+    opts.on("-d", "--dry-run", "Stub dangerous actions (emate, git commit/push)") do
+      CLIFlags.dry_run = true
+    end
+
+    opts.on("-h", "--help", "Show this help") do
+      puts opts
+      exit
+    end
+  end.parse!
+
+  # Set defaults and determine version
+  CLIFlags.wiki_dir ||= File.join(script_dir, "..", "..", "ratatui_ruby-wiki")
+  CLIFlags.version = ARGV[0] || `git describe --tags --abbrev=0 2>/dev/null`.strip
+  if CLIFlags.version.empty?
+    warn "Error: No git tags found and no version specified."
+    exit 1
   end
 
-  opts.on("-n", "--builds N", Integer, "Number of builds to show") do |n|
-    options[:builds] = n
-  end
-
-  opts.on("-h", "--help", "Show this help") do
-    puts opts
-    exit
-  end
-end.parse!
-
-# Determine version
-options[:version] = ARGV[0] || `git describe --tags --abbrev=0 2>/dev/null`.strip
-if options[:version].empty?
-  warn "Error: No git tags found and no version specified."
-  exit 1
+  AnnounceTUI.new.run
 end
-
-AnnounceTUI.new(options).run
