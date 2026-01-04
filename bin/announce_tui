@@ -358,8 +358,8 @@ class AnnounceTUI
 
   def initialize
     @current_tab = 0
-    @scroll_y = 0
-    @scroll_x = 0
+    @scroll_positions = Hash.new { |h, k| h[k] = [0, 0] } # [scroll_y, scroll_x] per tab
+    @show_help = false
 
     # Initialize domain objects (all caching happens here)
     @git_repo = GitRepo.new
@@ -418,6 +418,9 @@ class AnnounceTUI
       render_content(frame, content_area)
       render_controls(frame, @controls_area)
       render_cli_flags(frame, flags_area)
+
+      # Overlay on top
+      render_help_overlay(frame) if @show_help
     end
   end
 
@@ -447,21 +450,41 @@ class AnnounceTUI
       #{@announcement.body}
     EMAIL
 
+    lines = email_text.lines
+    content_length = lines.size
+
     paragraph = @tui.paragraph(
       text: email_text,
-      scroll: [@scroll_y, @scroll_x],
+      scroll: [scroll_y, scroll_x],
       block: @tui.block(title: "Email Preview", borders: [:all]),
     )
     frame.render_widget(paragraph, area)
+
+    scrollbar = @tui.scrollbar(
+      content_length:,
+      position: scroll_y,
+      orientation: :vertical_right,
+    )
+    frame.render_widget(scrollbar, area)
   end
 
   private def render_commit_preview(frame, area)
+    content = @announcement.commit_message
+    content_length = content.lines.size
+
     paragraph = @tui.paragraph(
-      text: @announcement.commit_message,
-      scroll: [@scroll_y, @scroll_x],
+      text: content,
+      scroll: [scroll_y, scroll_x],
       block: @tui.block(title: "Commit Preview", borders: [:all]),
     )
     frame.render_widget(paragraph, area)
+
+    scrollbar = @tui.scrollbar(
+      content_length:,
+      position: scroll_y,
+      orientation: :vertical_right,
+    )
+    frame.render_widget(scrollbar, area)
   end
 
   private def render_checklist(frame, area)
@@ -558,13 +581,13 @@ class AnnounceTUI
       # Announce tab controls
       [
         control_line([
-          ["←/→", "Tab"],
           ["c", "Commit & Push Wiki"],
           ["s", "Send (emate)"],
           ["m", "Send (mailto)"],
         ]),
         control_line([
           ["r", "Refresh"],
+          ["?", "Help"],
           ["q", "Quit"],
         ]),
       ]
@@ -572,8 +595,7 @@ class AnnounceTUI
       # Preview tab controls
       [
         control_line([
-          ["←/→", "Tab"],
-          ["↑/↓", "Scroll"],
+          ["?", "Help"],
           ["q", "Quit"],
         ]),
       ]
@@ -594,6 +616,43 @@ class AnnounceTUI
       ]
     end
     @tui.text_line(spans:)
+  end
+
+  private def render_help_overlay(frame)
+    # Clear the area first
+    frame.render_widget(@tui.clear, frame.area)
+
+    help_text = <<~HELP
+      Navigation
+        ←/→ or h/l   Switch tabs
+        [/] or Tab   Switch tabs (alternate)
+        ↑/↓ or j/k   Scroll one line
+        PgUp/PgDn    Scroll 10 lines
+        Home/End     Scroll to top/bottom
+        Mouse wheel  Scroll 3 lines
+
+      Actions (Announce tab only)
+        c            Commit & Push Wiki
+        s            Send via emate
+        m            Send via mailto
+        r            Refresh all data
+
+      General
+        ?            Toggle this help
+        q or Ctrl+C  Quit
+    HELP
+
+    content = @tui.paragraph(
+      text: help_text,
+      block: @tui.block(title: "Help (press Esc to close)", borders: [:all]),
+    )
+
+    center_widget = @tui.center(
+      child: content,
+      width_percent: 80,
+      height_percent: 80,
+    )
+    frame.render_widget(center_widget, frame.area)
   end
 
   private def render_cli_flags(frame, area)
@@ -618,19 +677,42 @@ class AnnounceTUI
   end
 
   private def handle_input
-    case @tui.poll_event
+    event = @tui.poll_event
+
+    # When help overlay is open, only ? closes it (but q/Ctrl+C still quit)
+    if @show_help
+      case event
+      in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
+        return :quit
+      in { type: :key, code: "?" } | { type: :key, code: "esc" }
+        @show_help = false
+      else
+        # Ignore all other input
+      end
+      return
+    end
+
+    case event
     in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit
-    in { type: :key, code: "right" }
+    in { type: :key, code: "right" } | { type: :key, code: "l" } | { type: :key, code: "]" } | { type: :key, code: "tab", modifiers: ["ctrl"] }
       @current_tab = (@current_tab + 1) % TABS.size
-      reset_scroll
-    in { type: :key, code: "left" }
+    in { type: :key, code: "left" } | { type: :key, code: "h" } | { type: :key, code: "[" } | { type: :key, code: "backtab" }
       @current_tab = (@current_tab - 1) % TABS.size
-      reset_scroll
     in { type: :key, code: "up" } | { type: :key, code: "k" }
-      @scroll_y = [@scroll_y - 1, 0].max
+      self.scroll_y = [scroll_y - 1, 0].max
     in { type: :key, code: "down" } | { type: :key, code: "j" }
-      @scroll_y += 1
+      self.scroll_y += 1
+    in { type: :key, code: "home" }
+      self.scroll_y = 0
+    in { type: :key, code: "end" }
+      self.scroll_y = 9999 # Large value, actual content length limits display
+    in { type: :key, code: "page_up" }
+      self.scroll_y = [scroll_y - 10, 0].max
+    in { type: :key, code: "page_down" }
+      self.scroll_y += 10
+    in { type: :key, code: "?" }
+      @show_help = !@show_help
     in { type: :key, code: "c" } if @current_tab == 2
       commit_and_push_wiki
     in { type: :key, code: "s" } if @current_tab == 2
@@ -640,9 +722,9 @@ class AnnounceTUI
     in { type: :key, code: "r" } if @current_tab == 2
       refresh_all
     in { type: :mouse, kind: "scroll_down" }
-      @scroll_y += 3
+      self.scroll_y += 3
     in { type: :mouse, kind: "scroll_up" }
-      @scroll_y = [@scroll_y - 3, 0].max
+      self.scroll_y = [scroll_y - 3, 0].max
     in { type: :mouse, kind: "down", x:, y: }
       handle_click(x, y)
     else
@@ -674,10 +756,7 @@ class AnnounceTUI
     TABS.each_with_index do |title, i|
       tab_width = title.length
       if col >= x && col < x + tab_width
-        if i != @current_tab
-          @current_tab = i
-          reset_scroll
-        end
+        @current_tab = i if i != @current_tab
         break
       end
       x += tab_width + divider.length
@@ -708,9 +787,15 @@ class AnnounceTUI
     end
   end
 
-  private def reset_scroll
-    @scroll_y = 0
-    @scroll_x = 0
+  private def scroll_y = @scroll_positions[@current_tab][0]
+  private def scroll_x = @scroll_positions[@current_tab][1]
+
+  private def scroll_y=(val)
+    @scroll_positions[@current_tab][0] = val
+  end
+
+  private def scroll_x=(val)
+    @scroll_positions[@current_tab][1] = val
   end
 
   # Actions
