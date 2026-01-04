@@ -6,21 +6,26 @@
 
 ####
 # ======================================================================
-# announce - Open release announcement email in default mail client
+# announce - Send release announcement via MailMate or mailto
 # ======================================================================
 #
 # SYNOPSIS
 #     bin/announce [OPTIONS] [VERSION]
 #
 # DESCRIPTION
-#     Compose a release announcement email for the mailing list.
+#     Compose and send a release announcement email for the mailing list.
 #
 #     Finds the announcement file for the specified version (or latest
 #     tag if none specified), extracts the Subject line and body, and
-#     opens the default mail client via a mailto: URL.
+#     either sends via MailMate's emate CLI or opens the default mail
+#     client via mailto: URL.
+#
+#     Shows email preview and prompts: Y (send now), n (cancel), or
+#     open (draft in mail client). Falls back to mailto if emate is
+#     not installed.
 #
 #     Also stages and commits the announcement file to the wiki repo
-#     if not already committed, with an interactive push prompt.
+#     if not already committed, with an interactive push prompt [Y/n].
 #
 # OPTIONS
 #     -w, --wiki-dir PATH    Path to wiki repo (default: ../ratatui_ruby-wiki)
@@ -34,8 +39,13 @@
 #     <wiki-dir>/announcements/vX.Y.Z.md
 #                        Announcement files with Subject: header line.
 #
+# DEPENDENCIES
+#     emate              Optional. MailMate CLI for direct sending.
+#                        Located at /Applications/MailMate.app/Contents/
+#                        Resources/emate
+#
 # EXIT STATUS
-#     0                  Email client opened
+#     0                  Email sent or opened
 #     1                  Announcement file not found or error
 #
 # EXAMPLES
@@ -56,7 +66,7 @@ require "optparse"
 # Parse options
 script_dir = File.dirname(File.expand_path(__FILE__))
 options = {
-  wiki_dir: File.join(script_dir, "..", "..", "ratatui_ruby-wiki")
+  wiki_dir: File.join(script_dir, "..", "..", "ratatui_ruby-wiki"),
 }
 
 OptionParser.new do |opts|
@@ -117,7 +127,7 @@ Dir.chdir(wiki_dir) do
     Co-Authored-By: Claude Opus 4 <noreply@anthropic.com>
   MSG
 
-# Check if file needs to be committed
+  # Check if file needs to be committed
   diff_clean = system("git diff --quiet #{relative_path} 2>/dev/null")
   cached_clean = system("git diff --cached --quiet #{relative_path} 2>/dev/null")
   tracked = system("git ls-files --error-unmatch #{relative_path} >/dev/null 2>&1")
@@ -156,11 +166,58 @@ Dir.chdir(wiki_dir) do
   end
 end
 
-# Build mailto URL
-encoded_subject = URI.encode_www_form_component(subject)
-encoded_body = URI.encode_www_form_component(body)
-mailto = "mailto:~kerrick/ratatui_ruby-announce@lists.sr.ht?subject=#{encoded_subject}&body=#{encoded_body}"
+# Build email content
+to_address = "~kerrick/ratatui_ruby-announce@lists.sr.ht"
 
-# Open in default mail client
-puts "Opening mail client for: #{subject}"
-system("open", mailto)
+# Check if emate is available
+emate_path = "/Applications/MailMate.app/Contents/Resources/emate"
+emate_available = File.executable?(emate_path)
+
+# Display email preview
+puts
+puts "=" * 60
+puts "To: #{to_address}"
+puts "Subject: #{subject}"
+puts "=" * 60
+puts body
+puts "=" * 60
+
+if emate_available
+  print "Send now via MailMate? [Y/n/open] "
+  reply = $stdin.gets&.strip || ""
+
+  case reply.downcase
+  when "n", "no"
+    puts "Cancelled."
+  when "open", "o"
+    # Open draft in MailMate
+    encoded_subject = URI.encode_www_form_component(subject).gsub("+", "%20")
+    encoded_body = URI.encode_www_form_component(body).gsub("+", "%20")
+    mailto = "mailto:#{to_address}?subject=#{encoded_subject}&body=#{encoded_body}"
+    puts "Opening draft in mail client..."
+    system("open", mailto)
+  else
+    # Send via emate
+    puts "Sending via MailMate..."
+    IO.popen([
+      emate_path,
+      "mailto",
+      "--to",
+      to_address,
+      "--subject",
+      subject,
+      "--send-now",
+], "w") do |io|
+      io.write(body)
+    end
+    puts "✅ Email sent!"
+  end
+else
+  # Fallback to mailto
+  puts "(emate not found, opening mail client instead)"
+  encoded_subject = URI.encode_www_form_component(subject).gsub("+", "%20")
+  encoded_body = URI.encode_www_form_component(body).gsub("+", "%20")
+  mailto = "mailto:#{to_address}?subject=#{encoded_subject}&body=#{encoded_body}"
+  puts "Opening mail client for: #{subject}"
+  system("open", mailto)
+end
