@@ -1,0 +1,94 @@
+#!/bin/sh
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+####
+# ======================================================================
+# hbs - watch running SourceHut builds and announce completion
+# ======================================================================
+#
+# SYNOPSIS
+#     bin/hbs
+#
+# DESCRIPTION
+#     Watch currently running SourceHut builds and announce when they
+#     finish.
+#
+#     CI builds take time. Waiting and refreshing is tedious. This tool
+#     captures the IDs of all currently running builds, polls every 30
+#     seconds, and uses macOS `say` to announce the result. Hear "Builds
+#     have Passed" or "Builds have Failed" when complete.
+#
+#     Useful for hands-free monitoring while working on other things.
+#
+# EXIT STATUS
+#     0                  All watched builds passed
+#     1                  At least one build failed
+#
+# EXAMPLES
+#     Watch builds and get notified:
+#     bin/hbs
+#
+#     Run in background:
+#     bin/hbs &
+#
+# DEPENDENCIES
+#     hut                SourceHut CLI (https://sr.ht/~emersion/hut/)
+#     say                macOS text-to-speech
+#
+# ======================================================================
+
+# Check dependencies
+if ! command -v hut >/dev/null 2>&1; then
+  echo "Error: 'hut' not found. Install from https://sr.ht/~emersion/hut/" >&2
+  exit 1
+fi
+
+if ! command -v say >/dev/null 2>&1; then
+  echo "Error: 'say' not found. This script requires macOS." >&2
+  exit 1
+fi
+
+RUNNING_IDS=$(hut builds list | grep "RUNNING" | awk -F'#| ' '{print $2}')
+
+if [ -z "$RUNNING_IDS" ]; then
+  echo "No running builds found."
+  exit 0
+fi
+
+say "Watching Builds"
+echo "Watching builds: $RUNNING_IDS"
+echo "---"
+
+# Show initial status
+for id in $RUNNING_IDS; do
+  hut builds show "$id"
+done
+
+# Poll until none are running
+while hut builds list | grep -q "RUNNING"; do
+  sleep 30
+  echo "---"
+  for id in $RUNNING_IDS; do
+    hut builds show "$id"
+  done
+done
+
+# Check final status of the builds we were watching
+FAILED=0
+for id in $RUNNING_IDS; do
+  if hut builds show "$id" 2>&1 | grep -q "FAILED"; then
+    FAILED=1
+    break
+  fi
+done
+
+if [ $FAILED -eq 1 ]; then
+  say "Builds have Failed"
+  echo "❌ Builds have Failed"
+  exit 1
+else
+  say "Builds have Passed"
+  echo "✅ Builds have Passed"
+  exit 0
+fi
