@@ -1,11 +1,11 @@
 ┌Text Width Calculator─────────────────────────────────────────────────────────┐
 │Sample: Hello, World!                                                         │
 │                                                                              │
-│Display Width: 13 cells                                                       │
+│Display Width (text_width): 13 cells                                          │
+│Display Width (line.width): 13 cells                                          │
 │Character Count: 13                                                           │
 │                                                                              │
 │Simple English text                                                           │
-│                                                                              │
 │                                                                              │
 │                                                                              │
 │                                                                              │

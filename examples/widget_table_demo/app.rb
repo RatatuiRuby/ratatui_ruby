@@ -82,8 +82,23 @@ class WidgetTableDemo
   end
 
   private def render(frame)
-    # Create table rows from process data
-    rows = PROCESSES.map { |p| [p[:pid].to_s, p[:name], "#{p[:cpu]}%"] }
+    # v0.7.0: Create table rows using table_row and table_cell for per-cell styling
+    rows = PROCESSES.map do |p|
+      cpu_style = case p[:cpu]
+                  when 0...10 then @tui.style(fg: :green)
+                  when 10...30 then @tui.style(fg: :yellow)
+                  else @tui.style(fg: :red, modifiers: [:bold])
+      end
+      @tui.table_row(
+        cells: [
+          p[:pid].to_s,
+          p[:name],
+          @tui.table_cell(content: "#{p[:cpu]}%", style: cpu_style),
+        ],
+        # Apply alternating row backgrounds for readability
+        style: p[:pid].even? ? @tui.style(bg: :dark_gray) : nil
+      )
+    end
 
     # Define column widths
     widths = [

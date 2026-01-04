@@ -1,11 +1,11 @@
 ┌Text Width Calculator─────────────────────────────────────────────────────────┐
 │Sample: 你e好l世,界W                                                              │
 │                                                                              │
-│Display Width: 8 cells                                                        │
+│Display Width (text_width): 8 cells                                           │
+│Display Width (line.width): 8 cells                                           │
 │Character Count: 4                                                            │
 │                                                                              │
 │Chinese (full-width characters)                                               │
-│                                                                              │
 │                                                                              │
 │                                                                              │
 │                                                                              │

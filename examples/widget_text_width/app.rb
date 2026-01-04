@@ -49,11 +49,18 @@ class WidgetTextWidth
     sample = @text_samples[@selected_index]
     measured_width = @tui.text_width(sample[:text])
 
+    # v0.7.0: Text::Line#width instance method for rich text measurement
+    styled_line = @tui.text_line(spans: [
+      @tui.text_span(content: sample[:text], style: @tui.style(fg: :cyan)),
+    ])
+    line_width = styled_line.width
+
     # Build content text with newlines
     content = []
     content << "Sample: #{sample[:text]}"
     content << ""
-    content << "Display Width: #{measured_width} cells"
+    content << "Display Width (text_width): #{measured_width} cells"
+    content << "Display Width (line.width): #{line_width} cells"
     content << "Character Count: #{sample[:text].length}"
     content << ""
     content << sample[:desc]
