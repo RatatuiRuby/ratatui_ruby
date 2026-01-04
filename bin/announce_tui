@@ -1,0 +1,533 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+####
+# ======================================================================
+# announce_tui - TUI for release announcements (experimental)
+# ======================================================================
+#
+# SYNOPSIS
+#     bin/announce_tui [OPTIONS] [VERSION]
+#
+# DESCRIPTION
+#     A TUI for managing release announcements. Displays email preview,
+#     commit preview, and a release checklist with action controls.
+#
+# OPTIONS
+#     -w, --wiki-dir PATH    Path to wiki repo (default: ../ratatui_ruby-wiki)
+#     -n, --builds N         Number of builds to show (default: 4)
+#     -h, --help             Show this help message
+#
+# ======================================================================
+
+$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
+require "ratatui_ruby"
+require "uri"
+require "optparse"
+
+# Domain object for reading announcement files
+class Announcement
+  attr_reader :subject, :body, :path
+
+  def initialize(wiki_dir, version)
+    @path = File.join(wiki_dir, "announcements", "#{version}.md")
+    @subject = nil
+    @body = nil
+    parse
+  end
+
+  def exists?
+    File.exist?(@path)
+  end
+
+  def commit_message
+    <<~MSG
+      docs: add #{File.basename(@path, '.md')} release announcement
+
+      Generated with [Antigravity](https://antigravity.google)
+
+      Co-Authored-By: Claude Opus 4 <noreply@anthropic.com>
+    MSG
+  end
+
+  private def parse
+    unless exists?
+      @subject = "(Announcement file not found)"
+      @body = "Expected file: #{@path}"
+      return
+    end
+
+    content = File.read(@path)
+    lines = content.lines
+
+    subject_line = lines.find { |l| l.start_with?("Subject: ") }
+    if subject_line
+      @subject = subject_line.sub(/^Subject: /, "").strip
+      subject_index = lines.index(subject_line)
+      body_lines = lines[(subject_index + 1)..]
+        .reject { |l| l.match?(/^<!--/) || l.match?(/-->/) }
+      @body = body_lines.join.strip
+    else
+      @subject = "(No subject found)"
+      @body = content
+    end
+  end
+end
+
+# Domain object for main git repo
+class GitRepo
+  attr_reader :version, :tag_pushed
+
+  def initialize
+    @version = nil
+    @tag_pushed = nil
+    refresh
+  end
+
+  def refresh
+    @version = `git describe --tags --abbrev=0 2>/dev/null`.strip
+    @version = nil if @version.empty?
+    @tag_pushed = check_tag_pushed
+  end
+
+  private def check_tag_pushed
+    return false unless @version
+
+    remote_tags = `git ls-remote --tags origin 2>/dev/null`.strip
+    remote_tags.include?(@version)
+  end
+end
+
+# Domain object for SourceHut builds
+class SourceHut
+  attr_reader :builds
+
+  def initialize(max_builds: 4)
+    @max_builds = max_builds
+    @builds = []
+    refresh
+  end
+
+  def refresh
+    output = `hut builds list 2>/dev/null | head -#{@max_builds * 10}`.strip
+    @builds = parse_builds(output)
+  end
+
+  def all_passed?
+    @builds.all? { |b| b[:status] == :success }
+  end
+
+  def any_running?
+    @builds.any? { |b| b[:status] == :running }
+  end
+
+  def any_failed?
+    @builds.any? { |b| b[:status] == :failed }
+  end
+
+  private def parse_builds(output)
+    # Parse hut builds list output
+    builds = []
+    output.scan(/#(\d+).*?(SUCCESS|FAILED|RUNNING)/i) do |id, status|
+      builds << {
+        id:,
+        status: status.downcase.to_sym,
+      }
+    end
+    builds.first(@max_builds)
+  end
+end
+
+# Domain object for RubyGems
+class RubyGemsInfo
+  attr_reader :published_version
+
+  def initialize(gem_name)
+    @gem_name = gem_name
+    @published_version = nil
+    refresh
+  end
+
+  def refresh
+    output = `gem info #{@gem_name} -r 2>/dev/null`.strip
+    match = output.match(/#{@gem_name} \(([^)]+)\)/)
+    @published_version = match[1] if match
+  end
+
+  def published?(version)
+    @published_version == version.delete_prefix("v")
+  end
+end
+
+# Domain object for wiki repo
+class WikiRepo
+  attr_reader :committed, :pushed
+
+  def initialize(wiki_dir, announcement_path)
+    @wiki_dir = wiki_dir
+    @relative_path = announcement_path.sub("#{wiki_dir}/", "")
+    @committed = false
+    @pushed = false
+    refresh
+  end
+
+  def refresh
+    Dir.chdir(@wiki_dir) do
+      # Check if committed (not in diff or untracked)
+      diff_clean = system("git diff --quiet #{@relative_path} 2>/dev/null")
+      cached_clean = system("git diff --cached --quiet #{@relative_path} 2>/dev/null")
+      tracked = system("git ls-files --error-unmatch #{@relative_path} >/dev/null 2>&1")
+      @committed = diff_clean && cached_clean && tracked
+
+      # Check if pushed
+      if @committed
+        unpushed = `git log origin/HEAD..HEAD --oneline 2>/dev/null`.strip
+        @pushed = unpushed.empty?
+      else
+        @pushed = false
+      end
+    end
+  end
+
+  def commit!(message)
+    Dir.chdir(@wiki_dir) do
+      system("git", "add", @relative_path)
+      system("git", "commit", "-m", message)
+    end
+    refresh
+  end
+
+  def push!
+    Dir.chdir(@wiki_dir) do
+      system("git", "push")
+    end
+    refresh
+  end
+end
+
+# Domain object for sending emails
+class Emailer
+  EMATE_PATH = "/Applications/MailMate.app/Contents/Resources/emate"
+
+  def initialize(to_address, subject, body)
+    @to_address = to_address
+    @subject = subject
+    @body = body
+  end
+
+  def emate_available?
+    File.executable?(EMATE_PATH)
+  end
+
+  def send_via_emate!
+    return false unless emate_available?
+
+    IO.popen([
+      EMATE_PATH,
+      "mailto",
+      "--to",
+      @to_address,
+      "--subject",
+      @subject,
+      "--send-now",
+    ], "w") do |io|
+      io.write(@body)
+    end
+    true
+  end
+
+  def send_via_mailto!
+    encoded_subject = URI.encode_www_form_component(@subject).gsub("+", "%20")
+    encoded_body = URI.encode_www_form_component(@body).gsub("+", "%20")
+    mailto = "mailto:#{@to_address}?subject=#{encoded_subject}&body=#{encoded_body}"
+    system("open", mailto)
+  end
+end
+
+# TUI for release announcements
+class AnnounceTUI
+  TABS = ["Preview Email", "Preview Commit", "Announce"].freeze
+  TO_ADDRESS = "~kerrick/ratatui_ruby-announce@lists.sr.ht"
+
+  def initialize(options)
+    @options = options
+    @current_tab = 0
+    @scroll_y = 0
+    @scroll_x = 0
+
+    # Initialize domain objects (all caching happens here)
+    @git_repo = GitRepo.new
+    @version = options[:version] || @git_repo.version
+    @wiki_dir = options[:wiki_dir]
+
+    @announcement = Announcement.new(@wiki_dir, @version)
+    @sourcehut = SourceHut.new(max_builds: options[:builds])
+    @rubygems = RubyGemsInfo.new("ratatui_ruby")
+    @wiki_repo = WikiRepo.new(@wiki_dir, @announcement.path)
+    @emailer = Emailer.new(TO_ADDRESS, @announcement.subject, @announcement.body)
+  end
+
+  def run
+    RatatuiRuby.run do |tui|
+      @tui = tui
+      init_styles
+
+      loop do
+        render
+        break if handle_input == :quit
+      end
+    end
+  end
+
+  private def init_styles
+    @hotkey_style = @tui.style(modifiers: [:bold, :underlined])
+    @ok_style = @tui.style(fg: :green)
+    @pending_style = @tui.style(fg: :yellow)
+    @error_style = @tui.style(fg: :red)
+  end
+
+  private def render
+    @tui.draw do |frame|
+      # Layout: tabs at top, content in middle, controls at bottom
+      tabs_area, content_area, controls_area = @tui.layout_split(
+        frame.area,
+        direction: :vertical,
+        constraints: [
+          @tui.constraint_length(3),
+          @tui.constraint_fill(1),
+          @tui.constraint_length(5),
+        ],
+      )
+
+      render_tabs(frame, tabs_area)
+      render_content(frame, content_area)
+      render_controls(frame, controls_area)
+    end
+  end
+
+  private def render_tabs(frame, area)
+    tabs = @tui.tabs(
+      titles: TABS,
+      selected_index: @current_tab,
+      block: @tui.block(title: "Announce #{@version}", borders: [:all]),
+      highlight_style: @tui.style(fg: :yellow, modifiers: [:bold]),
+    )
+    frame.render_widget(tabs, area)
+  end
+
+  private def render_content(frame, area)
+    case @current_tab
+    when 0 then render_email_preview(frame, area)
+    when 1 then render_commit_preview(frame, area)
+    when 2 then render_checklist(frame, area)
+    end
+  end
+
+  private def render_email_preview(frame, area)
+    email_text = <<~EMAIL
+      To: #{TO_ADDRESS}
+      Subject: #{@announcement.subject}
+
+      #{@announcement.body}
+    EMAIL
+
+    paragraph = @tui.paragraph(
+      text: email_text,
+      scroll: [@scroll_y, @scroll_x],
+      block: @tui.block(title: "Email Preview", borders: [:all]),
+    )
+    frame.render_widget(paragraph, area)
+  end
+
+  private def render_commit_preview(frame, area)
+    paragraph = @tui.paragraph(
+      text: @announcement.commit_message,
+      scroll: [@scroll_y, @scroll_x],
+      block: @tui.block(title: "Commit Preview", borders: [:all]),
+    )
+    frame.render_widget(paragraph, area)
+  end
+
+  private def render_checklist(frame, area)
+    lines = checklist_items.map { |item| checklist_line(item) }
+
+    paragraph = @tui.paragraph(
+      text: lines,
+      block: @tui.block(title: "Release Checklist", borders: [:all]),
+    )
+    frame.render_widget(paragraph, area)
+  end
+
+  private def checklist_items
+    # Build checklist from domain objects (reads cached data only)
+    builds_status = if @sourcehut.any_running?
+      :pending
+    elsif @sourcehut.all_passed?
+      :ok
+    else
+      :error
+    end
+    builds_value = @sourcehut.builds.map { |b| "##{b[:id]} #{b[:status]}" }.join(", ")
+
+    [
+      { label: "Latest tag", value: @version, status: :ok },
+      { label: "Tag pushed", value: @git_repo.tag_pushed ? "Yes" : "No", status: @git_repo.tag_pushed ? :ok : :error },
+      { label: "Builds (#{@sourcehut.builds.size})", value: builds_value.empty? ? "None" : builds_value, status: builds_status },
+      { label: "Gem published", value: @rubygems.published_version || "Unknown", status: @rubygems.published?(@version) ? :ok : :pending },
+      { label: "Wiki committed", value: @wiki_repo.committed ? "Yes" : "No", status: @wiki_repo.committed ? :ok : :pending },
+      { label: "Wiki pushed", value: @wiki_repo.pushed ? "Yes" : "No", status: @wiki_repo.pushed ? :ok : :pending },
+    ]
+  end
+
+  private def checklist_line(item)
+    icon = case item[:status]
+           when :ok then "✓"
+           when :error then "✗"
+           when :pending then "●"
+           else "?"
+    end
+    style = case item[:status]
+            when :ok then @ok_style
+            when :error then @error_style
+            when :pending then @pending_style
+    end
+
+    @tui.text_line(spans: [
+      @tui.text_span(content: "#{icon} ", style:),
+      @tui.text_span(content: "#{item[:label]}: "),
+      @tui.text_span(content: item[:value].to_s),
+    ])
+  end
+
+  private def render_controls(frame, area)
+    controls_text = if @current_tab == 2
+      # Announce tab controls
+      [
+        control_line([
+          ["←/→", "Tab"],
+          ["c", "Commit & Push Wiki"],
+          ["s", "Send (emate)"],
+          ["m", "Send (mailto)"],
+        ]),
+        control_line([
+          ["r", "Refresh"],
+          ["q", "Quit"],
+        ]),
+      ]
+    else
+      # Preview tab controls
+      [
+        control_line([
+          ["←/→", "Tab"],
+          ["↑/↓", "Scroll"],
+          ["q", "Quit"],
+        ]),
+      ]
+    end
+
+    controls = @tui.paragraph(
+      text: controls_text,
+      block: @tui.block(title: "Controls", borders: [:all]),
+    )
+    frame.render_widget(controls, area)
+  end
+
+  private def control_line(pairs)
+    spans = pairs.flat_map do |key, desc|
+      [
+        @tui.text_span(content: key, style: @hotkey_style),
+        @tui.text_span(content: ": #{desc}  "),
+      ]
+    end
+    @tui.text_line(spans:)
+  end
+
+  private def handle_input
+    case @tui.poll_event
+    in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
+      :quit
+    in { type: :key, code: "right" }
+      @current_tab = (@current_tab + 1) % TABS.size
+      reset_scroll
+    in { type: :key, code: "left" }
+      @current_tab = (@current_tab - 1) % TABS.size
+      reset_scroll
+    in { type: :key, code: "up" } | { type: :key, code: "k" }
+      @scroll_y = [@scroll_y - 1, 0].max
+    in { type: :key, code: "down" } | { type: :key, code: "j" }
+      @scroll_y += 1
+    in { type: :key, code: "c" } if @current_tab == 2
+      commit_and_push_wiki
+    in { type: :key, code: "s" } if @current_tab == 2
+      send_via_emate
+    in { type: :key, code: "m" } if @current_tab == 2
+      send_via_mailto
+    in { type: :key, code: "r" } if @current_tab == 2
+      refresh_all
+    else
+      # Ignore other events
+    end
+  end
+
+  private def reset_scroll
+    @scroll_y = 0
+    @scroll_x = 0
+  end
+
+  # Actions
+  private def commit_and_push_wiki
+    @wiki_repo.commit!(@announcement.commit_message)
+    @wiki_repo.push!
+  end
+
+  private def send_via_emate
+    @emailer.send_via_emate!
+  end
+
+  private def send_via_mailto
+    @emailer.send_via_mailto!
+  end
+
+  private def refresh_all
+    @git_repo.refresh
+    @sourcehut.refresh
+    @rubygems.refresh
+    @wiki_repo.refresh
+  end
+end
+
+# Parse CLI options
+script_dir = File.dirname(File.expand_path(__FILE__))
+options = {
+  wiki_dir: File.join(script_dir, "..", "..", "ratatui_ruby-wiki"),
+  builds: 4,
+}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: bin/announce_tui [OPTIONS] [VERSION]"
+
+  opts.on("-w", "--wiki-dir PATH", "Path to wiki repo") do |path|
+    options[:wiki_dir] = File.expand_path(path)
+  end
+
+  opts.on("-n", "--builds N", Integer, "Number of builds to show") do |n|
+    options[:builds] = n
+  end
+
+  opts.on("-h", "--help", "Show this help") do
+    puts opts
+    exit
+  end
+end.parse!
+
+# Determine version
+options[:version] = ARGV[0] || `git describe --tags --abbrev=0 2>/dev/null`.strip
+if options[:version].empty?
+  warn "Error: No git tags found and no version specified."
+  exit 1
+end
+
+AnnounceTUI.new(options).run
