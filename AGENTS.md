@@ -91,7 +91,7 @@ The project follows a standard Gem layout with an `ext/` directory for Rust code
 
 ## 4. Committing
 
-- Who commits: DON'T stage (DON'T `git add`). DON'T commit. DO suggest a commit message.
+- Who commits: DON'T stage (DON'T `git add`) unless explicitly instructed. DON'T commit unless explicitly instructed. DO suggest a commit message when you finish, even if not instructed..
 - When: Before reporting the task as complete to the user, suggest the commit message.
 - What: Consider not what you remember, but EVERYTHING in the `git diff` and `git diff --cached`.
 - **Format:**

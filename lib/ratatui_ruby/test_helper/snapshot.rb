@@ -252,6 +252,30 @@ module RatatuiRuby
         end
       end
 
+      ##
+      # Returns the current buffer content as an ANSI-encoded string.
+      #
+      # The rich snapshot assertion captures styled output. Sometimes you need the raw ANSI
+      # string for debugging, custom assertions, or programmatic inspection.
+      #
+      # This method renders the buffer with escape codes for colors and modifiers.
+      # You can `cat` the output to see exactly what the terminal would display.
+      #
+      # === Example
+      #
+      #   with_test_terminal(80, 25) do
+      #     RatatuiRuby.run do |tui|
+      #       tui.draw tui.paragraph(text: "Hello", block: tui.block(title: "Test"))
+      #       break
+      #     end
+      #     ansi_output = render_rich_buffer
+      #     puts ansi_output  # Shows styled output with escape codes
+      #   end
+      #
+      def render_rich_buffer
+        _render_buffer_with_ansi
+      end
+
       private def _render_buffer_with_ansi
         RatatuiRuby.get_buffer_content # Ensure buffer is fresh if needed
 

@@ -99,4 +99,70 @@ class TestTestHelper < Minitest::Test
       end
     end
   end
+
+  def test_update_snapshots_updates_stale_file
+    # Verify that UPDATE_SNAPSHOTS=1 properly updates a pre-existing snapshot
+    # with outdated content. This is the scenario that broke the calendar demo tests.
+    Dir.mktmpdir do |tmpdir|
+      snapshot_path = File.join(tmpdir, "stale_snapshot.txt")
+
+      # Create a stale snapshot with old content
+      File.write(snapshot_path, "OLD CONTENT LINE 1\nOLD CONTENT LINE 2\n")
+
+      with_test_terminal(20, 2) do
+        # Render new content that differs from the stale snapshot
+        RatatuiRuby.draw do |f|
+          f.render_widget(RatatuiRuby::Widgets::Paragraph.new(text: "NEW CONTENT"), f.area)
+        end
+
+        # With UPDATE_SNAPSHOTS=1, the assertion should:
+        # 1. Overwrite the stale file with new content
+        # 2. Pass (not fail) because expected now equals actual
+        ENV["UPDATE_SNAPSHOTS"] = "1"
+        begin
+          assert_screen_matches(snapshot_path)
+        ensure
+          ENV.delete("UPDATE_SNAPSHOTS")
+        end
+
+        # Verify the file was actually updated
+        updated_content = File.read(snapshot_path)
+        assert_includes updated_content, "NEW CONTENT",
+          "Snapshot file should contain new content after UPDATE_SNAPSHOTS"
+        refute_includes updated_content, "OLD CONTENT",
+          "Snapshot file should not contain old content after UPDATE_SNAPSHOTS"
+      end
+    end
+  end
+
+  def test_render_rich_buffer_returns_ansi_string
+    with_test_terminal(20, 3) do
+      style = RatatuiRuby::Style::Style.new(fg: :red, modifiers: [:bold])
+      widget = RatatuiRuby::Widgets::Paragraph.new(
+        text: "Hi",
+        block: RatatuiRuby::Widgets::Block.new(borders: [:all], style:)
+      )
+      RatatuiRuby.draw { |f| f.render_widget(widget, f.area) }
+
+      ansi_output = render_rich_buffer
+
+      # Should be a string with ANSI escape codes
+      assert_kind_of String, ansi_output
+      assert_includes ansi_output, "\e[", "Output should contain ANSI escape codes"
+      assert_includes ansi_output, "Hi", "Output should contain rendered text"
+    end
+  end
+
+  def test_render_rich_buffer_includes_colors
+    with_test_terminal(20, 3) do
+      style = RatatuiRuby::Style::Style.new(fg: :red)
+      widget = RatatuiRuby::Widgets::Block.new(borders: [:all], style:)
+      RatatuiRuby.draw { |f| f.render_widget(widget, f.area) }
+
+      ansi_output = render_rich_buffer
+
+      # Red foreground uses ANSI code 31
+      assert_includes ansi_output, "\e[31m", "Output should contain red foreground code"
+    end
+  end
 end

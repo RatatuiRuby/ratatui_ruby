@@ -19,6 +19,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Row Wrapper**: New `Widgets::Row` class allows applying row-level styling (background color, style) and layout properties (height, top_margin, bottom_margin) to Table rows. Table rows can now be plain arrays or `Widgets::Row` objects.
 - **Cell Wrapper**: New `Widgets::Cell` class wraps table cell content with optional cell-level styling. Distinct from `Buffer::Cell` which is for buffer inspection.
 - **Line#width Method**: `Text::Line` now has a `width` instance method that calculates the display width in terminal cells using unicode-aware measurement. Useful for layout calculations with rich text.
+- **render_rich_buffer**: New `TestHelper::Snapshot#render_rich_buffer` method returns the terminal buffer as an ANSI-encoded string with escape codes for colors and modifiers. Useful for debugging, custom assertions, or programmatic inspection beyond `assert_rich_snapshot`.
 
 ### Changed
 

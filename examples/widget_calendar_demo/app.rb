@@ -23,6 +23,10 @@ require "ratatui_ruby"
 #
 # rdoc-image:/doc/images/widget_calendar_demo.png
 class WidgetCalendarDemo
+  def initialize(date: nil)
+    @date = date
+  end
+
   def run
     RatatuiRuby.run do |tui|
       show_header = true
@@ -32,7 +36,7 @@ class WidgetCalendarDemo
       hotkey_style = tui.style(modifiers: [:bold])
 
       loop do
-        now = Time.now
+        now = @date || Time.now
         surrounding_style = show_surrounding ? tui.style(fg: "gray", modifiers: [:dim]) : nil
 
         events_map = if show_events

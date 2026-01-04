@@ -12,28 +12,16 @@ require_relative "../../../examples/widget_calendar_demo/app"
 class TestWidgetCalendarDemo < Minitest::Test
   include RatatuiRuby::TestHelper
 
-  # Calendar output varies by date, so we need normalization
-  # - Year in title
-  # - Current day highlight (green color)
-  YEAR_PATTERN = /\d{4}/
-  # Green highlight for current day: \e[32m followed by day number, then reset
-  CURRENT_DAY_PATTERN = /\e\[32m\s*\d{1,2}/
+  # Use a fixed date for deterministic snapshots
+  FIXED_DATE = Time.new(2026, 1, 3, 12, 0, 0)
 
   def setup
-    @app = WidgetCalendarDemo.new
+    @app = WidgetCalendarDemo.new(date: FIXED_DATE)
   end
 
   private def assert_normalized_snapshot(snapshot_name)
-    normalizer = proc do |lines|
-      lines.map do |line|
-        line
-          .gsub(YEAR_PATTERN, "YYYY")
-          .gsub(CURRENT_DAY_PATTERN, "\e[32m DD")
-      end
-    end
-
-    assert_snapshot(snapshot_name, &normalizer)
-    assert_rich_snapshot(snapshot_name, &normalizer)
+    assert_snapshot(snapshot_name)
+    assert_rich_snapshot(snapshot_name)
   end
 
   def test_initial_render
