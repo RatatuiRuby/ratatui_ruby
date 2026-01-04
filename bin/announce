@@ -1,0 +1,166 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+####
+# ======================================================================
+# announce - Open release announcement email in default mail client
+# ======================================================================
+#
+# SYNOPSIS
+#     bin/announce [OPTIONS] [VERSION]
+#
+# DESCRIPTION
+#     Compose a release announcement email for the mailing list.
+#
+#     Finds the announcement file for the specified version (or latest
+#     tag if none specified), extracts the Subject line and body, and
+#     opens the default mail client via a mailto: URL.
+#
+#     Also stages and commits the announcement file to the wiki repo
+#     if not already committed, with an interactive push prompt.
+#
+# OPTIONS
+#     -w, --wiki-dir PATH    Path to wiki repo (default: ../ratatui_ruby-wiki)
+#     -h, --help             Show this help message
+#
+# ARGUMENTS
+#     VERSION            Version to announce (e.g., v0.7.0). If omitted,
+#                        uses the latest git tag.
+#
+# FILES
+#     <wiki-dir>/announcements/vX.Y.Z.md
+#                        Announcement files with Subject: header line.
+#
+# EXIT STATUS
+#     0                  Email client opened
+#     1                  Announcement file not found or error
+#
+# EXAMPLES
+#     Announce latest release:
+#     bin/announce
+#
+#     Announce specific version:
+#     bin/announce v0.7.0
+#
+#     Use custom wiki path:
+#     bin/announce --wiki-dir /path/to/wiki v0.7.0
+#
+# ======================================================================
+
+require "uri"
+require "optparse"
+
+# Parse options
+script_dir = File.dirname(File.expand_path(__FILE__))
+options = {
+  wiki_dir: File.join(script_dir, "..", "..", "ratatui_ruby-wiki")
+}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: bin/announce [OPTIONS] [VERSION]"
+
+  opts.on("-w", "--wiki-dir PATH", "Path to wiki repo") do |path|
+    options[:wiki_dir] = File.expand_path(path)
+  end
+
+  opts.on("-h", "--help", "Show this help") do
+    puts opts
+    exit
+  end
+end.parse!
+
+# Determine version
+version = ARGV[0] || `git describe --tags --abbrev=0 2>/dev/null`.strip
+if version.empty?
+  warn "Error: No git tags found and no version specified."
+  exit 1
+end
+
+# Find announcement file
+wiki_dir = options[:wiki_dir]
+announcement = File.join(wiki_dir, "announcements", "#{version}.md")
+
+unless File.exist?(announcement)
+  warn "Error: Announcement file not found: #{announcement}"
+  exit 1
+end
+
+# Parse announcement file
+content = File.read(announcement)
+lines = content.lines
+
+# Extract subject
+subject_line = lines.find { |l| l.start_with?("Subject: ") }
+unless subject_line
+  warn "Error: No Subject: line found in #{announcement}"
+  exit 1
+end
+subject = subject_line.sub(/^Subject: /, "").strip
+
+# Extract body (everything after Subject line, excluding SPDX header)
+subject_index = lines.index(subject_line)
+body_lines = lines[(subject_index + 1)..]
+  .reject { |l| l.match?(/^<!--/) || l.match?(/-->/) }
+body = body_lines.join.strip
+
+# Handle git operations in wiki repo
+Dir.chdir(wiki_dir) do
+  relative_path = "announcements/#{version}.md"
+  commit_msg = <<~MSG
+    docs: add #{version} release announcement
+
+    Generated with [Antigravity](https://antigravity.google)
+
+    Co-Authored-By: Claude Opus 4 <noreply@anthropic.com>
+  MSG
+
+# Check if file needs to be committed
+  diff_clean = system("git diff --quiet #{relative_path} 2>/dev/null")
+  cached_clean = system("git diff --cached --quiet #{relative_path} 2>/dev/null")
+  tracked = system("git ls-files --error-unmatch #{relative_path} >/dev/null 2>&1")
+
+  committed = false
+  if diff_clean && cached_clean
+    if tracked
+      puts "Announcement already committed."
+    else
+      puts "Staging new announcement: #{relative_path}"
+      system("git", "add", relative_path)
+      system("git", "commit", "-m", commit_msg.strip)
+      committed = true
+    end
+  else
+    puts "Staging changes to: #{relative_path}"
+    system("git", "add", relative_path)
+    system("git", "commit", "-m", commit_msg.strip)
+    committed = true
+  end
+
+  # Offer to push only if we committed
+  if committed
+    puts
+    puts "Commit message:"
+    puts "---"
+    puts commit_msg.strip
+    puts "---"
+    print "Push to remote? [Y/n] "
+    reply = $stdin.gets&.strip || ""
+    if reply.downcase.start_with?("n")
+      puts "Skipping push."
+    else
+      system("git", "push")
+    end
+  end
+end
+
+# Build mailto URL
+encoded_subject = URI.encode_www_form_component(subject)
+encoded_body = URI.encode_www_form_component(body)
+mailto = "mailto:~kerrick/ratatui_ruby-announce@lists.sr.ht?subject=#{encoded_subject}&body=#{encoded_body}"
+
+# Open in default mail client
+puts "Opening mail client for: #{subject}"
+system("open", mailto)
