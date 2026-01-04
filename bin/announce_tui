@@ -389,6 +389,9 @@ class AnnounceTUI
     @ok_style = @tui.style(fg: :green)
     @pending_style = @tui.style(fg: :yellow)
     @error_style = @tui.style(fg: :red)
+    @border_style = @tui.style(fg: :dark_gray)
+    @title_style = @tui.style(fg: :cyan)
+    @email_client_style = @tui.style(fg: :yellow)
   end
 
   private def render
@@ -425,11 +428,20 @@ class AnnounceTUI
   end
 
   private def render_tabs(frame, area)
+    email_client = @emailer.emate_available? ? "emate" : "mailto"
     tabs = @tui.tabs(
       titles: TABS,
       selected_index: @current_tab,
-      block: @tui.block(title: "Announce #{@version}", borders: [:all]),
-      highlight_style: @tui.style(fg: :yellow, modifiers: [:bold]),
+      divider: @tui.text_span(content: " ▸ ", style: @border_style),
+      block: @tui.block(
+        titles: [
+          { content: "Announce #{@version}" },
+          { content: @tui.text_line(spans: [@tui.text_span(content: email_client, style: @email_client_style)]), position: :top, alignment: :right },
+        ],
+        borders: [:all],
+        border_style: @border_style,
+      ),
+      highlight_style: @tui.style(fg: :magenta, modifiers: [:bold]),
     )
     frame.render_widget(tabs, area)
   end
@@ -456,14 +468,14 @@ class AnnounceTUI
     paragraph = @tui.paragraph(
       text: email_text,
       scroll: [scroll_y, scroll_x],
-      block: @tui.block(title: "Email Preview", borders: [:all]),
+      block: @tui.block(title: "Email Preview", borders: [:all], border_style: @border_style, title_style: @title_style),
     )
     frame.render_widget(paragraph, area)
 
     scrollbar = @tui.scrollbar(
       content_length:,
       position: scroll_y,
-      orientation: :vertical_right,
+      orientation: :vertical,
     )
     frame.render_widget(scrollbar, area)
   end
@@ -475,14 +487,14 @@ class AnnounceTUI
     paragraph = @tui.paragraph(
       text: content,
       scroll: [scroll_y, scroll_x],
-      block: @tui.block(title: "Commit Preview", borders: [:all]),
+      block: @tui.block(title: "Commit Preview", borders: [:all], border_style: @border_style, title_style: @title_style),
     )
     frame.render_widget(paragraph, area)
 
     scrollbar = @tui.scrollbar(
       content_length:,
       position: scroll_y,
-      orientation: :vertical_right,
+      orientation: :vertical,
     )
     frame.render_widget(scrollbar, area)
   end
@@ -492,7 +504,7 @@ class AnnounceTUI
 
     paragraph = @tui.paragraph(
       text: lines,
-      block: @tui.block(title: "Release Checklist", borders: [:all]),
+      block: @tui.block(title: "Release Checklist", borders: [:all], border_style: @border_style, title_style: @title_style),
     )
     frame.render_widget(paragraph, area)
   end
@@ -582,8 +594,7 @@ class AnnounceTUI
       [
         control_line([
           ["c", "Commit & Push Wiki"],
-          ["s", "Send (emate)"],
-          ["m", "Send (mailto)"],
+          ["s", "Send Email"],
         ]),
         control_line([
           ["r", "Refresh"],
@@ -603,7 +614,7 @@ class AnnounceTUI
 
     controls = @tui.paragraph(
       text: controls_text,
-      block: @tui.block(title: "Controls", borders: [:all]),
+      block: @tui.block(title: "Controls", borders: [:all], border_style: @border_style, title_style: @title_style),
     )
     frame.render_widget(controls, area)
   end
@@ -633,8 +644,7 @@ class AnnounceTUI
 
       Actions (Announce tab only)
         c            Commit & Push Wiki
-        s            Send via emate
-        m            Send via mailto
+        s            Send Email
         r            Refresh all data
 
       General
@@ -664,7 +674,7 @@ class AnnounceTUI
 
     paragraph = @tui.paragraph(
       text: flags_lines,
-      block: @tui.block(title: "CLI Flags", borders: [:all]),
+      block: @tui.block(title: "CLI Flags", borders: [:all], border_style: @border_style, title_style: @title_style),
     )
     frame.render_widget(paragraph, area)
   end
@@ -716,9 +726,7 @@ class AnnounceTUI
     in { type: :key, code: "c" } if @current_tab == 2
       commit_and_push_wiki
     in { type: :key, code: "s" } if @current_tab == 2
-      send_via_emate
-    in { type: :key, code: "m" } if @current_tab == 2
-      send_via_mailto
+      send_email
     in { type: :key, code: "r" } if @current_tab == 2
       refresh_all
     in { type: :mouse, kind: "scroll_down" }
@@ -774,10 +782,8 @@ class AnnounceTUI
     case relative_row
     when 0
       # First row of controls
-      if col < 20 then nil # Tab navigation - ignore
-      elsif col < 40 then commit_and_push_wiki
-      elsif col < 60 then send_via_emate
-      else send_via_mailto
+      if col < 25 then commit_and_push_wiki
+      else send_email
       end
     when 1
       # Second row
@@ -804,12 +810,12 @@ class AnnounceTUI
     @wiki_repo.push!
   end
 
-  private def send_via_emate
-    @emailer.send_via_emate!
-  end
-
-  private def send_via_mailto
-    @emailer.send_via_mailto!
+  private def send_email
+    if @emailer.emate_available?
+      @emailer.send_via_emate!
+    else
+      @emailer.send_via_mailto!
+    end
   end
 
   private def refresh_all
