@@ -34,4 +34,12 @@ class Changelog
     File.write(@path, "#{header}#{UnreleasedSection.fresh}\n\n#{history}\n#{links}")
     nil
   end
+
+  def commit_message(version)
+    content = File.read(@path)
+    unreleased = UnreleasedSection.parse(content)
+    return nil unless unreleased
+
+    "chore: release v#{version}\n\n#{unreleased.commit_body}"
+  end
 end

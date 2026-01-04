@@ -16,6 +16,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+### Removed
+
+## [0.7.1] - 2026-01-03
+
+### Added
+
+### Changed
+
+### Fixed
+
 - **Block Title Styling**: `Block` title `content` now correctly renders `Text::Line` objects with styled spans. Previously, passing a styled `Line` as title content displayed its Ruby inspect representation (e.g., `#<data RatatuiRuby::Text::Line...>`) instead of the styled text.
 
 ### Removed
@@ -358,6 +368,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Testing Support**: Included `RatatuiRuby::TestHelper` and RSpec integration to make testing your TUI applications possible.
 
 [Unreleased]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/HEAD
+[0.7.1]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.7.1
 [0.7.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.7.0
 [0.6.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.6.0
 [0.5.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.5.0

@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 require "date"
+require "rdoc"
 
 # UnreleasedSection manages the [Unreleased] section of the changelog.
 class UnreleasedSection
@@ -34,5 +35,20 @@ class UnreleasedSection
   # Returns the current state of the section as a string.
   def to_s
     @content
+  end
+
+  def commit_body
+    formatter = Class.new { include RDoc::Text }.new
+    @content
+      .sub(/^## \[Unreleased\].*$/, "")
+      .gsub(/^### (Added|Changed|Fixed|Removed)\n*$/, "")
+      .gsub(/^- \*\*([^*]+)\*\*:/, '\1:')
+      .gsub(/`([^`]+)`/, '\1')
+      .strip
+      .lines
+      .map { |line| line.gsub(/^- /, "").strip }
+      .reject(&:empty?)
+      .map { |line| formatter.wrap(line, 72) }
+      .join("\n\n")
   end
 end
