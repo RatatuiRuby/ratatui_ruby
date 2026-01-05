@@ -26,7 +26,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Deferred Warnings During TUI Sessions**: Experimental feature warnings (like `Paragraph#line_count`) are now automatically queued during active TUI sessions and flushed to stderr after `restore_terminal`. This prevents warnings from corrupting the TUI display. See `doc/troubleshooting/tui_output.md` for details on handling terminal output during TUI sessions.
 - **Session State Tracking**: `RatatuiRuby.terminal_active?` indicates whether a TUI session is active. Calling `init_terminal` or `init_test_terminal` while a session is already active now raises `Error::Invariant`.
 - **Error::Invariant**: New error class for state invariant violations (e.g., double-init). Distinct from `Error::Safety` (lifetime violations) and `Error::Terminal` (operational I/O failures).
+- **Output Guard**: `RatatuiRuby.guard_io { }` temporarily replaces `$stdout` and `$stderr` with a null sink, preventing screen corruption from chatty gems. Active when `terminal_active?` is true; warns if called outside a session (to catch mistakes); silent no-op in headless mode.
+- **Headless Mode**: `RatatuiRuby.headless!` enables batch/CLI mode for apps with `--no-tui` flags. When headless, `guard_io` becomes a silent no-op and `init_terminal`/`run` raise `Error::Invariant`. This allows the same code to work in both TUI and non-TUI modes.
+- **Terminal Safety Hooks**: `at_exit` and `Signal.trap` handlers for `INT` and `TERM` automatically restore the terminal if a session is active on unexpected exit. This prevents leaving the terminal in raw mode after Ctrl+C or process termination.
+
 ### Changed
+
+- **Double `init_terminal` Now Raises `Error::Invariant` (Breaking)** Calling `init_terminal`, `init_test_terminal`, or `run` while a TUI session is already active now raises `Error::Invariant`. Previously, this was undefined but silently "working" behavior that could cause terminal state corruption. If your code intentionally double-inits, call `restore_terminal` first.
 
 ### Fixed
 

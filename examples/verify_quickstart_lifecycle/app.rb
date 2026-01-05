@@ -44,9 +44,15 @@ class VerifyQuickstartLifecycle
         else
           nil
         end
+
+        # 5. Guard against accidental output (optional but recommended)
+        # Wrap any code that might puts/warn to prevent screen corruption.
+        RatatuiRuby.guard_io do
+          # SomeChattyGem.do_something
+        end
       end
     ensure
-      # 5. Restore the terminal to its original state
+      # 6. Restore the terminal to its original state
       RatatuiRuby.restore_terminal
     end
     # [SYNC:END:main]

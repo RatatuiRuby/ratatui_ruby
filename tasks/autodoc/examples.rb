@@ -12,7 +12,7 @@ module Autodoc
     end
 
     def sync
-      Dir.glob("{README.md,doc/*.md,examples/*/README.md}").each do |readme_path|
+      Dir.glob("{README.md,doc/**/*.md,examples/*/README.md}").each do |readme_path|
         sync_readme(readme_path)
       end
     end
@@ -24,7 +24,13 @@ module Autodoc
       new_content = content.gsub(/<!-- SYNC:START:([^ ]+) -->.*?<!-- SYNC:END -->/m) do
         marker_info = $1
         source_rel_path, segment_id = marker_info.split(":")
-        source_path = File.join(dir, source_rel_path)
+
+        # Support both repo-root-relative paths (no leading ./) and file-relative paths
+        source_path = if source_rel_path.start_with?("./", "../")
+          File.join(dir, source_rel_path)
+        else
+          source_rel_path # Already relative to repo root
+        end
 
         unless File.exist?(source_path)
           warn "Warning: Source file not found: #{source_path}"

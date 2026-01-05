@@ -17,7 +17,7 @@ See [Installation in the README](../README.md#installation) for setup instructio
 
 Here is a "Hello World" application that demonstrates the core lifecycle of a **ratatui_ruby** app.
 
-<!-- SYNC:START:../examples/verify_quickstart_lifecycle/app.rb:main -->
+<!-- SYNC:START:examples/verify_quickstart_lifecycle/app.rb:main -->
 ```ruby
 # 1. Initialize the terminal
 RatatuiRuby.init_terminal
@@ -51,9 +51,15 @@ begin
     else
       nil
     end
+
+    # 5. Guard against accidental output (optional but recommended)
+    # Wrap any code that might puts/warn to prevent screen corruption.
+    RatatuiRuby.guard_io do
+      # SomeChattyGem.do_something
+    end
   end
 ensure
-  # 5. Restore the terminal to its original state
+  # 6. Restore the terminal to its original state
   RatatuiRuby.restore_terminal
 end
 ```
@@ -67,13 +73,14 @@ end
 2.  **Immediate Mode UI**: On every iteration, describe your UI by creating `Data` objects (e.g., `Paragraph`, `Block`).
 3.  **`RatatuiRuby.draw { |frame| ... }`**: The block receives a `Frame` object as a canvas. Render widgets onto specific areas. Nothing is drawn until the block finishes, ensuring flicker-free updates.
 4.  **`RatatuiRuby.poll_event`**: Returns a typed `Event` object with predicates like `key?`, `mouse?`, `resize?`, etc. Returns `RatatuiRuby::Event::None` if no events are pending. Use predicates to check event type without pattern matching.
-5.  **`RatatuiRuby.restore_terminal`**: Essential for leaving raw mode and returning to the shell. Always wrap your loop in `begin...ensure` to guarantee this runs.
+5.  **`RatatuiRuby.guard_io { }`**: Wraps code that might write to stdout/stderr (e.g., chatty gems). Output is swallowed to prevent screen corruption. Optional but recommended for production apps.
+6.  **`RatatuiRuby.restore_terminal`**: Essential for leaving raw mode and returning to the shell. Always wrap your loop in `begin...ensure` to guarantee this runs.
 
 ### Simplified API
 
 You can simplify your code by using `RatatuiRuby.run`. This method handles the terminal lifecycle for you, yielding a `TUI` object with factory methods for widgets.
 
-<!-- SYNC:START:../examples/verify_quickstart_dsl/app.rb:main -->
+<!-- SYNC:START:examples/verify_quickstart_dsl/app.rb:main -->
 ```ruby
 # 1. Initialize the terminal, start the run loop, and ensure the terminal is restored.
 RatatuiRuby.run do |tui|
@@ -121,7 +128,7 @@ For a deeper dive into the available application architectures (Manual vs Manage
 
 Real-world applications often need to split the screen into multiple areas. `RatatuiRuby::Layout` lets you do this easily.
 
-<!-- SYNC:START:../examples/verify_quickstart_layout/app.rb:main -->
+<!-- SYNC:START:examples/verify_quickstart_layout/app.rb:main -->
 ```ruby
 loop do
   tui.draw do |frame|
@@ -255,6 +262,7 @@ Now that you've seen what **ratatui_ruby** can do:
 
 - **Deep dive**: Read the [Application Architecture](../concepts/application_architecture.md) guide for scaling patterns
 - **Test your TUI**: See the [Testing Guide](../concepts/application_testing.md) for snapshot and style assertions
+- **Avoid common mistakes**: See [Terminal Output During TUI Sessions](../troubleshooting/tui_output.md) to prevent screen corruption
 - **Explore the API**: Browse the [full RDoc documentation](../index.md)
 - **Learn the philosophy**: Read [Why RatatuiRuby?](./why.md) for comparisons and design decisions
 - **Get help**: Join the [discussion mailing list](https://lists.sr.ht/~kerrick/ratatui_ruby-discuss)

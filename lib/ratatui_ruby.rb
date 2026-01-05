@@ -110,13 +110,40 @@ module RatatuiRuby
     class Invariant < Error; end
   end
 
+  # A null IO object that swallows all output.
+  #
+  # Used by {guard_io} to temporarily replace $stdout and $stderr.
+  # Implements method_missing to accept any IO method and discard output.
+  #
+  # Returns self for method chaining (e.g., puts.flush).
+  class NullIO
+    # Accepts any method call and returns self, discarding all output.
+    def method_missing(name, *args, &block)
+      self
+    end
+
+    # Reports that all methods are supported.
+    def respond_to_missing?(name, include_private = false)
+      true
+    end
+  end
+
   ##
   # Initializes the terminal for TUI mode.
   # Enters alternate screen and enables raw mode.
   #
+  # In headless mode ({headless!}), this method raises {Error::Invariant}.
+  # Use headless mode for batch/CLI apps.
+  #
   # [focus_events] whether to enable focus gain/loss events (default: true).
   # [bracketed_paste] whether to enable bracketed paste mode (default: true).
+  #
+  # @raise [Error::Invariant] if headless mode is enabled or a session is already active
+  # @see headless!
   def self.init_terminal(focus_events: true, bracketed_paste: true)
+    if @headless_mode
+      raise Error::Invariant, "Cannot initialize terminal: headless mode is enabled"
+    end
     if @tui_session_active
       raise Error::Invariant, "Cannot initialize terminal: TUI session already active"
     end
@@ -126,6 +153,7 @@ module RatatuiRuby
 
   @experimental_warnings = true
   @tui_session_active = false
+  @headless_mode = false
   @deferred_warnings = []
 
   ##
@@ -146,6 +174,70 @@ module RatatuiRuby
   #   end
   def self.terminal_active?
     @tui_session_active
+  end
+
+  ##
+  # Whether headless (batch/CLI) mode is enabled.
+  #
+  # When headless mode is active:
+  # - {guard_io} becomes a silent no-op (output is not swallowed)
+  # - {init_terminal} and {run} raise {Error::Invariant}
+  #
+  # Use this when your app has a `--no-tui` or `--batch` flag and you want
+  # the same code to work in both TUI and non-TUI modes.
+  #
+  # @see headless!
+  def self.is_headless?
+    @headless_mode
+  end
+
+  ##
+  # Enables headless (batch/CLI) mode.
+  #
+  # Call this at app startup when running in batch/CLI mode (e.g., `--no-tui`).
+  # This tells RatatuiRuby that you intentionally don't want a TUI session.
+  #
+  # When headless mode is active:
+  # - {guard_io} becomes a silent no-op (output flows normally)
+  # - {init_terminal} and {run} raise {Error::Invariant}
+  #
+  # Headless mode and TUI sessions are mutually exclusive. Calling this
+  # while a TUI session is active raises {Error::Invariant}.
+  #
+  # === Why there is no exit_headless!
+  #
+  # Headless mode is a startup-time decision for the entire app run.
+  # If you need to temporarily exit TUI mode for user interaction
+  # (like lazygit does when editing a commit message), use
+  # {restore_terminal} and {init_terminal} instead:
+  #
+  #   RatatuiRuby.restore_terminal
+  #   puts "Press enter to continue..."
+  #   gets
+  #   RatatuiRuby.init_terminal
+  #
+  # === Example
+  #
+  #   if ARGV.include?("--no-tui")
+  #     RatatuiRuby.headless!
+  #     process_batch_work  # guard_io calls are silent no-ops
+  #   else
+  #     RatatuiRuby.run do |tui|  # This branch only runs in TUI mode
+  #       # ... TUI code ...
+  #     end
+  #   end
+  #
+  # Note: Calling {run} or {init_terminal} after {headless!} raises
+  # {Error::Invariant}. The block is never executed.
+  #
+  # @raise [Error::Invariant] if a TUI session is already active
+  # @see is_headless?
+  # @see restore_terminal
+  def self.headless!
+    if @tui_session_active
+      raise Error::Invariant, "Cannot enable headless mode: TUI session already active"
+    end
+    @headless_mode = true
   end
 
   class << self
@@ -169,11 +261,64 @@ module RatatuiRuby
   # Restores the terminal to its original state.
   # Leaves alternate screen and disables raw mode.
   # Also flushes any deferred warnings that were queued during the session.
+  #
+  # In headless mode ({headless!}), this method is a silent no-op since
+  # no terminal was ever initialized.
+  #
+  # @see headless!
   def self.restore_terminal
+    return if @headless_mode
+
     _restore_terminal
   ensure
     @tui_session_active = false
     flush_warnings
+  end
+
+  ##
+  # Guards a block from stdout/stderr output.
+  #
+  # During a TUI session, writes to $stdout or $stderr corrupt the display.
+  # Wrap code that might produce output (e.g., chatty gems) in this block.
+  #
+  # This temporarily replaces $stdout and $stderr with a {NullIO} object
+  # that discards all output. The original streams are restored when the
+  # block exits, even if an exception occurs.
+  #
+  # === Behavior by mode
+  #
+  # - **TUI session active**: Output is swallowed (guarded)
+  # - **Headless mode**: Silent no-op (output flows normally)
+  # - **Neither**: Warns and yields (catches potential mistakes)
+  #
+  # === Example
+  #
+  #   RatatuiRuby.run do |tui|
+  #     RatatuiRuby.guard_io do
+  #       SomeChattyGem.do_something  # Any puts/warn calls are swallowed
+  #     end
+  #   end
+  #
+  # @see headless!
+  def self.guard_io
+    # TUI active: guard the output
+    if terminal_active?
+      $stdout = NullIO.new
+      $stderr = NullIO.new
+      begin
+        return yield
+      ensure
+        $stdout = Object::STDOUT
+        $stderr = Object::STDERR
+      end
+    end
+
+    # Headless mode: silent no-op
+    return yield if is_headless?
+
+    # Neither: warn about potential mistake
+    warn "guard_io called outside TUI session. If this is intentional (batch/CLI mode), call RatatuiRuby.headless! at startup to silence this warning."
+    yield
   end
 
   ##
@@ -213,7 +358,12 @@ module RatatuiRuby
   #
   # [width] Integer width of the test terminal.
   # [height] Integer height of the test terminal.
+  #
+  # @raise [Error::Invariant] if headless mode is enabled or a session is already active
   def self.init_test_terminal(width, height)
+    if @headless_mode
+      raise Error::Invariant, "Cannot initialize terminal: headless mode is enabled"
+    end
     if @tui_session_active
       raise Error::Invariant, "Cannot initialize terminal: TUI session already active"
     end
@@ -331,9 +481,14 @@ module RatatuiRuby
   ##
   # Starts the TUI application lifecycle.
   #
-  # Managing generic setup/teardown (raw mode, alternate screen) manualy is error-prone. If your app crashes, the terminal might be left in a broken state.
+  # Managing generic setup/teardown (raw mode, alternate screen) manually is error-prone.
+  # If your app crashes, the terminal might be left in a broken state.
   #
-  # This method handles the safety net. It initializes the terminal, yields a {TUI}, and ensures the terminal state is restored even if exceptions occur.
+  # This method handles the safety net. It initializes the terminal, yields a {TUI},
+  # and ensures the terminal state is restored even if exceptions occur.
+  #
+  # In headless mode ({headless!}), this method raises {Error::Invariant} immediately
+  # and the block is never executed. Use headless mode for batch/CLI apps.
   #
   # === Example
   #
@@ -341,6 +496,9 @@ module RatatuiRuby
   #     tui.draw(tui.paragraph(text: "Hi"))
   #     sleep 1
   #   end
+  #
+  # @raise [Error::Invariant] if headless mode is enabled
+  # @see headless!
   def self.run(focus_events: true, bracketed_paste: true)
     init_terminal(focus_events:, bracketed_paste:)
     yield TUI.new
@@ -380,4 +538,18 @@ module RatatuiRuby
 
   # Hide native Layout._split helper
   Layout::Layout.singleton_class.__send__(:private, :_split)
+
+  # --- Terminal Safety Hooks ---
+  # These ensure the terminal is restored even on unexpected exits.
+
+  at_exit do
+    restore_terminal if terminal_active?
+  end
+
+  %i[INT TERM].each do |signal|
+    trap(signal) do
+      restore_terminal if terminal_active?
+      exit(128 + Signal.list[signal.to_s])
+    end
+  end
 end
