@@ -17,16 +17,16 @@ class TestGuardIO < Minitest::Test
     with_test_terminal do
       assert RatatuiRuby.terminal_active?, "precondition: terminal should be active"
 
-      output_class = nil
+      captured_stdout = nil
       _, stderr = capture_io do
         RatatuiRuby.guard_io do
           puts "hidden stdout"
           $stderr.write "hidden stderr\n"
-          output_class = $stdout.class.name
+          captured_stdout = $stdout
         end
       end
 
-      assert_equal "RatatuiRuby::NullIO", output_class
+      assert_kind_of RatatuiRuby::NullIO, captured_stdout, "Should be NullIO inside guard_io"
       refute_includes stderr, "hidden"
     end
   end
