@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -20,6 +20,11 @@ module RatatuiRuby
   #
   # Run the interactive demo from the terminal:
   #
+  #--
+  # SPDX-SnippetBegin
+  # SPDX-FileCopyrightText: 2026 Kerrick Long
+  # SPDX-License-Identifier: MIT-0
+  #++
   #   ruby examples/widget_barchart/app.rb
   #
   #   # Grouped Bar Chart
@@ -31,6 +36,9 @@ module RatatuiRuby
   #     bar_width: 5,
   #     group_gap: 3
   #   )
+  #--
+  # SPDX-SnippetEnd
+  #++
   class BarChart < Data.define(:data, :bar_width, :bar_gap, :group_gap, :max, :style, :block, :direction, :label_style, :value_style, :bar_set)
     ##
     ##
@@ -45,23 +53,55 @@ module RatatuiRuby
     # [<tt>Array</tt> of tuples]
     #   Ordered list of <tt>["Label", Value]</tt> or <tt>["Label", Value, Style]</tt> pairs.
     # [<tt>Array</tt> of <tt>BarChart::BarGroup</tt>]
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2025 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   List of <tt>BarChart::BarGroup</tt> objects for grouped charts.
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # === Examples
     #
     # Hash (Simple):
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2025 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   { "Apples" => 10, :Oranges => 15 }
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # Array of Tuples (Ordered):
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2025 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   [["Mon", 20], ["Tue", 30], ["Wed", 25]]
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # BarGroup (Grouped):
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2025 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   [
     #     RatatuiRuby::BarChart::BarGroup.new(label: "Q1", bars: [
     #       RatatuiRuby::BarChart::Bar.new(value: 50, label: "Rev"),
     #       RatatuiRuby::BarChart::Bar.new(value: 30, label: "Cost")
     #     ])
     #   ]
+    #--
+    # SPDX-SnippetEnd
+    #++
 
     ##
     # :attr_reader: bar_width
@@ -110,6 +150,11 @@ module RatatuiRuby
     #
     # === Examples
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2025 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   bar_set: {
     #     empty: " ",
     #     one_eighth: " ",
@@ -129,6 +174,9 @@ module RatatuiRuby
     #
     #   # Array (9 items)
     #   bar_set: [" ", " ", "▂", "▃", "▄", "▅", "▆", "▇", "█"]
+    #--
+    # SPDX-SnippetEnd
+    #++
 
     BAR_KEYS = %i[empty one_eighth one_quarter three_eighths half five_eighths three_quarters seven_eighths full].freeze
 

@@ -1,5 +1,5 @@
 <!--
-  SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+  SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
   SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 # Quickstart
@@ -17,6 +17,11 @@ See [Installation in the README](../README.md#installation) for setup instructio
 
 Here is a "Hello World" application that demonstrates the core lifecycle of a **ratatui_ruby** app.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 <!-- SYNC:START:examples/verify_quickstart_lifecycle/app.rb:main -->
 ```ruby
 # 1. Initialize the terminal
@@ -64,6 +69,7 @@ ensure
 end
 ```
 <!-- SYNC:END -->
+<!-- SPDX-SnippetEnd -->
 
 [![quickstart_lifecycle](../images/verify_quickstart_lifecycle.png)](../../examples/verify_quickstart_lifecycle/README.md)
 
@@ -80,6 +86,11 @@ end
 
 You can simplify your code by using `RatatuiRuby.run`. This method handles the terminal lifecycle for you, yielding a `TUI` object with factory methods for widgets.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 <!-- SYNC:START:examples/verify_quickstart_dsl/app.rb:main -->
 ```ruby
 # 1. Initialize the terminal, start the run loop, and ensure the terminal is restored.
@@ -114,6 +125,7 @@ RatatuiRuby.run do |tui|
 end
 ```
 <!-- SYNC:END -->
+<!-- SPDX-SnippetEnd -->
 
 #### How it works
 
@@ -128,6 +140,11 @@ For a deeper dive into the available application architectures (Manual vs Manage
 
 Real-world applications often need to split the screen into multiple areas. `RatatuiRuby::Layout` lets you do this easily.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 <!-- SYNC:START:examples/verify_quickstart_layout/app.rb:main -->
 ```ruby
 loop do
@@ -184,6 +201,7 @@ loop do
 end
 ```
 <!-- SYNC:END -->
+<!-- SPDX-SnippetEnd -->
 
 #### How it works
 

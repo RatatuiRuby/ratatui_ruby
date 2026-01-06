@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -24,6 +24,11 @@ module RatatuiRuby
   #
   # == Example
   #
+  #--
+  # SPDX-SnippetBegin
+  # SPDX-FileCopyrightText: 2026 Kerrick Long
+  # SPDX-License-Identifier: MIT-0
+  #++
   #   @list_state = RatatuiRuby::ListState.new
   #   @list_state.select(2) # Select third item
   #
@@ -34,6 +39,9 @@ module RatatuiRuby
   #
   #   puts @list_state.offset # Scroll position after render
   #
+  #--
+  # SPDX-SnippetEnd
+  #++
   class ListState
     ##
     # :method: new

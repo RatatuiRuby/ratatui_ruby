@@ -26,9 +26,15 @@ TUI layouts are composed of rectangles. Understanding how to manipulate `Rect` o
 
 ## Usage
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```bash
 ruby examples/widget_rect/app.rb
 ```
+<!-- SPDX-SnippetEnd -->
 
 ## Learning Outcomes
 

@@ -32,9 +32,15 @@ Widgets often float in a void. Without boundaries, interfaces become a chaotic m
 
 ## Usage
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```bash
 ruby examples/widget_box/app.rb
 ```
+<!-- SPDX-SnippetEnd -->
 
 ## Learning Outcomes
 

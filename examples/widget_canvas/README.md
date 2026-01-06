@@ -1,3 +1,7 @@
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+  SPDX-License-Identifier: CC-BY-SA-4.0
+-->
 # Canvas (Circle, Line, Point, Rectangle) Example
 
 [![widget_canvas](../../doc/images/widget_canvas.png)](app.rb)

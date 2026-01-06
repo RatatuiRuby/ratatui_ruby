@@ -37,9 +37,15 @@ Comparing magnitudes in raw tables requires mental arithmetic. Bar charts make t
 
 ## Usage
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```bash
 ruby examples/widget_barchart/app.rb
 ```
+<!-- SPDX-SnippetEnd -->
 
 ## Learning Outcomes
 

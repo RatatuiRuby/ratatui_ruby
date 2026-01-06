@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -17,6 +17,11 @@ module RatatuiRuby
     #
     # === Examples
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   # Cell with yellow background
     #   Widgets::Cell.new(content: "Warning", style: Style::Style.new(bg: :yellow))
     #
@@ -28,6 +33,9 @@ module RatatuiRuby
     #     ]),
     #     style: Style::Style.new(bg: :dark_gray)
     #   )
+    #--
+    # SPDX-SnippetEnd
+    #++
     class Cell < Data.define(:content, :style)
       ##
       # :attr_reader: content

@@ -1,5 +1,5 @@
 <!--
-  SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+  SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
   SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
@@ -41,6 +41,11 @@ The Rust backend is a pure rendering engine. It receives Ruby objects representi
 
 The backend implements one generic rendering function that accepts any Ruby `Value` and dispatches based on class name. There is no compile-time knowledge of Ruby types—everything is runtime reflection.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```rust
 // rendering.rs
 pub fn render_widget(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
@@ -58,20 +63,32 @@ pub fn render_widget(frame: &mut Frame, area: Rect, node: Value) -> Result<(), E
     }
 }
 ```
+<!-- SPDX-SnippetEnd -->
 
 ### 3. No Custom Rust Structs for UI
 
 Do not define Rust structs that mirror Ruby UI components. This would create synchronization problems when Ruby classes change.
 
 **What We Do:**
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```rust
 // Extract directly from Ruby object
 let text: String = node.funcall("text", ())?;
 let style_val: Value = node.funcall("style", ())?;
 let style = parse_style(style_val)?;
 ```
+<!-- SPDX-SnippetEnd -->
 
 **What We Don't Do:**
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```rust
 // NO: Rust struct mirroring Ruby
 struct Paragraph {
@@ -80,6 +97,7 @@ struct Paragraph {
     block: Option<Block>,
 }
 ```
+<!-- SPDX-SnippetEnd -->
 
 ### 4. Immediate Mode Rendering
 
@@ -91,6 +109,11 @@ This mirrors Ratatui's own immediate mode paradigm. The Rust backend is stateles
 
 Ruby's GC can move or collect objects at any time. All data extracted from Ruby must be owned (copied) before use, never borrowed.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```rust
 // SAFE: Convert to owned String immediately
 let text: String = node.funcall::<_, String>("text", ())?.into_owned();
@@ -100,11 +123,17 @@ let text_ref: &str = node.funcall("text", ())?;  // DON'T
 do_something_that_might_gc();
 use(text_ref);  // CRASH: text_ref may be invalid
 ```
+<!-- SPDX-SnippetEnd -->
 
 ---
 
 ## Directory Structure
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```
 ext/ratatui_ruby/src/
 ├── lib.rs              # Entry point, Ruby module registration
@@ -123,6 +152,7 @@ ext/ratatui_ruby/src/
     ├── canvas.rs
     └── ...
 ```
+<!-- SPDX-SnippetEnd -->
 
 ---
 
@@ -159,6 +189,11 @@ Pure functions for extracting style information from Ruby values. Handles `parse
 
 The routing layer that maps Ruby class names to widget renderers:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```rust
 pub fn render_widget(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let class_name: String = node.class().name()?.into_owned();
@@ -191,6 +226,7 @@ pub fn render_widget(frame: &mut Frame, area: Rect, node: Value) -> Result<(), E
     }
 }
 ```
+<!-- SPDX-SnippetEnd -->
 
 **Namespace Pattern:** All built-in widgets use the `RatatuiRuby::Widgets::*` namespace. The dispatcher matches on full class names, not prefixes.
 
@@ -198,6 +234,11 @@ pub fn render_widget(frame: &mut Frame, area: Rect, node: Value) -> Result<(), E
 
 Each widget has its own module with a standard interface:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```rust
 // widgets/paragraph.rs
 pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
@@ -222,6 +263,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     Ok(())
 }
 ```
+<!-- SPDX-SnippetEnd -->
 
 ---
 
@@ -229,6 +271,11 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
 ### Step 1: Create the Widget Module
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```rust
 // src/widgets/my_widget.rs
 
@@ -249,18 +296,31 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     Ok(())
 }
 ```
+<!-- SPDX-SnippetEnd -->
 
 ### Step 2: Register in `widgets/mod.rs`
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```rust
 pub mod my_widget;
 ```
+<!-- SPDX-SnippetEnd -->
 
 ### Step 3: Add Dispatch Arm in `rendering.rs`
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```rust
 "RatatuiRuby::Widgets::MyWidget" => widgets::my_widget::render(frame, area, node),
 ```
+<!-- SPDX-SnippetEnd -->
 
 ### Step 4: Test
 
@@ -274,6 +334,11 @@ Some widgets (List, Table, Scrollbar) support stateful rendering where a mutable
 
 ### The Pattern
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```rust
 pub fn render_stateful_widget(
     frame: &mut Frame,
@@ -299,6 +364,7 @@ pub fn render_stateful_widget(
     Ok(())
 }
 ```
+<!-- SPDX-SnippetEnd -->
 
 **State Precedence:** When using stateful rendering, the State object's values take precedence over Widget properties. This is documented in Ruby.
 

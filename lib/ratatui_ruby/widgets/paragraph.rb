@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -17,6 +17,11 @@ module RatatuiRuby
     #
     # === Examples
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   # Basic Text
     #   Paragraph.new(text: "Hello, World!")
     #
@@ -30,6 +35,9 @@ module RatatuiRuby
     #
     #   # Scrolling mechanism
     #   Paragraph.new(text: large_text, scroll: [scroll_y, 0])
+    #--
+    # SPDX-SnippetEnd
+    #++
     class Paragraph < Data.define(:text, :style, :block, :wrap, :alignment, :scroll)
       ##
       # :attr_reader: text

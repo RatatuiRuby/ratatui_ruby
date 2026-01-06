@@ -1,6 +1,6 @@
 <!--
-SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
-SPDX-License-Identifier: CC-BY-SA-4.0
+  SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+  SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
 # Interactive TUI Design Patterns
@@ -19,6 +19,11 @@ Canonical patterns for building responsive, interactive terminal user interfaces
 
 Structure your event loop into three clear phases:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 def run
   RatatuiRuby.run do |tui|
@@ -33,11 +38,17 @@ def run
   end
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 **Phase 1: Layout Calculation**
 
 Call this inside your `draw` block. It uses the current terminal area provided by the frame:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 def calculate_layout(area)
   # Main area vs sidebar (70% / 30%)
@@ -61,22 +72,34 @@ def calculate_layout(area)
   )
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 **Phase 2: Rendering**
 
 Reuse the cached rects. Build and draw:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 def render(frame)
   frame.render_widget(build_widget(@left_rect), @left_rect)
   frame.render_widget(build_widget(@right_rect), @right_rect)
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 **Phase 3: Event Handling**
 
 Reuse the cached rects. Test clicks:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2025 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 def handle_input
   event = RatatuiRuby.poll_event
@@ -93,6 +116,7 @@ def handle_input
   end
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ### Why This Matters
 
@@ -105,6 +129,11 @@ end
 
 `Layout.split` computes layout geometry without rendering. It returns an array of `Rect` objects. While you can call `RatatuiRuby::Layout.split` directly, we recommend using the `TUI` helper (`tui.layout_split`) for cleaner application code.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 # Preferred (TUI API)
 left, right = tui.layout_split(area, constraints: [...])
@@ -112,5 +141,6 @@ left, right = tui.layout_split(area, constraints: [...])
 # Manual (Core API)
 left, right = RatatuiRuby::Layout.split(area, constraints: [...])
 ```
+<!-- SPDX-SnippetEnd -->
 
 Use it to establish the single source of truth inside your `draw` block. Store the results in instance variables and reuse them in both `render` and `handle_input`.

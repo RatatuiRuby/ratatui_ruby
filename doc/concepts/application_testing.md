@@ -1,5 +1,5 @@
 <!--
-  SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+  SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
   SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 # Application Testing Guide
@@ -18,19 +18,31 @@ Use it to write fast, deterministic tests for your TUI applications.
 
 First, require the test helper in your test file or `test_helper.rb`:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2025 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 require "ratatui_ruby/test_helper"
 require "minitest/autorun" # or your preferred test framework
 ```
+<!-- SPDX-SnippetEnd -->
 
 Then, include the module in your test class:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2025 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 class MyApplicationTest < Minitest::Test
   include RatatuiRuby::TestHelper
   # ...
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ## Writing a View Test
 
@@ -40,6 +52,11 @@ To test a view or widget, wrap your assertions in `with_test_terminal`. This set
 2.  **Render your code:** Instantiate your widget and draw it to a frame.
 3.  **Assert output:** Check the `buffer_content` against your expectations.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 def test_rendering
   # Uses default 80x24 terminal
@@ -57,6 +74,7 @@ def test_rendering
   end
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 For the full API list, including `buffer_content` and `cursor_position`, see [RatatuiRuby::TestHelper::Terminal](../lib/ratatui_ruby/test_helper/terminal.rb).
 
@@ -66,6 +84,11 @@ You often need to check colors and modifiers (bold, italic) to ensure your highl
 
 Use `assert_fg_color`, `assert_bg_color`, and modifier helpers like `assert_bold`.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 # Assert specific cell style
 assert_fg_color(:red, 0, 0)
@@ -74,6 +97,7 @@ assert_bold(0, 0)
 # Or check a whole area
 assert_area_style({ x: 0, y: 0, w: 10, h: 1 }, bg: :blue)
 ```
+<!-- SPDX-SnippetEnd -->
 
 See [RatatuiRuby::TestHelper::StyleAssertions](../lib/ratatui_ruby/test_helper/style_assertions.rb) for the comprehensive list of style helpers.
 
@@ -86,6 +110,11 @@ Use `inject_event` to push mock events into the queue. This ensures safe, determ
 > [!IMPORTANT]
 > Call `inject_event` inside a `with_test_terminal` block to avoid race conditions.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 with_test_terminal do
   # Simulate 'q' key press
@@ -96,6 +125,7 @@ with_test_terminal do
   assert_equal "q", event.code
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 See [RatatuiRuby::TestHelper::EventInjection](../lib/ratatui_ruby/test_helper/event_injection.rb) for helper methods like `inject_keys` and `inject_click`.
 
@@ -105,12 +135,18 @@ Snapshots let you verify complex layouts without manually asserting every line.
 
 Use `assert_snapshots` to compare the current screen against stored reference files.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 with_test_terminal do
   MyApp.new.run
   assert_snapshots("dashboard_view")
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 This generates both `.txt` (plain text) and `.ansi` (styled) snapshot files. The `.ansi` files contain ANSI escape codes—`cat` them in a terminal to see exactly what the screen looked like. For a visual tour of your test suite, try `cat **/*.ansi` in any shell that supports globbing.
 
@@ -130,6 +166,11 @@ Sometimes you want to test a single view component without spinning up the full 
 
 Use `MockFrame` and `StubRect` to test render logic in isolation.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 def test_logs_view
   frame = RatatuiRuby::TestHelper::TestDoubles::MockFrame.new
@@ -143,6 +184,7 @@ def test_logs_view
   assert_equal "Logs", rendered[:widget].block.title
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 See [RatatuiRuby::TestHelper::TestDoubles](../lib/ratatui_ruby/test_helper/test_doubles.rb).
 

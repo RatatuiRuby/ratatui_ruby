@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -17,8 +17,16 @@ module RatatuiRuby
     #
     # === Examples
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   Cursor.new(x: 10, y: 5)
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # See also:
     # - {Declarative implementation using Tree API}[link:/examples/app_login_form/app_rb.html]
     # - {Component-based implementation using Frame API}[link:/examples/app_color_picker/app_rb.html]

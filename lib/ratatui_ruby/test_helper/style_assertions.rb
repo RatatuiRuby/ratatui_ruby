@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -21,6 +21,11 @@ module RatatuiRuby
     #
     # === Examples
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   # Single cell
     #   assert_cell_style(0, 0, fg: :red, modifiers: [:bold])
     #
@@ -30,14 +35,25 @@ module RatatuiRuby
     #   # Entire header region
     #   assert_area_style({ x: 0, y: 0, w: 80, h: 1 }, bg: :blue)
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     module StyleAssertions
       ##
       # Asserts that a cell has the expected style attributes.
       #
       # === Example
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   assert_cell_style(0, 0, char: "H", fg: :red)
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [x] Integer x-coordinate.
       # [y] Integer y-coordinate.
       # [expected_attributes] Hash of attribute names to expected values.
@@ -60,10 +76,18 @@ module RatatuiRuby
       #
       # === Examples
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   assert_color(:red, x: 10, y: 5)
       #   assert_color(5, x: 10, y: 5, layer: :bg)
       #   assert_color("#ff00ff", x: 10, y: 5)
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [expected] Symbol, Integer, or String (hex).
       # [x] Integer x-coordinate.
       # [y] Integer y-coordinate.
@@ -88,11 +112,19 @@ module RatatuiRuby
       #
       # === Examples
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   header = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 80, height: 1)
       #   assert_area_style(header, bg: :blue, modifiers: [:bold])
       #
       #   assert_area_style({ x: 0, y: 0, w: 10, h: 1 }, fg: :red)
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [area] Rect-like object or Hash with x, y, width/w, height/h.
       # [attributes] Style attributes to verify.
       def assert_area_style(area, **attributes)
@@ -122,8 +154,16 @@ module RatatuiRuby
       #
       # === Example
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   assert_fg_color(:yellow, 0, 2)
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [expected] Symbol, Integer, or String (hex).
       # [x] Integer x-coordinate.
       # [y] Integer y-coordinate.
@@ -139,8 +179,16 @@ module RatatuiRuby
       #
       # === Example
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   assert_bg_color(:blue, 0, 2)
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [expected] Symbol, Integer, or String (hex).
       # [x] Integer x-coordinate.
       # [y] Integer y-coordinate.
@@ -154,8 +202,16 @@ module RatatuiRuby
       #
       # === Example
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   assert_bold(0, 2)
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [x] Integer x-coordinate.
       # [y] Integer y-coordinate.
       def assert_bold(x, y)
@@ -170,8 +226,16 @@ module RatatuiRuby
       #
       # === Example
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   assert_italic(0, 2)
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [x] Integer x-coordinate.
       # [y] Integer y-coordinate.
       def assert_italic(x, y)
@@ -186,8 +250,16 @@ module RatatuiRuby
       #
       # === Example
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   assert_underlined(0, 2)
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [x] Integer x-coordinate.
       # [y] Integer y-coordinate.
       def assert_underlined(x, y)
@@ -203,8 +275,16 @@ module RatatuiRuby
       #
       # === Example
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   assert_dim(0, 2)
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [x] Integer x-coordinate.
       # [y] Integer y-coordinate.
       def assert_dim(x, y)
@@ -219,8 +299,16 @@ module RatatuiRuby
       #
       # === Example
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   assert_reversed(0, 2)
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [x] Integer x-coordinate.
       # [y] Integer y-coordinate.
       def assert_reversed(x, y)
@@ -237,8 +325,16 @@ module RatatuiRuby
       #
       # === Example
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   assert_crossed_out(0, 2)
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [x] Integer x-coordinate.
       # [y] Integer y-coordinate.
       def assert_crossed_out(x, y)

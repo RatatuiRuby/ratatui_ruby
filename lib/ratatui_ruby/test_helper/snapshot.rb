@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -26,21 +26,42 @@ module RatatuiRuby
     #
     # Snapshots live in a <tt>snapshots/</tt> subdirectory next to your test file:
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   test/examples/my_app/test_app.rb
     #   test/examples/my_app/snapshots/initial_render.txt
     #   test/examples/my_app/snapshots/initial_render.ansi
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # === Creating and Updating Snapshots
     #
     # Run tests with <tt>UPDATE_SNAPSHOTS=1</tt> to create or refresh snapshots:
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   UPDATE_SNAPSHOTS=1 bundle exec rake test
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # === Seeding Random Data
     #
     # Random data (scatter plots, generated content) breaks snapshot stability.
     # Use a seeded <tt>Random</tt> instance instead of <tt>Kernel.rand</tt>:
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   class MyApp
     #     def initialize(seed: nil)
     #       @rng = seed ? Random.new(seed) : Random.new
@@ -56,6 +77,9 @@ module RatatuiRuby
     #     @app = MyApp.new(seed: 42)
     #   end
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # For libraries like Faker, see their docs on deterministic random:
     # https://github.com/faker-ruby/faker#deterministic-random
     #
@@ -63,10 +87,18 @@ module RatatuiRuby
     #
     # Mask dynamic content (timestamps, IDs) with a normalization block:
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   assert_snapshots("dashboard") do |lines|
     #     lines.map { |l| l.gsub(/\d{4}-\d{2}-\d{2}/, "YYYY-MM-DD") }
     #   end
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     module Snapshot
       ##
       # Asserts that the current screen content matches a stored plain text snapshot.
@@ -78,6 +110,11 @@ module RatatuiRuby
       # Plain text snapshots are human-readable when viewed in any editor or diff tool. They
       # pair well with rich snapshots for documentation. Use <tt>assert_snapshots</tt> to generate both.
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   assert_plain_snapshot("login_screen")
       #   # Compares against: test/snapshots/login_screen.txt
       #
@@ -86,6 +123,9 @@ module RatatuiRuby
       #     actual.map { |l| l.gsub(/\d{2}:\d{2}/, "XX:XX") }
       #   end
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [name] String name of the snapshot (without extension).
       # [msg] String optional failure message.
       def assert_plain_snapshot(name, msg = nil, snapshot_dir: nil, &)
@@ -110,6 +150,11 @@ module RatatuiRuby
       #
       # == Usage
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   # Direct comparison
       #   assert_screen_matches(["Line 1", "Line 2"])
       #
@@ -121,6 +166,9 @@ module RatatuiRuby
       #     lines.map { |l| l.gsub(/User ID: \d+/, "User ID: XXX") }
       #   end
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [expected] String (file path) or Array<String> (content).
       # [msg] String optional failure message.
       #
@@ -197,6 +245,11 @@ module RatatuiRuby
       # The <tt>.ansi</tt> snapshot files contain ANSI escape codes. You can <tt>cat</tt> them in a terminal
       # to see exactly what the screen looked like.
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   assert_rich_snapshot("login_screen")
       #   # Compares against: test/snapshots/login_screen.ansi
       #
@@ -205,6 +258,9 @@ module RatatuiRuby
       #     lines.map { |l| l.gsub(/\d{2}:\d{2}:\d{2}/, "HH:MM:SS") }
       #   end
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [name] String snapshot name.
       # [msg] String optional failure message.
       def assert_rich_snapshot(name, msg = nil, snapshot_dir: nil)
@@ -270,6 +326,11 @@ module RatatuiRuby
       # human-readable in any editor or diff tool, making them valuable for documentation and
       # code review. Together, they provide comprehensive coverage and discoverability.
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   assert_snapshots("login_screen")
       #   # Creates/compares: snapshots/login_screen.txt AND snapshots/login_screen.ansi
       #
@@ -278,6 +339,9 @@ module RatatuiRuby
       #     lines.map { |l| l.gsub(/\d{2}:\d{2}:\d{2}/, "HH:MM:SS") }
       #   end
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [name] String snapshot name (without extension).
       # [msg] String optional failure message.
       def assert_snapshots(name, msg = nil, &)
@@ -297,6 +361,11 @@ module RatatuiRuby
       #
       # === Example
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   with_test_terminal(80, 25) do
       #     RatatuiRuby.run do |tui|
       #       tui.draw tui.paragraph(text: "Hello", block: tui.block(title: "Test"))
@@ -306,6 +375,9 @@ module RatatuiRuby
       #     puts ansi_output  # Shows styled output with escape codes
       #   end
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       def render_rich_buffer
         _render_buffer_with_ansi
       end

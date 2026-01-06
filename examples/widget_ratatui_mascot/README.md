@@ -23,9 +23,15 @@ Interfaces can feel clinical. A friendly mascot adds charm and brand identity to
 
 ## Usage
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```bash
 ruby examples/widget_ratatui_mascot/app.rb
 ```
+<!-- SPDX-SnippetEnd -->
 
 ## Learning Outcomes
 

@@ -28,6 +28,11 @@ In raw mode:
 
 If you're using a gem that might write to stdout/stderr, wrap its calls:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 RatatuiRuby.run do |tui|
   RatatuiRuby.guard_io do
@@ -38,9 +43,15 @@ RatatuiRuby.run do |tui|
   # Object::STDERR.puts "debug: something"  # Escape hatch (corrupts display!)
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ### Defer output until after the TUI exits
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 messages = []
 
@@ -54,11 +65,17 @@ end
 # Now safe to print
 messages.each { |msg| puts msg }
 ```
+<!-- SPDX-SnippetEnd -->
 
 ### Use Logger to write to a file
 
 The `Logger` class from Ruby's standard library is the idiomatic solution:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 require "logger"
 require "tmpdir"
@@ -73,9 +90,15 @@ RatatuiRuby.run do |tui|
   # ... TUI logic ...
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ### Display messages in the TUI itself
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 RatatuiRuby.run do |tui|
   @status_message = "Something happened"
@@ -89,6 +112,7 @@ RatatuiRuby.run do |tui|
   end
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ## Library Behavior
 
@@ -100,6 +124,11 @@ You don't need to do anything special for library warnings—they're handled aut
 
 If you need to write to stdout/stderr even when `guard_io` is active (e.g., for [pipeline integration](#headless-mode-batchpipelinecli) or IPC), use the original IO constants:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 RatatuiRuby.guard_io do
   SomeChattyGem.do_something  # This is swallowed
@@ -108,6 +137,7 @@ RatatuiRuby.guard_io do
   Object::STDOUT.puts "structured output for downstream tools"
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 This works regardless of whether `guard_io` is active. During a TUI session, the display will be corrupted—but the output will reach its destination.
 
@@ -115,6 +145,11 @@ This works regardless of whether `guard_io` is active. During a TUI session, the
 
 If your app supports both TUI and non-TUI modes (e.g., `my_app --no-tui`), call `headless!` at startup to silence `guard_io` warnings:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 if ARGV.include?("--no-tui")
   RatatuiRuby.headless!
@@ -126,6 +161,7 @@ else
   end
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 When headless, `guard_io` becomes a no-op (output flows normally), and calling `run` or `init_terminal` raises an error.
 
@@ -133,6 +169,11 @@ When headless, `guard_io` becomes a no-op (output flows normally), and calling `
 
 Some apps need to temporarily leave TUI mode for user interaction—like lazygit does when opening an external editor for commit messages. Use `restore_terminal` and `init_terminal`:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 RatatuiRuby.run do |tui|
   # ... TUI is active ...
@@ -151,5 +192,6 @@ RatatuiRuby.run do |tui|
   # ... TUI is active again ...
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 This pattern lets you hand control back to the user or spawn external processes that need normal terminal access.

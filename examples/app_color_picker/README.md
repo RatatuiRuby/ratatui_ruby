@@ -1,6 +1,6 @@
 <!--
-SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
-SPDX-License-Identifier: CC-BY-SA-4.0
+  SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+  SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
 # Color Picker Example
@@ -23,6 +23,11 @@ This app uses a **Strict Component-Based Architecture** where every UI element e
 
 Every component implements this duck-type interface:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 # Renders the component into the given area
 # Caches `area` for hit testing
@@ -40,6 +45,7 @@ end
 def tick
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ### 1. The MainContainer (Orchestrator)
 
@@ -85,6 +91,11 @@ Components return semantic symbols instead of just `:consumed`:
 
 The `MainContainer` interprets these signals to coordinate cross-component communication:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 result = @input.handle_event(event)
 case result
@@ -93,6 +104,7 @@ when :submitted
   return :consumed
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ### ⏱️ Lifecycle Hooks (`tick`)
 
@@ -109,9 +121,15 @@ Read this example if you are trying to solve:
 
 ## Usage
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```bash
 ruby examples/app_color_picker/app.rb
 ```
+<!-- SPDX-SnippetEnd -->
 
 -   Type a hex code (e.g., `#FF0055`) or color name (`cyan`).
 -   Press `Enter` to generate the palette.

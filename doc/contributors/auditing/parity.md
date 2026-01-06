@@ -1,5 +1,5 @@
 <!--
-  SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+  SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
   SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
@@ -32,6 +32,11 @@ Every audit begins with a question:
 
 Every RatatuiRuby feature has three layers. Gaps can occur at any layer:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```
 ┌─────────────────────────────┐
 │  Ruby API (lib/**/*.rb)    │  ← What users see
@@ -41,6 +46,7 @@ Every RatatuiRuby feature has three layers. Gaps can occur at any layer:
 │  Upstream Ratatui          │  ← Source of truth
 └─────────────────────────────┘
 ```
+<!-- SPDX-SnippetEnd -->
 
 ### Layer 1: Ruby API Gaps
 Ruby doesn't expose a parameter that upstream supports.

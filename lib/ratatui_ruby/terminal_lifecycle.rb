@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
-#
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -27,6 +26,11 @@ module RatatuiRuby
     #
     # === Example
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   def log(message)
     #     if RatatuiRuby.terminal_active?
     #       @deferred_logs << message
@@ -34,6 +38,9 @@ module RatatuiRuby
     #       puts message
     #     end
     #   end
+    #--
+    # SPDX-SnippetEnd
+    #++
     def terminal_active?
       @tui_session_active
     end
@@ -112,11 +119,19 @@ module RatatuiRuby
     #
     # === Example
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   RatatuiRuby.run(focus_events: false) do |tui|
     #     tui.draw(tui.paragraph(text: "Hi"))
     #     sleep 1
     #   end
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # @raise [Error::Invariant] if headless mode is enabled
     # @see headless!
     def run(focus_events: true, bracketed_paste: true)

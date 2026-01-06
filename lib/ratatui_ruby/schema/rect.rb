@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -18,8 +18,16 @@ module RatatuiRuby
   #
   # === Examples
   #
+  #--
+  # SPDX-SnippetBegin
+  # SPDX-FileCopyrightText: 2025 Kerrick Long
+  # SPDX-License-Identifier: MIT-0
+  #++
   #   area = Rect.new(x: 0, y: 0, width: 80, height: 24)
   #   puts area.width # => 80
+  #--
+  # SPDX-SnippetEnd
+  #++
   class Rect < Data.define(:x, :y, :width, :height)
     ##
     # :attr_reader: x
@@ -58,15 +66,31 @@ module RatatuiRuby
     #
     # Essential for hit testing mouse clicks against layout regions.
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2025 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   area = Rect.new(x: 10, y: 5, width: 20, height: 10)
     #   area.contains?(15, 8) # => true
     #   area.contains?(5, 8)  # => false
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # [px]
     #   X coordinate to test (column).
     # [py]
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2025 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   Y coordinate to test (row).
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # Returns true if the point (px, py) is within the rectangle bounds.
     def contains?(px, py)
       px >= x && px < x + width && py >= y && py < y + height
@@ -76,13 +100,29 @@ module RatatuiRuby
     #
     # Essential for determining if a widget is visible within a viewport or clipping area.
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   viewport = Rect.new(x: 0, y: 0, width: 80, height: 24)
     #   widget = Rect.new(x: 70, y: 20, width: 20, height: 10)
     #   viewport.intersects?(widget) # => true (partial overlap)
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # [other]
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   Another Rect to test against.
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # Returns true if the rectangles overlap.
     def intersects?(other)
       x < other.x + other.width &&
@@ -95,14 +135,30 @@ module RatatuiRuby
     #
     # Essential for calculating visible portions of widgets inside scroll views.
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   viewport = Rect.new(x: 0, y: 0, width: 80, height: 24)
     #   widget = Rect.new(x: 70, y: 20, width: 20, height: 10)
     #   visible = viewport.intersection(widget)
     #   # => Rect(x: 70, y: 20, width: 10, height: 4)
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # [other]
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   Another Rect to intersect with.
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # Returns a new Rect representing the intersection, or +nil+ if no overlap.
     def intersection(other)
       return nil unless intersects?(other)

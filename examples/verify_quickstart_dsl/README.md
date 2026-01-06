@@ -11,6 +11,11 @@ This example exists as a documentation regression test. It ensures the recommend
 
 ## Usage
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 <!-- SYNC:START:app.rb:main -->
 ```ruby
 # 1. Initialize the terminal, start the run loop, and ensure the terminal is restored.
@@ -45,5 +50,6 @@ RatatuiRuby.run do |tui|
 end
 ```
 <!-- SYNC:END -->
+<!-- SPDX-SnippetEnd -->
 
 [![verify_quickstart_dsl](../../doc/images/verify_quickstart_dsl.png)](../../doc/getting_started/quickstart.md#simplified-api)

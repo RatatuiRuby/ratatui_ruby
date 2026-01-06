@@ -1,7 +1,6 @@
 <!--
-SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
-
-SPDX-License-Identifier: AGPL-3.0-or-later
+  SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+  SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
 # Event Handling
@@ -30,6 +29,11 @@ For simple key events, `RatatuiRuby::Event::Key` objects can be compared directl
 
 For a complete list of supported keys, modifiers, and event types, please refer to the [API Documentation for RatatuiRuby::Event](file:///Users/kerrick/Developer/ratatui_ruby/lib/ratatui_ruby/event.rb).
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2025 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 event = RatatuiRuby.poll_event
 
@@ -43,6 +47,7 @@ if event == :enter
   submit_form
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ## 3. Predicate Methods (Intermediate)
 
@@ -54,6 +59,11 @@ Safe to call on *any* event object. They return `true` only for the matching eve
 
 Available: `key?`, `mouse?`, `resize?`, `paste?`, `focus_gained?`, `focus_lost?`.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2025 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 event = RatatuiRuby.poll_event
 
@@ -65,6 +75,7 @@ elsif event.resize?
   resize_layout(event.width, event.height)
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ### Helper Predicates
 
@@ -74,26 +85,43 @@ Specific to certain event classes to simplify checks.
 *   `ctrl?`, `alt?`, `shift?`: Check if modifier is held.
 *   `text?`: Returns `true` if the event is a printable character (length == 1).
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2025 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 if event.key? && event.ctrl? && event.code == "s"
   save_file
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 #### `RatatuiRuby::Event::Mouse`
 *   `down?`, `up?`, `drag?`: Check mouse action.
 *   `scroll_up?`, `scroll_down?`: Check scroll direction.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2025 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 if event.mouse? && event.scroll_up?
   scroll_view(-1)
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ## 4. Pattern Matching (Powerful)
 
 For complex applications, Ruby 3.0+ Pattern Matching with the `type:` discriminator is the most idiomatic and concise approach.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2025 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 loop do
   case RatatuiRuby.poll_event
@@ -119,6 +147,7 @@ loop do
   end
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ## Summary of Event Classes
 

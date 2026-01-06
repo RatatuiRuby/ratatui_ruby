@@ -1,5 +1,5 @@
 <!--
-  SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+  SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
   SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
@@ -39,11 +39,17 @@ Located in `lib/ratatui_ruby/widgets/`, `lib/ratatui_ruby/layout/`, etc.
 
 These are the actual `Data.define` classes that the Rust backend expects. They have deep, explicit namespaces that match Ratatui:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 RatatuiRuby::Widgets::Paragraph.new(text: "Hello")
 RatatuiRuby::Layout::Constraint.length(20)
 RatatuiRuby::Style::Style.new(fg: :red)
 ```
+<!-- SPDX-SnippetEnd -->
 
 **Layer 2: TUI Facade (The DSL)**
 
@@ -51,6 +57,11 @@ Located in `lib/ratatui_ruby/tui.rb` and `lib/ratatui_ruby/tui/*.rb` mixins.
 
 The `TUI` class provides shorthand factory methods that hide namespace verbosity:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 RatatuiRuby.run do |tui|
   tui.paragraph(text: "Hello")
@@ -58,6 +69,7 @@ RatatuiRuby.run do |tui|
   tui.style(fg: :red)
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 **Why This Matters:**
 
@@ -69,6 +81,11 @@ The TUI facade uses explicit factory method definitions, not runtime metaprogram
 
 **What We Do:**
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 # lib/ratatui_ruby/tui/widget_factories.rb
 module RatatuiRuby
@@ -85,15 +102,22 @@ module RatatuiRuby
   end
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 **What We Don't Do:**
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 # NO: Dynamic method generation
 RatatuiRuby.constants.each do |const|
   define_method(const.underscore) { |**kw| RatatuiRuby.const_get(const).new(**kw) }
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 **Benefits of Explicit Definitions:**
 
@@ -109,6 +133,11 @@ All UI components are pure, immutable `Data.define` value objects. They describe
 
 **Widgets Are Inputs:**
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 # This is just data. It has no behavior, no side effects.
 paragraph = RatatuiRuby::Widgets::Paragraph.new(
@@ -119,11 +148,17 @@ paragraph = RatatuiRuby::Widgets::Paragraph.new(
 # Pass to renderer as input
 frame.render_widget(paragraph, area)
 ```
+<!-- SPDX-SnippetEnd -->
 
 **Immediate Mode Loop:**
 
 Every frame, the application constructs a fresh view tree and passes it to `draw`. No widget state persists between frames. This is Ratatui's core paradigm.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 loop do
   tui.draw do |frame|
@@ -133,6 +168,7 @@ loop do
   break if tui.poll_event.key? && tui.poll_event.code == "q"
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ### 5. Separation of Configuration and Status
 
@@ -142,14 +178,25 @@ Widgets (Configuration) and State (Status) are strictly separated.
 
 Widgets define *what* to render. They are created, rendered, and discarded.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 list = tui.list(items: ["A", "B", "C", "D", "E"])
 ```
+<!-- SPDX-SnippetEnd -->
 
 **Status (Output):**
 
 State objects track *runtime metrics* computed by the Rust backend: scroll offsets, selection positions, etc. They persist across frames.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 # Created once
 @list_state = RatatuiRuby::ListState.new
@@ -160,6 +207,7 @@ frame.render_stateful_widget(list, area, @list_state)
 # Read back computed values
 puts "Scroll offset: #{@list_state.offset}"
 ```
+<!-- SPDX-SnippetEnd -->
 
 **Precedence Rule:**
 
@@ -188,6 +236,11 @@ This separation ensures rendering performance remains in Rust while Ruby handles
 
 ## Directory Structure
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```
 lib/ratatui_ruby/
 ├── tui.rb                    # TUI class, includes all mixins
@@ -221,6 +274,7 @@ lib/ratatui_ruby/
 │   └── cell.rb              # For get_cell_at inspection
 └── schema/                   # Legacy location (being migrated)
 ```
+<!-- SPDX-SnippetEnd -->
 
 ---
 
@@ -230,6 +284,11 @@ lib/ratatui_ruby/
 
 Define the Data class in the appropriate namespace directory:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 # lib/ratatui_ruby/widgets/my_widget.rb
 module RatatuiRuby
@@ -247,9 +306,15 @@ module RatatuiRuby
   end
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ### Step 2: Add the RBS Type
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```rbs
 # sig/ratatui_ruby/widgets/my_widget.rbs
 module RatatuiRuby
@@ -264,15 +329,22 @@ module RatatuiRuby
   end
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ### Step 3: Add the TUI Factory Method
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 # lib/ratatui_ruby/tui/widget_factories.rb
 def my_widget(**kwargs)
   Widgets::MyWidget.new(**kwargs)
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ### Step 4: Implement Rust Rendering
 
@@ -282,9 +354,15 @@ See `rust_backend.md` for the Rust implementation steps.
 
 Add to `lib/ratatui_ruby.rb`:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 require_relative "ratatui_ruby/widgets/my_widget"
 ```
+<!-- SPDX-SnippetEnd -->
 
 ---
 
@@ -324,6 +402,11 @@ These have side effects and are intentionally not Ractor-safe:
 - `TUI` — Has terminal I/O methods
 - `Frame` — Valid only during the `draw` block; invalid after
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 # OK: Cache TUI during run loop
 RatatuiRuby.run do |tui|
@@ -334,3 +417,4 @@ end
 # NOT OK: Include in immutable Model
 Model = Data.define(:tui, :count)  # Don't do this
 ```
+<!-- SPDX-SnippetEnd -->

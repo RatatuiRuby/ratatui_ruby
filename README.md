@@ -1,5 +1,5 @@
 <!--
-  SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+  SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
   SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 # ratatui_ruby
@@ -44,27 +44,50 @@ including Ruby 4.
 
 Add this line to your application's Gemfile:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2025 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 gem "ratatui_ruby"
 ```
+<!-- SPDX-SnippetEnd -->
 
 And then execute:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2025 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```bash
 bundle install
 ```
+<!-- SPDX-SnippetEnd -->
 
 Or install it yourself with:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2025 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```bash
 gem install ratatui_ruby
 ```
+<!-- SPDX-SnippetEnd -->
 
 
 ## Usage
 
 **ratatui_ruby** uses an immediate-mode API. You describe your UI using Ruby objects and call `draw` in a loop.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 <!-- SYNC:START:examples/verify_readme_usage/app.rb:main -->
 ```ruby
 RatatuiRuby.run do |tui|
@@ -93,6 +116,7 @@ RatatuiRuby.run do |tui|
 end
 ```
 <!-- SYNC:END -->
+<!-- SPDX-SnippetEnd -->
 
 ![Hello Ratatui](./doc/images/verify_readme_usage.png)
 

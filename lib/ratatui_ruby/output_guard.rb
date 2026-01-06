@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
-#
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -70,13 +69,26 @@ module RatatuiRuby
     # (like lazygit does when editing a commit message), use
     # {restore_terminal} and {init_terminal} instead:
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   RatatuiRuby.restore_terminal
     #   puts "Press enter to continue..."
     #   gets
     #   RatatuiRuby.init_terminal
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # === Example
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   if ARGV.include?("--no-tui")
     #     RatatuiRuby.headless!
     #     process_batch_work  # guard_io calls are silent no-ops
@@ -86,6 +98,9 @@ module RatatuiRuby
     #     end
     #   end
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # Note: Calling {run} or {init_terminal} after {headless!} raises
     # {Error::Invariant}. The block is never executed.
     #
@@ -117,12 +132,20 @@ module RatatuiRuby
     #
     # === Example
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   RatatuiRuby.run do |tui|
     #     RatatuiRuby.guard_io do
     #       SomeChattyGem.do_something  # Any puts/warn calls are swallowed
     #     end
     #   end
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # @see headless!
     def guard_io
       # TUI active: guard the output

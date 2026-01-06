@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -21,12 +21,20 @@ module RatatuiRuby
     #
     # === Example
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   frame = MockFrame.new
     #   area = StubRect.new(width: 60, height: 20)
     #   MyView.new.call(state, tui, frame, area)
     #
     #   widget = frame.rendered_widgets.first[:widget]
     #   assert_equal "Dashboard", widget.block.title
+    #--
+    # SPDX-SnippetEnd
+    #++
     module TestDoubles
       ##
       # Mock frame for view tests.
@@ -35,10 +43,18 @@ module RatatuiRuby
       #
       # === Example
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   frame = MockFrame.new
       #   View::Log.new.call(state, tui, frame, area)
       #   widget = frame.rendered_widgets.first[:widget]
       #   assert_equal "Event Log", widget.block.title
+      #--
+      # SPDX-SnippetEnd
+      #++
       MockFrame = Data.define(:rendered_widgets) do
         def initialize(rendered_widgets: [])
           super

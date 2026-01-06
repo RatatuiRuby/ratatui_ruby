@@ -1,6 +1,6 @@
 <!--
-SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
-SPDX-License-Identifier: CC-BY-SA-4.0
+  SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+  SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
 # Terminal Limitations
@@ -114,12 +114,18 @@ There's no way to catch SIGKILL. You can only mitigate the impact.
 
 **Script graceful shutdowns.** If you write deployment or process management scripts, prefer graceful signals with a timeout before SIGKILL:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```bash
 # Graceful first, force if needed
 kill -15 $PID
 sleep 2
 kill -0 $PID 2>/dev/null && kill -9 $PID
 ```
+<!-- SPDX-SnippetEnd -->
 
 See [Application Architecture: Signal Handling](../concepts/application_architecture.md#signal-handling) for programmatic cleanup strategies.
 

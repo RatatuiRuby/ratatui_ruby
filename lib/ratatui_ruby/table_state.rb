@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -15,6 +15,11 @@ module RatatuiRuby
   #
   # == Example
   #
+  #--
+  # SPDX-SnippetBegin
+  # SPDX-FileCopyrightText: 2026 Kerrick Long
+  # SPDX-License-Identifier: MIT-0
+  #++
   #   @table_state = RatatuiRuby::TableState.new
   #   @table_state.select(1)        # Select second row
   #   @table_state.select_column(0) # Select first column
@@ -24,6 +29,9 @@ module RatatuiRuby
   #     frame.render_stateful_widget(table, frame.area, @table_state)
   #   end
   #
+  #--
+  # SPDX-SnippetEnd
+  #++
   class TableState
     ##
     # :method: new

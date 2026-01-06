@@ -29,9 +29,15 @@ Trends and patterns are invisible in raw logs. Charts visualize X/Y datasets to 
 
 ## Usage
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```bash
 ruby examples/widget_chart/app.rb
 ```
+<!-- SPDX-SnippetEnd -->
 
 ## Learning Outcomes
 

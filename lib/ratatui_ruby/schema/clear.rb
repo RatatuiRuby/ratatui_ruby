@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -17,6 +17,11 @@ module RatatuiRuby
   #
   # === Examples
   #
+  #--
+  # SPDX-SnippetBegin
+  # SPDX-FileCopyrightText: 2025 Kerrick Long
+  # SPDX-License-Identifier: MIT-0
+  #++
   #   # Opaque Popup Construction
   #   Overlay.new(
   #     layers: [
@@ -36,6 +41,9 @@ module RatatuiRuby
   #
   #   # Shortcut: rendering a block directly
   #   Clear.new(block: Block.new(title: "Cleared area", borders: [:all]))
+  #--
+  # SPDX-SnippetEnd
+  #++
   class Clear < Data.define(:block)
     ##
     # :attr_reader: block

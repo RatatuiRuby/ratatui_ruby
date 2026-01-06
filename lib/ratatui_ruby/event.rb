@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -26,6 +26,11 @@ module RatatuiRuby
   # Use <tt>case...in</tt> to dispatch on every possible event type. This ensures
   # you handle every case without needing an +else+ clause:
   #
+  #--
+  # SPDX-SnippetBegin
+  # SPDX-FileCopyrightText: 2025 Kerrick Long
+  # SPDX-License-Identifier: MIT-0
+  #++
   #   case RatatuiRuby.poll_event
   #   in { type: :key, code: "q" }
   #     break
@@ -47,10 +52,18 @@ module RatatuiRuby
   #     # Idle
   #   end
   #
+  #--
+  # SPDX-SnippetEnd
+  #++
   # == Predicates
   #
   # Check event types with predicates without pattern matching:
   #
+  #--
+  # SPDX-SnippetBegin
+  # SPDX-FileCopyrightText: 2025 Kerrick Long
+  # SPDX-License-Identifier: MIT-0
+  #++
   #   event = RatatuiRuby.poll_event
   #   if event.key?
   #     puts "Key pressed"
@@ -59,6 +72,9 @@ module RatatuiRuby
   #   elsif event.mouse?
   #     puts "Mouse event"
   #   end
+  #--
+  # SPDX-SnippetEnd
+  #++
   class Event
     # Returns true if this is a None event.
     def none?
@@ -114,10 +130,18 @@ module RatatuiRuby
     #
     # Keys argument is unused but required by the protocol.
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2025 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   case event
     #   in type: :key, code:
     #     puts "Key: #{code}"
     #   end
+    #--
+    # SPDX-SnippetEnd
+    #++
     def deconstruct_keys(keys)
       {}
     end
