@@ -5,17 +5,16 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
-# Script to ensure Ruby files have correct SPDX file headers (AGPL-3.0-or-later).
+# Script to ensure Ruby files have correct SPDX file headers.
 #
 # Usage: ruby tasks/license/headers_rb.rb [path...]
 #
-# If no paths are given, processes all .rb files in lib/ via git ls-files.
+# If no paths are given, processes lib/, ext/, test/, examples/, tasks/, bin/.
 #
-# Rules:
-# - Ensures file has AGPL-3.0-or-later license header with YOUR copyright
-# - Updates years for EXISTING contributors based on git blame + Co-Authored-By
-# - Does NOT add new contributors from git history - only updates existing ones
-# - Adds header with YOUR copyright if missing
+# License selection by directory:
+# - lib/, ext/, test/ → LGPL-3.0-or-later
+# - examples/widget_*, examples/verify_* → MIT-0
+# - examples/app_*, tasks/, bin/ → AGPL-3.0-or-later
 
 require_relative "license_utils"
 
@@ -23,7 +22,17 @@ YOUR_NAME = "Kerrick Long"
 YOUR_EMAIL = "me@kerricklong.com"
 YOUR_IDENTIFIERS = [YOUR_NAME, YOUR_EMAIL].freeze
 YOUR_COPYRIGHT = "#{YOUR_NAME} <#{YOUR_EMAIL}>"
-LICENSE = "AGPL-3.0-or-later"
+
+def license_for_file(filepath)
+  case filepath
+  when %r{^(lib|sig/lib|ext|sig/ext|test|sig/test)/}
+    "LGPL-3.0-or-later"
+  when %r{^(examples|sig/examples)/(widget_|verify_)}
+    "MIT-0"
+  else
+    "AGPL-3.0-or-later"
+  end
+end
 
 def parse_existing_header(lines)
   # Returns { end_line:, copyrights: [{year:, holder:}], license: }
@@ -66,6 +75,8 @@ def process_file(filepath)
   content = File.read(filepath)
   lines = content.lines
 
+  target_license = license_for_file(filepath)
+
   # Get contributors from git for year lookups
   all_contributors = LicenseUtils.get_contributors_for_lines(filepath)
   your_year = LicenseUtils.get_your_latest_year(filepath, YOUR_IDENTIFIERS)
@@ -97,18 +108,15 @@ def process_file(filepath)
 
     # Check if YOUR year needs updating (if you're a contributor)
     your_existing = updated_copyrights.find { |c| YOUR_IDENTIFIERS.any? { |id| c[:holder].include?(id) } }
-    if your_existing && your_existing[:year] != your_year
-      # Already handled in the loop above
-    elsif your_existing.nil?
-      # You're not in the header yet - add you
+    if your_existing.nil?
       puts "  Adding your copyright"
       updated_copyrights << { year: your_year, holder: YOUR_COPYRIGHT }
       needs_update = true
     end
 
     # Check license
-    if existing[:license] != LICENSE
-      puts "  Fixing license: #{existing[:license]} -> #{LICENSE}"
+    if existing[:license] != target_license
+      puts "  Fixing license: #{existing[:license]} -> #{target_license}"
       needs_update = true
     end
 
@@ -124,7 +132,7 @@ def process_file(filepath)
       updated_copyrights.each do |c|
         header_lines << "# SPDX-FileCopyrightText: #{c[:year]} #{c[:holder]}\n"
       end
-      header_lines << "# SPDX-License-Identifier: #{LICENSE}\n"
+      header_lines << "# SPDX-License-Identifier: #{target_license}\n"
       # REUSE-IgnoreEnd
       header_lines << "#++\n"
 
@@ -135,10 +143,10 @@ def process_file(filepath)
 
       remaining = lines[content_start..]
 
-      if frozen_string
-        new_content = "#{frozen_string}\n#{header_lines.join}\n#{remaining.join}"
+      new_content = if frozen_string
+        "#{frozen_string}\n#{header_lines.join}\n#{remaining.join}"
       else
-        new_content = "#{header_lines.join}\n#{remaining.join}"
+        "#{header_lines.join}\n#{remaining.join}"
       end
 
       File.write(filepath, new_content)
@@ -153,7 +161,7 @@ def process_file(filepath)
     header << "#--\n"
     # REUSE-IgnoreStart
     header << "# SPDX-FileCopyrightText: #{your_year} #{YOUR_COPYRIGHT}\n"
-    header << "# SPDX-License-Identifier: #{LICENSE}\n"
+    header << "# SPDX-License-Identifier: #{target_license}\n"
     # REUSE-IgnoreEnd
     header << "#++\n\n"
 
@@ -168,11 +176,23 @@ end
 
 def find_rb_files(paths)
   if paths.empty?
-    `git ls-files 'lib/**/*.rb'`.split("\n")
+    # Process all relevant directories
+    dirs = %w[lib ext test examples tasks bin sig]
+    files = dirs.flat_map do |dir|
+      # Include both root files and subdirectory files, for both .rb and .rbs
+      %w[rb rbs].flat_map do |ext|
+        root_files = `git ls-files '#{dir}/*.#{ext}' 2>/dev/null`.split("\n")
+        sub_files = `git ls-files '#{dir}/**/*.#{ext}' 2>/dev/null`.split("\n")
+        root_files + sub_files
+      end
+    end
+    files.uniq
   else
     paths.flat_map do |path|
       if File.directory?(path)
-        `git ls-files '#{path}/**/*.rb'`.split("\n")
+        rb_files = `git ls-files '#{path}/**/*.rb'`.split("\n")
+        rbs_files = `git ls-files '#{path}/**/*.rbs'`.split("\n")
+        rb_files + rbs_files
       else
         path
       end

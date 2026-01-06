@@ -162,8 +162,12 @@ Want to help develop **ratatui_ruby**? Check out the [contribution guide on the 
 
 ## Copyright & License
 
-**ratatui_ruby** is copyright 2025, Kerrick Long. **ratatui_ruby** is licensed under the GNU Affero General Public License v3.0 or later; see [LICENSES/AGPL-3.0-or-later.txt](./LICENSES/AGPL-3.0-or-later) for the full text.
+**ratatui_ruby** is copyright 2025, Kerrick Long.
 
-Some parts of this program are copied from other sources under appropriate reuse licenses, and the copyright belongs to their respective owners. See the [REUSE Specification – Version 3.3](https://reuse.software/spec-3.3/) for information about how we comply with attribution and licensing requirements.
+The library is [LGPL-3.0-or-later](./LICENSES/LGPL-3.0-or-later.txt): you can use it in proprietary applications, but you must share changes you make to **ratatui_ruby** itself. Documentation snippets and widget examples are [MIT-0](./LICENSES/MIT-0.txt): copy and use them without attribution.
+
+Documentation is [CC-BY-SA-4.0](./LICENSES/CC-BY-SA-4.0.txt). Build tooling and full app examples are [AGPL-3.0-or-later](./LICENSES/AGPL-3.0-or-later.txt). See each file's SPDX comment for specifics.
+
+Some parts of this program are copied from other sources under appropriate reuse licenses, and the copyright belongs to their respective owners. See the [REUSE Specification – Version 3.3](https://reuse.software/spec-3.3/) for details.
 
 This program was created with significant assistance from multiple LLMs. The process was human-controlled through creative prompts, with human contributions to each commit. See commit footers for model attribution. [declare-ai.org](https://declare-ai.org/1.0.0/creative.html)
