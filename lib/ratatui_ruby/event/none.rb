@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -23,10 +23,18 @@ module RatatuiRuby
     #
     # === Predicate Example
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2025 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   event = RatatuiRuby.poll_event
     #   break if event.ctrl_c?
     #   redraw if event.none?
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # === Pattern Matching Example
     #
     #   redraw if RatatuiRuby.poll_event in type: :none

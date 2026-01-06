@@ -11,6 +11,11 @@ This example exists as a documentation regression test. It ensures that the very
 
 ## Usage
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 <!-- SYNC:START:app.rb:main -->
 ```ruby
 RatatuiRuby.run do |tui|
@@ -39,5 +44,6 @@ RatatuiRuby.run do |tui|
 end
 ```
 <!-- SYNC:END -->
+<!-- SPDX-SnippetEnd -->
 
 [![verify_readme_usage](../../doc/images/verify_readme_usage.png)](../../README.md#usage)

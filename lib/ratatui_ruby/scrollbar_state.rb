@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -14,6 +14,11 @@ module RatatuiRuby
   #
   # == Example
   #
+  #--
+  # SPDX-SnippetBegin
+  # SPDX-FileCopyrightText: 2026 Kerrick Long
+  # SPDX-License-Identifier: MIT-0
+  #++
   #   @scrollbar_state = RatatuiRuby::ScrollbarState.new(100)
   #   @scrollbar_state.position = 25
   #
@@ -22,6 +27,9 @@ module RatatuiRuby
   #     frame.render_stateful_widget(scrollbar, frame.area, @scrollbar_state)
   #   end
   #
+  #--
+  # SPDX-SnippetEnd
+  #++
   class ScrollbarState
     ##
     # :method: new

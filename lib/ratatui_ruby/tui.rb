@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -49,6 +49,11 @@ module RatatuiRuby
   #
   # ==== Basic Usage (Recommended)
   #
+  #--
+  # SPDX-SnippetBegin
+  # SPDX-FileCopyrightText: 2026 Kerrick Long
+  # SPDX-License-Identifier: MIT-0
+  #++
   #   RatatuiRuby.run do |tui|
   #     loop do
   #       tui.draw \
@@ -64,6 +69,9 @@ module RatatuiRuby
   #       break if event == "q" || event == :ctrl_c
   #     end
   #   end
+  #--
+  # SPDX-SnippetEnd
+  #++
   class TUI
     include Core
     include LayoutFactories

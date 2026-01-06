@@ -1,3 +1,7 @@
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+  SPDX-License-Identifier: CC-BY-SA-4.0
+-->
 # Center Example
 
 [![widget_center](../../doc/images/widget_center.png)](app.rb)

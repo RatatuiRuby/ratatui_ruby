@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -18,12 +18,20 @@ module RatatuiRuby
     #
     # === Examples
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   # Center a paragraph using 50% of width and height
     #   Center.new(
     #     child: Paragraph.new(text: "Hello"),
     #     width_percent: 50,
     #     height_percent: 50
     #   )
+    #--
+    # SPDX-SnippetEnd
+    #++
     class Center < Data.define(:child, :width_percent, :height_percent)
       ##
       # :attr_reader: child

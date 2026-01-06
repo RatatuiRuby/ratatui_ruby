@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -33,6 +33,11 @@ module RatatuiRuby
   #
   # == Example
   #
+  #--
+  # SPDX-SnippetBegin
+  # SPDX-FileCopyrightText: 2026 Kerrick Long
+  # SPDX-License-Identifier: MIT-0
+  #++
   #   require "ratatui_ruby/test_helper"
   #
   #   class TestMyApp < Minitest::Test
@@ -83,6 +88,9 @@ module RatatuiRuby
   #       assert_equal "Dashboard", widget.block.title
   #     end
   #   end
+  #--
+  # SPDX-SnippetEnd
+  #++
   module TestHelper
     include Terminal
     include Snapshot

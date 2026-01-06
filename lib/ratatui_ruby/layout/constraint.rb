@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -17,10 +17,18 @@ module RatatuiRuby
     #
     # === Examples
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   Layout::Constraint.length(5)      # Exactly 5 cells
     #   Layout::Constraint.percentage(50) # Half the available space
     #   Layout::Constraint.min(10)        # At least 10 cells, maybe more
     #   Layout::Constraint.fill(1)        # Fill remaining space (weight 1)
+    #--
+    # SPDX-SnippetEnd
+    #++
     class Constraint < Data.define(:type, :value)
       ##
       # :attr_reader: type
@@ -34,8 +42,16 @@ module RatatuiRuby
 
       # Requests a fixed size.
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   Layout::Constraint.length(10) # 10 characters wide/high
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [v] Number of cells (Integer).
       def self.length(v)
         new(type: :length, value: Integer(v))
@@ -43,8 +59,16 @@ module RatatuiRuby
 
       # Requests a percentage of available space.
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   Layout::Constraint.percentage(25) # 25% of the area
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [v] Percentage 0-100 (Integer).
       def self.percentage(v)
         new(type: :percentage, value: Integer(v))
@@ -52,8 +76,16 @@ module RatatuiRuby
 
       # Enforces a minimum size.
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   Layout::Constraint.min(5) # At least 5 cells
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # This section will grow if space permits, but never shrink below +v+.
       #
       # [v] Minimum cells (Integer).
@@ -63,8 +95,16 @@ module RatatuiRuby
 
       # Enforces a maximum size.
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   Layout::Constraint.max(10) # At most 10 cells
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [v] Maximum cells (Integer).
       def self.max(v)
         new(type: :max, value: Integer(v))
@@ -72,9 +112,17 @@ module RatatuiRuby
 
       # Fills remaining space proportionally.
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   Layout::Constraint.fill(1) # Equal share
       #   Layout::Constraint.fill(2) # Double share
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # Fill constraints distribute any space left after satisfying strict rules.
       # They behave like flex-grow. A fill(2) takes twice as much space as a fill(1).
       #
@@ -85,8 +133,16 @@ module RatatuiRuby
 
       # Requests a specific ratio of the total space.
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   Layout::Constraint.ratio(1, 3) # 1/3rd of the area
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [numerator] Top part of fraction (Integer).
       # [denominator] Bottom part of fraction (Integer).
       def self.ratio(numerator, denominator)

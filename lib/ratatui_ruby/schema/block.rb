@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -115,8 +115,16 @@ module RatatuiRuby
     #
     # === Example
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2025 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   Block.new(padding: 2).padding # => 2
     #   Block.new(padding: [1, 1, 0, 0]).padding # => [1, 1, 0, 0]
+    #--
+    # SPDX-SnippetEnd
+    #++
 
     ##
     # :attr_reader: children
@@ -126,11 +134,19 @@ module RatatuiRuby
     #
     # === Example
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2025 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   Block.new(
     #     title: "Content",
     #     borders: [:all],
     #     children: [Paragraph.new(text: "Hello")]
     #   )
+    #--
+    # SPDX-SnippetEnd
+    #++
 
     # Creates a new Block.
     #

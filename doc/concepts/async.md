@@ -1,6 +1,6 @@
 <!--
-SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
-SPDX-License-Identifier: AGPL-3.0-or-later
+  SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+  SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
 # Async Operations in TUI Applications
@@ -21,12 +21,18 @@ This guide explains async patterns that work with raw terminal mode.
 
 ### What Breaks
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 # These fail inside a Thread during raw mode:
 `git ls-remote --tags origin`           # Returns empty or hangs
 IO.popen(["git", "ls-remote", ...])     # Same
 Open3.capture2("git", "ls-remote", ...) # Same
 ```
+<!-- SPDX-SnippetEnd -->
 
 The commands succeed synchronously. They fail asynchronously. The difference: thread context inherits the parent's raw terminal state.
 
@@ -46,11 +52,17 @@ Ruby's GIL releases during I/O. But:
 
 Run slow operations before entering the TUI:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 def initialize
   @data = fetch_data  # Runs before RatatuiRuby.run
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 **Trade-off**: Delays startup.
 
@@ -58,6 +70,11 @@ end
 
 Spawn a separate process before entering raw mode. Write results to a temp file. Poll for completion:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 class AsyncChecker
   CACHE_FILE = File.join(Dir.tmpdir, "my_check_result.txt")
@@ -81,6 +98,7 @@ class AsyncChecker
   end
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 **Key points**:
 
@@ -93,9 +111,15 @@ end
 
 Ruby threads work for pure computation:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 Thread.new { @result = expensive_calculation }
 ```
+<!-- SPDX-SnippetEnd -->
 
 Avoid threads for shell commands.
 
@@ -122,6 +146,11 @@ For TUI async, `Process.spawn` solves the problem cleanly.
 
 Check if a tag exists on the remote:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 class GitRepo
   CACHE_FILE = File.join(Dir.tmpdir, "git_tag_pushed.txt")
@@ -156,5 +185,6 @@ class GitRepo
   end
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 The TUI starts instantly. The tag check runs in the background. The checklist updates when the result arrives.

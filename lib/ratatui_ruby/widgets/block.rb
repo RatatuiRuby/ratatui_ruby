@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -116,8 +116,16 @@ module RatatuiRuby
       #
       # === Example
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   Block.new(padding: 2).padding # => 2
       #   Block.new(padding: [1, 1, 0, 0]).padding # => [1, 1, 0, 0]
+      #--
+      # SPDX-SnippetEnd
+      #++
 
       ##
       # :attr_reader: children
@@ -127,11 +135,19 @@ module RatatuiRuby
       #
       # === Example
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   Block.new(
       #     title: "Content",
       #     borders: [:all],
       #     children: [Paragraph.new(text: "Hello")]
       #   )
+      #--
+      # SPDX-SnippetEnd
+      #++
 
       # Creates a new Block.
       #
@@ -198,14 +214,30 @@ module RatatuiRuby
       #
       # === Example
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   block = Block.new(borders: [:all], padding: 1)
       #   outer = Layout::Rect.new(x: 0, y: 0, width: 20, height: 10)
       #   inner = block.inner(outer)
       #   # => Rect(x: 2, y: 2, width: 16, height: 6)
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [area]
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   The outer Rect to compute the inner area for.
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # Returns a new Rect representing the inner content area.
       def inner(area)
         # Calculate border offsets

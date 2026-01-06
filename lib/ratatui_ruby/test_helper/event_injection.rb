@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -21,6 +21,11 @@ module RatatuiRuby
     #
     # === Examples
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   with_test_terminal do
     #     inject_keys("h", "e", "l", "l", "o")
     #     inject_keys(:enter, :ctrl_s)
@@ -30,6 +35,9 @@ module RatatuiRuby
     #     @app.run
     #   end
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     module EventInjection
       ##
       # Injects an event into the test terminal's event queue.
@@ -41,10 +49,18 @@ module RatatuiRuby
       #
       # === Examples
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   inject_event(RatatuiRuby::Event::Key.new(code: "q"))
       #   inject_event(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 10, y: 5))
       #   inject_event(RatatuiRuby::Event::Paste.new(content: "Hello"))
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [event] A <tt>RatatuiRuby::Event</tt> object.
       def inject_event(event)
         unless @_ratatui_test_terminal_active
@@ -82,8 +98,16 @@ module RatatuiRuby
       #
       # === Example
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   inject_mouse(x: 10, y: 5, kind: :down, button: :left)
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # [x] Integer x-coordinate.
       # [y] Integer y-coordinate.
       # [kind] Symbol <tt>:down</tt>, <tt>:up</tt>, or <tt>:drag</tt>.
@@ -141,10 +165,18 @@ module RatatuiRuby
       #
       # === Examples
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   inject_keys("a", "b", "c")
       #   inject_keys(:enter, :esc)
       #   inject_keys(:ctrl_c, :alt_shift_left)
       #   inject_keys("j", { code: "k", modifiers: ["ctrl"] })
+      #--
+      # SPDX-SnippetEnd
+      #++
       def inject_keys(*args)
         args.each do |arg|
           event = case arg

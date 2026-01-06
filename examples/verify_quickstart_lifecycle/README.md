@@ -11,6 +11,11 @@ This example exists as a documentation regression test. It ensures the core life
 
 ## Usage
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 <!-- SYNC:START:app.rb:main -->
 ```ruby
 # 1. Initialize the terminal
@@ -58,5 +63,6 @@ ensure
 end
 ```
 <!-- SYNC:END -->
+<!-- SPDX-SnippetEnd -->
 
 [![verify_quickstart_lifecycle](../../doc/images/verify_quickstart_lifecycle.png)](../../doc/getting_started/quickstart.md#basic-application)

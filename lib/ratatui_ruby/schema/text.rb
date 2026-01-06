@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -31,6 +31,11 @@ module RatatuiRuby
   #
   # === Examples
   #
+  #--
+  # SPDX-SnippetBegin
+  # SPDX-FileCopyrightText: 2026 Kerrick Long
+  # SPDX-License-Identifier: MIT-0
+  #++
   #   # Simple ASCII text
   #   RatatuiRuby::Text.width("Hello")        # => 5
   #
@@ -42,6 +47,9 @@ module RatatuiRuby
   #
   #   # Mixed content
   #   RatatuiRuby::Text.width("Hi 你好 👍")   # => 11 (2 + space + 4 + space + 2)
+  #--
+  # SPDX-SnippetEnd
+  #++
   module Text
     # A styled string fragment.
     #
@@ -90,12 +98,20 @@ module RatatuiRuby
     #
     # === Examples
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2025 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   Text::Line.new(
     #     spans: [
     #       Text::Span.styled("User: ", Style.new(modifiers: [:bold])),
     #       Text::Span.styled("kerrick", Style.new(fg: :blue))
     #     ]
     #   )
+    #--
+    # SPDX-SnippetEnd
+    #++
     class Line < Data.define(:spans, :alignment, :style)
       ##
       # :attr_reader: spans
@@ -136,12 +152,20 @@ module RatatuiRuby
       #
       # === Examples
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   line = Text::Line.new(spans: [
       #     Text::Span.new(content: "Hello "),
       #     Text::Span.new(content: "世界")
       #   ])
       #   line.width  # => 10 (6 ASCII + 4 CJK)
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # Returns: Integer (number of terminal cells)
       def width
         RatatuiRuby::Text.width(spans.map { |s| s.content.to_s }.join)
@@ -162,6 +186,11 @@ module RatatuiRuby
     #
     # === Examples
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   RatatuiRuby::Text.width("Hello")        # => 5 (5 ASCII chars × 1 cell)
     #
     #   RatatuiRuby::Text.width("你好")         # => 4 (2 CJK chars × 2 cells)
@@ -173,6 +202,9 @@ module RatatuiRuby
     #     width = tui.text_width("Hello 👍")
     #   end
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # [string] String to measure (String or object convertible to String)
     # Returns: Integer (number of terminal cells the string occupies)
     # Raises: TypeError if the argument is not a String

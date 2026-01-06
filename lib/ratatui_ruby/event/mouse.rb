@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -20,9 +20,17 @@ module RatatuiRuby
     #
     # === Example
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2025 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   if event.mouse? && event.down? && event.button == "left"
     #     puts "Left click at #{event.x}, #{event.y}"
     #   end
+    #--
+    # SPDX-SnippetEnd
+    #++
     class Mouse < Event
       # The kind of event (<tt>"down"</tt>, <tt>"up"</tt>, <tt>"drag"</tt>, <tt>"moved"</tt>, <tt>"scroll_up"</tt>, <tt>"scroll_down"</tt>).
       #
@@ -38,8 +46,16 @@ module RatatuiRuby
       attr_reader :y
       # The button pressed (<tt>"left"</tt>, <tt>"right"</tt>, <tt>"middle"</tt>, <tt>"none"</tt>).
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2025 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   puts event.button # => "left"
       #
+      #--
+      # SPDX-SnippetEnd
+      #++
       # Can be <tt>nil</tt>, which is treated as <tt>"none"</tt>.
       attr_reader :button
       # List of active modifiers.
@@ -49,9 +65,17 @@ module RatatuiRuby
 
       # Returns true for Mouse events.
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2025 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   event.mouse?  # => true
       #   event.key?    # => false
       #   event.resize? # => false
+      #--
+      # SPDX-SnippetEnd
+      #++
       def mouse?
         true
       end
@@ -98,19 +122,35 @@ module RatatuiRuby
 
       # Returns true if scroll wheel moved down.
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2025 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   if event.scroll_down?
       #     scroll_offset += 1
       #   end
+      #--
+      # SPDX-SnippetEnd
+      #++
       def scroll_down?
         @kind == "scroll_down"
       end
 
       # Deconstructs the event for pattern matching.
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2025 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   case event
       #   in type: :mouse, kind: "down", x:, y:
       #     puts "Click at #{x}, #{y}"
       #   end
+      #--
+      # SPDX-SnippetEnd
+      #++
       def deconstruct_keys(keys)
         { type: :mouse, kind: @kind, x: @x, y: @y, button: @button, modifiers: @modifiers }
       end

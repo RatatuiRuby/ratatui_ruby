@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -20,6 +20,11 @@ module RatatuiRuby
       #
       # === Examples
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   # Simple label
       #   Shape::Label.new(x: 0, y: 0, text: "Origin")
       #
@@ -38,6 +43,9 @@ module RatatuiRuby
       #       Text::Span.new(content: "World", style: Style.new(fg: :blue))
       #     ])
       #   )
+      #--
+      # SPDX-SnippetEnd
+      #++
       class Label < Data.define(:x, :y, :text, :style)
         ##
         # :attr_reader: x

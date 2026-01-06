@@ -1,7 +1,6 @@
 <!--
-SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
-
-SPDX-License-Identifier: AGPL-3.0-or-later
+  SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+  SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
 # Application Architecture
@@ -24,6 +23,11 @@ Terminals have state. They remember cursor positions, input modes, and screen bu
 
 This method acts as a safety net. It initializes the terminal, yields control to your block, and restores the terminal afterwards—even if your code raises an exception.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 RatatuiRuby.run do |tui|
   loop do
@@ -35,11 +39,17 @@ RatatuiRuby.run do |tui|
 end
 # Terminal is restored here
 ```
+<!-- SPDX-SnippetEnd -->
 
 #### Manual Management
 
 Need granular control? You can initialize and restore the terminal yourself. Use `ensure` blocks to guarantee cleanup.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 RatatuiRuby.init_terminal
 begin
@@ -51,6 +61,7 @@ ensure
   # Terminal is restored here
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 #### Signal Handling
 
@@ -69,6 +80,11 @@ External processes send signals. Your TUI must handle them gracefully.
 > [!IMPORTANT]
 > **Ctrl+C in Raw Mode:** When your app is in raw mode, pressing Ctrl+C does *not* send SIGINT. It's captured as a `:ctrl_c` key event. Handle this in your event loop—don't use `trap("INT")`.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 RatatuiRuby.run do |tui|
   loop do
@@ -78,6 +94,7 @@ RatatuiRuby.run do |tui|
   end
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 **Recovery:** If a TUI app leaves your terminal broken, run `reset` in the shell to restore normal behavior.
 
@@ -97,6 +114,11 @@ Most widgets are stateless configuration. You create them, render them, and they
 
 **Use Case:** When you need to read back the scroll offset (e.g., for mouse hit testing) or persist selection without managing indexes manually.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 # Initialize state once
 @list_state = RatatuiRuby::ListState.new
@@ -116,6 +138,7 @@ RatatuiRuby.run do |tui|
   end
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ### API Convenience
 
@@ -125,6 +148,11 @@ Writing UI trees involves nesting many widgets.
 
 **The Solution:** The TUI API (`tui`) provides shorthand factories for every widget. It yields a TUI object to your block.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 RatatuiRuby.run do |tui|
   loop do
@@ -167,11 +195,17 @@ RatatuiRuby.run do |tui|
   end
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 #### Raw API
 
 Building your own abstractions? You might prefer explicit class instantiation. The raw constants are always available.
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 RatatuiRuby.run do
   loop do
@@ -212,6 +246,7 @@ RatatuiRuby.run do
   end
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ## Thread and Ractor Safety
 
@@ -236,6 +271,11 @@ These have side effects and are intentionally not shareable:
 | `TUI` | Cache in `@tui` during run loop. Don't include in Models. |
 | `Frame` | Pass to helpers during draw block. Invalid after block returns. |
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 # Good: Cache session in instance variable
 RatatuiRuby.run do |tui|
@@ -246,6 +286,7 @@ end
 # Bad: Include in immutable Model (won't work with Ractors)
 Model = Data.define(:tui, :count)  # Don't do this
 ```
+<!-- SPDX-SnippetEnd -->
 
 
 ## Reference Architectures

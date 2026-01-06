@@ -1,6 +1,6 @@
 <!--
-SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
-SPDX-License-Identifier: CC-BY-SA-4.0
+  SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+  SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
 # Developing Examples
@@ -12,6 +12,11 @@ Guidelines for creating and testing examples in the `examples/` directory.
 Every interactive example should follow this pattern, living in its own directory:
 
 `examples/my_example/app.rb`:
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2025 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
@@ -57,6 +62,7 @@ end
 
 MyExampleApp.new.run if __FILE__ == $PROGRAM_NAME
 ```
+<!-- SPDX-SnippetEnd -->
 
 ### Naming Convention (Required)
 
@@ -89,6 +95,11 @@ All interactive examples must fit within an **80×24 terminal** (standard VT100 
 Every example must also have an RBS file documenting its public methods. Type signatures live in a centralized location:
 
 `sig/examples/my_example/app.rbs`:
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2025 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```rbs
 class MyExampleApp
   # @public
@@ -98,11 +109,17 @@ class MyExampleApp
   def run: () -> void
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ## Directory Structure
 
 Examples are organized across three locations:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```
 examples/
   my_example/
@@ -119,6 +136,7 @@ sig/examples/
   my_example/
     app.rbs             ← REQUIRED: Type signatures (centralized, not local to example)
 ```
+<!-- SPDX-SnippetEnd -->
 
 ### Key Requirements
 
@@ -194,17 +212,28 @@ This keeps the UI self-documenting and users can see exact parameter names when 
 
 Examples with mouse interaction should use the **Frame API**. By calling `@tui.layout_split` inside `@tui.draw`, you obtain the exact `Rect`s used for rendering. Store these rects in instance variables (e.g., `@sidebar_rect`) to use them in your `handle_input` method for hit testing:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2025 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 if @sidebar_rect&.contains?(event.x, event.y)
   # Handle click
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ## Testing Examples
 
 Example tests live in a centralized test tree:
 
 `test/examples/my_example/test_app.rb`:
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 $LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
 require "ratatui_ruby"
@@ -228,6 +257,7 @@ class TestMyExampleApp < Minitest::Test
   end
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ## Snapshot Testing Pattern (REQUIRED)
 
@@ -243,6 +273,11 @@ All example tests MUST use snapshot testing via the `assert_snapshots` API, not 
 
 ### Basic Pattern
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 def test_initial_render
   with_test_terminal do
@@ -253,6 +288,7 @@ def test_initial_render
   end
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 Snapshot auto-saved to: `test/examples/widget_foo/snapshots/initial_render.txt`
 
@@ -260,6 +296,11 @@ Snapshot auto-saved to: `test/examples/widget_foo/snapshots/initial_render.txt`
 
 For examples with timestamps, random data, or other non-deterministic output:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 private def assert_normalized_snapshots(snapshot_name)
   assert_plain_snapshot(snapshot_name) do |actual|
@@ -280,6 +321,7 @@ def test_after_event
   end
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 See `test/examples/app_all_events/test_app.rb` for a complete example.
 
@@ -287,9 +329,15 @@ See `test/examples/app_all_events/test_app.rb` for a complete example.
 
 When UI changes are intentional, regenerate all snapshots:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```bash
 UPDATE_SNAPSHOTS=1 bin/agent_rake test
 ```
+<!-- SPDX-SnippetEnd -->
 
 ## Widget Attribute Cycling
 
@@ -327,6 +375,11 @@ Use hardcoded realistic data. Examples:
 **For large datasets (≥ 10 items):**
 Use the [Faker](https://github.com/faker-ruby/faker) gem with **deterministic seeding** so data is consistent across runs:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 require "faker"
 
@@ -337,6 +390,7 @@ Faker::Config.random = Random.new(12345)
 users = Array.new(50) { Faker::Name.name }
 emails = Array.new(50) { Faker::Internet.email }
 ```
+<!-- SPDX-SnippetEnd -->
 
 In tests, set the same seed before each test to ensure snapshot consistency.
 

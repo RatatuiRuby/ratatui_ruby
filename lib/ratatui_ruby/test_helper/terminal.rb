@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -23,6 +23,11 @@ module RatatuiRuby
     #
     # === Example
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   class MyTest < Minitest::Test
     #     include RatatuiRuby::TestHelper
     #
@@ -33,6 +38,9 @@ module RatatuiRuby
     #       end
     #     end
     #   end
+    #--
+    # SPDX-SnippetEnd
+    #++
     module Terminal
       ##
       # Initializes a test terminal context with specified dimensions.
@@ -44,9 +52,17 @@ module RatatuiRuby
       #
       # === Example
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   with_test_terminal(120, 40) do
       #     # render and test your app
       #   end
+      #--
+      # SPDX-SnippetEnd
+      #++
       def with_test_terminal(width = 80, height = 24, **opts)
         # Defensive cleanup: reset any stale session state from previous test failures
         RatatuiRuby.instance_variable_set(:@tui_session_active, false)
@@ -80,8 +96,16 @@ module RatatuiRuby
       #
       # === Example
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   buffer_content
       #   # => ["Row 1 text", "Row 2 text", ...]
+      #--
+      # SPDX-SnippetEnd
+      #++
       def buffer_content
         RatatuiRuby.get_buffer_content.split("\n")
       end
@@ -91,8 +115,16 @@ module RatatuiRuby
       #
       # === Example
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   cursor_position
       #   # => { x: 0, y: 0 }
+      #--
+      # SPDX-SnippetEnd
+      #++
       def cursor_position
         x, y = RatatuiRuby.get_cursor_position
         { x:, y: }
@@ -108,8 +140,16 @@ module RatatuiRuby
       #
       # === Example
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   get_cell(0, 0)
       #   # => { "symbol" => "H", "fg" => :red, "bg" => nil }
+      #--
+      # SPDX-SnippetEnd
+      #++
       def get_cell(x, y)
         RatatuiRuby.get_cell_at(x, y)
       end
@@ -120,10 +160,18 @@ module RatatuiRuby
       #
       # === Example
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   with_test_terminal do
       #     MyApp.new.render
       #     print_buffer  # see exactly what would display
       #   end
+      #--
+      # SPDX-SnippetEnd
+      #++
       def print_buffer
         puts _render_buffer_with_ansi
       end

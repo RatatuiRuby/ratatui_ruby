@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -16,6 +16,11 @@ module RatatuiRuby
   #
   # === Examples
   #
+  #--
+  # SPDX-SnippetBegin
+  # SPDX-FileCopyrightText: 2026 Kerrick Long
+  # SPDX-License-Identifier: MIT-0
+  #++
   #   # Item with red background
   #   ListItem.new(content: "Error", style: Style.new(bg: :red))
   #
@@ -23,6 +28,9 @@ module RatatuiRuby
   #   ListItem.new(
   #     content: Text::Span.new(content: "Status: OK", style: Style.new(fg: :green, modifiers: [:bold]))
   #   )
+  #--
+  # SPDX-SnippetEnd
+  #++
   class ListItem < Data.define(:content, :style)
     ##
     # :attr_reader: content

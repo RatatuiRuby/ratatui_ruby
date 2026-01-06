@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -17,6 +17,11 @@ module RatatuiRuby
     #
     # === Examples
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   # Row with red background
     #   Row.new(cells: ["Error", "Something went wrong"], style: Style.new(bg: :red))
     #
@@ -28,6 +33,9 @@ module RatatuiRuby
     #     ],
     #     height: 2
     #   )
+    #--
+    # SPDX-SnippetEnd
+    #++
     class Row < Data.define(:cells, :style, :height, :top_margin, :bottom_margin)
       ##
       # :attr_reader: cells

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -70,6 +70,11 @@ module RatatuiRuby
     # This is a pure calculation helper for hit testing. It computes where
     # widgets *would* be placed without actually rendering them.
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2025 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   rects = Layout.split(
     #     area,
     #     direction: :horizontal,
@@ -77,6 +82,9 @@ module RatatuiRuby
     #   )
     #   left, right = rects
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # [area]
     #   The area to split. Can be a <tt>Rect</tt> or a <tt>Hash</tt> containing <tt>:x</tt>, <tt>:y</tt>, <tt>:width</tt>, and <tt>:height</tt>.
     # [direction]
@@ -84,8 +92,16 @@ module RatatuiRuby
     # [constraints]
     #   Array of <tt>Constraint</tt> objects defining section sizes.
     # [flex]
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2025 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   Flex mode for spacing (default: <tt>:legacy</tt>).
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # Returns an Array of <tt>Rect</tt> objects.
     def self.split(area, direction: :vertical, constraints:, flex: :legacy)
       # Duck-typing: If it lacks geometry methods but can be a Hash, convert it.

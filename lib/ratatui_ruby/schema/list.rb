@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -19,6 +19,11 @@ module RatatuiRuby
   #
   # === Examples
   #
+  #--
+  # SPDX-SnippetBegin
+  # SPDX-FileCopyrightText: 2025 Kerrick Long
+  # SPDX-License-Identifier: MIT-0
+  #++
   #   # Basic List
   #   List.new(items: ["Item 1", "Item 2"])
   #
@@ -29,6 +34,9 @@ module RatatuiRuby
   #     highlight_style: Style.new(bg: :blue),
   #     highlight_symbol: ">> "
   #   )
+  #--
+  # SPDX-SnippetEnd
+  #++
   class List < Data.define(:items, :selected_index, :offset, :style, :highlight_style, :highlight_symbol, :repeat_highlight_symbol, :highlight_spacing, :direction, :scroll_padding, :block)
     ##
     # :attr_reader: items

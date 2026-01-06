@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -172,6 +172,11 @@ module RatatuiRuby
     #
     # === Examples
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   Canvas.new(
     #     x_bounds: [-180, 180],
     #     y_bounds: [-90, 90],
@@ -181,6 +186,9 @@ module RatatuiRuby
     #       Shape::Label.new(x: -122.4, y: 37.8, text: "San Francisco")
     #     ]
     #   )
+    #--
+    # SPDX-SnippetEnd
+    #++
     class Canvas < Data.define(:shapes, :x_bounds, :y_bounds, :marker, :block, :background_color)
       ##
       # :attr_reader: shapes

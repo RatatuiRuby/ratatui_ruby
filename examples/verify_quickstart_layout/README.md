@@ -11,6 +11,11 @@ This example exists as a documentation regression test. It ensures the layout an
 
 ## Usage
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 <!-- SYNC:START:app.rb:main -->
 ```ruby
 loop do
@@ -67,5 +72,6 @@ loop do
 end
 ```
 <!-- SYNC:END -->
+<!-- SPDX-SnippetEnd -->
 
 [![verify_quickstart_layout](../../doc/images/verify_quickstart_layout.png)](../../doc/getting_started/quickstart.md#adding-layouts)

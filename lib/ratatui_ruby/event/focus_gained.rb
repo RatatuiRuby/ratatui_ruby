@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -19,24 +19,48 @@ module RatatuiRuby
     #
     # === Example
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2025 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   if event.focus_gained?
     #     puts "Focus gained"
     #   end
+    #--
+    # SPDX-SnippetEnd
+    #++
     class FocusGained < Event
       # Returns true for FocusGained events.
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2025 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   event.focus_gained? # => true
       #   event.key?          # => false
+      #--
+      # SPDX-SnippetEnd
+      #++
       def focus_gained?
         true
       end
 
       # Deconstructs the event for pattern matching.
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2025 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   case event
       #   in type: :focus_gained
       #     puts "Application gained focus"
       #   end
+      #--
+      # SPDX-SnippetEnd
+      #++
       def deconstruct_keys(keys)
         { type: :focus_gained }
       end

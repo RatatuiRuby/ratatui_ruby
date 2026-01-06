@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -71,6 +71,11 @@ module RatatuiRuby
     #
     # === Examples
     #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2025 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   bar_set: {
     #     empty: " ",
     #     one_eighth: " ",
@@ -90,6 +95,9 @@ module RatatuiRuby
     #
     #   # Array (9 items)
     #   bar_set: [" ", " ", "▂", "▃", "▄", "▅", "▆", "▇", "█"]
+    #--
+    # SPDX-SnippetEnd
+    #++
 
     BAR_KEYS = %i[empty one_eighth one_quarter three_eighths half five_eighths three_quarters seven_eighths full].freeze
 

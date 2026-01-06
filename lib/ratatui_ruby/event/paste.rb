@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
@@ -20,15 +20,31 @@ module RatatuiRuby
     # === Examples
     #
     # Using predicates:
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2025 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   if event.paste?
     #     puts "Pasted: #{event.content}"
     #   end
     #
+    #--
+    # SPDX-SnippetEnd
+    #++
     # Using pattern matching:
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2025 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
     #   case event
     #   in type: :paste, content:
     #     puts "Pasted: #{content}"
     #   end
+    #--
+    # SPDX-SnippetEnd
+    #++
     class Paste < Event
       # The pasted content.
       #
@@ -37,9 +53,17 @@ module RatatuiRuby
 
       # Returns true for Paste events.
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2025 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   event.paste?  # => true
       #   event.key?    # => false
       #   event.resize? # => false
+      #--
+      # SPDX-SnippetEnd
+      #++
       def paste?
         true
       end
@@ -54,10 +78,18 @@ module RatatuiRuby
 
       # Deconstructs the event for pattern matching.
       #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2025 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
       #   case event
       #   in type: :paste, content:
       #     puts "User pasted: #{content}"
       #   end
+      #--
+      # SPDX-SnippetEnd
+      #++
       def deconstruct_keys(keys)
         { type: :paste, content: @content }
       end

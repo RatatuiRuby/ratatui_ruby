@@ -1,7 +1,6 @@
 <!--
-SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
-
-SPDX-License-Identifier: AGPL-3.0-or-later
+  SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+  SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
 # Documentation Style Guide
@@ -33,13 +32,24 @@ Every public class must begin with a **Context-Problem-Solution** narrative.
 ### Example
 
 **Bad (Generic/Descriptive):**
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2025 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 # A widget for displaying list items.
 # It allows the user to select an item from an array of strings.
 # Supports scrolling and custom styling.
 ```
+<!-- SPDX-SnippetEnd -->
 
 **Good (Alexandrian/Zinsser/Plain Language):**
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2025 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 # Displays a selectable list of items.
 #
@@ -50,6 +60,7 @@ Every public class must begin with a **Context-Problem-Solution** narrative.
 #
 # Use it to build main menus, navigation sidebars, or logs.
 ```
+<!-- SPDX-SnippetEnd -->
 
 ## 3. Method and Attribute Documentation
 
@@ -74,6 +85,11 @@ Every public class must begin with a **Context-Problem-Solution** narrative.
 
 ### Example
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2025 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
   # The styling to apply to the content.
   attr_reader :style
@@ -86,6 +102,7 @@ Every public class must begin with a **Context-Problem-Solution** narrative.
     super
   end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ## 4. RDoc Specifics
 

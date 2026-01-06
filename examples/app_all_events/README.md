@@ -1,6 +1,6 @@
 <!--
-SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
-SPDX-License-Identifier: CC-BY-SA-4.0
+  SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+  SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
 # App All Events Example
@@ -33,9 +33,15 @@ Semantic value objects that decouple raw terminal events from business logic:
 ### 3. Update (`update.rb`)
 A **pure function** that computes the next state:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 Update.call(msg, model) -> Model
 ```
+<!-- SPDX-SnippetEnd -->
 
 All logic previously in `Events.record` now lives here. The function never mutates, never draws, never performs IO.
 
@@ -47,6 +53,11 @@ Pure rendering logic. Views accept the immutable `AppModel` and draw to the scre
 ### 5. Runtime (`app.rb`)
 The MVU loop:
 
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
 ```ruby
 loop do
   tui.draw { |f| view.call(model, tui, f, f.area) }
@@ -55,6 +66,7 @@ loop do
   model = Update.call(msg, model)
 end
 ```
+<!-- SPDX-SnippetEnd -->
 
 ## Library Features Showcased
 
