@@ -6,9 +6,17 @@
 #++
 
 module RatatuiRuby
+  # Interface for custom widgets that can be passed to Frame#render_widget.
+  #
+  # Any Ruby object implementing this interface works as a widget.
+  # Return an Array of Draw commands describing what to render.
+  interface _CustomWidget
+    def render: (Rect area) -> Array[Draw::StringCmd | Draw::CellCmd]
+  end
+
   class Frame
     def area: () -> Rect
-    def render_widget: (widget widget, Rect area) -> nil
+    def render_widget: (_CustomWidget | widget widget, Rect area) -> nil
     def render_stateful_widget: (widget widget, Rect area, (ListState | TableState | ScrollbarState) state) -> nil
     def set_cursor_position: (Integer x, Integer y) -> nil
   end
