@@ -20,6 +20,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - `Gauge#filled?`, `Gauge#complete?` — check progress state (ratio > 0, ratio >= 1.0)
   - `LineGauge#filled?`, `LineGauge#complete?` — same as Gauge
 
+- **Symbol Constants (DWIM DX)**: Widgets now expose constants for enum-style parameters, enabling IDE autocomplete and self-documenting code:
+  - `List::HIGHLIGHT_ALWAYS`, `HIGHLIGHT_WHEN_SELECTED`, `HIGHLIGHT_NEVER`
+  - `List::DIRECTION_TOP_TO_BOTTOM`, `DIRECTION_BOTTOM_TO_TOP`
+  - `Table::HIGHLIGHT_*` — same as List
+  - `Table::FLEX_LEGACY`, `FLEX_START`, `FLEX_CENTER`, `FLEX_END`, `FLEX_SPACE_BETWEEN`, `FLEX_SPACE_AROUND`, `FLEX_SPACE_EVENLY`
+  - `Layout::Layout::DIRECTION_VERTICAL`, `DIRECTION_HORIZONTAL`
+  - `Layout::Layout::FLEX_*` — same as Table
+
 ### Changed
 
 ### Fixed

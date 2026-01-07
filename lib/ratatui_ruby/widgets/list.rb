@@ -32,6 +32,23 @@ module RatatuiRuby
     #   )
     class List < Data.define(:items, :selected_index, :offset, :style, :highlight_style, :highlight_symbol, :repeat_highlight_symbol, :highlight_spacing, :direction, :scroll_padding, :block)
       ##
+      # Highlight spacing: always show the spacing column.
+      HIGHLIGHT_ALWAYS = :always
+      ##
+      # Highlight spacing: show spacing only when an item is selected (default).
+      HIGHLIGHT_WHEN_SELECTED = :when_selected
+      ##
+      # Highlight spacing: never show the spacing column.
+      HIGHLIGHT_NEVER = :never
+
+      ##
+      # Direction: render items from top to bottom (default).
+      DIRECTION_TOP_TO_BOTTOM = :top_to_bottom
+      ##
+      # Direction: render items from bottom to top.
+      DIRECTION_BOTTOM_TO_TOP = :bottom_to_top
+
+      ##
       # :attr_reader: items
       # The items to display.
       #

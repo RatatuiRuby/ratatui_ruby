@@ -221,4 +221,15 @@ class TestList < Minitest::Test
     assert RatatuiRuby::Widgets::List.new(items: []).empty?
     refute RatatuiRuby::Widgets::List.new(items: ["a"]).empty?
   end
+
+  def test_highlight_spacing_constants
+    assert_equal :always, RatatuiRuby::Widgets::List::HIGHLIGHT_ALWAYS
+    assert_equal :when_selected, RatatuiRuby::Widgets::List::HIGHLIGHT_WHEN_SELECTED
+    assert_equal :never, RatatuiRuby::Widgets::List::HIGHLIGHT_NEVER
+  end
+
+  def test_direction_constants
+    assert_equal :top_to_bottom, RatatuiRuby::Widgets::List::DIRECTION_TOP_TO_BOTTOM
+    assert_equal :bottom_to_top, RatatuiRuby::Widgets::List::DIRECTION_BOTTOM_TO_TOP
+  end
 end

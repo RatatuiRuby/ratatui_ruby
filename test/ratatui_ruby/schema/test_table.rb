@@ -643,4 +643,20 @@ class TestTable < Minitest::Test
     strikethrough_row = row.enable_strikethrough
     refute_nil strikethrough_row
   end
+
+  def test_highlight_spacing_constants
+    assert_equal :always, RatatuiRuby::Widgets::Table::HIGHLIGHT_ALWAYS
+    assert_equal :when_selected, RatatuiRuby::Widgets::Table::HIGHLIGHT_WHEN_SELECTED
+    assert_equal :never, RatatuiRuby::Widgets::Table::HIGHLIGHT_NEVER
+  end
+
+  def test_flex_constants
+    assert_equal :legacy, RatatuiRuby::Widgets::Table::FLEX_LEGACY
+    assert_equal :start, RatatuiRuby::Widgets::Table::FLEX_START
+    assert_equal :center, RatatuiRuby::Widgets::Table::FLEX_CENTER
+    assert_equal :end, RatatuiRuby::Widgets::Table::FLEX_END
+    assert_equal :space_between, RatatuiRuby::Widgets::Table::FLEX_SPACE_BETWEEN
+    assert_equal :space_around, RatatuiRuby::Widgets::Table::FLEX_SPACE_AROUND
+    assert_equal :space_evenly, RatatuiRuby::Widgets::Table::FLEX_SPACE_EVENLY
+  end
 end

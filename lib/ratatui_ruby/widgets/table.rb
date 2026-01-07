@@ -25,6 +25,38 @@ module RatatuiRuby
     #   ruby examples/widget_table_flex/app.rb
     class Table < Data.define(:header, :rows, :widths, :row_highlight_style, :highlight_symbol, :highlight_spacing, :column_highlight_style, :cell_highlight_style, :selected_row, :selected_column, :offset, :block, :footer, :flex, :style, :column_spacing)
       ##
+      # Highlight spacing: always show the spacing column.
+      HIGHLIGHT_ALWAYS = :always
+      ##
+      # Highlight spacing: show spacing only when a row is selected (default).
+      HIGHLIGHT_WHEN_SELECTED = :when_selected
+      ##
+      # Highlight spacing: never show the spacing column.
+      HIGHLIGHT_NEVER = :never
+
+      ##
+      # Flex: use legacy column sizing.
+      FLEX_LEGACY = :legacy
+      ##
+      # Flex: align columns to start.
+      FLEX_START = :start
+      ##
+      # Flex: center columns.
+      FLEX_CENTER = :center
+      ##
+      # Flex: align columns to end.
+      FLEX_END = :end
+      ##
+      # Flex: space between columns.
+      FLEX_SPACE_BETWEEN = :space_between
+      ##
+      # Flex: space around columns.
+      FLEX_SPACE_AROUND = :space_around
+      ##
+      # Flex: space evenly between columns.
+      FLEX_SPACE_EVENLY = :space_evenly
+
+      ##
       # :attr_reader: header
       # Header row content (Array of Strings, Text::Spans, Text::Lines, or Paragraphs).
 

@@ -67,6 +67,21 @@ class TestLayout < Minitest::Test
     assert_includes RatatuiRuby::Layout::Layout::FLEX_MODES, :space_evenly
   end
 
+  def test_direction_constants
+    assert_equal :vertical, RatatuiRuby::Layout::Layout::DIRECTION_VERTICAL
+    assert_equal :horizontal, RatatuiRuby::Layout::Layout::DIRECTION_HORIZONTAL
+  end
+
+  def test_flex_constants
+    assert_equal :legacy, RatatuiRuby::Layout::Layout::FLEX_LEGACY
+    assert_equal :start, RatatuiRuby::Layout::Layout::FLEX_START
+    assert_equal :center, RatatuiRuby::Layout::Layout::FLEX_CENTER
+    assert_equal :end, RatatuiRuby::Layout::Layout::FLEX_END
+    assert_equal :space_between, RatatuiRuby::Layout::Layout::FLEX_SPACE_BETWEEN
+    assert_equal :space_around, RatatuiRuby::Layout::Layout::FLEX_SPACE_AROUND
+    assert_equal :space_evenly, RatatuiRuby::Layout::Layout::FLEX_SPACE_EVENLY
+  end
+
   def test_nested_layout
     p = RatatuiRuby::Widgets::Paragraph.new(text: "Inner")
     inner = RatatuiRuby::Layout::Layout.new(direction: :horizontal, children: [p])

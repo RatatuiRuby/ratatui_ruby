@@ -52,6 +52,35 @@ module RatatuiRuby
       # :nodoc:
       FLEX_MODES = %i[legacy start center end space_between space_around space_evenly].freeze
 
+      ##
+      # Direction: split vertically (top to bottom).
+      DIRECTION_VERTICAL = :vertical
+      ##
+      # Direction: split horizontally (left to right).
+      DIRECTION_HORIZONTAL = :horizontal
+
+      ##
+      # Flex: use legacy sizing (default).
+      FLEX_LEGACY = :legacy
+      ##
+      # Flex: align to start.
+      FLEX_START = :start
+      ##
+      # Flex: center alignment.
+      FLEX_CENTER = :center
+      ##
+      # Flex: align to end.
+      FLEX_END = :end
+      ##
+      # Flex: space between elements.
+      FLEX_SPACE_BETWEEN = :space_between
+      ##
+      # Flex: space around elements.
+      FLEX_SPACE_AROUND = :space_around
+      ##
+      # Flex: space evenly between elements.
+      FLEX_SPACE_EVENLY = :space_evenly
+
       # Creates a new Layout.
       #
       # [direction]
