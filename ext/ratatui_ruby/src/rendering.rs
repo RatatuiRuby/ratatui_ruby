@@ -53,7 +53,7 @@ pub fn render_node(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Err
         "RatatuiRuby::Widgets::Canvas" => widgets::canvas::render(frame, area, node)?,
         "RatatuiRuby::Widgets::Calendar" => widgets::calendar::render(frame, area, node)?,
         "RatatuiRuby::Widgets::Sparkline" => widgets::sparkline::render(frame, area, node)?,
-        "RatatuiRuby::Widgets::Chart" | "RatatuiRuby::LineChart" => {
+        "RatatuiRuby::Widgets::Chart" => {
             widgets::chart::render(frame, area, node)?;
         }
         "RatatuiRuby::Widgets::RatatuiLogo" => widgets::ratatui_logo::render(frame, area, node),

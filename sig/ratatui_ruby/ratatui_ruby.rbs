@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  type widget = Paragraph | Layout | List | Gauge | Table | Tabs | BarChart | Block | Sparkline | LineChart
+  type widget = Paragraph | Layout | List | Gauge | Table | Tabs | BarChart | Block | Sparkline
 
   interface _ToS
     def to_s: () -> String

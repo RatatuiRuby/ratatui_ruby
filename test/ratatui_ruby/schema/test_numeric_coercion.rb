@@ -140,15 +140,6 @@ class TestNumericCoercion < Minitest::Test
     assert_equal 4.0, dataset.data[1][1]
   end
 
-  def test_line_chart_bounds_coerce_floats
-    chart = RatatuiRuby::Widgets::LineChart.new(
-      datasets: [],
-      y_bounds: [Rational(0, 1), Rational(100, 1)]
-    )
-    assert_equal 0.0, chart.y_bounds[0]
-    assert_equal 100.0, chart.y_bounds[1]
-  end
-
   # ========== Integer Coercion Tests ==========
 
   def test_rect_coerces_integers

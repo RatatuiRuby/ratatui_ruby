@@ -30,13 +30,4 @@ module RatatuiRuby
     attr_reader hidden_legend_constraints: Array[Constraint]
     def self.new: (datasets: Array[Dataset], x_axis: Axis, y_axis: Axis, ?block: Block?, ?style: Style?, ?legend_position: Symbol?, ?hidden_legend_constraints: Array[Constraint]) -> Chart
   end
-
-  class LineChart < Data
-    attr_reader datasets: Array[Dataset]
-    attr_reader x_labels: Array[String]
-    attr_reader y_labels: Array[String]
-    attr_reader y_bounds: [Float, Float]
-    attr_reader block: Block?
-    def self.new: (datasets: Array[Dataset], ?x_labels: Array[String], ?y_labels: Array[String], ?y_bounds: [Numeric, Numeric], ?block: Block?) -> LineChart
-  end
 end

@@ -156,30 +156,4 @@ module RatatuiRuby
       super
     end
   end
-
-  # A complex chart widget. (Legacy/Alias for Chart)
-  #
-  # [datasets] Array of Dataset objects.
-  # [x_labels] Array of Strings for the X-axis labels.
-  # [y_labels] Array of Strings for the Y-axis labels.
-  # [y_bounds] Array of two Floats [min, max] for the Y-axis.
-  # [block] Optional block widget to wrap the chart.
-  class LineChart < Data.define(:datasets, :x_labels, :y_labels, :y_bounds, :block)
-    # Creates a new LineChart widget.
-    #
-    # [datasets] Array of Dataset objects.
-    # [x_labels] Array of Strings for the X-axis labels.
-    # [y_labels] Array of Strings for the Y-axis labels.
-    # [y_bounds] Array of two Floats [min, max] for the Y-axis.
-    # [block] Optional block widget to wrap the chart.
-    def initialize(datasets:, x_labels: [], y_labels: [], y_bounds: [0.0, 100.0], block: nil)
-      super(
-        datasets:,
-        x_labels:,
-        y_labels:,
-        y_bounds: [Float(y_bounds[0]), Float(y_bounds[1])],
-        block:
-      )
-    end
-  end
 end
