@@ -25,7 +25,7 @@ YOUR_COPYRIGHT = "#{YOUR_NAME} <#{YOUR_EMAIL}>"
 
 def license_for_file(filepath)
   case filepath
-  when %r{^(lib|sig/lib|ext|sig/ext|test|sig/test)/}
+  when %r{^(lib|sig/ratatui_ruby|ext|test)/}
     "LGPL-3.0-or-later"
   when %r{^(examples|sig/examples)/(widget_|verify_)}
     "MIT-0"
