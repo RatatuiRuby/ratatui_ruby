@@ -30,7 +30,7 @@ class VerifyQuickstartLayout
             tui.paragraph(
               text: "Hello, Ratatui!",
               alignment: :center,
-              block: tui.block(title: "Content", borders: [:all], border_color: "cyan")
+              block: tui.block(title: "Content", borders: [:all], border_style: { fg: "cyan" })
             ),
             top
           )

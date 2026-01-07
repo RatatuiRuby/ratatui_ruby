@@ -77,7 +77,7 @@ RatatuiRuby.run do |tui|
           block: tui.block(
             title: "My Ruby TUI App",
             borders: [:all],
-            border_color: "cyan"
+            border_style: { fg: "cyan" }
           )
         ),
         frame.area

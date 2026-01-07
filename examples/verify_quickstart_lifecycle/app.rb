@@ -27,7 +27,7 @@ class VerifyQuickstartLifecycle
             title: "My Ruby TUI App",
             title_alignment: :center,
             borders: [:all],
-            border_color: "cyan",
+            border_style: { fg: "cyan" },
             style: { fg: "white" }
           )
         )

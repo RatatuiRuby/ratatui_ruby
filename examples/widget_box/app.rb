@@ -132,9 +132,13 @@ set: {
     border_style_config = @border_styles[@border_style_index]
 
     # 1. State/View
-    # Use border_style if provided, otherwise fall back to border_color
-    effective_border_style = border_style_config[:style]
-    effective_border_color = effective_border_style ? nil : (style_config[:style] ? nil : color_config[:color])
+    # Use border_style if explicitly set; otherwise, only apply color picker
+    # color when no content style is set (preserves original border_color behavior)
+    effective_border_style = if border_style_config[:style]
+      border_style_config[:style]
+    elsif style_config[:style].nil?
+      @tui.style(fg: color_config[:color])
+    end
 
     # Show overridden status if border_set is active
     type_display = border_type_config[:name]
@@ -147,7 +151,6 @@ set: {
       title_alignment: title_alignment_config[:alignment],
       title_style: title_style_config[:style],
       borders: [:all],
-      border_color: effective_border_color,
       border_style: effective_border_style,
       border_type: border_type_config[:type],
       border_set: border_set_config[:set],

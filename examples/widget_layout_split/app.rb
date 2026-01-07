@@ -193,7 +193,7 @@ class WidgetLayoutSplit
       block = @tui.block(
         title: "Block #{i + 1}",
         borders: [:all],
-        border_color: BLOCK_COLORS[i % BLOCK_COLORS.length]
+        border_style: @tui.style(fg: BLOCK_COLORS[i % BLOCK_COLORS.length])
       )
       frame.render_widget(block, block_area)
     end

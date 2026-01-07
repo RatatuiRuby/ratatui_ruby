@@ -19,6 +19,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Removed
 
 - **`assert_snapshot`**: Removed deprecated test helper. Use `assert_plain_snapshot` or `assert_snapshots` instead.
+- **`Block#border_color`**: Removed deprecated parameter. Use `border_style: Style.new(fg: color)` for equivalent functionality.
 
 ## [0.8.0] - 2026-01-05
 

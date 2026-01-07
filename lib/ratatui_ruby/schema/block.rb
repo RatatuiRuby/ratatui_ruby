@@ -21,7 +21,7 @@ module RatatuiRuby
   # Run the interactive demo from the terminal:
   #
   #   ruby examples/widget_box/app.rb
-  class Block < Data.define(:title, :titles, :title_alignment, :title_style, :borders, :border_color, :border_style, :border_type, :border_set, :style, :padding, :children)
+  class Block < Data.define(:title, :titles, :title_alignment, :title_style, :borders, :border_style, :border_type, :border_set, :style, :padding, :children)
     ##
     # :attr_reader: title
     # The main title displayed on the top border.
@@ -69,18 +69,11 @@ module RatatuiRuby
     #   Block.new(borders: [:left, :right]).borders # => [:left, :right]
 
     ##
-    # :attr_reader: border_color
-    # Color of the border lines.
-    #
-    # Deprecated: Use <tt>border_style:</tt> instead for full style support.
-
-    ##
     # :attr_reader: border_style
     # Full style (colors/modifiers) for the border lines.
     #
     # A Style object or Hash with <tt>:fg</tt>, <tt>:bg</tt>, and <tt>:modifiers</tt>.
-    # This allows borders to be bold, italic, colored, etc. If both <tt>border_color</tt>
-    # and <tt>border_style</tt> are provided, <tt>border_style</tt> takes precedence.
+    # This allows borders to be bold, italic, colored, etc.
 
     ##
     # :attr_reader: border_type
@@ -144,8 +137,6 @@ module RatatuiRuby
     #   Base style for all titles (optional).
     # [borders]
     #   Array of borders to show: <tt>:top</tt>, <tt>:bottom</tt>, <tt>:left</tt>, <tt>:right</tt>, or <tt>:all</tt> (default).
-    # [border_color]
-    #   Color string or symbol (e.g., <tt>:red</tt>). Deprecated: use <tt>border_style</tt> instead.
     # [border_style]
     #   Style object or Hash for the border lines.
     # [border_type]
@@ -158,7 +149,7 @@ module RatatuiRuby
     #   Integer (uniform) or Array[4] (left, right, top, bottom).
     # [children]
     #   Array of widgets to render inside the block (optional).
-    def initialize(title: nil, titles: [], title_alignment: nil, title_style: nil, borders: [:all], border_color: nil, border_style: nil, border_type: nil, border_set: nil, style: nil, padding: 0, children: [])
+    def initialize(title: nil, titles: [], title_alignment: nil, title_style: nil, borders: [:all], border_style: nil, border_type: nil, border_set: nil, style: nil, padding: 0, children: [])
       if border_set
         border_set = border_set.dup
         %i[top_left top_right bottom_left bottom_right vertical_left vertical_right horizontal_top horizontal_bottom].each do |long_key|
@@ -179,7 +170,6 @@ module RatatuiRuby
         title_alignment:,
         title_style:,
         borders:,
-        border_color:,
         border_style:,
         border_type:,
         border_set:,

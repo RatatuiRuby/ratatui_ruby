@@ -34,7 +34,7 @@ begin
         title: "My Ruby TUI App",
         title_alignment: :center,
         borders: [:all],
-        border_color: "cyan",
+        border_style: { fg: "cyan" },
         style: { fg: "white" }
       )
     )
@@ -93,7 +93,7 @@ RatatuiRuby.run do |tui|
         title: "My Ruby TUI App",
         title_alignment: :center,
         borders: [:all],
-        border_color: "cyan",
+        border_style: { fg: "cyan" },
         style: { fg: "white" }
       )
     )
@@ -147,7 +147,7 @@ loop do
       tui.paragraph(
         text: "Hello, Ratatui!",
         alignment: :center,
-        block: tui.block(title: "Content", borders: [:all], border_color: "cyan")
+        block: tui.block(title: "Content", borders: [:all], border_style: { fg: "cyan" })
       ),
       top
     )

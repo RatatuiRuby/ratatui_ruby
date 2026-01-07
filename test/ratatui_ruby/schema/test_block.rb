@@ -10,10 +10,10 @@ require "test_helper"
 class TestBlock < Minitest::Test
   include RatatuiRuby::TestHelper
   def test_block_creation
-    b = RatatuiRuby::Widgets::Block.new(title: "Title", borders: [:top, :bottom], border_color: "red")
+    b = RatatuiRuby::Widgets::Block.new(title: "Title", borders: [:top, :bottom], border_style: { fg: "red" })
     assert_equal "Title", b.title
     assert_equal [:top, :bottom], b.borders
-    assert_equal "red", b.border_color
+    assert_equal({ fg: "red" }, b.border_style)
   end
 
   def test_block_creation_with_style
@@ -55,7 +55,7 @@ class TestBlock < Minitest::Test
     assert_equal [], b.titles
     assert_nil b.title_style
     assert_equal [:all], b.borders
-    assert_nil b.border_color
+    assert_nil b.border_style
     assert_nil b.border_type
     assert_nil b.style
     assert_equal [], b.children

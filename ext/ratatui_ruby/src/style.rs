@@ -398,14 +398,6 @@ fn parse_borders<'a>(
     if let Ok(v) = block_val.funcall::<&str, _, Value>("border_style", ()) {
         if !v.is_nil() {
             block = block.border_style(parse_style(v)?);
-        } else if let Ok(color_val) = block_val.funcall::<&str, _, Value>("border_color", ()) {
-            if !color_val.is_nil() {
-                if let Ok(s) = color_val.funcall::<&str, _, String>("to_s", ()) {
-                    if let Some(c) = parse_color(&s) {
-                        block = block.border_style(Style::default().fg(c));
-                    }
-                }
-            }
         }
     }
 

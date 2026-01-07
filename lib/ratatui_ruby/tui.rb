@@ -58,7 +58,7 @@ module RatatuiRuby
   #             block: tui.block(
   #               title: "My Ruby TUI App",
   #               borders: [:all],
-  #               border_color: "cyan"
+  #               border_style: { fg: \"cyan\" }
   #             )
   #       event = tui.poll_event
   #       break if event == "q" || event == :ctrl_c

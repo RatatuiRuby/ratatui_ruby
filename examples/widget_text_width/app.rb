@@ -73,7 +73,7 @@ class WidgetTextWidth
       block: @tui.block(
         title: "Text Width Calculator",
         borders: [:all],
-        border_color: "cyan"
+        border_style: { fg: "cyan" }
       ),
       alignment: :left
     )
@@ -88,7 +88,7 @@ class WidgetTextWidth
 
     widget = @tui.paragraph(
       text:,
-      block: @tui.block(borders: [:top], border_color: "gray"),
+      block: @tui.block(borders: [:top], border_style: { fg: "gray" }),
       alignment: :center
     )
 
