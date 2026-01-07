@@ -97,13 +97,6 @@ module RatatuiRuby
       end
 
       ##
-      # @deprecated Use {#assert_plain_snapshot} instead.
-      def assert_snapshot(name, msg = nil, &)
-        warn "assert_snapshot is deprecated; use assert_plain_snapshot instead", uplevel: 1
-        assert_plain_snapshot(name, msg, &)
-      end
-
-      ##
       # Asserts that the current screen content matches the expected content.
       #
       # Users need to verify that the entire TUI screen looks exactly as expected.

@@ -274,30 +274,6 @@ class TestTestHelperModule < Minitest::Test
     end
   end
 
-  def test_assert_snapshot_emits_deprecation_warning
-    with_test_terminal(20, 2) do
-      expected = ["Snapshot Content"]
-
-      stub :buffer_content, expected do
-        warning_output = capture_io { assert_snapshot("my_snapshot") }[1]
-        assert_match(/assert_snapshot is deprecated/, warning_output)
-        assert_match(/assert_plain_snapshot/, warning_output)
-      end
-    end
-  end
-
-  def test_assert_snapshot
-    with_test_terminal(20, 2) do
-      # We created test/snapshots/my_snapshot.txt with "Snapshot Content"
-      expected = ["Snapshot Content"]
-
-      stub :buffer_content, expected do
-        # This should look for test/snapshots/my_snapshot.txt
-        assert_snapshot("my_snapshot")
-      end
-    end
-  end
-
   def test_assert_plain_snapshot
     with_test_terminal(20, 2) do
       # Verify that assert_plain_snapshot works correctly as the primary method
