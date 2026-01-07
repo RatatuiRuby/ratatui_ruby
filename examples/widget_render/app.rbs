@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+#
+# SPDX-License-Identifier: MIT-0
+
+class DiagonalWidget
+  @widget_index: Integer
+  @widgets: Array[{ name: String, widget: (DiagonalWidget | CheckerboardWidget | BorderWidget) }]
+  @tui: RatatuiRuby::TUI
+
+  def run: () -> void
+
+  private def render: () -> void
+  private def handle_input: () -> Symbol?
+end
+
+class DiagonalWidget
+  def render: (RatatuiRuby::Rect area) -> Array[RatatuiRuby::Draw::StringCmd | RatatuiRuby::Draw::CellCmd]
+end
+
+class CheckerboardWidget
+  @char: String
+
+  def initialize: (?String char) -> void
+  def render: (RatatuiRuby::Rect area) -> Array[RatatuiRuby::Draw::StringCmd | RatatuiRuby::Draw::CellCmd]
+end
+
+class BorderWidget
+  def render: (RatatuiRuby::Rect area) -> Array[RatatuiRuby::Draw::StringCmd | RatatuiRuby::Draw::CellCmd]
+end
+
+class WidgetRender
+  @widget_index: Integer
+  @widgets: Array[{ name: String, widget: (DiagonalWidget | CheckerboardWidget | BorderWidget) }]
+  @tui: RatatuiRuby::TUI
+
+  def initialize: () -> void
+  def run: () -> void
+
+  private def render: () -> void
+  private def handle_input: () -> Symbol?
+end

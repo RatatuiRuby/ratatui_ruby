@@ -20,6 +20,7 @@
 - [Event Handling](./concepts/event_handling.md): Keyboard, mouse, and terminal events
 - [Interactive Design](./concepts/interactive_design.md): Cached layout pattern for hit testing
 - [Testing Your Application](./concepts/application_testing.md): Snapshot testing and style assertions
+- [Custom Widgets](./concepts/custom_widgets.md): Build anything with the Draw API
 - [Async Operations](./concepts/async.md): Background tasks and non-blocking I/O
 
 ### Troubleshooting
