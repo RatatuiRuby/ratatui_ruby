@@ -15,6 +15,8 @@ module RatatuiRuby
     attr_reader scroll_padding: Integer?
     attr_reader block: Block?
     def self.new: (?items: Array[String | Text::Span | Text::Line | ListItem], ?selected_index: Numeric?, ?offset: Numeric?, ?style: Style?, ?highlight_style: Style?, ?highlight_symbol: String?, ?repeat_highlight_symbol: bool, ?highlight_spacing: Symbol, ?direction: Symbol, ?scroll_padding: Numeric?, ?block: Block?) -> List
+    def selected?: () -> bool
+    def empty?: () -> bool
   end
 end
 

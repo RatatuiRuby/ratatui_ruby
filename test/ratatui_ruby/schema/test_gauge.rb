@@ -154,4 +154,30 @@ class TestLineGauge < Minitest::Test
       assert_includes ansi_output, "\e[35m", "Label should have magenta foreground"
     end
   end
+
+  def test_filled_predicate
+    refute RatatuiRuby::Widgets::LineGauge.new(ratio: 0.0).filled?
+    assert RatatuiRuby::Widgets::LineGauge.new(ratio: 0.1).filled?
+    assert RatatuiRuby::Widgets::LineGauge.new(ratio: 1.0).filled?
+  end
+
+  def test_complete_predicate
+    refute RatatuiRuby::Widgets::LineGauge.new(ratio: 0.99).complete?
+    assert RatatuiRuby::Widgets::LineGauge.new(ratio: 1.0).complete?
+    assert RatatuiRuby::Widgets::LineGauge.new(ratio: 1.5).complete?
+  end
+end
+
+class TestGaugePredicates < Minitest::Test
+  def test_filled_predicate
+    refute RatatuiRuby::Widgets::Gauge.new(ratio: 0.0).filled?
+    assert RatatuiRuby::Widgets::Gauge.new(ratio: 0.1).filled?
+    assert RatatuiRuby::Widgets::Gauge.new(ratio: 1.0).filled?
+  end
+
+  def test_complete_predicate
+    refute RatatuiRuby::Widgets::Gauge.new(ratio: 0.99).complete?
+    assert RatatuiRuby::Widgets::Gauge.new(ratio: 1.0).complete?
+    assert RatatuiRuby::Widgets::Gauge.new(ratio: 1.5).complete?
+  end
 end

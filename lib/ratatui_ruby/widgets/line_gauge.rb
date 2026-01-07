@@ -77,6 +77,20 @@ module RatatuiRuby
           unfilled_symbol:
         )
       end
+
+      # Returns true if the gauge has any fill (ratio > 0).
+      #
+      # @return [Boolean]
+      def filled?
+        ratio > 0
+      end
+
+      # Returns true if the gauge is at 100% or more (ratio >= 1.0).
+      #
+      # @return [Boolean]
+      def complete?
+        ratio >= 1.0
+      end
     end
   end
 end

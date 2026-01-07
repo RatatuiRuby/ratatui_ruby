@@ -613,6 +613,29 @@ class TestTable < Minitest::Test
     end
   end
 
+  def test_row_selected_predicate
+    assert RatatuiRuby::Widgets::Table.new(rows: [[]], selected_row: 0).row_selected?
+    refute RatatuiRuby::Widgets::Table.new(rows: [[]]).row_selected?
+    refute RatatuiRuby::Widgets::Table.new(rows: [[]], selected_row: nil).row_selected?
+  end
+
+  def test_column_selected_predicate
+    assert RatatuiRuby::Widgets::Table.new(rows: [[]], selected_column: 0).column_selected?
+    refute RatatuiRuby::Widgets::Table.new(rows: [[]]).column_selected?
+  end
+
+  def test_cell_selected_predicate
+    assert RatatuiRuby::Widgets::Table.new(rows: [[]], selected_row: 0, selected_column: 0).cell_selected?
+    refute RatatuiRuby::Widgets::Table.new(rows: [[]], selected_row: 0).cell_selected?
+    refute RatatuiRuby::Widgets::Table.new(rows: [[]], selected_column: 0).cell_selected?
+    refute RatatuiRuby::Widgets::Table.new(rows: [[]]).cell_selected?
+  end
+
+  def test_empty_predicate
+    assert RatatuiRuby::Widgets::Table.new(rows: []).empty?
+    refute RatatuiRuby::Widgets::Table.new(rows: [["a"]]).empty?
+  end
+
   # Gap test - verify Row#enable_strikethrough from v1.0.0_blockers.md
   def test_row_enable_strikethrough
     skip "v1.0.0 Blocker: Row#enable_strikethrough not implemented. See doc/contributors/v1.0.0_blockers.md"

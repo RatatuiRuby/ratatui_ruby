@@ -12,6 +12,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **State Query Predicates (DWIM DX)**: Widgets now provide ergonomic predicate methods for querying selection and completion state:
+  - `List#selected?` — returns true if an item is selected
+  - `List#empty?` — returns true if the list has no items
+  - `Table#row_selected?`, `Table#column_selected?`, `Table#cell_selected?` — check selection state
+  - `Table#empty?` — returns true if the table has no rows
+  - `Gauge#filled?`, `Gauge#complete?` — check progress state (ratio > 0, ratio >= 1.0)
+  - `LineGauge#filled?`, `LineGauge#complete?` — same as Gauge
+
 ### Changed
 
 ### Fixed

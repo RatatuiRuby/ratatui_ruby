@@ -124,6 +124,20 @@ module RatatuiRuby
           block:
         )
       end
+
+      # Returns true if an item is selected.
+      #
+      # @return [Boolean]
+      def selected?
+        !selected_index.nil?
+      end
+
+      # Returns true if the list has no items.
+      #
+      # @return [Boolean]
+      def empty?
+        items.empty?
+      end
     end
   end
 end

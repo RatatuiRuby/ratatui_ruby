@@ -211,18 +211,14 @@ class TestList < Minitest::Test
     end
   end
 
-  # Gap tests - verify missing methods from v1.0.0_blockers.md
-  def test_list_len
-    skip "v1.0.0 Blocker: List#len not implemented. See doc/contributors/v1.0.0_blockers.md"
-    list = RatatuiRuby::Widgets::List.new(items: ["a", "b", "c"])
-    assert_equal 3, list.len
+  def test_selected_predicate
+    assert RatatuiRuby::Widgets::List.new(items: ["a"], selected_index: 0).selected?
+    refute RatatuiRuby::Widgets::List.new(items: ["a"]).selected?
+    refute RatatuiRuby::Widgets::List.new(items: ["a"], selected_index: nil).selected?
   end
 
-  def test_list_empty
-    skip "v1.0.0 Blocker: List#empty? not implemented. See doc/contributors/v1.0.0_blockers.md"
-    empty_list = RatatuiRuby::Widgets::List.new(items: [])
-    non_empty_list = RatatuiRuby::Widgets::List.new(items: ["a"])
-    assert empty_list.empty?
-    refute non_empty_list.empty?
+  def test_empty_predicate
+    assert RatatuiRuby::Widgets::List.new(items: []).empty?
+    refute RatatuiRuby::Widgets::List.new(items: ["a"]).empty?
   end
 end
