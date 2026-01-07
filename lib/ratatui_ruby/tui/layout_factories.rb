@@ -71,6 +71,36 @@ module RatatuiRuby
       def layout_split(area, direction: :vertical, constraints:, flex: :legacy)
         Layout::Layout.split(area, direction:, constraints:, flex:)
       end
+
+      # Alias for {#layout_split} — shorter, more ergonomic.
+      # @return [Array<Layout::Rect>]
+      def split(area, direction: :vertical, constraints:, flex: :legacy)
+        layout_split(area, direction:, constraints:, flex:)
+      end
+
+      # Alias for {#constraint_length} — CSS-inspired "fixed" sizing.
+      # @return [Layout::Constraint]
+      def fixed(n)
+        constraint_length(n)
+      end
+
+      # Alias for {#constraint_percentage} — CSS-inspired percent sizing.
+      # @return [Layout::Constraint]
+      def percent(n)
+        constraint_percentage(n)
+      end
+
+      # Alias for {#constraint_fill} — CSS Flexbox-inspired flexible sizing.
+      # @return [Layout::Constraint]
+      def flex(n = 1)
+        constraint_fill(n)
+      end
+
+      # Alias for {#constraint_fill} — CSS Grid-inspired "fr" (fraction) unit.
+      # @return [Layout::Constraint]
+      def fr(n = 1)
+        constraint_fill(n)
+      end
     end
   end
 end

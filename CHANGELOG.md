@@ -28,6 +28,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - `Layout::Layout::DIRECTION_VERTICAL`, `DIRECTION_HORIZONTAL`
   - `Layout::Layout::FLEX_*` — same as Table
 
+- **TUI API Aliases (DWIM DX)**: The TUI facade now provides CSS-inspired constraint aliases for cleaner layout code:
+  - `fixed(n)` — alias for `constraint_length(n)`
+  - `percent(n)` — alias for `constraint_percentage(n)`
+  - `flex(n)` / `fr(n)` — aliases for `constraint_fill(n)` (Flexbox/Grid-inspired)
+  - `split(...)` — alias for `layout_split(...)`
+
 ### Changed
 
 ### Fixed

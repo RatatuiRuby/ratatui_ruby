@@ -141,6 +141,40 @@ class TestTUI < Minitest::Test
     row2 = tui.row(cells: ["D", "E"])
     assert_instance_of RatatuiRuby::Widgets::Row, row2
   end
+
+  # DWIM DX: CSS-friendly constraint aliases
+  def test_fixed_alias
+    tui = RatatuiRuby::TUI.new
+    assert_equal tui.constraint_length(10), tui.fixed(10)
+  end
+
+  def test_percent_alias
+    tui = RatatuiRuby::TUI.new
+    assert_equal tui.constraint_percentage(50), tui.percent(50)
+  end
+
+  def test_flex_alias
+    tui = RatatuiRuby::TUI.new
+    assert_equal tui.constraint_fill(1), tui.flex(1)
+    assert_equal tui.constraint_fill(2), tui.flex(2)
+  end
+
+  def test_fr_alias
+    tui = RatatuiRuby::TUI.new
+    assert_equal tui.constraint_fill(1), tui.fr(1)
+    assert_equal tui.constraint_fill(3), tui.fr(3)
+  end
+
+  def test_split_alias
+    tui = RatatuiRuby::TUI.new
+    area = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 10, height: 10)
+    constraints = [tui.percent(50), tui.percent(50)]
+
+    # split should be an alias for layout_split
+    rects = tui.split(area, direction: :horizontal, constraints:)
+    assert_equal 2, rects.size
+    assert_equal 5, rects.first.width
+  end
 end
 
 # Helper class to test @tui = tui pattern
