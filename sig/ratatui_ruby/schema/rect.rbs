@@ -14,10 +14,35 @@ module RatatuiRuby
     attr_reader y: Integer
     attr_reader width: Integer
     attr_reader height: Integer
+
     def self.new: (?x: Numeric, ?y: Numeric, ?width: Numeric, ?height: Numeric) -> instance
+
+    # Predicates
     def contains?: (Integer px, Integer py) -> bool
     def intersects?: (Rect other) -> bool
+    def empty?: () -> bool
+
+    # Edge accessors
+    def left: () -> Integer
+    def right: () -> Integer
+    def top: () -> Integer
+    def bottom: () -> Integer
+    def area: () -> Integer
+
+    # Geometry transformations
     def intersection: (Rect other) -> Rect?
+    def union: (Rect other) -> Rect
+    def inner: (Integer margin) -> Rect
+    def offset: (Integer dx, Integer dy) -> Rect
+    def clamp: (Rect other) -> Rect
+
+    # Iterators
+    def rows: () -> Enumerator[Rect, void]
+            | () { (Rect) -> void } -> void
+    def columns: () -> Enumerator[Rect, void]
+               | () { (Rect) -> void } -> void
+    def positions: () -> Enumerator[[Integer, Integer], void]
+                 | () { ([Integer, Integer]) -> void } -> void
   end
 end
 

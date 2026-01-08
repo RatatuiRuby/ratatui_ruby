@@ -126,37 +126,31 @@ class TestRect < Minitest::Test
 
   # Gap tests - verify missing methods from v1.0.0_blockers.md
   def test_rect_area
-    skip "v1.0.0 Blocker: Rect#area not implemented. See doc/contributors/v1.0.0_blockers.md"
     rect = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 10, height: 5)
     assert_equal 50, rect.area
   end
 
   def test_rect_left
-    skip "v1.0.0 Blocker: Rect#left not implemented. See doc/contributors/v1.0.0_blockers.md"
     rect = RatatuiRuby::Layout::Rect.new(x: 10, y: 5, width: 80, height: 24)
     assert_equal 10, rect.left
   end
 
   def test_rect_right
-    skip "v1.0.0 Blocker: Rect#right not implemented. See doc/contributors/v1.0.0_blockers.md"
     rect = RatatuiRuby::Layout::Rect.new(x: 10, y: 5, width: 80, height: 24)
     assert_equal 90, rect.right
   end
 
   def test_rect_top
-    skip "v1.0.0 Blocker: Rect#top not implemented. See doc/contributors/v1.0.0_blockers.md"
     rect = RatatuiRuby::Layout::Rect.new(x: 10, y: 5, width: 80, height: 24)
     assert_equal 5, rect.top
   end
 
   def test_rect_bottom
-    skip "v1.0.0 Blocker: Rect#bottom not implemented. See doc/contributors/v1.0.0_blockers.md"
     rect = RatatuiRuby::Layout::Rect.new(x: 10, y: 5, width: 80, height: 24)
     assert_equal 29, rect.bottom
   end
 
   def test_rect_union
-    skip "v1.0.0 Blocker: Rect#union not implemented. See doc/contributors/v1.0.0_blockers.md"
     r1 = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 10, height: 10)
     r2 = RatatuiRuby::Layout::Rect.new(x: 5, y: 5, width: 10, height: 10)
     result = r1.union(r2)
@@ -167,7 +161,6 @@ class TestRect < Minitest::Test
   end
 
   def test_rect_inner
-    skip "v1.0.0 Blocker: Rect#inner not implemented. See doc/contributors/v1.0.0_blockers.md"
     rect = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 20, height: 10)
     result = rect.inner(2)
     assert_equal 2, result.x
@@ -177,7 +170,6 @@ class TestRect < Minitest::Test
   end
 
   def test_rect_offset
-    skip "v1.0.0 Blocker: Rect#offset not implemented. See doc/contributors/v1.0.0_blockers.md"
     rect = RatatuiRuby::Layout::Rect.new(x: 10, y: 5, width: 20, height: 10)
     result = rect.offset(5, 3)
     assert_equal 15, result.x
@@ -187,7 +179,6 @@ class TestRect < Minitest::Test
   end
 
   def test_rect_clamp
-    skip "v1.0.0 Blocker: Rect#clamp not implemented. See doc/contributors/v1.0.0_blockers.md"
     inner = RatatuiRuby::Layout::Rect.new(x: -5, y: -5, width: 30, height: 30)
     bounds = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 20, height: 20)
     result = inner.clamp(bounds)
@@ -196,28 +187,24 @@ class TestRect < Minitest::Test
   end
 
   def test_rect_rows
-    skip "v1.0.0 Blocker: Rect#rows not implemented. See doc/contributors/v1.0.0_blockers.md"
     rect = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 5, height: 3)
     rows = rect.rows.to_a
     assert_equal 3, rows.size
   end
 
   def test_rect_columns
-    skip "v1.0.0 Blocker: Rect#columns not implemented. See doc/contributors/v1.0.0_blockers.md"
     rect = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 5, height: 3)
     cols = rect.columns.to_a
     assert_equal 5, cols.size
   end
 
   def test_rect_positions
-    skip "v1.0.0 Blocker: Rect#positions not implemented. See doc/contributors/v1.0.0_blockers.md"
     rect = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 2, height: 2)
     positions = rect.positions.to_a
     assert_equal 4, positions.size
   end
 
   def test_rect_empty
-    skip "v1.0.0 Blocker: Rect#empty? not implemented. See doc/contributors/v1.0.0_blockers.md"
     empty_rect = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 0, height: 0)
     non_empty_rect = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 10, height: 5)
     assert empty_rect.empty?

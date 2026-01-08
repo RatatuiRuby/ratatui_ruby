@@ -14,9 +14,11 @@ require "ratatui_ruby"
 #
 # Rect is the fundamental geometry primitive for TUI layout. This example shows:
 # - Rect attributes: x, y, width, height
+# - Edge accessors: left, right, top, bottom
+# - Geometry methods: area, empty?, union, inner, offset, clamp
+# - Iterators: rows, columns, positions
 # - Rect#contains? for hit testing mouse clicks
 # - Layout.split returning cached rects for reuse
-# - The layout caching pattern: compute in draw, reuse in handle_input
 #
 # Controls:
 #   ←/→: Adjust sidebar width
@@ -57,7 +59,7 @@ class WidgetRect
         direction: :vertical,
         constraints: [
           @tui.constraint_fill(1),
-          @tui.constraint_length(8),
+          @tui.constraint_length(5),
         ]
       )
 
@@ -88,21 +90,41 @@ class WidgetRect
   end
 
   private def render_content(frame)
+    r = @content_rect
+    inner_r = r.inner(2)
+    offset_r = r.offset(3, 2)
+    bounds = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 50, height: 20)
+    clamped = r.clamp(bounds)
+    union_r = r.union(@sidebar_rect)
+
     text_content = [
       @tui.text_line(spans: [
         @tui.text_span(content: "Active View: ", style: @label_style),
         @tui.text_span(content: MENU_ITEMS[@selected_index], style: @tui.style(fg: :green)),
       ]),
-      "",
       @tui.text_line(spans: [
         @tui.text_span(content: "Rect Attributes ", style: @label_style),
         @tui.text_span(content: "(from Layout.split):", style: @dim_style),
       ]),
-      "  Sidebar: Rect(x:#{@sidebar_rect.x}, y:#{@sidebar_rect.y}, " \
-        "width:#{@sidebar_rect.width}, height:#{@sidebar_rect.height})",
-      "  Content: Rect(x:#{@content_rect.x}, y:#{@content_rect.y}, " \
-        "width:#{@content_rect.width}, height:#{@content_rect.height})",
-      "",
+      "  x:#{r.x} y:#{r.y} width:#{r.width} height:#{r.height}",
+      @tui.text_line(spans: [
+        @tui.text_span(content: "Edge Accessors:", style: @label_style),
+      ]),
+      "  left:#{r.left} right:#{r.right} top:#{r.top} bottom:#{r.bottom}",
+      @tui.text_line(spans: [
+        @tui.text_span(content: "Size Methods:", style: @label_style),
+      ]),
+      "  area:#{r.area} empty?:#{r.empty?}",
+      @tui.text_line(spans: [
+        @tui.text_span(content: "Geometry Transformations:", style: @label_style),
+      ]),
+      "  inner(2): x:#{inner_r.x} y:#{inner_r.y} w:#{inner_r.width} h:#{inner_r.height}",
+      "  offset(3,2): x:#{offset_r.x} y:#{offset_r.y}  clamp: x:#{clamped.x} y:#{clamped.y}",
+      "  union(sidebar): w:#{union_r.width} h:#{union_r.height}",
+      @tui.text_line(spans: [
+        @tui.text_span(content: "Iterators:", style: @label_style),
+      ]),
+      "  rows:#{r.height} columns:#{r.width} positions:#{r.area}",
       @tui.text_line(spans: [
         @tui.text_span(content: "Hit Testing ", style: @label_style),
         @tui.text_span(content: "(Rect#contains?):", style: @dim_style),
@@ -125,26 +147,18 @@ class WidgetRect
         @tui.paragraph(
           text: [
             @tui.text_line(spans: [
-              @tui.text_span(content: "LAYOUT", style: @label_style),
-              @tui.text_span(content: "  "),
               @tui.text_span(content: "←", style: @hotkey_style),
-              @tui.text_span(content: ": Shrink sidebar  "),
+              @tui.text_span(content: "/"),
               @tui.text_span(content: "→", style: @hotkey_style),
-              @tui.text_span(content: ": Expand sidebar  "),
-              @tui.text_span(content: "(width: #{@sidebar_width})"),
-            ]),
-            @tui.text_line(spans: [
-              @tui.text_span(content: "NAVIGATION", style: @label_style),
-              @tui.text_span(content: "  "),
-              @tui.text_span(content: "↑↓", style: @hotkey_style),
-              @tui.text_span(content: ": Select menu item  "),
+              @tui.text_span(content: ": Sidebar width  "),
+              @tui.text_span(content: "↑", style: @hotkey_style),
+              @tui.text_span(content: "/"),
+              @tui.text_span(content: "↓", style: @hotkey_style),
+              @tui.text_span(content: ": Menu selection  "),
+              @tui.text_span(content: "Click", style: @hotkey_style),
+              @tui.text_span(content: ": Hit test  "),
               @tui.text_span(content: "q", style: @hotkey_style),
               @tui.text_span(content: ": Quit"),
-            ]),
-            "",
-            @tui.text_line(spans: [
-              @tui.text_span(content: "HIT TESTING", style: @label_style),
-              @tui.text_span(content: "  Click any panel → Rect#contains?(x, y) determines which rect was hit."),
             ]),
           ]
         ),

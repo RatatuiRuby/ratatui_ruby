@@ -40,6 +40,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - `select_first` — jump to the first item
   - `select_last` — jump to the last item
 
+- **Rect Methods**: `Rect` now provides edge accessors, size queries, geometry transformations, and iterators from upstream Ratatui:
+  - `left`, `right`, `top`, `bottom` — edge coordinates
+  - `area`, `empty?` — size queries
+  - `union(other)`, `inner(margin)`, `offset(dx, dy)`, `clamp(bounds)` — geometry transformations
+  - `rows`, `columns`, `positions` — iterators yielding slices or coordinates
+
 ### Changed
 
 - **License**: Library code (`lib/`, `sig/`) relicensed to LGPL-3.0-or-later for proprietary use. LGPL allows proprietary applications to link against the library while keeping library modifications open source.

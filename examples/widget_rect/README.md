@@ -14,6 +14,10 @@ TUI layouts are composed of rectangles. Understanding how to manipulate `Rect` o
 ## Features Demonstrated
 
 - **Rect Attributes**: Investigating x, y, width, and height.
+- **Edge Accessors**: Using `left`, `right`, `top`, `bottom` instead of manual math.
+- **Size Methods**: Checking `area` and `empty?` for guard clauses.
+- **Geometry Transformations**: Computing `inner`, `offset`, `union`, and `clamp`.
+- **Iterators**: Traversing `rows`, `columns`, and `positions`.
 - **Cached Layout Pattern**: Computing constraints in the render loop and reusing the resulting `Rect`s in the event loop for logic.
 - **Hit Testing**: Using `Rect#contains?(x, y)` to determine if a mouse click happened inside a specific panel.
 
@@ -43,5 +47,7 @@ Use this example if you need to...
 - Handle mouse clicks on specific buttons or areas.
 - Create resizable panes (like a split pane in an IDE).
 - Debug layout issues by inspecting Rect coordinates.
+- Compute inner padding, bounding boxes, or clamped popups.
+- Iterate over rows, columns, or individual positions within a region.
 
 [Read the source code →](app.rb)
