@@ -1012,7 +1012,7 @@ dependencies = [
 
 [[package]]
 name = "ratatui_ruby"
-version = "0.8.0"
+version = "0.9.0"
 dependencies = [
  "bumpalo",
  "lazy_static",

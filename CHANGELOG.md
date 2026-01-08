@@ -12,6 +12,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Removed
+
+## [0.9.0] - 2026-01-08
+
+### Added
+
 - **State Query Predicates (DWIM DX)**: Widgets now provide ergonomic predicate methods for querying selection and completion state:
   - `List#selected?` — returns true if an item is selected
   - `List#empty?` — returns true if the list has no items
@@ -482,6 +492,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Testing Support**: Included `RatatuiRuby::TestHelper` and RSpec integration to make testing your TUI applications possible.
 
 [Unreleased]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/HEAD
+[0.9.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.9.0
 [0.8.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.8.0
 [0.7.4]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.7.4
 [0.7.3]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.7.3
