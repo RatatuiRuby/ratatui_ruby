@@ -34,6 +34,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - `flex(n)` / `fr(n)` — aliases for `constraint_fill(n)` (Flexbox/Grid-inspired)
   - `split(...)` — alias for `layout_split(...)`
 
+- **ListState Navigation Methods**: `ListState` now provides ergonomic navigation methods matching upstream Ratatui:
+  - `select_next` — select the next item (or first if nothing selected)
+  - `select_previous` — select the previous item (or last if nothing selected)
+  - `select_first` — jump to the first item
+  - `select_last` — jump to the last item
+
 ### Changed
 
 - **License**: Library code (`lib/`, `sig/`) relicensed to LGPL-3.0-or-later for proprietary use. LGPL allows proprietary applications to link against the library while keeping library modifications open source.

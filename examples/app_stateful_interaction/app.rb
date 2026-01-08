@@ -106,7 +106,7 @@ class AppStatefulInteraction
       render_table(frame, table_area)
 
       # 4. Render Help
-      help_text = "q: Quit | Tab/Arrows: Nav | Mouse: Click rows (Try it!)"
+      help_text = "q: Quit | Tab/Arrows: Nav | Home/End: Jump | Mouse: Click rows"
       frame.render_widget(@tui.paragraph(text: help_text), help_area)
     end
   end
@@ -193,10 +193,16 @@ class AppStatefulInteraction
       @active_pane = (@active_pane == :list) ? :table : :list
 
     in { type: :key, code: "down" }
-      scroll_active(1)
+      move_selection_next
 
     in { type: :key, code: "up" }
-      scroll_active(-1)
+      move_selection_previous
+
+    in { type: :key, code: "home" }
+      move_selection_first
+
+    in { type: :key, code: "end" }
+      move_selection_last
 
     # Mouse Interaction
     in { type: :mouse, kind: "down", x:, y: }
@@ -207,22 +213,70 @@ class AppStatefulInteraction
     end
   end
 
-  private def scroll_active(delta)
+  private def move_selection_next
     if @active_pane == :list
-      i = @list_state.selected || 0
-      new_i = (i + delta).clamp(0, @tables.size - 1)
-      @list_state.select(new_i)
-      # Reset table selection when switching categories
-      if i != new_i
-        @table_state.select(0)
-        @table_state.select_column(nil) # Ensure clean slate
-      end
+      current = @list_state.selected || 0
+      max_index = @tables.size - 1
+      return if current >= max_index # Already at end
+
+      @list_state.select_next
+      reset_table_selection
     else
-      current_rows = @data[@tables[@list_state.selected || 0]].size
-      i = @table_state.selected || 0
-      new_i = (i + delta).clamp(0, current_rows - 1)
-      @table_state.select(new_i)
+      current = @table_state.selected || 0
+      max_index = current_table_rows.size - 1
+      return if current >= max_index
+
+      @table_state.select_next
     end
+  end
+
+  private def move_selection_previous
+    if @active_pane == :list
+      current = @list_state.selected || 0
+      return if current <= 0 # Already at start
+
+      @list_state.select_previous
+      reset_table_selection
+    else
+      current = @table_state.selected || 0
+      return if current <= 0
+
+      @table_state.select_previous
+    end
+  end
+
+  private def move_selection_first
+    if @active_pane == :list
+      current = @list_state.selected || 0
+      return if current == 0 # Already at first
+
+      @list_state.select_first
+      reset_table_selection
+    else
+      @table_state.select_first
+    end
+  end
+
+  private def move_selection_last
+    if @active_pane == :list
+      current = @list_state.selected || 0
+      max_index = @tables.size - 1
+      return if current == max_index # Already at last
+
+      @list_state.select(max_index)
+      reset_table_selection
+    else
+      @table_state.select(current_table_rows.size - 1)
+    end
+  end
+
+  private def reset_table_selection
+    @table_state.select(0)
+    @table_state.select_column(nil)
+  end
+
+  private def current_table_rows
+    @data[@tables[@list_state.selected || 0]]
   end
 
   private def handle_click(x, y)

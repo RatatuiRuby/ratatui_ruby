@@ -21,4 +21,4 @@
 │                      ║│  SweetSale1449    Pending              $421.06       ║
 │                      ║│  IncredibleSale90 Completed            $121.42       ║
 └──────────────────────▼└──────────────────────────────────────────────────────▼
-q: Quit | Tab/Arrows: Nav | Mouse: Click rows (Try it!)                         
+q: Quit | Tab/Arrows: Nav | Home/End: Jump | Mouse: Click rows                  

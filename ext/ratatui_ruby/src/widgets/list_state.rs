@@ -78,6 +78,35 @@ impl RubyListState {
         self.inner.borrow_mut().scroll_up_by(amount);
     }
 
+    /// Selects the next item or the first one if no item is selected.
+    ///
+    /// Note: until the list is rendered, the number of items is not known, so the index
+    /// is set to 0 and will be corrected when the list is rendered.
+    pub fn select_next(&self) {
+        self.inner.borrow_mut().select_next();
+    }
+
+    /// Selects the previous item or the last one if no item is selected.
+    ///
+    /// Note: until the list is rendered, the number of items is not known, so the index
+    /// is set to `usize::MAX` and will be corrected when the list is rendered.
+    pub fn select_previous(&self) {
+        self.inner.borrow_mut().select_previous();
+    }
+
+    /// Selects the first item.
+    pub fn select_first(&self) {
+        self.inner.borrow_mut().select_first();
+    }
+
+    /// Selects the last item.
+    ///
+    /// Note: until the list is rendered, the number of items is not known, so the index
+    /// is set to `usize::MAX` and will be corrected when the list is rendered.
+    pub fn select_last(&self) {
+        self.inner.borrow_mut().select_last();
+    }
+
     /// Borrows the inner `ListState` mutably for rendering.
     ///
     /// # Safety
@@ -98,6 +127,13 @@ pub fn register(ruby: &Ruby, module: magnus::RModule) -> Result<(), Error> {
     class.define_method("offset", method!(RubyListState::offset, 0))?;
     class.define_method("scroll_down_by", method!(RubyListState::scroll_down_by, 1))?;
     class.define_method("scroll_up_by", method!(RubyListState::scroll_up_by, 1))?;
+    class.define_method("select_next", method!(RubyListState::select_next, 0))?;
+    class.define_method(
+        "select_previous",
+        method!(RubyListState::select_previous, 0),
+    )?;
+    class.define_method("select_first", method!(RubyListState::select_first, 0))?;
+    class.define_method("select_last", method!(RubyListState::select_last, 0))?;
     Ok(())
 }
 

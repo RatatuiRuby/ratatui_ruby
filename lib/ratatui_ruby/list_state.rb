@@ -94,5 +94,108 @@ module RatatuiRuby
     # Scrolls up by +n+ items.
     #
     # (Native method implemented in Rust)
+
+    ##
+    # :method: select_next
+    # :call-seq: select_next() -> nil
+    #
+    # Moves selection to the next item. Selects first item if nothing selected.
+    #
+    # === Optimistic Indexing
+    #
+    # Increments the index immediately, even past list bounds. The renderer
+    # clamps to valid range on draw. Reading <tt>selected</tt> between this
+    # call and render may return an out-of-bounds value.
+    #
+    # Matches upstream Ratatui behavior. See
+    # {ListState#select_next}[https://docs.rs/ratatui/0.30/ratatui/widgets/struct.ListState.html#method.select_next].
+    #
+    # To detect actual selection changes, check bounds first:
+    #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
+    #   max_index = items.size - 1
+    #   return if (state.selected || 0) >= max_index
+    #   state.select_next
+    #
+    #--
+    # SPDX-SnippetEnd
+    #++
+    # (Native method implemented in Rust)
+
+    ##
+    # :method: select_previous
+    # :call-seq: select_previous() -> nil
+    #
+    # Moves selection to the previous item. Selects last item if nothing selected.
+    #
+    # === Optimistic Indexing
+    #
+    # At index 0, does nothing. With no selection, sets index to maximum value;
+    # the renderer clamps to actual last item on draw.
+    #
+    # To detect actual selection changes, check bounds first:
+    #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
+    #   return if (state.selected || 0) <= 0
+    #   state.select_previous
+    #
+    #--
+    # SPDX-SnippetEnd
+    #++
+    # (Native method implemented in Rust)
+
+    ##
+    # :method: select_first
+    # :call-seq: select_first() -> nil
+    #
+    # Jumps selection to the first item (index 0).
+    #
+    # To detect actual selection changes:
+    #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
+    #   return if (state.selected || 0) == 0
+    #   state.select_first
+    #
+    #--
+    # SPDX-SnippetEnd
+    #++
+    # (Native method implemented in Rust)
+
+    ##
+    # :method: select_last
+    # :call-seq: select_last() -> nil
+    #
+    # Jumps selection to the last item.
+    #
+    # === Optimistic Indexing
+    #
+    # Sets index to maximum possible value. The renderer clamps to actual last
+    # item on draw. To get or check the real last index, track item count:
+    #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
+    #   max_index = items.size - 1
+    #   return if (state.selected || 0) == max_index
+    #   state.select(max_index)
+    #
+    #--
+    # SPDX-SnippetEnd
+    #++
+    # (Native method implemented in Rust)
   end
 end

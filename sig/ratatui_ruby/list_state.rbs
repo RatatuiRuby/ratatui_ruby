@@ -15,5 +15,9 @@ module RatatuiRuby
     def offset: () -> Integer
     def scroll_down_by: (Integer n) -> nil
     def scroll_up_by: (Integer n) -> nil
+    def select_next: () -> nil
+    def select_previous: () -> nil
+    def select_first: () -> nil
+    def select_last: () -> nil
   end
 end
