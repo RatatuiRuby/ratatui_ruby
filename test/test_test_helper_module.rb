@@ -235,7 +235,7 @@ class TestTestHelperModule < Minitest::Test
   def test_assert_screen_matches_file
     with_test_terminal(20, 3) do
       # Using a temp file or fixture
-      fixture_path = File.join(__dir__, "fixtures/snapshot.txt")
+      fixture_path = File.join(__dir__, "snapshots/snapshot.txt")
       # "Line 1", "Line 2", "Line 3"
       # We need to simulate the buffer having this content.
       # Since we can't inject "screen content" easily without a running app,

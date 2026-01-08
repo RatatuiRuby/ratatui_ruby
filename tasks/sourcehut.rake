@@ -42,7 +42,9 @@ namespace :sourcehut do
       rubies.each do |ruby_version|
         filename = ".builds/ruby-#{ruby_version}.yml"
         puts "Generating #{filename}..."
-        content = erb.result_with_hash(ruby_version:, gem_filename:, bundler_version:)
+        gem_name = spec.name
+        has_rust = File.exist?("ext/#{gem_name}/Cargo.toml")
+        content = erb.result_with_hash(ruby_version:, gem_name:, gem_filename:, bundler_version:, has_rust:)
         File.write(filename, content)
       end
     end

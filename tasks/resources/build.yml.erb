@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 image: archlinux
@@ -13,12 +13,14 @@ packages:
   - gdbm
   - ncurses
   - libffi
+<%- if has_rust -%>
   - clang
+<%- end -%>
   - git
 artifacts:
-  - ratatui_ruby/pkg/<%= gem_filename %>
+  - <%= gem_name %>/pkg/<%= gem_filename %>
 sources:
-  - https://git.sr.ht/~kerrick/ratatui_ruby
+  - https://git.sr.ht/~kerrick/<%= gem_name %>
 tasks:
   - setup: |
       curl https://mise.jdx.dev/install.sh | sh
@@ -26,10 +28,12 @@ tasks:
       echo 'eval "$($HOME/.local/bin/mise activate bash)"' >> ~/.buildenv
       echo 'export LANG="en_US.UTF-8"' >> ~/.buildenv
       echo 'export LC_ALL="en_US.UTF-8"' >> ~/.buildenv
+<%- if has_rust -%>
       echo 'export BINDGEN_EXTRA_CLANG_ARGS="-include stdbool.h"' >> ~/.buildenv
+<%- end -%>
       . ~/.buildenv
       export CI="true"
-      cd ratatui_ruby
+      cd <%= gem_name %>
       sed -i 's/ruby = .*/ruby = "<%= ruby_version %>"/' mise.toml
       mise install
       mise x -- pip install reuse
@@ -37,18 +41,20 @@ tasks:
       mise reshim
       mise x -- bundle config set --local frozen 'true'
       mise x -- bundle install
+<%- if has_rust -%>
       mise x -- bundle exec rake compile
+<%- end -%>
   - test: |
       . ~/.buildenv
-      cd ratatui_ruby
+      cd <%= gem_name %>
       echo "Testing Ruby <%= ruby_version %>"
       mise x -- bundle exec rake test
   - lint: |
       . ~/.buildenv
-      cd ratatui_ruby
+      cd <%= gem_name %>
       echo "Linting Ruby <%= ruby_version %>"
       mise x -- bundle exec rake lint
   - package: |
       . ~/.buildenv
-      cd ratatui_ruby
+      cd <%= gem_name %>
       mise x -- bundle exec rake build

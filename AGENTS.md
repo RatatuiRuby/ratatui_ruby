@@ -105,7 +105,7 @@ The project follows a standard Gem layout with an `ext/` directory for Rust code
         - **DON'T use markdown syntax** (no backticks, no bolding, no lists, no links). The commit message must be plain text.
 - **Type conventions by directory:**
     - `lib/`, `ext/`, `sig/`: Use `feat`, `fix`, `refactor`, `perf` as appropriate.
-    - `bin/`, `tasks/`, `.builds/`, CI/CD: Always `chore` (internal tooling).
+    - `bin/`, `tasks/`, `.builds/`, CI/CD: Use `chore` for tooling internal to developing this gem. Use `feat`/`fix` for user-facing executables or changes that affect downstream users.
     - `examples/`: Always `docs` (documentation by example).
     - `test/`: Use `test` for new/changed tests, or match the type of the code being tested.
     - `doc/`: Always `docs`.
