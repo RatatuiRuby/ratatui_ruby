@@ -12,6 +12,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **Table Integer Width Shorthand**: `Table` `widths:` parameter now accepts plain integers as shorthand for `Constraint.length(n)`. This enables cleaner table definitions like `widths: [40, 16, 10]` instead of verbose constraint arrays. Constraints and integers can be mixed freely.
+
 ### Changed
 
 ### Fixed

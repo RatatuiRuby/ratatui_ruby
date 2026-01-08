@@ -21,6 +21,23 @@ class TestTable < Minitest::Test
     assert_nil t.style
   end
 
+  def test_widths_integer_shorthand
+    # Rubyist convenience: integers coerce to Constraint.length
+    t = RatatuiRuby::Widgets::Table.new(rows: [["A", "B"]], widths: [5, 10])
+    assert_equal 2, t.widths.size
+    assert_equal RatatuiRuby::Layout::Constraint.length(5), t.widths[0]
+    assert_equal RatatuiRuby::Layout::Constraint.length(10), t.widths[1]
+  end
+
+  def test_widths_mixed_integers_and_constraints
+    # Rubyist flexibility: mix integers and constraints freely
+    fill = RatatuiRuby::Layout::Constraint.fill(1)
+    t = RatatuiRuby::Widgets::Table.new(rows: [["A", "B", "C"]], widths: [10, fill, 20])
+    assert_equal RatatuiRuby::Layout::Constraint.length(10), t.widths[0]
+    assert_equal fill, t.widths[1]
+    assert_equal RatatuiRuby::Layout::Constraint.length(20), t.widths[2]
+  end
+
   def test_table_creation_with_style
     style = RatatuiRuby::Style::Style.new(fg: :red)
     t = RatatuiRuby::Widgets::Table.new(rows: [], widths: [], style:, highlight_spacing: :always)

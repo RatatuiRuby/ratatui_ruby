@@ -66,7 +66,8 @@ module RatatuiRuby
 
       ##
       # :attr_reader: widths
-      # Column width constraints (Array of Constraint).
+      # Column width constraints (Array of Constraint or Integer).
+      # Integers are automatically coerced to Constraint.length.
 
       ##
       # :attr_reader: row_highlight_style
@@ -136,7 +137,7 @@ module RatatuiRuby
       #
       # [header] Array of strings, Text::Spans, Text::Lines, or paragraphs.
       # [rows] 2D Array where each cell is String, Text::Span, Text::Line, Paragraph, or Cell.
-      # [widths] Array of Constraints.
+      # [widths] Array of Constraints or Integers (integers coerce to Constraint.length).
       # [row_highlight_style] Style object.
       # [highlight_symbol] String.
       # [highlight_spacing] Symbol (optional, default: <tt>:when_selected</tt>).
@@ -151,10 +152,14 @@ module RatatuiRuby
       # [style] Style object or Hash (optional).
       # [column_spacing] Integer (optional, default: 1).
       def initialize(header: nil, rows: [], widths: [], row_highlight_style: nil, highlight_symbol: "> ", highlight_spacing: :when_selected, column_highlight_style: nil, cell_highlight_style: nil, selected_row: nil, selected_column: nil, offset: nil, block: nil, footer: nil, flex: :legacy, style: nil, column_spacing: 1)
+        coerced_widths = widths.map do |w|
+          w.is_a?(Integer) ? Layout::Constraint.length(w) : w
+        end
+
         super(
           header:,
           rows:,
-          widths:,
+          widths: coerced_widths,
           row_highlight_style:,
           highlight_symbol:,
           highlight_spacing:,
