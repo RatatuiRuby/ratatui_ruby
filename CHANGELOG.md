@@ -18,6 +18,29 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Removed
 
+## [0.9.1] - 2026-01-08
+
+### Added
+
+- **Constraint Batch Constructors**: `Constraint` now provides batch factory methods matching upstream Ratatui for creating constraint arrays in a single call:
+  - `from_lengths([10, 20, 10])` — create multiple Length constraints
+  - `from_percentages([25, 50, 25])` — create multiple Percentage constraints
+  - `from_mins([5, 10, 5])` — create multiple Min constraints
+  - `from_maxes([20, 30, 40])` — create multiple Max constraints
+  - `from_fills([1, 2, 1])` — create multiple Fill constraints
+  - `from_ratios([[1, 4], [2, 4], [1, 4]])` — create multiple Ratio constraints
+
+- **Async Synchronization**: New `Event::Sync` event and `SyntheticEvents` module enable deterministic testing of async behavior:
+  - `Event::Sync` — synthetic event that signals runtimes (Tea, Kit) to wait for pending async operations before continuing
+  - `RatatuiRuby::SyntheticEvents` — thread-safe Ruby-only queue for synthetic events; runtimes check this alongside native events
+  - `inject_sync` test helper — injects a Sync event for deterministic async testing
+
+### Changed
+
+### Fixed
+
+### Removed
+
 ## [0.9.0] - 2026-01-08
 
 ### Added
@@ -492,6 +515,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Testing Support**: Included `RatatuiRuby::TestHelper` and RSpec integration to make testing your TUI applications possible.
 
 [Unreleased]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/HEAD
+[0.9.1]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.9.1
 [0.9.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.9.0
 [0.8.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.8.0
 [0.7.4]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.7.4
