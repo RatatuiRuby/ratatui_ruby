@@ -18,5 +18,13 @@ module RatatuiRuby
     def self.fill: (?Numeric) -> Constraint
     def self.ratio: (Numeric, Numeric) -> Constraint
     def self.new: (type: Symbol, value: (Integer | Array[Integer])) -> Constraint
+
+    # Batch constructors
+    def self.from_lengths: (Enumerable[Numeric]) -> Array[Constraint]
+    def self.from_percentages: (Enumerable[Numeric]) -> Array[Constraint]
+    def self.from_mins: (Enumerable[Numeric]) -> Array[Constraint]
+    def self.from_maxes: (Enumerable[Numeric]) -> Array[Constraint]
+    def self.from_fills: (Enumerable[Numeric]) -> Array[Constraint]
+    def self.from_ratios: (Enumerable[[Numeric, Numeric]]) -> Array[Constraint]
   end
 end

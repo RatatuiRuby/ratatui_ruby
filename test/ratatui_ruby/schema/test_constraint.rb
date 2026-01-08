@@ -150,42 +150,36 @@ class TestConstraint < Minitest::Test
 
   # Gap tests - verify missing methods from v1.0.0_blockers.md
   def test_constraint_from_lengths
-    skip "v1.0.0 Blocker: Constraint.from_lengths not implemented. See doc/contributors/v1.0.0_blockers.md"
     constraints = RatatuiRuby::Layout::Constraint.from_lengths([10, 20, 30])
     assert_equal 3, constraints.size
     assert_equal 10, constraints[0].value
   end
 
   def test_constraint_from_percentages
-    skip "v1.0.0 Blocker: Constraint.from_percentages not implemented. See doc/contributors/v1.0.0_blockers.md"
     constraints = RatatuiRuby::Layout::Constraint.from_percentages([25, 50, 25])
     assert_equal 3, constraints.size
     assert_equal 25, constraints[0].value
   end
 
   def test_constraint_from_mins
-    skip "v1.0.0 Blocker: Constraint.from_mins not implemented. See doc/contributors/v1.0.0_blockers.md"
     constraints = RatatuiRuby::Layout::Constraint.from_mins([5, 10, 15])
     assert_equal 3, constraints.size
     assert_equal 5, constraints[0].value
   end
 
   def test_constraint_from_maxes
-    skip "v1.0.0 Blocker: Constraint.from_maxes not implemented. See doc/contributors/v1.0.0_blockers.md"
     constraints = RatatuiRuby::Layout::Constraint.from_maxes([20, 30, 40])
     assert_equal 3, constraints.size
     assert_equal 20, constraints[0].value
   end
 
   def test_constraint_from_fills
-    skip "v1.0.0 Blocker: Constraint.from_fills not implemented. See doc/contributors/v1.0.0_blockers.md"
     constraints = RatatuiRuby::Layout::Constraint.from_fills([1, 2, 1])
     assert_equal 3, constraints.size
     assert_equal 1, constraints[0].value
   end
 
   def test_constraint_from_ratios
-    skip "v1.0.0 Blocker: Constraint.from_ratios not implemented. See doc/contributors/v1.0.0_blockers.md"
     constraints = RatatuiRuby::Layout::Constraint.from_ratios([[1, 4], [2, 4], [1, 4]])
     assert_equal 3, constraints.size
   end

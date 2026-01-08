@@ -124,6 +124,12 @@ class WidgetLayoutSplit
           ]
         },
       },
+      {
+        name: "Batch (from_percentages)",
+        constraints: -> (_dir) {
+          RatatuiRuby::Layout::Constraint.from_percentages([25, 50, 25])
+        },
+      },
     ]
   end
 

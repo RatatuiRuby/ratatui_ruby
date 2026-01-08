@@ -148,6 +148,141 @@ module RatatuiRuby
       def self.ratio(numerator, denominator)
         new(type: :ratio, value: [Integer(numerator), Integer(denominator)])
       end
+
+      # Converts an array of lengths into an array of Length constraints.
+      #
+      # Complex layouts often use multiple fixed-size sections. Manually creating each constraint
+      # clutters the code.
+      #
+      # This method maps over the input, returning a constraint array in one call.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   Constraint.from_lengths([10, 20, 10])
+      #   # => [Constraint.length(10), Constraint.length(20), Constraint.length(10)]
+      #
+      #--
+      # SPDX-SnippetEnd
+      #++
+      # [values] Enumerable of Integers.
+      def self.from_lengths(values)
+        values.map { |v| length(v) }
+      end
+
+      # Converts an array of percentages into an array of Percentage constraints.
+      #
+      # Percentage-based layouts distribute space proportionally. This method batches the creation.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   Constraint.from_percentages([25, 50, 25])
+      #   # => [Constraint.percentage(25), Constraint.percentage(50), Constraint.percentage(25)]
+      #
+      #--
+      # SPDX-SnippetEnd
+      #++
+      # [values] Enumerable of Integers (0-100).
+      def self.from_percentages(values)
+        values.map { |v| percentage(v) }
+      end
+
+      # Converts an array of minimums into an array of Min constraints.
+      #
+      # Minimum constraints ensure sections never shrink below a threshold. Batch them here.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   Constraint.from_mins([5, 10, 5])
+      #   # => [Constraint.min(5), Constraint.min(10), Constraint.min(5)]
+      #
+      #--
+      # SPDX-SnippetEnd
+      #++
+      # [values] Enumerable of Integers.
+      def self.from_mins(values)
+        values.map { |v| min(v) }
+      end
+
+      # Converts an array of maximums into an array of Max constraints.
+      #
+      # Maximum constraints cap section sizes. Batch them here.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   Constraint.from_maxes([20, 30, 40])
+      #   # => [Constraint.max(20), Constraint.max(30), Constraint.max(40)]
+      #
+      #--
+      # SPDX-SnippetEnd
+      #++
+      # [values] Enumerable of Integers.
+      def self.from_maxes(values)
+        values.map { |v| max(v) }
+      end
+
+      # Converts an array of weights into an array of Fill constraints.
+      #
+      # Fill constraints distribute remaining space by weight. Batch them here.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   Constraint.from_fills([1, 2, 1])
+      #   # => [Constraint.fill(1), Constraint.fill(2), Constraint.fill(1)]
+      #
+      #--
+      # SPDX-SnippetEnd
+      #++
+      # [values] Enumerable of Integers.
+      def self.from_fills(values)
+        values.map { |v| fill(v) }
+      end
+
+      # Converts an array of ratio pairs into an array of Ratio constraints.
+      #
+      # Ratio constraints define exact fractions of space. Batch them here.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   Constraint.from_ratios([[1, 4], [2, 4], [1, 4]])
+      #   # => [Constraint.ratio(1, 4), Constraint.ratio(2, 4), Constraint.ratio(1, 4)]
+      #
+      #--
+      # SPDX-SnippetEnd
+      #++
+      # [pairs] Enumerable of <tt>[numerator, denominator]</tt> arrays.
+      def self.from_ratios(pairs)
+        pairs.map { |n, d| ratio(n, d) }
+      end
     end
   end
 end
