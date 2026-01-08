@@ -111,6 +111,11 @@ module RatatuiRuby
       false
     end
 
+    # Returns true if this is a Sync event.
+    def sync?
+      false
+    end
+
     # Responds to dynamic predicate methods for key checks.
     # All non-Key events return false for any key predicate.
     def method_missing(name, *args, &block)
@@ -155,3 +160,4 @@ require_relative "event/resize"
 require_relative "event/paste"
 require_relative "event/focus_gained"
 require_relative "event/focus_lost"
+require_relative "event/sync"

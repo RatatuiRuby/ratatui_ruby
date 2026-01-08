@@ -164,4 +164,14 @@ class TestTestHelper < Minitest::Test
       assert_includes ansi_output, "\e[31m", "Output should contain red foreground code"
     end
   end
+
+  def test_inject_sync_injects_sync_event
+    with_test_terminal do
+      inject_sync
+
+      # Sync events use the engine-level synthetic queue
+      event = RatatuiRuby::SyntheticEvents.pop
+      assert_predicate event, :sync?, "Expected a Sync event"
+    end
+  end
 end

@@ -82,5 +82,28 @@ module RatatuiRuby
         refute_respond_to e, :not_a_predicate
       end
     end
+
+    # == Event::Sync ==
+    #
+    # Sync is a synthetic event injected by tests. When a runtime (Tea, Kit)
+    # encounters this event, it should wait for all pending async operations
+    # to complete before processing the next event. This enables deterministic
+    # testing of async behavior without changing production code paths.
+
+    def test_event_sync
+      event = Event::Sync.new
+      assert_predicate event, :sync?
+      refute_predicate event, :key?
+      refute_predicate event, :none?
+      assert_equal({ type: :sync }, event.deconstruct_keys(nil))
+
+      # Pattern matching
+      case event
+      in { type: :sync }
+        # Success
+      else
+        flunk "Expected Event::Sync to match { type: :sync }"
+      end
+    end
   end
 end

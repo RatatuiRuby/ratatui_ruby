@@ -31,6 +31,9 @@ require_relative "ratatui_ruby/terminal_lifecycle"
 # TUI facade (for external instantiation and caching)
 require_relative "ratatui_ruby/tui"
 
+# Synthetic events queue (for async synchronization)
+require_relative "ratatui_ruby/synthetic_events"
+
 begin
   require "ratatui_ruby/ratatui_ruby"
 rescue LoadError
@@ -120,16 +123,17 @@ module RatatuiRuby
     #++
     class Safety < Error; end
 
-    # State invariant violation.
+    # Invariant violation.
     #
-    # The library has rules about valid state transitions.
-    # Calling methods in the wrong order or state breaks invariants.
+    # The library enforces rules about valid states and contracts.
+    # Breaking these rules raises this error.
     #
-    # This error signals you violated a state machine contract.
-    # The program state doesn't allow this operation right now.
+    # Common causes:
+    # - Calling methods in the wrong order (e.g., \`init_terminal\` twice)
+    # - Callable return type mismatch (e.g., view returns \`nil\` instead of a widget)
     #
-    # To resolve, check `terminal_active?` or restructure the
-    # code to ensure methods are called in the expected order.
+    # To resolve, check the method's documented contract. Ensure
+    # state preconditions are met and return types are correct.
     #
     # === Example
     #

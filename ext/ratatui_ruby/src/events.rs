@@ -383,6 +383,7 @@ fn handle_key_event(key: ratatui::crossterm::event::KeyEvent) -> Result<Value, E
     if key.kind != ratatui::crossterm::event::KeyEventKind::Press {
         return Ok(ruby.qnil().into_value_with(&ruby));
     }
+
     let hash = ruby.hash_new();
     hash.aset(ruby.to_symbol("type"), ruby.to_symbol("key"))?;
 

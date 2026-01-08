@@ -88,6 +88,9 @@ module RatatuiRuby
           RatatuiRuby.inject_test_event("focus_gained", {})
         when RatatuiRuby::Event::FocusLost
           RatatuiRuby.inject_test_event("focus_lost", {})
+        when RatatuiRuby::Event::Sync
+          # Sync events use the engine-level synthetic queue
+          RatatuiRuby::SyntheticEvents.push(event)
         else
           raise ArgumentError, "Unknown event type: #{event.class}"
         end
@@ -198,6 +201,31 @@ module RatatuiRuby
         end
       end
       alias inject_key inject_keys
+
+      ##
+      # Injects a Sync event.
+      #
+      # When a runtime (Tea, Kit) encounters this event, it should wait for all
+      # pending async operations to complete before processing the next event.
+      # This enables deterministic testing of async behavior.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   inject_key("s")           # Triggers async command
+      #   inject_sync               # Wait for command to complete
+      #   inject_key(:q)            # Quit after seeing results
+      #
+      #--
+      # SPDX-SnippetEnd
+      #++
+      def inject_sync
+        inject_event(RatatuiRuby::Event::Sync.new)
+      end
     end
   end
 end
