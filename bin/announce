@@ -808,8 +808,10 @@ class AnnounceTUI
 
   # Actions
   private def commit_and_push_wiki
-    @wiki_repo.commit!(@announcement.commit_message)
-    @wiki_repo.push!
+    RatatuiRuby.guard_io do
+      @wiki_repo.commit!(@announcement.commit_message)
+      @wiki_repo.push!
+    end
   end
 
   private def send_email
