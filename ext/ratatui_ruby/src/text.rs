@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+use crate::errors::type_error_with_context;
 use crate::style::parse_style;
 use magnus::{prelude::*, Error, Value};
 use ratatui::text::{Line, Span};
@@ -82,9 +83,10 @@ pub fn parse_text(value: Value) -> Result<Vec<Line<'static>>, Error> {
                 Ok(lines)
             }
         }
-        Err(_) => Err(Error::new(
-            ruby.exception_type_error(),
+        Err(_) => Err(type_error_with_context(
+            &ruby,
             "expected String, Text::Span, Text::Line, or Array of Text::Lines/Spans",
+            value,
         )),
     }
 }
@@ -98,9 +100,10 @@ pub fn parse_span(value: Value) -> Result<Span<'static>, Error> {
     let class_name: String = class_obj.funcall("name", ())?;
 
     if !class_name.contains("Span") {
-        return Err(Error::new(
-            ruby.exception_type_error(),
+        return Err(type_error_with_context(
+            &ruby,
             "expected a Text::Span object",
+            value,
         ));
     }
 
@@ -123,9 +126,10 @@ pub fn parse_line(value: Value) -> Result<Line<'static>, Error> {
     let class_name: String = class_obj.funcall("name", ())?;
 
     if !class_name.contains("Line") {
-        return Err(Error::new(
-            ruby.exception_type_error(),
+        return Err(type_error_with_context(
+            &ruby,
             "expected a Text::Line object",
+            value,
         ));
     }
 
@@ -141,9 +145,10 @@ pub fn parse_line(value: Value) -> Result<Line<'static>, Error> {
     }
 
     let spans_array = magnus::RArray::from_value(spans_val).ok_or_else(|| {
-        Error::new(
-            ruby.exception_type_error(),
+        type_error_with_context(
+            &ruby,
             "expected array of Spans in Text::Line.spans",
+            spans_val,
         )
     })?;
 

@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+use crate::errors::type_error_with_context;
 use crate::rendering::render_node;
 use magnus::{prelude::*, Error, Symbol, Value};
 use ratatui::{
@@ -12,8 +13,9 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let direction_sym: Symbol = node.funcall("direction", ())?;
     let children_val: Value = node.funcall("children", ())?;
-    let children_array = magnus::RArray::from_value(children_val)
-        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array"))?;
+    let children_array = magnus::RArray::from_value(children_val).ok_or_else(|| {
+        type_error_with_context(&ruby, "expected array for children", children_val)
+    })?;
 
     let constraints_val: Value = node.funcall("constraints", ())?;
     let constraints_array = magnus::RArray::from_value(constraints_val);

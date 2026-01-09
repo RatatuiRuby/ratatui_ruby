@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+use crate::errors::type_error_with_context;
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, Symbol, Value};
 use ratatui::{
@@ -121,7 +122,7 @@ pub fn parse_border_set<'a>(
 ) -> Result<symbols::border::Set<'a>, Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let hash = magnus::RHash::from_value(set_val)
-        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected hash for border_set"))?;
+        .ok_or_else(|| type_error_with_context(&ruby, "expected hash for border_set", set_val))?;
 
     let get_char = |key: &str| -> Result<Option<&'a str>, Error> {
         let mut val: Value = hash
@@ -188,10 +189,7 @@ pub fn parse_bar_set<'a>(set_val: Value, bump: &'a Bump) -> Result<symbols::bar:
     }
 
     let hash = magnus::RHash::from_value(set_val).ok_or_else(|| {
-        Error::new(
-            ruby.exception_type_error(),
-            "expected symbol or hash for bar_set",
-        )
+        type_error_with_context(&ruby, "expected symbol or hash for bar_set", set_val)
     })?;
 
     let get_char = |key: &str| -> Result<Option<&'a str>, Error> {

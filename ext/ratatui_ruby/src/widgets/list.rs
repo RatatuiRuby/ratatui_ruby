@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+use crate::errors::type_error_with_context;
 use crate::style::{parse_block, parse_style};
 use crate::text::{parse_line, parse_span};
 use crate::widgets::list_state::RubyListState;
@@ -18,7 +19,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let items_val: Value = node.funcall("items", ())?;
     let items_array = magnus::RArray::from_value(items_val)
-        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array"))?;
+        .ok_or_else(|| type_error_with_context(&ruby, "expected array for items", items_val))?;
     let selected_index_val: Value = node.funcall("selected_index", ())?;
     let style_val: Value = node.funcall("style", ())?;
     let highlight_style_val: Value = node.funcall("highlight_style", ())?;
@@ -129,7 +130,7 @@ pub fn render_stateful(
     // Build items
     let items_val: Value = node.funcall("items", ())?;
     let items_array = magnus::RArray::from_value(items_val)
-        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array"))?;
+        .ok_or_else(|| type_error_with_context(&ruby, "expected array for items", items_val))?;
 
     let mut items: Vec<ListItem> = Vec::new();
     for i in 0..items_array.len() {
@@ -270,10 +271,10 @@ fn parse_list_item(value: Value) -> Result<ListItem<'static>, Error> {
         return Ok(ListItem::new(Line::from(vec![span])));
     }
 
-    // Fallback
-    Err(Error::new(
-        ruby.exception_type_error(),
+    Err(type_error_with_context(
+        &ruby,
         "expected String, Text::Span, Text::Line, or ListItem",
+        value,
     ))
 }
 

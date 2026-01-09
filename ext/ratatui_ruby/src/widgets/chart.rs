@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+use crate::errors::type_error_with_context;
 use crate::style::{parse_block, parse_style};
 use crate::text::parse_line;
 use bumpalo::Bump;
@@ -41,7 +42,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
                 .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
             let point_array_val: Value = data_array.entry(index)?;
             let point_array = magnus::RArray::from_value(point_array_val).ok_or_else(|| {
-                Error::new(ruby.exception_type_error(), "expected array for point")
+                type_error_with_context(&ruby, "expected array for point", point_array_val)
             })?;
             let x: f64 = point_array.entry(0)?;
             let y: f64 = point_array.entry(1)?;

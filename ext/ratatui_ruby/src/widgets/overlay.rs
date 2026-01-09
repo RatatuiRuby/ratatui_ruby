@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+use crate::errors::type_error_with_context;
 use crate::rendering::render_node;
 use magnus::{prelude::*, Error, Value};
 use ratatui::{layout::Rect, Frame};
@@ -9,7 +10,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let layers_val: Value = node.funcall("layers", ())?;
     let layers_array = magnus::RArray::from_value(layers_val)
-        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for layers"))?;
+        .ok_or_else(|| type_error_with_context(&ruby, "expected array for layers", layers_val))?;
 
     for i in 0..layers_array.len() {
         let index = isize::try_from(i)

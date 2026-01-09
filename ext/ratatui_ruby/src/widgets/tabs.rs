@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+use crate::errors::type_error_with_context;
 use crate::style::parse_block;
 use crate::text::{parse_line, parse_span};
 use bumpalo::Bump;
@@ -59,7 +60,7 @@ fn create_tabs(node: Value, bump: &Bump) -> Result<Tabs<'_>, Error> {
     let padding_right_val: Value = node.funcall("padding_right", ())?;
 
     let titles_array = magnus::RArray::from_value(titles_val)
-        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for titles"))?;
+        .ok_or_else(|| type_error_with_context(&ruby, "expected array for titles", titles_val))?;
 
     let mut titles = Vec::new();
     for i in 0..titles_array.len() {
@@ -117,7 +118,7 @@ pub fn width(node: Value) -> Result<usize, Error> {
     let padding_right: usize = node.funcall("padding_right", ())?;
 
     let titles_array = magnus::RArray::from_value(titles_val)
-        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for titles"))?;
+        .ok_or_else(|| type_error_with_context(&ruby, "expected array for titles", titles_val))?;
 
     let mut total_width = padding_left + padding_right;
 

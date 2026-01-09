@@ -10,6 +10,7 @@
 #![allow(clippy::missing_panics_doc)]
 #![allow(clippy::module_name_repetitions)]
 
+mod errors;
 mod events;
 mod frame;
 mod rendering;

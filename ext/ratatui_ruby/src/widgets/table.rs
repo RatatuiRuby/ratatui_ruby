@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+use crate::errors::type_error_with_context;
 use crate::style::{parse_block, parse_style};
 use crate::text::{parse_line, parse_span, parse_text};
 use crate::widgets::table_state::RubyTableState;
@@ -19,10 +20,10 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     let footer_val: Value = node.funcall("footer", ())?;
     let rows_value: Value = node.funcall("rows", ())?;
     let rows_array = magnus::RArray::from_value(rows_value)
-        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for rows"))?;
+        .ok_or_else(|| type_error_with_context(&ruby, "expected array for rows", rows_value))?;
     let widths_val: Value = node.funcall("widths", ())?;
     let widths_array = magnus::RArray::from_value(widths_val)
-        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for widths"))?;
+        .ok_or_else(|| type_error_with_context(&ruby, "expected array for widths", widths_val))?;
     let row_highlight_style_val: Value = node.funcall("row_highlight_style", ())?;
     let column_highlight_style_val: Value = node.funcall("column_highlight_style", ())?;
     let cell_highlight_style_val: Value = node.funcall("cell_highlight_style", ())?;
@@ -145,10 +146,10 @@ pub fn render_stateful(
     // Parse rows
     let rows_value: Value = node.funcall("rows", ())?;
     let rows_array = magnus::RArray::from_value(rows_value)
-        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for rows"))?;
+        .ok_or_else(|| type_error_with_context(&ruby, "expected array for rows", rows_value))?;
     let widths_val: Value = node.funcall("widths", ())?;
     let widths_array = magnus::RArray::from_value(widths_val)
-        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for widths"))?;
+        .ok_or_else(|| type_error_with_context(&ruby, "expected array for widths", widths_val))?;
 
     let mut rows = Vec::new();
     for i in 0..rows_array.len() {
@@ -251,7 +252,7 @@ fn parse_row(row_val: Value) -> Result<Row<'static>, Error> {
         let bottom_margin_val: Value = row_val.funcall("bottom_margin", ())?;
 
         let cells_array = magnus::RArray::from_value(cells_val).ok_or_else(|| {
-            Error::new(ruby.exception_type_error(), "expected array for Row.cells")
+            type_error_with_context(&ruby, "expected array for Row.cells", cells_val)
         })?;
 
         let mut cells = Vec::new();
@@ -285,7 +286,7 @@ fn parse_row(row_val: Value) -> Result<Row<'static>, Error> {
 
     // Fallback: plain array of cells
     let row_array = magnus::RArray::from_value(row_val)
-        .ok_or_else(|| Error::new(ruby.exception_type_error(), "expected array for row"))?;
+        .ok_or_else(|| type_error_with_context(&ruby, "expected array for row", row_val))?;
 
     let mut cells = Vec::new();
     for i in 0..row_array.len() {
