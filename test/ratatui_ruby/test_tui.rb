@@ -200,6 +200,71 @@ class TestTUI < Minitest::Test
       end
     end
   end
+
+  # DWIM: Factories accept bare Hash (auto-splatting)
+  def test_factories_accept_bare_hash
+    tui = RatatuiRuby::TUI.new
+
+    # Core widgets
+    assert_kind_of RatatuiRuby::Widgets::Table, tui.table({ rows: [], widths: [] })
+    assert_kind_of RatatuiRuby::Widgets::List, tui.list({ items: [] })
+    assert_kind_of RatatuiRuby::Widgets::Paragraph, tui.paragraph({ text: "hello" })
+    assert_kind_of RatatuiRuby::Widgets::Block, tui.block({ title: "Test" })
+    assert_kind_of RatatuiRuby::Widgets::Tabs, tui.tabs({ titles: ["A", "B"] })
+
+    # Chart widgets
+    assert_kind_of RatatuiRuby::Widgets::Chart, tui.chart({ datasets: [], x_axis: tui.axis({}), y_axis: tui.axis({}) })
+    assert_kind_of RatatuiRuby::Widgets::BarChart, tui.bar_chart({ data: [] })
+    assert_kind_of RatatuiRuby::Widgets::Axis, tui.axis({})
+    assert_kind_of RatatuiRuby::Widgets::Dataset, tui.dataset({ name: "test", data: [] })
+
+    # Gauge widgets
+    assert_kind_of RatatuiRuby::Widgets::Gauge, tui.gauge({ ratio: 0.5 })
+    assert_kind_of RatatuiRuby::Widgets::LineGauge, tui.line_gauge({ ratio: 0.5 })
+    assert_kind_of RatatuiRuby::Widgets::Sparkline, tui.sparkline({ data: [] })
+
+    # Other widgets
+    assert_kind_of RatatuiRuby::Widgets::Scrollbar, tui.scrollbar({ content_length: 100, position: 0 })
+    assert_kind_of RatatuiRuby::Widgets::Calendar, tui.calendar({ year: 2026, month: 1 })
+    assert_kind_of RatatuiRuby::Widgets::Canvas, tui.canvas({})
+    assert_kind_of RatatuiRuby::Widgets::Row, tui.row({ cells: [] })
+    assert_kind_of RatatuiRuby::Widgets::Cell, tui.table_cell({ content: "X" })
+    assert_kind_of RatatuiRuby::Widgets::ListItem, tui.list_item({ content: "X" })
+    assert_kind_of RatatuiRuby::Widgets::Center, tui.center({ child: tui.paragraph({ text: "hi" }) })
+    assert_kind_of RatatuiRuby::Widgets::Clear, tui.clear({})
+    assert_kind_of RatatuiRuby::Widgets::Cursor, tui.cursor({ x: 0, y: 0 })
+    assert_kind_of RatatuiRuby::Widgets::Overlay, tui.overlay({})
+    assert_kind_of RatatuiRuby::Widgets::RatatuiLogo, tui.ratatui_logo({})
+    assert_kind_of RatatuiRuby::Widgets::RatatuiMascot, tui.ratatui_mascot({})
+
+    # Nested widgets
+    assert_kind_of RatatuiRuby::Widgets::BarChart::Bar, tui.bar({ value: 10 })
+    assert_kind_of RatatuiRuby::Widgets::BarChart::BarGroup, tui.bar_group({ label: "Q1", bars: [] })
+    assert_kind_of RatatuiRuby::Widgets::Shape::Label, tui.shape_label({ x: 0, y: 0, text: "Hi" })
+  end
+
+  # DWIM: Unknown keys raise in debug mode (TestHelper enables debug mode)
+  def test_unknown_keys_raise_in_debug_mode
+    tui = RatatuiRuby::TUI.new
+
+    # TestHelper enables debug mode, so unknown keys should raise ArgumentError
+    error = assert_raises(ArgumentError) do
+      tui.table({ rows: [], widths: [], fake_key: 1 })
+    end
+    assert_match(/unknown key.*fake_key/i, error.message)
+  end
+
+  # DWIM: Unknown keys are silently ignored outside debug mode
+  def test_unknown_keys_ignored_outside_debug_mode
+    tui = RatatuiRuby::TUI.new
+
+    # Suppress debug mode to simulate production behavior
+    RatatuiRuby::Debug.suppress_debug_mode do
+      # Should NOT raise, just ignores the unknown key
+      table = tui.table({ rows: [], widths: [], fake_key: 1 })
+      assert_kind_of RatatuiRuby::Widgets::Table, table
+    end
+  end
 end
 
 # Helper class to test @tui = tui pattern

@@ -47,6 +47,8 @@ module RatatuiRuby
       # SPDX-SnippetEnd
       #++
       class Label < Data.define(:x, :y, :text, :style)
+        include CoerceableWidget
+
         ##
         # :attr_reader: x
         # X coordinate in canvas space (Float, duck-typed via +to_f+).

@@ -23,6 +23,8 @@ module RatatuiRuby
     #
     #   ruby examples/widget_tabs/app.rb
     class Tabs < Data.define(:titles, :selected_index, :block, :divider, :highlight_style, :style, :padding_left, :padding_right)
+      include CoerceableWidget
+
       ##
       # :attr_reader: titles
       # Tab titles (Array of Strings).

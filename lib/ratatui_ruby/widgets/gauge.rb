@@ -23,6 +23,8 @@ module RatatuiRuby
     #
     #   ruby examples/widget_gauge/app.rb
     class Gauge < Data.define(:ratio, :label, :style, :gauge_style, :block, :use_unicode)
+      include CoerceableWidget
+
       ##
       # :attr_reader: ratio
       # Progress ratio from 0.0 to 1.0.

@@ -38,6 +38,10 @@ target :lib do
   ignore "lib/ratatui_ruby/schema/table.rb"
   ignore "lib/ratatui_ruby/schema/tabs.rb"
 
+  # ClassMethods mixin pattern cannot be typed in RBS
+  # (self in ClassMethods refers to the including Class)
+  ignore "lib/ratatui_ruby/widgets/coerceable_widget.rb"
+
   library "pathname"
   library "fileutils"
   library "minitest"

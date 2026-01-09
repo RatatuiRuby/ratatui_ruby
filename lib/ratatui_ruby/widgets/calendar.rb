@@ -24,6 +24,8 @@ module RatatuiRuby
     #
     #   ruby examples/widget_calendar/app.rb
     class Calendar < Data.define(:year, :month, :events, :default_style, :header_style, :block, :show_weekdays_header, :show_surrounding, :show_month_header)
+      include CoerceableWidget
+
       ##
       # :attr_reader: year
       # The year to display (Integer).

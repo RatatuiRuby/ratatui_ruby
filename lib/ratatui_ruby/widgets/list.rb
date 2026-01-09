@@ -39,6 +39,8 @@ module RatatuiRuby
     # SPDX-SnippetEnd
     #++
     class List < Data.define(:items, :selected_index, :offset, :style, :highlight_style, :highlight_symbol, :repeat_highlight_symbol, :highlight_spacing, :direction, :scroll_padding, :block)
+      include CoerceableWidget
+
       ##
       # Highlight spacing: always show the spacing column.
       HIGHLIGHT_ALWAYS = :always

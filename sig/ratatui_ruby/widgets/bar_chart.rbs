@@ -9,6 +9,36 @@
 
 module RatatuiRuby
   module Widgets
+    # Options hash type for BarChart constructor arguments.
+    type bar_chart_options = {
+      ?data: Hash[String | Symbol | _ToS, Numeric] | Array[Array[String | Symbol | _ToS | Numeric]] | Array[BarChart::BarGroup],
+      ?bar_width: Numeric,
+      ?bar_gap: Numeric,
+      ?group_gap: Numeric,
+      ?max: Numeric?,
+      ?style: Style?,
+      ?block: Block?,
+      ?direction: (:vertical | :horizontal),
+      ?label_style: Style?,
+      ?value_style: Style?,
+      ?bar_set: Hash[Symbol, String]?
+    }
+
+    # Options hash type for BarChart::Bar constructor arguments.
+    type bar_options = {
+      ?value: Numeric,
+      ?label: String | Text::Span | Text::Line | nil,
+      ?style: Style?,
+      ?value_style: Style?,
+      ?text_value: String | Text::Span | Text::Line | nil
+    }
+
+    # Options hash type for BarChart::BarGroup constructor arguments.
+    type bar_group_options = {
+      ?label: String,
+      ?bars: Array[BarChart::Bar]
+    }
+
     class BarChart < Data
       BAR_KEYS: Array[Symbol]
 
@@ -24,6 +54,11 @@ module RatatuiRuby
       attr_reader value_style: Style?
       attr_reader bar_set: Hash[Symbol, String]?
 
+      include CoerceableWidget
+
+      def self.coerce_args: (bar_chart_options first, ?bar_chart_options kwargs) -> BarChart
+                          | (nil first, bar_chart_options kwargs) -> BarChart
+
       def self.new: (data: Hash[String | Symbol | _ToS, Numeric] | Array[Array[String | Symbol | _ToS | Numeric]] | Array[BarChart::BarGroup], ?bar_width: Numeric, ?bar_gap: Numeric, ?group_gap: Numeric, ?max: Numeric?, ?style: Style?, ?block: Block?, ?direction: (:vertical | :horizontal), ?label_style: Style?, ?value_style: Style?, ?bar_set: Hash[Symbol, String]?) -> BarChart
       def initialize: (data: Hash[String | Symbol | _ToS, Numeric] | Array[Array[String | Symbol | _ToS | Numeric]] | Array[BarChart::BarGroup], ?bar_width: Numeric, ?bar_gap: Numeric, ?group_gap: Numeric, ?max: Numeric?, ?style: Style?, ?block: Block?, ?direction: (:vertical | :horizontal), ?label_style: Style?, ?value_style: Style?, ?bar_set: Hash[Symbol, String]?) -> void
 
@@ -34,6 +69,11 @@ module RatatuiRuby
         attr_reader value_style: Style?
         attr_reader text_value: (String | Text::Span | Text::Line)?
 
+        include CoerceableWidget
+
+        def self.coerce_args: (bar_options first, ?bar_options kwargs) -> Bar
+                            | (nil first, bar_options kwargs) -> Bar
+
         def self.new: (value: Numeric, ?label: String | Text::Span | Text::Line | nil, ?style: Style?, ?value_style: Style?, ?text_value: String | Text::Span | Text::Line | nil) -> Bar
         def initialize: (value: Numeric, ?label: String | Text::Span | Text::Line | nil, ?style: Style?, ?value_style: Style?, ?text_value: String | Text::Span | Text::Line | nil) -> void
       end
@@ -41,6 +81,11 @@ module RatatuiRuby
       class BarGroup < Data
         attr_reader label: String
         attr_reader bars: Array[BarChart::Bar]
+
+        include CoerceableWidget
+
+        def self.coerce_args: (bar_group_options first, ?bar_group_options kwargs) -> BarGroup
+                            | (nil first, bar_group_options kwargs) -> BarGroup
 
         def self.new: (label: String, bars: Array[BarChart::Bar]) -> BarGroup
         def initialize: (label: String, bars: Array[BarChart::Bar]) -> void

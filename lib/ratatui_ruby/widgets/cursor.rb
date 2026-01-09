@@ -32,6 +32,8 @@ module RatatuiRuby
     # - {Component-based implementation using Frame API}[link:/examples/app_color_picker/app_rb.html]
     # - RatatuiRuby::Frame#set_cursor_position (Frame API alternative)
     class Cursor < Data.define(:x, :y)
+      include CoerceableWidget
+
       ##
       # :attr_reader: x
       # X coordinate (column).

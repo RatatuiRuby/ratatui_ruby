@@ -39,6 +39,8 @@ module RatatuiRuby
     # SPDX-SnippetEnd
     #++
     class Paragraph < Data.define(:text, :style, :block, :wrap, :alignment, :scroll)
+      include CoerceableWidget
+
       ##
       # :attr_reader: text
       # The content to display.

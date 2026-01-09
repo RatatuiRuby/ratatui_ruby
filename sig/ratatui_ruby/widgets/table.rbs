@@ -9,6 +9,27 @@
 
 module RatatuiRuby
   module Widgets
+    # Options hash type for Table constructor arguments.
+    # Used by coerce_args for DWIM bare-hash acceptance.
+    type table_options = {
+      ?header: Array[String | Paragraph]?,
+      ?rows: Array[Array[String | Paragraph | Style | _ToS]],
+      ?widths: Array[Layout::Constraint | Integer],
+      ?row_highlight_style: Style?,
+      ?highlight_symbol: String?,
+      ?highlight_spacing: Symbol,
+      ?column_highlight_style: Style?,
+      ?cell_highlight_style: Style?,
+      ?selected_row: Numeric?,
+      ?selected_column: Numeric?,
+      ?offset: Numeric?,
+      ?block: Block?,
+      ?footer: Array[String | Paragraph]?,
+      ?flex: Symbol,
+      ?style: style_input?,
+      ?column_spacing: Numeric
+    }
+
     class Table < Data
       HIGHLIGHT_ALWAYS: Symbol
       HIGHLIGHT_WHEN_SELECTED: Symbol
@@ -37,6 +58,12 @@ module RatatuiRuby
       attr_reader highlight_symbol: String?
       attr_reader cell_highlight_style: Style?
       attr_reader selected_row: Integer?
+
+      include CoerceableWidget
+
+      # DWIM hash coercion: accepts bare Hash (first arg) or keyword arguments.
+      def self.coerce_args: (table_options first, ?table_options kwargs) -> Table
+                          | (nil first, table_options kwargs) -> Table
 
       def self.new: (?header: Array[String | Paragraph]?, ?rows: Array[Array[String | Paragraph | Style | _ToS]], ?widths: Array[Layout::Constraint | Integer], ?row_highlight_style: Style?, ?highlight_symbol: String?, ?highlight_spacing: Symbol, ?column_highlight_style: Style?, ?cell_highlight_style: Style?, ?selected_row: Numeric?, ?selected_column: Numeric?, ?offset: Numeric?, ?block: Block?, ?footer: Array[String | Paragraph]?, ?flex: Symbol, ?style: style_input?, ?column_spacing: Numeric) -> Table
       def initialize: (?header: Array[String | Paragraph]?, ?rows: Array[Array[String | Paragraph | Style | _ToS]], ?widths: Array[Layout::Constraint | Integer], ?row_highlight_style: Style?, ?highlight_symbol: String?, ?highlight_spacing: Symbol, ?column_highlight_style: Style?, ?cell_highlight_style: Style?, ?selected_row: Numeric?, ?selected_column: Numeric?, ?offset: Numeric?, ?block: Block?, ?footer: Array[String | Paragraph]?, ?flex: Symbol, ?style: style_input?, ?column_spacing: Numeric) -> void

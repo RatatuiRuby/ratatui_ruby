@@ -23,6 +23,8 @@ module RatatuiRuby
     #
     #   ruby examples/widget_ratatui_mascot/app.rb
     class RatatuiMascot < Data.define(:block)
+      include CoerceableWidget
+
       ##
       # :method: new
       # :call-seq: new(block: nil) -> RatatuiMascot

@@ -15,6 +15,7 @@ module RatatuiRuby
 end
 
 # Core widgets
+require_relative "widgets/coerceable_widget"
 require_relative "widgets/block"
 require_relative "widgets/paragraph"
 require_relative "widgets/list"

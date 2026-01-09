@@ -10,92 +10,123 @@
 module RatatuiRuby
   class TUI
     # Widget factory methods for TUI.
-    # Each method signature MUST match the corresponding Widgets::*.new signature
-    # for argument forwarding (...) to type-check correctly.
+    #
+    # All factory methods support DWIM hash coercion: both `tui.table(hash)` and
+    # `tui.table(**hash)` work identically.
     module WidgetFactories
       # Widgets::Block
-      def block: (?title: String?, ?titles: Array[title_entry], ?title_alignment: alignment?, ?title_style: style_input?, ?borders: Array[border_side], ?border_style: style_input?, ?border_type: border_type?, ?border_set: border_set_hash?, ?style: style_input?, ?padding: (Numeric | Array[Numeric]), ?children: Array[widget]) -> Widgets::Block
+      def block: (Widgets::block_options) -> Widgets::Block
+              | (?title: String?, ?titles: Array[title_entry], ?title_alignment: alignment?, ?title_style: style_input?, ?borders: Array[border_side], ?border_style: style_input?, ?border_type: border_type?, ?border_set: border_set_hash?, ?style: style_input?, ?padding: (Numeric | Array[Numeric]), ?children: Array[widget]) -> Widgets::Block
 
       # Widgets::Paragraph
-      def paragraph: (text: String, ?style: Style::Style?, ?fg: (String | Symbol)?, ?bg: (String | Symbol)?, ?block: Widgets::Block?, ?wrap: bool, ?alignment: Symbol, ?scroll: [Numeric, Numeric]) -> Widgets::Paragraph
+      def paragraph: (Widgets::paragraph_options) -> Widgets::Paragraph
+                   | (text: String, ?style: Style::Style?, ?fg: (String | Symbol)?, ?bg: (String | Symbol)?, ?block: Widgets::Block?, ?wrap: bool, ?alignment: Symbol, ?scroll: [Numeric, Numeric]) -> Widgets::Paragraph
 
       # Widgets::List
-      def list: (?items: Array[String | Text::Span | Text::Line | Widgets::ListItem], ?selected_index: Numeric?, ?offset: Numeric?, ?style: Style?, ?highlight_style: Style?, ?highlight_symbol: String?, ?repeat_highlight_symbol: bool, ?highlight_spacing: Symbol, ?direction: Symbol, ?scroll_padding: Numeric?, ?block: Widgets::Block?) -> Widgets::List
+      def list: (Widgets::list_options) -> Widgets::List
+             | (?items: Array[String | Text::Span | Text::Line | Widgets::ListItem], ?selected_index: Numeric?, ?offset: Numeric?, ?style: Style?, ?highlight_style: Style?, ?highlight_symbol: String?, ?repeat_highlight_symbol: bool, ?highlight_spacing: Symbol, ?direction: Symbol, ?scroll_padding: Numeric?, ?block: Widgets::Block?) -> Widgets::List
 
       # Widgets::ListItem
-      def list_item: (content: String | Text::Span | Text::Line, ?style: Style?) -> Widgets::ListItem
+      def list_item: (Widgets::list_item_options) -> Widgets::ListItem
+                   | (content: String | Text::Span | Text::Line, ?style: Style?) -> Widgets::ListItem
 
       # Widgets::Table
-      def table: (?header: Array[String | Widgets::Paragraph]?, ?rows: Array[Array[String | Widgets::Paragraph | Style | _ToS]], ?widths: Array[Layout::Constraint | Integer], ?row_highlight_style: Style?, ?highlight_symbol: String?, ?highlight_spacing: Symbol, ?column_highlight_style: Style?, ?cell_highlight_style: Style?, ?selected_row: Numeric?, ?selected_column: Numeric?, ?offset: Numeric?, ?block: Widgets::Block?, ?footer: Array[String | Widgets::Paragraph]?, ?flex: Symbol, ?style: style_input?, ?column_spacing: Numeric) -> Widgets::Table
+      def table: (Widgets::table_options) -> Widgets::Table
+              | (?header: Array[String | Widgets::Paragraph]?, ?rows: Array[Array[String | Widgets::Paragraph | Style | _ToS]], ?widths: Array[Layout::Constraint | Integer], ?row_highlight_style: Style?, ?highlight_symbol: String?, ?highlight_spacing: Symbol, ?column_highlight_style: Style?, ?cell_highlight_style: Style?, ?selected_row: Numeric?, ?selected_column: Numeric?, ?offset: Numeric?, ?block: Widgets::Block?, ?footer: Array[String | Widgets::Paragraph]?, ?flex: Symbol, ?style: style_input?, ?column_spacing: Numeric) -> Widgets::Table
 
       # Widgets::Row
-      def row: (cells: Array[String | Text::Span | Text::Line | Widgets::Paragraph | Widgets::Cell], ?style: Style?, ?height: Integer?, ?top_margin: Integer?, ?bottom_margin: Integer?) -> Widgets::Row
-      def table_row: (cells: Array[String | Text::Span | Text::Line | Widgets::Paragraph | Widgets::Cell], ?style: Style?, ?height: Integer?, ?top_margin: Integer?, ?bottom_margin: Integer?) -> Widgets::Row
+      def row: (Widgets::row_options) -> Widgets::Row
+            | (cells: Array[String | Text::Span | Text::Line | Widgets::Paragraph | Widgets::Cell], ?style: Style?, ?height: Integer?, ?top_margin: Integer?, ?bottom_margin: Integer?) -> Widgets::Row
+      def table_row: (Widgets::row_options) -> Widgets::Row
+                   | (cells: Array[String | Text::Span | Text::Line | Widgets::Paragraph | Widgets::Cell], ?style: Style?, ?height: Integer?, ?top_margin: Integer?, ?bottom_margin: Integer?) -> Widgets::Row
 
       # Widgets::Cell
-      def table_cell: (content: String | Text::Span | Text::Line | Widgets::Paragraph, ?style: Style?) -> Widgets::Cell
+      def table_cell: (Widgets::cell_options) -> Widgets::Cell
+                    | (content: String | Text::Span | Text::Line | Widgets::Paragraph, ?style: Style?) -> Widgets::Cell
 
       # Widgets::Tabs
-      def tabs: (?titles: Array[String | _ToS], ?selected_index: Numeric, ?block: Widgets::Block?, ?divider: String?, ?highlight_style: Style?, ?style: Style?, ?padding_left: Numeric, ?padding_right: Numeric) -> Widgets::Tabs
+      def tabs: (Widgets::tabs_options) -> Widgets::Tabs
+             | (?titles: Array[String | _ToS], ?selected_index: Numeric, ?block: Widgets::Block?, ?divider: String?, ?highlight_style: Style?, ?style: Style?, ?padding_left: Numeric, ?padding_right: Numeric) -> Widgets::Tabs
 
       # Widgets::Gauge
-      def gauge: (?ratio: Numeric?, ?percent: Numeric?, ?label: String | Text::Span | nil, ?style: Style?, ?gauge_style: Style?, ?block: Widgets::Block?, ?use_unicode: bool) -> Widgets::Gauge
+      def gauge: (Widgets::gauge_options) -> Widgets::Gauge
+              | (?ratio: Numeric?, ?percent: Numeric?, ?label: String | Text::Span | nil, ?style: Style?, ?gauge_style: Style?, ?block: Widgets::Block?, ?use_unicode: bool) -> Widgets::Gauge
 
       # Widgets::LineGauge
-      def line_gauge: (?ratio: Numeric, ?label: String | Text::Span | nil, ?style: Style?, ?filled_style: Style?, ?unfilled_style: Style?, ?block: Widgets::Block?, ?filled_symbol: String, ?unfilled_symbol: String) -> Widgets::LineGauge
+      def line_gauge: (Widgets::line_gauge_options) -> Widgets::LineGauge
+                    | (?ratio: Numeric, ?label: String | Text::Span | nil, ?style: Style?, ?filled_style: Style?, ?unfilled_style: Style?, ?block: Widgets::Block?, ?filled_symbol: String, ?unfilled_symbol: String) -> Widgets::LineGauge
 
       # Widgets::Sparkline
-      def sparkline: (data: Array[Numeric?], ?max: Numeric?, ?style: Style?, ?block: Widgets::Block?, ?direction: (:left_to_right | :right_to_left)?, ?absent_value_symbol: String?, ?absent_value_style: Style?, ?bar_set: Hash[Symbol, String]?) -> Widgets::Sparkline
+      def sparkline: (Widgets::sparkline_options) -> Widgets::Sparkline
+                   | (data: Array[Numeric?], ?max: Numeric?, ?style: Style?, ?block: Widgets::Block?, ?direction: (:left_to_right | :right_to_left)?, ?absent_value_symbol: String?, ?absent_value_style: Style?, ?bar_set: Hash[Symbol, String]?) -> Widgets::Sparkline
 
       # Widgets::BarChart
-      def bar_chart: (data: Hash[String | Symbol | _ToS, Numeric] | Array[Array[String | Symbol | _ToS | Numeric]] | Array[Widgets::BarChart::BarGroup], ?bar_width: Numeric, ?bar_gap: Numeric, ?group_gap: Numeric, ?max: Numeric?, ?style: Style?, ?block: Widgets::Block?, ?direction: (:vertical | :horizontal), ?label_style: Style?, ?value_style: Style?, ?bar_set: Hash[Symbol, String]?) -> Widgets::BarChart
+      def bar_chart: (Widgets::bar_chart_options) -> Widgets::BarChart
+                   | (data: Hash[String | Symbol | _ToS, Numeric] | Array[Array[String | Symbol | _ToS | Numeric]] | Array[Widgets::BarChart::BarGroup], ?bar_width: Numeric, ?bar_gap: Numeric, ?group_gap: Numeric, ?max: Numeric?, ?style: Style?, ?block: Widgets::Block?, ?direction: (:vertical | :horizontal), ?label_style: Style?, ?value_style: Style?, ?bar_set: Hash[Symbol, String]?) -> Widgets::BarChart
 
       # Widgets::BarChart::Bar
-      def bar: (value: Numeric, ?label: String | Text::Span | Text::Line | nil, ?style: Style?, ?value_style: Style?, ?text_value: String | Text::Span | Text::Line | nil) -> Widgets::BarChart::Bar
-      def bar_chart_bar: (value: Numeric, ?label: String | Text::Span | Text::Line | nil, ?style: Style?, ?value_style: Style?, ?text_value: String | Text::Span | Text::Line | nil) -> Widgets::BarChart::Bar
+      def bar: (Widgets::bar_options) -> Widgets::BarChart::Bar
+            | (value: Numeric, ?label: String | Text::Span | Text::Line | nil, ?style: Style?, ?value_style: Style?, ?text_value: String | Text::Span | Text::Line | nil) -> Widgets::BarChart::Bar
+      def bar_chart_bar: (Widgets::bar_options) -> Widgets::BarChart::Bar
+                       | (value: Numeric, ?label: String | Text::Span | Text::Line | nil, ?style: Style?, ?value_style: Style?, ?text_value: String | Text::Span | Text::Line | nil) -> Widgets::BarChart::Bar
 
       # Widgets::BarChart::BarGroup
-      def bar_group: (label: String, bars: Array[Widgets::BarChart::Bar]) -> Widgets::BarChart::BarGroup
-      def bar_chart_bar_group: (label: String, bars: Array[Widgets::BarChart::Bar]) -> Widgets::BarChart::BarGroup
+      def bar_group: (Widgets::bar_group_options) -> Widgets::BarChart::BarGroup
+                   | (label: String, bars: Array[Widgets::BarChart::Bar]) -> Widgets::BarChart::BarGroup
+      def bar_chart_bar_group: (Widgets::bar_group_options) -> Widgets::BarChart::BarGroup
+                             | (label: String, bars: Array[Widgets::BarChart::Bar]) -> Widgets::BarChart::BarGroup
 
       # Widgets::Chart
-      def chart: (datasets: Array[Widgets::Dataset], x_axis: Widgets::Axis, y_axis: Widgets::Axis, ?block: Widgets::Block?, ?style: Style?, ?legend_position: Symbol?, ?hidden_legend_constraints: Array[Layout::Constraint]) -> Widgets::Chart
+      def chart: (Widgets::chart_options) -> Widgets::Chart
+              | (datasets: Array[Widgets::Dataset], x_axis: Widgets::Axis, y_axis: Widgets::Axis, ?block: Widgets::Block?, ?style: Style?, ?legend_position: Symbol?, ?hidden_legend_constraints: Array[Layout::Constraint]) -> Widgets::Chart
 
       # Widgets::Dataset
-      def dataset: (name: String | Symbol, data: Array[[Numeric, Numeric]], ?style: Style?, ?marker: Symbol, ?graph_type: Symbol) -> Widgets::Dataset
+      def dataset: (Widgets::dataset_options) -> Widgets::Dataset
+                | (name: String | Symbol, data: Array[[Numeric, Numeric]], ?style: Style?, ?marker: Symbol, ?graph_type: Symbol) -> Widgets::Dataset
 
       # Widgets::Axis
-      def axis: (?title: String, ?bounds: [Numeric, Numeric], ?labels: Array[String], ?style: Style?, ?labels_alignment: Symbol?) -> Widgets::Axis
+      def axis: (Widgets::axis_options) -> Widgets::Axis
+             | (?title: String, ?bounds: [Numeric, Numeric], ?labels: Array[String], ?style: Style?, ?labels_alignment: Symbol?) -> Widgets::Axis
 
       # Widgets::Scrollbar
-      def scrollbar: (content_length: Numeric, position: Numeric, ?orientation: Symbol, ?thumb_symbol: String, ?thumb_style: Style?, ?track_symbol: String?, ?track_style: Style?, ?begin_symbol: String?, ?begin_style: Style?, ?end_symbol: String?, ?end_style: Style?, ?style: Style?, ?block: Widgets::Block?) -> Widgets::Scrollbar
+      def scrollbar: (Widgets::scrollbar_options) -> Widgets::Scrollbar
+                   | (content_length: Numeric, position: Numeric, ?orientation: Symbol, ?thumb_symbol: String, ?thumb_style: Style?, ?track_symbol: String?, ?track_style: Style?, ?begin_symbol: String?, ?begin_style: Style?, ?end_symbol: String?, ?end_style: Style?, ?style: Style?, ?block: Widgets::Block?) -> Widgets::Scrollbar
 
       # Widgets::Calendar
-      def calendar: (year: Numeric, month: Numeric, ?events: Hash[date_key, Style], ?default_style: Style?, ?header_style: Style?, ?block: Widgets::Block?, ?show_weekdays_header: bool, ?show_surrounding: Style?, ?show_month_header: bool) -> Widgets::Calendar
+      def calendar: (Widgets::calendar_options) -> Widgets::Calendar
+                  | (year: Numeric, month: Numeric, ?events: Hash[date_key, Style], ?default_style: Style?, ?header_style: Style?, ?block: Widgets::Block?, ?show_weekdays_header: bool, ?show_surrounding: Style?, ?show_month_header: bool) -> Widgets::Calendar
 
       # Widgets::Canvas
-      def canvas: (?shapes: Array[Widgets::Shape::Line | Widgets::Shape::Rectangle | Widgets::Shape::Circle | Widgets::Shape::Map | Widgets::Shape::Label | Widgets::Shape::Point], ?x_bounds: Array[Numeric], ?y_bounds: Array[Numeric], ?marker: Symbol, ?block: Widgets::Block?, ?background_color: (String | Symbol)?) -> Widgets::Canvas
+      def canvas: (Widgets::canvas_options) -> Widgets::Canvas
+               | (?shapes: Array[Widgets::Shape::Line | Widgets::Shape::Rectangle | Widgets::Shape::Circle | Widgets::Shape::Map | Widgets::Shape::Label | Widgets::Shape::Point], ?x_bounds: Array[Numeric], ?y_bounds: Array[Numeric], ?marker: Symbol, ?block: Widgets::Block?, ?background_color: (String | Symbol)?) -> Widgets::Canvas
 
       # Widgets::Clear
-      def clear: () -> Widgets::Clear
+      def clear: (Widgets::clear_options) -> Widgets::Clear
+              | (?block: Widgets::Block?) -> Widgets::Clear
 
       # Widgets::Cursor
-      def cursor: (x: Numeric, y: Numeric) -> Widgets::Cursor
+      def cursor: (Widgets::cursor_options) -> Widgets::Cursor
+               | (x: Numeric, y: Numeric) -> Widgets::Cursor
 
       # Widgets::Overlay
-      def overlay: (layers: Array[widget]) -> Widgets::Overlay
+      def overlay: (Widgets::overlay_options) -> Widgets::Overlay
+                | (?layers: Array[widget]) -> Widgets::Overlay
 
       # Widgets::Center
-      def center: (child: widget, ?width_percent: Numeric, ?height_percent: Numeric) -> Widgets::Center
+      def center: (Widgets::center_options) -> Widgets::Center
+               | (child: widget, ?width_percent: Numeric, ?height_percent: Numeric) -> Widgets::Center
 
       # Widgets::RatatuiLogo
-      def ratatui_logo: () -> Widgets::RatatuiLogo
+      def ratatui_logo: (Widgets::ratatui_logo_options) -> Widgets::RatatuiLogo
+                      | () -> Widgets::RatatuiLogo
 
       # Widgets::RatatuiMascot
-      def ratatui_mascot: (?block: Widgets::Block?) -> Widgets::RatatuiMascot
+      def ratatui_mascot: (Widgets::ratatui_mascot_options) -> Widgets::RatatuiMascot
+                        | (?block: Widgets::Block?) -> Widgets::RatatuiMascot
 
       # Widgets::Shape::Label
-      def shape_label: (x: Numeric, y: Numeric, text: String | Text::Line, ?style: Style?) -> Widgets::Shape::Label
+      def shape_label: (Widgets::Shape::label_options) -> Widgets::Shape::Label
+                     | (x: Numeric, y: Numeric, text: String | Text::Line, ?style: Style?) -> Widgets::Shape::Label
     end
   end
 end

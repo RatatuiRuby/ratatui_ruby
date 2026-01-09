@@ -33,6 +33,8 @@ module RatatuiRuby
     # SPDX-SnippetEnd
     #++
     class ListItem < Data.define(:content, :style)
+      include CoerceableWidget
+
       ##
       # :attr_reader: content
       # The content to display (String, Text::Span, or Text::Line).

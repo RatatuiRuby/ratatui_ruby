@@ -14,6 +14,8 @@ module RatatuiRuby
     # [style] Style
     # [labels_alignment] Symbol (<tt>:left</tt>, <tt>:center</tt>, <tt>:right</tt>)
     class Axis < Data.define(:title, :bounds, :labels, :style, :labels_alignment)
+      include CoerceableWidget
+
       ##
       # :attr_reader: title
       # Label for the axis (String).
@@ -59,6 +61,8 @@ module RatatuiRuby
     # [marker] Symbol (<tt>:dot</tt>, <tt>:braille</tt>, <tt>:block</tt>, <tt>:bar</tt>, <tt>:half_block</tt>)
     # [graph_type] Symbol (<tt>:line</tt>, <tt>:scatter</tt>)
     class Dataset < Data.define(:name, :data, :style, :marker, :graph_type)
+      include CoerceableWidget
+
       ##
       # :attr_reader: name
       # Name for logical identification or legend.
@@ -118,6 +122,8 @@ module RatatuiRuby
     #
     #   ruby examples/widget_chart/app.rb
     class Chart < Data.define(:datasets, :x_axis, :y_axis, :block, :style, :legend_position, :hidden_legend_constraints)
+      include CoerceableWidget
+
       ##
       # :attr_reader: datasets
       # Array of Dataset objects to plot.

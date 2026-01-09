@@ -37,6 +37,8 @@ module RatatuiRuby
     # SPDX-SnippetEnd
     #++
     class Row < Data.define(:cells, :style, :height, :top_margin, :bottom_margin)
+      include CoerceableWidget
+
       ##
       # :attr_reader: cells
       # The cells to display (Array of Strings, Text::Spans, Text::Lines, Paragraphs, or Cells).

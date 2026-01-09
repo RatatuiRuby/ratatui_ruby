@@ -135,4 +135,83 @@ class TestDebug < Minitest::Test
     assert_predicate RatatuiRuby::Debug, :enabled?,
       "RatatuiRuby.debug_mode! should enable full debug mode"
   end
+
+  ##
+  # Verifies that suppress_debug_mode yields to the block.
+  #
+  # The block should execute and return its value.
+  def test_suppress_debug_mode_yields_to_block
+    RatatuiRuby::Debug.enable!
+
+    result = RatatuiRuby::Debug.suppress_debug_mode { 42 }
+
+    assert_equal 42, result, "suppress_debug_mode should return block value"
+  end
+
+  ##
+  # Verifies that suppress_debug_mode temporarily disables enabled? check.
+  #
+  # Inside the block, enabled? should return false even if debug mode
+  # was previously enabled.
+  def test_suppress_debug_mode_disables_enabled_inside_block
+    RatatuiRuby::Debug.enable!
+
+    inside_value = nil
+    RatatuiRuby::Debug.suppress_debug_mode do
+      inside_value = RatatuiRuby::Debug.enabled?
+    end
+
+    refute inside_value, "enabled? should return false inside suppress_debug_mode block"
+  end
+
+  ##
+  # Verifies that suppress_debug_mode restores enabled? after block exits.
+  #
+  # After the block completes, enabled? should return to its original value.
+  def test_suppress_debug_mode_restores_state_after_block
+    RatatuiRuby::Debug.enable!
+    before_value = RatatuiRuby::Debug.enabled?
+
+    RatatuiRuby::Debug.suppress_debug_mode { nil }
+
+    assert_equal before_value, RatatuiRuby::Debug.enabled?,
+      "enabled? should be restored after suppress_debug_mode block"
+  end
+
+  ##
+  # Verifies that suppress_debug_mode restores state even on exception.
+  #
+  # The ensure block should restore the original value even if an
+  # exception is raised inside the block.
+  def test_suppress_debug_mode_restores_state_on_exception
+    RatatuiRuby::Debug.enable!
+    before_value = RatatuiRuby::Debug.enabled?
+
+    begin
+      RatatuiRuby::Debug.suppress_debug_mode do
+        raise "intentional error"
+      end
+    rescue RuntimeError
+      # Expected
+    end
+
+    assert_equal before_value, RatatuiRuby::Debug.enabled?,
+      "enabled? should be restored even after exception"
+  end
+
+  ##
+  # Verifies that suppress_debug_mode does not affect Rust backtraces.
+  #
+  # Rust backtraces cannot be disabled once enabled. The suppress method
+  # only affects Ruby-side debug features.
+  def test_suppress_debug_mode_does_not_affect_rust_backtraces
+    RatatuiRuby::Debug.enable!
+
+    inside_value = nil
+    RatatuiRuby::Debug.suppress_debug_mode do
+      inside_value = RatatuiRuby::Debug.rust_backtrace_enabled?
+    end
+
+    assert inside_value, "rust_backtrace_enabled? should remain true inside suppress_debug_mode"
+  end
 end

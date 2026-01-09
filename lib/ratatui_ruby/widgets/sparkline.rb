@@ -24,6 +24,8 @@ module RatatuiRuby
     #
     #   ruby examples/widget_sparkline/app.rb
     class Sparkline < Data.define(:data, :max, :style, :block, :direction, :absent_value_symbol, :absent_value_style, :bar_set)
+      include CoerceableWidget
+
       ##
       # :attr_reader: data
       # Array of integer values to plot.

@@ -24,6 +24,8 @@ module RatatuiRuby
     #
     #   ruby examples/widget_table_flex/app.rb
     class Table < Data.define(:header, :rows, :widths, :row_highlight_style, :highlight_symbol, :highlight_spacing, :column_highlight_style, :cell_highlight_style, :selected_row, :selected_column, :offset, :block, :footer, :flex, :style, :column_spacing)
+      include CoerceableWidget
+
       ##
       # Highlight spacing: always show the spacing column.
       HIGHLIGHT_ALWAYS = :always

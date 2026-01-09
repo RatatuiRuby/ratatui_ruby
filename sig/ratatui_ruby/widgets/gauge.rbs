@@ -9,6 +9,17 @@
 
 module RatatuiRuby
   module Widgets
+    # Options hash type for Gauge constructor arguments.
+    type gauge_options = {
+      ?ratio: Numeric?,
+      ?percent: Numeric?,
+      ?label: String | Text::Span | nil,
+      ?style: Style?,
+      ?gauge_style: Style?,
+      ?block: Block?,
+      ?use_unicode: bool
+    }
+
     class Gauge < Data
       attr_reader ratio: Float
       attr_reader label: (String | Text::Span)?
@@ -16,6 +27,11 @@ module RatatuiRuby
       attr_reader gauge_style: Style?
       attr_reader block: Block?
       attr_reader use_unicode: bool
+
+      include CoerceableWidget
+
+      def self.coerce_args: (gauge_options first, ?gauge_options kwargs) -> Gauge
+                          | (nil first, gauge_options kwargs) -> Gauge
 
       def self.new: (?ratio: Numeric?, ?percent: Numeric?, ?label: String | Text::Span | nil, ?style: Style?, ?gauge_style: Style?, ?block: Block?, ?use_unicode: bool) -> Gauge
       def initialize: (?ratio: Numeric?, ?percent: Numeric?, ?label: String | Text::Span | nil, ?style: Style?, ?gauge_style: Style?, ?block: Block?, ?use_unicode: bool) -> void

@@ -23,6 +23,8 @@ module RatatuiRuby
     #
     #   ruby examples/widget_ratatui_logo/app.rb
     class RatatuiLogo < Data.define
+      include CoerceableWidget
+
       ##
       # :method: new
       # :call-seq: new -> RatatuiLogo

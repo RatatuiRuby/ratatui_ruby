@@ -9,6 +9,18 @@
 
 module RatatuiRuby
   module Widgets
+    # Options hash type for Sparkline constructor arguments.
+    type sparkline_options = {
+      ?data: Array[Numeric?],
+      ?max: Numeric?,
+      ?style: Style?,
+      ?block: Block?,
+      ?direction: (:left_to_right | :right_to_left)?,
+      ?absent_value_symbol: String?,
+      ?absent_value_style: Style?,
+      ?bar_set: Hash[Symbol, String]?
+    }
+
     class Sparkline < Data
       BAR_KEYS: Array[Symbol]
 
@@ -20,6 +32,11 @@ module RatatuiRuby
       attr_reader absent_value_symbol: String?
       attr_reader absent_value_style: Style?
       attr_reader bar_set: Hash[Symbol, String]?
+
+      include CoerceableWidget
+
+      def self.coerce_args: (sparkline_options first, ?sparkline_options kwargs) -> Sparkline
+                          | (nil first, sparkline_options kwargs) -> Sparkline
 
       def self.new: (data: Array[Numeric?], ?max: Numeric?, ?style: Style?, ?block: Block?, ?direction: (:left_to_right | :right_to_left)?, ?absent_value_symbol: String?, ?absent_value_style: Style?, ?bar_set: Hash[Symbol, String]?) -> Sparkline
       def initialize: (data: Array[Numeric?], ?max: Numeric?, ?style: Style?, ?block: Block?, ?direction: (:left_to_right | :right_to_left)?, ?absent_value_symbol: String?, ?absent_value_style: Style?, ?bar_set: Hash[Symbol, String]?) -> void

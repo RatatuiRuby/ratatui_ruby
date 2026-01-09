@@ -20,5 +20,8 @@ module RatatuiRuby
 
     # Returns whether Rust backtraces are enabled.
     def self.rust_backtrace_enabled?: () -> bool
+
+    # Temporarily suppresses Ruby-side debug mode checks within the block.
+    def self.suppress_debug_mode: [T] () { () -> T } -> T
   end
 end

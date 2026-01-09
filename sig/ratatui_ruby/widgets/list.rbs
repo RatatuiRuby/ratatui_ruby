@@ -9,6 +9,21 @@
 
 module RatatuiRuby
   module Widgets
+    # Options hash type for List constructor arguments.
+    type list_options = {
+      ?items: Array[String | Text::Span | Text::Line | ListItem],
+      ?selected_index: Numeric?,
+      ?offset: Numeric?,
+      ?style: Style?,
+      ?highlight_style: Style?,
+      ?highlight_symbol: String?,
+      ?repeat_highlight_symbol: bool,
+      ?highlight_spacing: Symbol,
+      ?direction: Symbol,
+      ?scroll_padding: Numeric?,
+      ?block: Block?
+    }
+
     class List < Data
       HIGHLIGHT_ALWAYS: Symbol
       HIGHLIGHT_WHEN_SELECTED: Symbol
@@ -27,6 +42,11 @@ module RatatuiRuby
       attr_reader direction: Symbol
       attr_reader scroll_padding: Integer?
       attr_reader block: Block?
+
+      include CoerceableWidget
+
+      def self.coerce_args: (list_options first, ?list_options kwargs) -> List
+                          | (nil first, list_options kwargs) -> List
 
       def self.new: (?items: Array[String | Text::Span | Text::Line | ListItem], ?selected_index: Numeric?, ?offset: Numeric?, ?style: Style?, ?highlight_style: Style?, ?highlight_symbol: String?, ?repeat_highlight_symbol: bool, ?highlight_spacing: Symbol, ?direction: Symbol, ?scroll_padding: Numeric?, ?block: Block?) -> List
       def initialize: (?items: Array[String | Text::Span | Text::Line | ListItem], ?selected_index: Numeric?, ?offset: Numeric?, ?style: Style?, ?highlight_style: Style?, ?highlight_symbol: String?, ?repeat_highlight_symbol: bool, ?highlight_spacing: Symbol, ?direction: Symbol, ?scroll_padding: Numeric?, ?block: Block?) -> void

@@ -35,6 +35,8 @@ module RatatuiRuby
     # SPDX-SnippetEnd
     #++
     class Overlay < Data.define(:layers)
+      include CoerceableWidget
+
       ##
       # :attr_reader: layers
       # The stack of widgets to render.

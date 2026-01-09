@@ -84,6 +84,34 @@ module RatatuiRuby
       def rust_backtrace_enabled?
         @rust_backtrace_enabled
       end
+
+      ##
+      # Temporarily suppresses Ruby-side debug mode checks.
+      #
+      # Rust backtraces remain enabled if previously activated; only
+      # Ruby-side features (like unknown-key errors) are suppressed
+      # within the block.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   RatatuiRuby::Debug.suppress_debug_mode do
+      #     tui.table({ unknown_key: 1 }) # Does not raise
+      #   end
+      #--
+      # SPDX-SnippetEnd
+      #++
+      def suppress_debug_mode
+        old_value = @debug_mode_enabled
+        @debug_mode_enabled = false
+        yield
+      ensure
+        @debug_mode_enabled = old_value
+      end
     end
   end
 end

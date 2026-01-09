@@ -14,6 +14,8 @@ module RatatuiRuby
       #
       #   BarChart::BarGroup.new(label: "Q1", bars: [BarChart::Bar.new(value: 10), BarChart::Bar.new(value: 20)])
       class BarGroup < Data.define(:label, :bars)
+        include CoerceableWidget
+
         ##
         # :attr_reader: label
         # The label of the group (String).

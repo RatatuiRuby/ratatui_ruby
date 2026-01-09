@@ -33,6 +33,8 @@ module RatatuiRuby
     # SPDX-SnippetEnd
     #++
     class Center < Data.define(:child, :width_percent, :height_percent)
+      include CoerceableWidget
+
       ##
       # :attr_reader: child
       # The widget to be centered.

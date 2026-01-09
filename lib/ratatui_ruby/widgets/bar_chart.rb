@@ -41,6 +41,8 @@ module RatatuiRuby
     # SPDX-SnippetEnd
     #++
     class BarChart < Data.define(:data, :bar_width, :bar_gap, :group_gap, :max, :style, :block, :direction, :label_style, :value_style, :bar_set)
+      include CoerceableWidget
+
       ##
       ##
       ##

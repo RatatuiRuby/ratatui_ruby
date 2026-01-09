@@ -9,6 +9,23 @@
 
 module RatatuiRuby
   module Widgets
+    # Options hash type for Scrollbar constructor arguments.
+    type scrollbar_options = {
+      ?content_length: Numeric,
+      ?position: Numeric,
+      ?orientation: Symbol,
+      ?thumb_symbol: String,
+      ?thumb_style: Style?,
+      ?track_symbol: String?,
+      ?track_style: Style?,
+      ?begin_symbol: String?,
+      ?begin_style: Style?,
+      ?end_symbol: String?,
+      ?end_style: Style?,
+      ?style: Style?,
+      ?block: Block?
+    }
+
     class Scrollbar < Data
       attr_reader content_length: Integer
       attr_reader position: Integer
@@ -23,6 +40,11 @@ module RatatuiRuby
       attr_reader end_style: Style?
       attr_reader style: Style?
       attr_reader block: Block?
+
+      include CoerceableWidget
+
+      def self.coerce_args: (scrollbar_options first, ?scrollbar_options kwargs) -> Scrollbar
+                          | (nil first, scrollbar_options kwargs) -> Scrollbar
 
       def self.new: (content_length: Numeric, position: Numeric, ?orientation: Symbol, ?thumb_symbol: String, ?thumb_style: Style?, ?track_symbol: String?, ?track_style: Style?, ?begin_symbol: String?, ?begin_style: Style?, ?end_symbol: String?, ?end_style: Style?, ?style: Style?, ?block: Block?) -> Scrollbar
       def initialize: (content_length: Numeric, position: Numeric, ?orientation: Symbol, ?thumb_symbol: String, ?thumb_style: Style?, ?track_symbol: String?, ?track_style: Style?, ?begin_symbol: String?, ?begin_style: Style?, ?end_symbol: String?, ?end_style: Style?, ?style: Style?, ?block: Block?) -> void

@@ -190,6 +190,8 @@ module RatatuiRuby
     # SPDX-SnippetEnd
     #++
     class Canvas < Data.define(:shapes, :x_bounds, :y_bounds, :marker, :block, :background_color)
+      include CoerceableWidget
+
       ##
       # :attr_reader: shapes
       # Array of shapes to render.

@@ -14,6 +14,8 @@ module RatatuiRuby
       #
       #   BarChart::Bar.new(value: 10, style: Style.new(fg: :red), label: "A")
       class Bar < Data.define(:value, :label, :style, :value_style, :text_value)
+        include CoerceableWidget
+
         ##
         # :attr_reader: value
         # The value of the bar (Integer).

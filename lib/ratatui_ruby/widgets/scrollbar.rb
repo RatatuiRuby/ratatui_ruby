@@ -37,6 +37,8 @@ module RatatuiRuby
       :style,
       :block
     )
+      include CoerceableWidget
+
       ##
       # :attr_reader: content_length
       # Total items or lines in the content.

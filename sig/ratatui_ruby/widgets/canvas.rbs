@@ -9,6 +9,16 @@
 
 module RatatuiRuby
   module Widgets
+    # Options hash type for Canvas constructor arguments.
+    type canvas_options = {
+      ?shapes: Array[Shape::Line | Shape::Rectangle | Shape::Circle | Shape::Map | Shape::Label | Shape::Point],
+      ?x_bounds: Array[Numeric],
+      ?y_bounds: Array[Numeric],
+      ?marker: Symbol,
+      ?block: Block?,
+      ?background_color: (String | Symbol)?
+    }
+
     class Canvas < Data
       attr_reader shapes: Array[Shape::Line | Shape::Rectangle | Shape::Circle | Shape::Map | Shape::Label | Shape::Point]
       attr_reader x_bounds: Array[Float]
@@ -16,6 +26,11 @@ module RatatuiRuby
       attr_reader marker: Symbol
       attr_reader block: Block?
       attr_reader background_color: (String | Symbol)?
+
+      include CoerceableWidget
+
+      def self.coerce_args: (canvas_options first, ?canvas_options kwargs) -> Canvas
+                          | (nil first, canvas_options kwargs) -> Canvas
 
       def self.new: (?shapes: Array[Shape::Line | Shape::Rectangle | Shape::Circle | Shape::Map | Shape::Label | Shape::Point], ?x_bounds: Array[Numeric], ?y_bounds: Array[Numeric], ?marker: Symbol, ?block: Block?, ?background_color: (String | Symbol)?) -> Canvas
       def initialize: (?shapes: Array[Shape::Line | Shape::Rectangle | Shape::Circle | Shape::Map | Shape::Label | Shape::Point], ?x_bounds: Array[Numeric], ?y_bounds: Array[Numeric], ?marker: Symbol, ?block: Block?, ?background_color: (String | Symbol)?) -> void

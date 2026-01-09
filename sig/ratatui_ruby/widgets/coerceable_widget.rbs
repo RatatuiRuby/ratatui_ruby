@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
+module RatatuiRuby
+  module Widgets
+    # Mixin that provides DWIM hash coercion for widget classes.
+    #
+    # When users call `tui.table(hash)` instead of `tui.table(**hash)`,
+    # this mixin detects the bare hash and automatically splats it.
+    #
+    # This module is designed to be included in Data subclasses.
+    # The coerce_args method is typed per-widget rather than generically
+    # here because RBS cannot express "self.new" in module ClassMethods.
+    module CoerceableWidget
+      KNOWN_KEYS: Array[Symbol]
+
+      # Class methods extended onto widget classes.
+      # Each widget class provides its own typed coerce_args signature.
+      module ClassMethods
+      end
+
+      # Called when the module is included; extends ClassMethods.
+      def self.included: (Class base) -> void
+    end
+  end
+end

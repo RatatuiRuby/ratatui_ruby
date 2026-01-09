@@ -23,6 +23,8 @@ module RatatuiRuby
     #
     #   ruby examples/widget_box/app.rb
     class Block < Data.define(:title, :titles, :title_alignment, :title_style, :borders, :border_style, :border_type, :border_set, :style, :padding, :children)
+      include CoerceableWidget
+
       ##
       # :attr_reader: title
       # The main title displayed on the top border.

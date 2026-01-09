@@ -46,6 +46,8 @@ module RatatuiRuby
     # SPDX-SnippetEnd
     #++
     class Clear < Data.define(:block)
+      include CoerceableWidget
+
       ##
       # :attr_reader: block
       # Optional Block to render after clearing.

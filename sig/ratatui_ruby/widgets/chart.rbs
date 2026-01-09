@@ -9,6 +9,35 @@
 
 module RatatuiRuby
   module Widgets
+    # Options hash type for Chart constructor arguments.
+    type chart_options = {
+      ?datasets: Array[Dataset],
+      ?x_axis: Axis,
+      ?y_axis: Axis,
+      ?block: Block?,
+      ?style: Style?,
+      ?legend_position: Symbol?,
+      ?hidden_legend_constraints: Array[Layout::Constraint]
+    }
+
+    # Options hash type for Dataset constructor arguments.
+    type dataset_options = {
+      ?name: String | Symbol,
+      ?data: Array[[Numeric, Numeric]],
+      ?style: Style?,
+      ?marker: Symbol,
+      ?graph_type: Symbol
+    }
+
+    # Options hash type for Axis constructor arguments.
+    type axis_options = {
+      ?title: String,
+      ?bounds: [Numeric, Numeric],
+      ?labels: Array[String],
+      ?style: Style?,
+      ?labels_alignment: Symbol?
+    }
+
     class Chart < Data
       attr_reader datasets: Array[Dataset]
       attr_reader x_axis: Axis
@@ -17,6 +46,11 @@ module RatatuiRuby
       attr_reader style: Style?
       attr_reader legend_position: Symbol?
       attr_reader hidden_legend_constraints: Array[Layout::Constraint]
+
+      include CoerceableWidget
+
+      def self.coerce_args: (chart_options first, ?chart_options kwargs) -> Chart
+                          | (nil first, chart_options kwargs) -> Chart
 
       def self.new: (datasets: Array[Dataset], x_axis: Axis, y_axis: Axis, ?block: Block?, ?style: Style?, ?legend_position: Symbol?, ?hidden_legend_constraints: Array[Layout::Constraint]) -> Chart
       def initialize: (datasets: Array[Dataset], x_axis: Axis, y_axis: Axis, ?block: Block?, ?style: Style?, ?legend_position: Symbol?, ?hidden_legend_constraints: Array[Layout::Constraint]) -> void
@@ -29,6 +63,11 @@ module RatatuiRuby
       attr_reader marker: Symbol
       attr_reader graph_type: Symbol
 
+      include CoerceableWidget
+
+      def self.coerce_args: (dataset_options first, ?dataset_options kwargs) -> Dataset
+                          | (nil first, dataset_options kwargs) -> Dataset
+
       def self.new: (name: String | Symbol, data: Array[[Numeric, Numeric]], ?style: Style?, ?marker: Symbol, ?graph_type: Symbol) -> Dataset
       def initialize: (name: String | Symbol, data: Array[[Numeric, Numeric]], ?style: Style?, ?marker: Symbol, ?graph_type: Symbol) -> void
     end
@@ -39,6 +78,11 @@ module RatatuiRuby
       attr_reader labels: Array[String]
       attr_reader style: Style?
       attr_reader labels_alignment: Symbol?
+
+      include CoerceableWidget
+
+      def self.coerce_args: (axis_options first, ?axis_options kwargs) -> Axis
+                          | (nil first, axis_options kwargs) -> Axis
 
       def self.new: (?title: String, ?bounds: [Numeric, Numeric], ?labels: Array[String], ?style: Style?, ?labels_alignment: Symbol?) -> Axis
       def initialize: (?title: String, ?bounds: [Numeric, Numeric], ?labels: Array[String], ?style: Style?, ?labels_alignment: Symbol?) -> void
