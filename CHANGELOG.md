@@ -17,6 +17,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Steep Type Checking**: Integrated Steep static type analyzer with a new `rake steep` task. The Steepfile covers `lib/` with comprehensive RBS type definitions for all widgets, layout primitives, events, and interfaces.
 - **RBS Type Definitions**: Added 50+ RBS signature files in `sig/ratatui_ruby/` covering all widget classes, core interfaces (`_RectLike`, `_ToS`), type aliases (`style_input`, `widget`), and a `Data.define` patch for `super()` call compatibility.
 - **Duck Typing Documentation**: New `test/test_duck_typing.rb` documents that `Layout.split` accepts any object responding to `x`, `y`, `width`, `height` (Struct, Data.define, custom classes), not just `Rect`.
+- **Debug Mode**: New `RatatuiRuby::Debug` module controls Rust backtrace visibility for easier debugging. Activate via:
+  - `RUST_BACKTRACE=1` — Rust backtraces only
+  - `RR_DEBUG=1` — full debug mode (backtraces + future Ruby-side features)
+  - `include RatatuiRuby::TestHelper` — auto-enables debug mode in tests
+  - `RatatuiRuby.debug_mode!` — programmatic activation
 
 ### Changed
 

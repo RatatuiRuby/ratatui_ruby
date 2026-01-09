@@ -116,6 +116,18 @@ fn draw(args: &[Value]) -> Result<(), Error> {
     Ok(())
 }
 
+/// Enables Rust backtraces and installs a custom panic hook.
+///
+/// Call this from Ruby to get meaningful stack traces when Rust panics.
+/// The panic hook prints both the panic info and a full backtrace to stderr.
+fn enable_rust_backtrace(_ruby: &magnus::Ruby) {
+    std::env::set_var("RUST_BACKTRACE", "1");
+    std::panic::set_hook(Box::new(|info| {
+        eprintln!("Rust panic: {info:?}");
+        eprintln!("{:?}", std::backtrace::Backtrace::force_capture());
+    }));
+}
+
 #[magnus::init]
 fn init() -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
@@ -124,6 +136,10 @@ fn init() -> Result<(), Error> {
     m.define_module_function("_init_terminal", function!(init_terminal, 2))?;
     m.define_module_function("_restore_terminal", function!(restore_terminal, 0))?;
     m.define_module_function("_draw", function!(draw, -1))?;
+    m.define_module_function(
+        "_enable_rust_backtrace",
+        function!(enable_rust_backtrace, 0),
+    )?;
 
     // Register Frame class
     let frame_class = m.define_class("Frame", ruby.class_object())?;

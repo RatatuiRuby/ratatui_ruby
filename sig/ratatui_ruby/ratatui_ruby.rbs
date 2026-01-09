@@ -77,6 +77,9 @@ module RatatuiRuby
   def self._tabs_width: (Widgets::Tabs t) -> Integer
   def self._text_width: (String text) -> Integer
 
+  # Debug mode convenience method
+  def self.debug_mode!: () -> void
+
   # Headless mode
   def self.headless!: () -> void
   def self.headless?: () -> bool

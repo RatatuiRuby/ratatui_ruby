@@ -41,6 +41,10 @@ rescue LoadError
   require_relative "ratatui_ruby/ratatui_ruby"
 end
 
+# Debug mode (for Rust backtraces and diagnostic features)
+# Loaded after native extension so _enable_rust_backtrace is defined
+require_relative "ratatui_ruby/debug"
+
 # Main entry point for the library.
 #
 # Terminal UIs require low-level control using C/Rust and high-level abstraction in Ruby.
@@ -219,7 +223,28 @@ module RatatuiRuby
   end
 
   # (Native methods implemented in Rust)
-  private_class_method :_init_terminal, :_restore_terminal, :_init_test_terminal
+  private_class_method :_init_terminal, :_restore_terminal, :_init_test_terminal, :_enable_rust_backtrace
+
+  ##
+  # Enables full debug mode.
+  #
+  # Convenience alias for Debug.enable!.
+  #
+  # === Example
+  #
+  #--
+  # SPDX-SnippetBegin
+  # SPDX-FileCopyrightText: 2026 Kerrick Long
+  # SPDX-License-Identifier: MIT-0
+  #++
+  #   RatatuiRuby.debug_mode!
+  #
+  #--
+  # SPDX-SnippetEnd
+  #++
+  def self.debug_mode!
+    Debug.enable!
+  end
 
   ##
   # Draws the given UI node tree to the terminal.

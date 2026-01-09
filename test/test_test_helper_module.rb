@@ -12,6 +12,19 @@ require "minitest/autorun"
 class TestTestHelperModule < Minitest::Test
   include RatatuiRuby::TestHelper
 
+  ##
+  # Verifies that including TestHelper auto-enables debug mode.
+  #
+  # Test authors shouldn't need to manually enable debug mode. By simply
+  # including TestHelper, they get Rust backtraces and future Ruby-side
+  # debug features automatically.
+  def test_including_test_helper_enables_debug_mode
+    # Debug mode is already enabled because we included TestHelper above.
+    # This test documents and verifies that behavior.
+    assert_predicate RatatuiRuby::Debug, :enabled?,
+      "Including TestHelper should auto-enable debug mode"
+  end
+
   def test_with_test_terminal
     called = false
     with_test_terminal(30, 15) do

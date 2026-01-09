@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
+module RatatuiRuby
+  # Debug mode control for RatatuiRuby.
+  #
+  # Manages Rust backtrace visibility and Ruby-side debug features.
+  module Debug
+    @rust_backtrace_enabled: bool
+    @debug_mode_enabled: bool
+
+    # Enables Rust backtraces only.
+    def self.enable_rust_backtrace!: () -> void
+
+    # Enables full debug mode (Rust backtraces + Ruby-side features).
+    def self.enable!: () -> void
+
+    # Returns whether full debug mode is enabled.
+    def self.enabled?: () -> bool
+
+    # Returns whether Rust backtraces are enabled.
+    def self.rust_backtrace_enabled?: () -> bool
+  end
+end

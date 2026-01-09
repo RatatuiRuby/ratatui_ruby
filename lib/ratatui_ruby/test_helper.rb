@@ -92,6 +92,14 @@ module RatatuiRuby
   # SPDX-SnippetEnd
   #++
   module TestHelper
+    ##
+    # Auto-enables debug mode when TestHelper is included.
+    #
+    # This ensures Rust backtraces are available in tests.
+    def self.included(base)
+      RatatuiRuby::Debug.enable!
+    end
+
     include Terminal
     include Snapshot
     include EventInjection
