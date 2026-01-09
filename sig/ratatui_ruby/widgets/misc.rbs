@@ -1,0 +1,85 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  module Widgets
+    class Cell < Data
+      attr_reader content: String | Text::Span | Text::Line | Paragraph
+      attr_reader style: Style?
+
+      def self.new: (content: String | Text::Span | Text::Line | Paragraph, ?style: Style?) -> Cell
+      def initialize: (content: String | Text::Span | Text::Line | Paragraph, ?style: Style?) -> void
+    end
+
+    class Center < Data
+      attr_reader child: widget
+      attr_reader width_percent: Float
+      attr_reader height_percent: Float
+
+      def self.new: (child: widget, ?width_percent: Numeric, ?height_percent: Numeric) -> Center
+      def initialize: (child: widget, ?width_percent: Numeric, ?height_percent: Numeric) -> void
+    end
+
+    class Cursor < Data
+      attr_reader x: Integer
+      attr_reader y: Integer
+
+      def self.new: (x: Numeric, y: Numeric) -> Cursor
+      def initialize: (x: Numeric, y: Numeric) -> void
+    end
+
+    class LineGauge < Data
+      attr_reader ratio: Float
+      attr_reader label: (String | Text::Span)?
+      attr_reader filled_style: Style?
+      attr_reader unfilled_style: Style?
+      attr_reader block: Block?
+      attr_reader filled_symbol: String
+      attr_reader unfilled_symbol: String
+
+      def self.new: (?ratio: Numeric, ?label: String | Text::Span | nil, ?style: Style?, ?filled_style: Style?, ?unfilled_style: Style?, ?block: Block?, ?filled_symbol: String, ?unfilled_symbol: String) -> LineGauge
+      def initialize: (?ratio: Numeric, ?label: String | Text::Span | nil, ?style: Style?, ?filled_style: Style?, ?unfilled_style: Style?, ?block: Block?, ?filled_symbol: String, ?unfilled_symbol: String) -> void
+
+      def filled?: () -> bool
+      def complete?: () -> bool
+    end
+
+    class ListItem < Data
+      attr_reader content: String | Text::Span | Text::Line
+      attr_reader style: Style?
+
+      def self.new: (content: String | Text::Span | Text::Line, ?style: Style?) -> ListItem
+      def initialize: (content: String | Text::Span | Text::Line, ?style: Style?) -> void
+    end
+
+    class Overlay < Data
+      attr_reader layers: Array[widget]
+
+      def self.new: (layers: Array[widget]) -> Overlay
+      def initialize: (layers: Array[widget]) -> void
+    end
+
+    class Clear < Data
+      def self.new: () -> Clear
+      def initialize: () -> void
+    end
+
+    class RatatuiLogo < Data
+      def self.new: () -> RatatuiLogo
+      def initialize: () -> void
+    end
+
+    class RatatuiMascot < Data
+      attr_reader block: Block?
+
+      def self.new: (?block: Block?) -> RatatuiMascot
+      def initialize: (?block: Block?) -> void
+    end
+  end
+end

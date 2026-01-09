@@ -10,7 +10,7 @@
 module RatatuiRuby
   class TUI
     module StyleFactories
-      def style: (?fg: Symbol?, ?bg: Symbol?, ?modifiers: Array[Symbol]?) -> Style::Style
+      def style: (?fg: (String | Symbol | Integer)?, ?bg: (String | Symbol | Integer)?, ?modifiers: Array[Symbol]) -> Style::Style
     end
   end
 end

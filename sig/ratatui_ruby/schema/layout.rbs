@@ -8,20 +8,32 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  type flex_mode = :legacy | :start | :center | :end | :space_between | :space_around | :space_evenly
+  module Layout
+    type flex_mode = Symbol
 
-  class Layout < Data
-    FLEX_MODES: Array[Symbol]
+    class Layout < Data
+      FLEX_MODES: Array[Symbol]
+      DIRECTION_VERTICAL: Symbol
+      DIRECTION_HORIZONTAL: Symbol
+      FLEX_LEGACY: Symbol
+      FLEX_START: Symbol
+      FLEX_CENTER: Symbol
+      FLEX_END: Symbol
+      FLEX_SPACE_BETWEEN: Symbol
+      FLEX_SPACE_AROUND: Symbol
+      FLEX_SPACE_EVENLY: Symbol
 
-    attr_reader direction: Symbol
-    attr_reader constraints: Array[Constraint]
-    attr_reader children: Array[widget]
-    attr_reader flex: flex_mode
-    def self.new: (?direction: Symbol, ?constraints: Array[Constraint], ?children: Array[widget], ?flex: flex_mode) -> Layout
-    def self.split: (Rect | Hash[Symbol, Integer] area, ?direction: Symbol, constraints: Array[Constraint], ?flex: flex_mode) -> Array[Rect]
+      attr_reader direction: Symbol
+      attr_reader constraints: Array[Constraint]
+      attr_reader children: Array[RatatuiRuby::widget]
+      attr_reader flex: flex_mode
+      def self.new: (?direction: Symbol, ?constraints: Array[Constraint], ?children: Array[RatatuiRuby::widget], ?flex: flex_mode) -> Layout
+      def initialize: (?direction: Symbol, ?constraints: Array[Constraint], ?children: Array[RatatuiRuby::widget], ?flex: flex_mode) -> void
+      def self.split: ((Rect | Hash[Symbol, Integer]) area, ?direction: Symbol, constraints: Array[Constraint], ?flex: flex_mode) -> Array[Rect]
 
-    private
+      private
 
-    def self._split: (Rect, Symbol, Array[Constraint], Symbol) -> Array[Hash[Symbol, Integer]]
+      def self._split: (Rect, Symbol, Array[Constraint], Symbol) -> Array[Hash[Symbol, Integer]]
+    end
   end
 end

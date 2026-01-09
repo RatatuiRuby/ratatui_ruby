@@ -10,10 +10,10 @@
 module RatatuiRuby
   class TUI
     module TextFactories
-      def text_span: (?content: String, ?style: Style::Style?) -> Text::Span
-      def span: (?content: String, ?style: Style::Style?) -> Text::Span
-      def text_line: (?spans: Array[Text::Span], ?alignment: Symbol?) -> Text::Line
-      def line: (?spans: Array[Text::Span], ?alignment: Symbol?) -> Text::Line
+      def text_span: (content: String, ?style: Style?) -> Text::Span
+      def span: (content: String, ?style: Style?) -> Text::Span
+      def text_line: (?spans: Array[Text::Span], ?alignment: Symbol?, ?style: Style?) -> Text::Line
+      def line: (?spans: Array[Text::Span], ?alignment: Symbol?, ?style: Style?) -> Text::Line
       def text_width: (String string) -> Integer
     end
   end

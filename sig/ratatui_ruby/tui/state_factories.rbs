@@ -10,9 +10,9 @@
 module RatatuiRuby
   class TUI
     module StateFactories
-      def list_state: (**top) -> ListState
-      def table_state: (**top) -> TableState
-      def scrollbar_state: (**top) -> ScrollbarState
+      def list_state: (?Integer? selected) -> ListState
+      def table_state: (?Integer? selected) -> TableState
+      def scrollbar_state: (Integer content_length) -> ScrollbarState
     end
   end
 end

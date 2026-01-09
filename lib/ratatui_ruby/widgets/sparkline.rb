@@ -114,19 +114,25 @@ module RatatuiRuby
       # [bar_set] Symbol, Hash, or Array of custom characters (optional).
       #   Symbols: <tt>:nine_levels</tt> (default gradient), <tt>:three_levels</tt> (simplified).
       def initialize(data:, max: nil, style: nil, block: nil, direction: :left_to_right, absent_value_symbol: nil, absent_value_style: nil, bar_set: nil)
-        if bar_set && !bar_set.is_a?(Symbol)
-          if bar_set.is_a?(Array) && bar_set.size == 9
-            # Convert Array to Hash using BAR_KEYS order
-            bar_set = BAR_KEYS.zip(bar_set).to_h
-          else
-            bar_set = bar_set.dup
-            # Normalize numeric keys (0-8) to symbolic keys
-            BAR_KEYS.each_with_index do |key, i|
-              if (val = bar_set.delete(i) || bar_set.delete(i.to_s))
-                bar_set[key] = val
-              end
-            end
-          end
+        # Normalize bar_set to Hash[Symbol, String] if provided as Array or Hash
+        bar_set = case bar_set
+                  when Symbol, nil
+                    bar_set
+                  when Array
+                    # Convert Array to Hash using BAR_KEYS order
+                    BAR_KEYS.zip(bar_set).to_h
+                  when Hash
+                    # @type var raw_hash: Hash[untyped, untyped]
+                    raw_hash = bar_set.dup
+                    normalized = {} #: Hash[Symbol, String]
+                    # Normalize numeric keys (0-8) to symbolic keys
+                    BAR_KEYS.each_with_index do |key, i|
+                      val = raw_hash.delete(i) || raw_hash.delete(i.to_s) || raw_hash.delete(key)
+                      normalized[key] = val.to_s if val
+                    end
+                    normalized
+                  else
+                    bar_set
         end
         coerced_data = data.map { |v| v.nil? ? nil : Integer(v) }
         super(

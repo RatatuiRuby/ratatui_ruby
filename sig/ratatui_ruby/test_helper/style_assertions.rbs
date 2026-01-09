@@ -7,12 +7,19 @@
 
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+# untyped: **untyped splat - assertions accept any attribute combination (fg, bg, bold, etc.)
+
 module RatatuiRuby
   module TestHelper
     module StyleAssertions
+      include ::Minitest::Assertions
+
+      # From Terminal module
+      def get_cell: (Integer x, Integer y) -> Hash[Symbol, untyped]
+
       def assert_cell_style: (Integer x, Integer y, **untyped expected_attributes) -> void
       def assert_color: (Symbol | Integer | String expected, x: Integer, y: Integer, ?layer: Symbol) -> void
-      def assert_area_style: (Rect | Hash[Symbol, Integer] area, **untyped attributes) -> void
+      def assert_area_style: (Layout::Rect | Hash[Symbol, Integer] area, **untyped attributes) -> void
       def assert_fg_color: (Symbol | Integer | String expected, Integer x, Integer y) -> void
       alias assert_fg assert_fg_color
       def assert_bg_color: (Symbol | Integer | String expected, Integer x, Integer y) -> void

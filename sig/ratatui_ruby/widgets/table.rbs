@@ -1,0 +1,50 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  module Widgets
+    class Table < Data
+      HIGHLIGHT_ALWAYS: Symbol
+      HIGHLIGHT_WHEN_SELECTED: Symbol
+      HIGHLIGHT_NEVER: Symbol
+      FLEX_LEGACY: Symbol
+      FLEX_START: Symbol
+      FLEX_CENTER: Symbol
+      FLEX_END: Symbol
+      FLEX_SPACE_BETWEEN: Symbol
+      FLEX_SPACE_AROUND: Symbol
+      FLEX_SPACE_EVENLY: Symbol
+
+      attr_reader header: Array[String | Paragraph]?
+      attr_reader rows: Array[Array[String | Paragraph | Style | _ToS]]
+      attr_reader widths: Array[Layout::Constraint]
+      attr_reader block: Block?
+      attr_reader footer: Array[String | Paragraph]?
+      attr_reader flex: Symbol
+      attr_reader style: style_input?
+      attr_reader column_spacing: Integer?
+      attr_reader highlight_spacing: Symbol
+      attr_reader column_highlight_style: Style?
+      attr_reader selected_column: Integer?
+      attr_reader offset: Integer?
+      attr_reader row_highlight_style: Style?
+      attr_reader highlight_symbol: String?
+      attr_reader cell_highlight_style: Style?
+      attr_reader selected_row: Integer?
+
+      def self.new: (?header: Array[String | Paragraph]?, ?rows: Array[Array[String | Paragraph | Style | _ToS]], ?widths: Array[Layout::Constraint | Integer], ?row_highlight_style: Style?, ?highlight_symbol: String?, ?highlight_spacing: Symbol, ?column_highlight_style: Style?, ?cell_highlight_style: Style?, ?selected_row: Numeric?, ?selected_column: Numeric?, ?offset: Numeric?, ?block: Block?, ?footer: Array[String | Paragraph]?, ?flex: Symbol, ?style: style_input?, ?column_spacing: Numeric) -> Table
+      def initialize: (?header: Array[String | Paragraph]?, ?rows: Array[Array[String | Paragraph | Style | _ToS]], ?widths: Array[Layout::Constraint | Integer], ?row_highlight_style: Style?, ?highlight_symbol: String?, ?highlight_spacing: Symbol, ?column_highlight_style: Style?, ?cell_highlight_style: Style?, ?selected_row: Numeric?, ?selected_column: Numeric?, ?offset: Numeric?, ?block: Block?, ?footer: Array[String | Paragraph]?, ?flex: Symbol, ?style: style_input?, ?column_spacing: Numeric) -> void
+
+      def row_selected?: () -> bool
+      def column_selected?: () -> bool
+      def cell_selected?: () -> bool
+      def empty?: () -> bool
+    end
+  end
+end

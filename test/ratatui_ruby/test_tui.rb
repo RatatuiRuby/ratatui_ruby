@@ -175,6 +175,31 @@ class TestTUI < Minitest::Test
     assert_equal 2, rects.size
     assert_equal 5, rects.first.width
   end
+
+  # TUI::Core.draw argument validation
+  def test_draw_raises_if_both_tree_and_block_provided
+    with_test_terminal(10, 10) do
+      RatatuiRuby.run do |tui|
+        error = assert_raises(ArgumentError) do
+          tui.draw(tui.paragraph(text: "x")) { |_f| puts "this will not run" }
+        end
+        assert_match(/Cannot provide both/, error.message)
+        break
+      end
+    end
+  end
+
+  def test_draw_raises_if_neither_tree_nor_block_provided
+    with_test_terminal(10, 10) do
+      RatatuiRuby.run do |tui|
+        error = assert_raises(ArgumentError) do
+          tui.draw
+        end
+        assert_match(/Must provide either/, error.message)
+        break
+      end
+    end
+  end
 end
 
 # Helper class to test @tui = tui pattern

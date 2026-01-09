@@ -9,40 +9,43 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  class Rect < Data
-    attr_reader x: Integer
-    attr_reader y: Integer
-    attr_reader width: Integer
-    attr_reader height: Integer
+  module Layout
+    class Rect < Data
+      attr_reader x: Integer
+      attr_reader y: Integer
+      attr_reader width: Integer
+      attr_reader height: Integer
 
-    def self.new: (?x: Numeric, ?y: Numeric, ?width: Numeric, ?height: Numeric) -> instance
+      def self.new: (?x: Numeric, ?y: Numeric, ?width: Numeric, ?height: Numeric) -> instance
+      def initialize: (?x: Numeric, ?y: Numeric, ?width: Numeric, ?height: Numeric) -> void
 
-    # Predicates
-    def contains?: (Integer px, Integer py) -> bool
-    def intersects?: (Rect other) -> bool
-    def empty?: () -> bool
+      # Predicates
+      def contains?: (Integer px, Integer py) -> bool
+      def intersects?: (Rect other) -> bool
+      def empty?: () -> bool
 
-    # Edge accessors
-    def left: () -> Integer
-    def right: () -> Integer
-    def top: () -> Integer
-    def bottom: () -> Integer
-    def area: () -> Integer
+      # Edge accessors
+      def left: () -> Integer
+      def right: () -> Integer
+      def top: () -> Integer
+      def bottom: () -> Integer
+      def area: () -> Integer
 
-    # Geometry transformations
-    def intersection: (Rect other) -> Rect?
-    def union: (Rect other) -> Rect
-    def inner: (Integer margin) -> Rect
-    def offset: (Integer dx, Integer dy) -> Rect
-    def clamp: (Rect other) -> Rect
+      # Geometry transformations
+      def intersection: (Rect other) -> Rect?
+      def union: (Rect other) -> Rect
+      def inner: (Integer margin) -> Rect
+      def offset: (Integer dx, Integer dy) -> Rect
+      def clamp: (Rect other) -> Rect
 
-    # Iterators
-    def rows: () -> Enumerator[Rect, void]
-            | () { (Rect) -> void } -> void
-    def columns: () -> Enumerator[Rect, void]
-               | () { (Rect) -> void } -> void
-    def positions: () -> Enumerator[[Integer, Integer], void]
-                 | () { ([Integer, Integer]) -> void } -> void
+      # Iterators
+      def rows: () -> Enumerator[Rect, void]
+              | () { (Rect) -> void } -> void
+      def columns: () -> Enumerator[Rect, void]
+                 | () { (Rect) -> void } -> void
+      def positions: () -> Enumerator[[Integer, Integer], void]
+                   | () { ([Integer, Integer]) -> void } -> void
+    end
   end
 end
 

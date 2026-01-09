@@ -17,5 +17,7 @@ module RatatuiRuby
     attr_reader padding_left: Integer
     attr_reader padding_right: Integer
     def self.new: (?titles: Array[String | _ToS], ?selected_index: Numeric, ?block: Block?, ?divider: String?, ?highlight_style: Style?, ?style: Style?, ?padding_left: Numeric, ?padding_right: Numeric) -> Tabs
+    def initialize: (?titles: Array[String | _ToS], ?selected_index: Numeric, ?block: Block?, ?divider: String?, ?highlight_style: Style?, ?style: Style?, ?padding_left: Numeric, ?padding_right: Numeric) -> void
+    def width: () -> Integer
   end
 end

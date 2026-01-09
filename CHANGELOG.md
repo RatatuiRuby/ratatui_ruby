@@ -14,8 +14,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - **Table Integer Width Shorthand**: `Table` `widths:` parameter now accepts plain integers as shorthand for `Constraint.length(n)`. This enables cleaner table definitions like `widths: [40, 16, 10]` instead of verbose constraint arrays. Constraints and integers can be mixed freely.
 - **Error Message Context**: Type errors from the Rust backend now include the `inspect` string of the value that caused the error, making debugging significantly easier. For example, "expected array for rows" now shows "expected array for rows, got {title: \"Processes\", ...}".
+- **Steep Type Checking**: Integrated Steep static type analyzer with a new `rake steep` task. The Steepfile covers `lib/` with comprehensive RBS type definitions for all widgets, layout primitives, events, and interfaces.
+- **RBS Type Definitions**: Added 50+ RBS signature files in `sig/ratatui_ruby/` covering all widget classes, core interfaces (`_RectLike`, `_ToS`), type aliases (`style_input`, `widget`), and a `Data.define` patch for `super()` call compatibility.
+- **Duck Typing Documentation**: New `test/test_duck_typing.rb` documents that `Layout.split` accepts any object responding to `x`, `y`, `width`, `height` (Struct, Data.define, custom classes), not just `Rect`.
 
 ### Changed
+
+- **`tui.draw` Argument Validation (Breaking)**: `tui.draw` now validates its arguments. Calling `draw` with neither a tree nor a block raises `ArgumentError`, as does calling it with both. Previously this produced undefined behavior.
+- **`Layout.split` Stricter Type Checking (Breaking)**: `Layout.split` now rejects invalid `area` arguments with a clear `ArgumentError` instead of silently misbehaving. Objects must be a `Rect`, `Hash` with `:x/:y/:width/:height` keys, or respond to all four geometry methods.
 
 ### Fixed
 

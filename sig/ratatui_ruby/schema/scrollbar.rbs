@@ -38,5 +38,20 @@ module RatatuiRuby
       ?style: Style?,
       ?block: Block?
     ) -> Scrollbar
+    def initialize: (
+      content_length: Numeric,
+      position: Numeric,
+      ?orientation: Symbol,
+      ?thumb_symbol: String,
+      ?thumb_style: Style?,
+      ?track_symbol: String?,
+      ?track_style: Style?,
+      ?begin_symbol: String?,
+      ?begin_style: Style?,
+      ?end_symbol: String?,
+      ?end_style: Style?,
+      ?style: Style?,
+      ?block: Block?
+    ) -> void
   end
 end

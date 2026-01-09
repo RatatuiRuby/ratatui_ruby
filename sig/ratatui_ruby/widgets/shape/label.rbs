@@ -1,0 +1,24 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  module Widgets
+    module Shape
+      class Label < Data
+        attr_reader x: Float
+        attr_reader y: Float
+        attr_reader text: String | Text::Line
+        attr_reader style: Style?
+
+        def self.new: (x: Numeric, y: Numeric, text: String | Text::Line, ?style: Style?) -> Label
+        def initialize: (x: Numeric, y: Numeric, text: String | Text::Line, ?style: Style?) -> void
+      end
+    end
+  end
+end

@@ -14,8 +14,19 @@ module RatatuiRuby
     module Core
       # Draws the given UI node tree to the terminal.
       # @see RatatuiRuby.draw
-      def draw(tree = nil, &)
-        RatatuiRuby.draw(tree, &)
+      def draw(tree = nil, &block)
+        if tree && block
+          raise ArgumentError, "Cannot provide both a tree and a block to draw"
+        end
+        unless tree || block
+          raise ArgumentError, "Must provide either a tree or a block to draw"
+        end
+
+        if block
+          RatatuiRuby.draw(&block)
+        else
+          RatatuiRuby.draw(tree)
+        end
       end
 
       # Checks for user input.

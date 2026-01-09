@@ -136,6 +136,7 @@ The project follows a standard Gem layout with an `ext/` directory for Rust code
 
 Before considering a task complete and returning control to the user, you **MUST** ensure:
 
+0. **Production Ready:** RBS types are complete and accurate (no `untyped`), errors are handled with good DX, documentation follows guidelines, high code quality (no "pre-existing debt" excuses).
 1.  **Default Rake Task Passes:** Run `bin/agent_rake` (no args). Confirm it passes with ZERO errors **or warnings**.
   - You will save time if you run `bin/agent_rake rubocop:autocorrect` first.
   - If you think the build is looking for deleted files, it is not. Instead, explain to the user why staging is needed and use the `run_command` tool with `git add -A` so they get a Run button with context.

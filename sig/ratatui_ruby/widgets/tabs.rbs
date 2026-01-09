@@ -1,0 +1,27 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  module Widgets
+    class Tabs < Data
+      attr_reader titles: Array[String | _ToS]
+      attr_reader selected_index: Integer
+      attr_reader block: Block?
+      attr_reader divider: String?
+      attr_reader highlight_style: Style?
+      attr_reader style: Style?
+      attr_reader padding_left: Integer
+      attr_reader padding_right: Integer
+
+      def self.new: (?titles: Array[String | _ToS], ?selected_index: Numeric, ?block: Block?, ?divider: String?, ?highlight_style: Style?, ?style: Style?, ?padding_left: Numeric, ?padding_right: Numeric) -> Tabs
+      def initialize: (?titles: Array[String | _ToS], ?selected_index: Numeric, ?block: Block?, ?divider: String?, ?highlight_style: Style?, ?style: Style?, ?padding_left: Numeric, ?padding_right: Numeric) -> void
+      def width: () -> Integer
+    end
+  end
+end

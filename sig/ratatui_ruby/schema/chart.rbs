@@ -15,6 +15,7 @@ module RatatuiRuby
     attr_reader style: Style?
     attr_reader labels_alignment: Symbol?
     def self.new: (?title: String, ?bounds: [Numeric, Numeric], ?labels: Array[String], ?style: Style?, ?labels_alignment: Symbol?) -> Axis
+    def initialize: (?title: String, ?bounds: [Numeric, Numeric], ?labels: Array[String], ?style: Style?, ?labels_alignment: Symbol?) -> void
   end
 
   class Dataset < Data
@@ -24,6 +25,7 @@ module RatatuiRuby
     attr_reader marker: Symbol
     attr_reader graph_type: Symbol
     def self.new: (name: String | Symbol, data: Array[[Numeric, Numeric]], ?style: Style?, ?marker: Symbol, ?graph_type: Symbol) -> Dataset
+    def initialize: (name: String | Symbol, data: Array[[Numeric, Numeric]], ?style: Style?, ?marker: Symbol, ?graph_type: Symbol) -> void
   end
 
   class Chart < Data
@@ -33,7 +35,8 @@ module RatatuiRuby
     attr_reader block: Block?
     attr_reader style: Style?
     attr_reader legend_position: Symbol?
-    attr_reader hidden_legend_constraints: Array[Constraint]
-    def self.new: (datasets: Array[Dataset], x_axis: Axis, y_axis: Axis, ?block: Block?, ?style: Style?, ?legend_position: Symbol?, ?hidden_legend_constraints: Array[Constraint]) -> Chart
+    attr_reader hidden_legend_constraints: Array[Layout::Constraint]
+    def self.new: (datasets: Array[Dataset], x_axis: Axis, y_axis: Axis, ?block: Block?, ?style: Style?, ?legend_position: Symbol?, ?hidden_legend_constraints: Array[Layout::Constraint]) -> Chart
+    def initialize: (datasets: Array[Dataset], x_axis: Axis, y_axis: Axis, ?block: Block?, ?style: Style?, ?legend_position: Symbol?, ?hidden_legend_constraints: Array[Layout::Constraint]) -> void
   end
 end

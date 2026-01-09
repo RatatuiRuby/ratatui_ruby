@@ -9,6 +9,7 @@
 
 module RatatuiRuby
   class Sparkline < Data
+    BAR_KEYS: Array[Symbol]
     attr_reader data: Array[Integer?]
     attr_reader max: Integer?
     attr_reader style: Style?
@@ -18,5 +19,6 @@ module RatatuiRuby
     attr_reader absent_value_style: Style?
     attr_reader bar_set: Hash[Symbol, String]?
     def self.new: (data: Array[Numeric?], ?max: Numeric?, ?style: Style?, ?block: Block?, ?direction: (:left_to_right | :right_to_left)?, ?absent_value_symbol: String?, ?absent_value_style: Style?, ?bar_set: Hash[Symbol, String]?) -> Sparkline
+    def initialize: (data: Array[Numeric?], ?max: Numeric?, ?style: Style?, ?block: Block?, ?direction: (:left_to_right | :right_to_left)?, ?absent_value_symbol: String?, ?absent_value_style: Style?, ?bar_set: Hash[Symbol, String]?) -> void
   end
 end

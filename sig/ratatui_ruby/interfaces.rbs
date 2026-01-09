@@ -1,0 +1,25 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Duck-typing interfaces for RatatuiRuby.
+#
+# These interfaces enable type-safe duck typing: any object responding to
+# the specified methods can be used, not just the canonical types.
+module RatatuiRuby
+  # Interface for Rect-like objects.
+  #
+  # Any object responding to x, y, width, and height with Integer returns
+  # can be used where Layout::Rect is expected.
+  interface _RectLike
+    def x: () -> Integer
+    def y: () -> Integer
+    def width: () -> Integer
+    def height: () -> Integer
+  end
+end

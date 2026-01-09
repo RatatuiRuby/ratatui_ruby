@@ -11,5 +11,6 @@ module RatatuiRuby
   class Overlay < Data
     attr_reader layers: Array[widget]
     def self.new: (layers: Array[widget]) -> Overlay
+    def initialize: (layers: Array[widget]) -> void
   end
 end

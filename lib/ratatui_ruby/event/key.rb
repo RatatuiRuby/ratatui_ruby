@@ -330,9 +330,10 @@ module RatatuiRuby
       #--
       # SPDX-SnippetEnd
       #++
-      def method_missing(name, *args, &block)
+      def method_missing(name, *args, **kwargs, &block)
         if name.to_s.end_with?("?")
-          key_name = name.to_s[0...-1]
+          name_str = name.to_s
+          key_name = name_str.chop # Returns String, never nil for non-empty string
           key_sym = key_name.to_sym
 
           # Fast path: Exact match (e.g., media_pause? for media_pause)

@@ -1,0 +1,17 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# NOTE: RatatuiRuby::Rect is not defined at runtime in the main gem.
+# This file exists only to satisfy the build system.
+# The actual Rect class is Layout::Rect in sig/ratatui_ruby/schema/rect.rbs.
+#
+# The schema/ folder structure is pending migration per:
+# doc/contributors/v1.0.0_blockers.md
+
+# Empty placeholder - actual type is RatatuiRuby::Layout::Rect

@@ -1,16 +1,23 @@
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+# Type alias for any Event subtype.
+type event_type = RatatuiRuby::Event::Key
+               | RatatuiRuby::Event::Mouse
+               | RatatuiRuby::Event::Resize
+               | RatatuiRuby::Event::Paste
+               | RatatuiRuby::Event::FocusGained
+               | RatatuiRuby::Event::FocusLost
+               | RatatuiRuby::Event::None
+
 class EventEntry < Data
-  attr_reader type: Symbol
-  attr_reader sub_key: Symbol | String | nil
+  attr_reader event: event_type
   attr_reader color: Symbol
   attr_reader timestamp: Timestamp
-  attr_reader data: Hash[Symbol, untyped]
 
-  def self.from_event(type: Symbol, sub_key: Symbol | String | nil, color: Symbol, timestamp: Timestamp, data: Hash[Symbol, untyped]) -> instance
+  def self.create: (event_type event, Symbol color, Timestamp timestamp) -> instance
+  def type: () -> Symbol
+  def description: () -> String
   def matches_type?: (Symbol check_type) -> bool
-  def matches_sub_type?: (Symbol check_type, Symbol | String check_sub_key) -> bool
-  def matches_kind?: (String kind) -> bool
-  def self.new: (?type: Symbol, ?sub_key: Symbol | String | nil, ?color: Symbol, ?timestamp: Timestamp, ?data: Hash[Symbol, untyped]) -> instance
+  def live_type: () -> Symbol
 end

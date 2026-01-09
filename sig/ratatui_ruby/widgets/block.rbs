@@ -1,0 +1,31 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  module Widgets
+    class Block < Data
+      attr_reader title: String?
+      attr_reader titles: Array[title_entry]
+      attr_reader title_alignment: alignment?
+      attr_reader title_style: style_input?
+      attr_reader borders: Array[border_side]
+      attr_reader border_style: style_input?
+      attr_reader border_type: border_type?
+      attr_reader border_set: border_set_hash?
+      attr_reader style: style_input?
+      attr_reader padding: (Integer | Array[Integer])
+      attr_reader children: Array[widget]
+
+      def self.new: (?title: String?, ?titles: Array[title_entry], ?title_alignment: alignment?, ?title_style: style_input?, ?borders: Array[border_side], ?border_style: style_input?, ?border_type: border_type?, ?border_set: border_set_hash?, ?style: style_input?, ?padding: (Numeric | Array[Numeric]), ?children: Array[widget]) -> Block
+      def initialize: (?title: String?, ?titles: Array[title_entry], ?title_alignment: alignment?, ?title_style: style_input?, ?borders: Array[border_side], ?border_style: style_input?, ?border_type: border_type?, ?border_set: border_set_hash?, ?style: style_input?, ?padding: (Numeric | Array[Numeric]), ?children: Array[widget]) -> void
+
+      def inner: (Layout::Rect area) -> Layout::Rect
+    end
+  end
+end

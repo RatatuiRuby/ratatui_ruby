@@ -1,0 +1,21 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  # Synthetic event queue for injecting events into the event loop.
+  # Used primarily for testing and the andThen-like integration pattern.
+  module SyntheticEvents
+    @queue: Array[Event]
+
+    def self.push: (Event event) -> void
+    def self.pop: () -> Event?
+    def self.clear: () -> void
+    def self.pending?: () -> bool
+  end
+end

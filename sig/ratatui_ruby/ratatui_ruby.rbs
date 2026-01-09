@@ -14,11 +14,71 @@ module RatatuiRuby
     def to_s: () -> String
   end
 
-  def self.init_terminal: (focus_events: bool, bracketed_paste: bool) -> void
+  # Error classes
+  class Error < StandardError
+    class Terminal < Error
+    end
+    class Safety < Error
+    end
+    class Invariant < Error
+    end
+  end
+
+  # NullIO for headless mode
+  class NullIO
+    def write: (untyped) -> Integer
+    def <<: (untyped) -> void
+    def flush: () -> void
+    def puts: (*untyped) -> void
+    def print: (*untyped) -> void
+  end
+
+  # Core module methods
+  def self.init_terminal: (?focus_events: bool, ?bracketed_paste: bool) -> void
+  def self.init_test_terminal: (Integer width, Integer height) -> void
   def self.restore_terminal: () -> void
-  def self.draw: (widget tree) -> void
+  def self.terminal_active?: () -> bool
+  def self.run: (?focus_events: bool, ?bracketed_paste: bool) { (TUI) -> void } -> void
+  def self.draw: (?widget? tree) -> void
                | () { (Frame) -> void } -> void
+  # untyped: FFI boundary - Rust returns dynamic event hash with varying keys per event type
   def self._poll_event: (Float?) -> Hash[Symbol, untyped]?
   def self.poll_event: (?timeout: Float?) -> Event?
-  def self.inject_test_event: (String, Hash[Symbol, untyped]) -> void
+  def self.inject_test_event: ("key", { code: String, ?modifiers: Array[String], ?kind: Event::key_kind }) -> void
+                            | ("mouse", { kind: String, x: Integer, y: Integer, ?button: String, ?modifiers: Array[String] }) -> void
+                            | ("resize", { width: Integer, height: Integer }) -> void
+                            | ("paste", { content: String }) -> void
+                            | ("focus_gained", { }) -> void
+                            | ("focus_lost", { }) -> void
+  def self.get_cell_at: (Integer x, Integer y) -> Buffer::Cell
+  def self.experimental_warnings: () -> bool
+  def self.experimental_warnings=: (bool) -> bool
+  def self.warn_experimental_feature: (String feature_name) -> void
+
+  # Warning queue (private)
+  def self.queue_warning: (String message) -> void
+  def self.flush_warnings: () -> void
+
+  # Draw internal
+  def self._draw: (widget) -> void
+               | () { (Frame) -> void } -> void
+
+  # Cell accessor internal (returns Hash with String keys from Rust FFI)
+  def self._get_cell_at: (Integer x, Integer y) -> Hash[String, untyped]
+
+  # Signal handling
+  def self.trap: (String | Symbol signal) { () -> void } -> void
+
+  # Paragraph helpers
+  def self._paragraph_line_count: (Widgets::Paragraph p, Integer width) -> Integer
+  def self._paragraph_line_width: (Widgets::Paragraph p) -> Integer
+
+  # Tabs/Text helpers
+  def self._tabs_width: (Widgets::Tabs t) -> Integer
+  def self._text_width: (String text) -> Integer
+
+  # Headless mode
+  def self.headless!: () -> void
+  def self.headless?: () -> bool
 end
+

@@ -24,5 +24,12 @@ module RatatuiRuby
       ?top_margin: Integer?,
       ?bottom_margin: Integer?
     ) -> Row
+    def initialize: (
+      cells: Array[cell_content],
+      ?style: Style?,
+      ?height: Integer?,
+      ?top_margin: Integer?,
+      ?bottom_margin: Integer?
+    ) -> void
   end
 end

@@ -1,0 +1,30 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  # Terminal lifecycle management for TUI sessions.
+  # Provides methods to initialize and restore the terminal state.
+  module TerminalLifecycle
+    @tui_session_active: bool?
+    @headless_mode: bool?
+
+    def init_terminal: (?focus_events: bool, ?bracketed_paste: bool) -> void
+    def restore_terminal: () -> void
+    def terminal_active?: () -> (bool | nil)
+    def init_test_terminal: (Integer width, Integer height) -> void
+    def run: (?focus_events: bool, ?bracketed_paste: bool) { (TUI) -> void } -> void
+
+    # Private native methods
+    def _init_terminal: (bool focus_events, bool bracketed_paste) -> void
+    def _init_test_terminal: (Integer width, Integer height) -> void
+    def _restore_terminal: () -> void
+    def flush_warnings: () -> void
+  end
+end
+

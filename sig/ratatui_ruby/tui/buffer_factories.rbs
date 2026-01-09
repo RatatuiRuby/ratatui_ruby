@@ -10,7 +10,7 @@
 module RatatuiRuby
   class TUI
     module BufferFactories
-      def cell: (?char: String?, ?fg: Symbol?, ?bg: Symbol?, ?modifiers: Array[Symbol]?) -> Buffer::Cell
+      def cell: (?symbol: String?, ?char: String?, ?fg: (Symbol | String | nil), ?bg: (Symbol | String | nil), ?modifiers: Array[String]) -> Buffer::Cell
     end
   end
 end

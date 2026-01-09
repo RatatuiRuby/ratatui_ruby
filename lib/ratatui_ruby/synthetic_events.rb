@@ -46,7 +46,7 @@ module RatatuiRuby
   # SPDX-SnippetEnd
   #++
   module SyntheticEvents
-    @queue = []
+    @queue = [] #: Array[Event]
     @mutex = Mutex.new
 
     class << self

@@ -13,5 +13,6 @@ module RatatuiRuby
     attr_reader width_percent: Float
     attr_reader height_percent: Float
     def self.new: (child: widget, ?width_percent: Numeric, ?height_percent: Numeric) -> Center
+    def initialize: (child: widget, ?width_percent: Numeric, ?height_percent: Numeric) -> void
   end
 end

@@ -9,17 +9,70 @@
 
 module RatatuiRuby
   class Event
+    def none?: () -> bool
     def key?: () -> bool
     def mouse?: () -> bool
     def resize?: () -> bool
     def paste?: () -> bool
     def focus_gained?: () -> bool
     def focus_lost?: () -> bool
-    def deconstruct_keys: (Array[Symbol]?) -> Hash[Symbol, untyped]
+    def sync?: () -> bool
+    def method_missing: (Symbol, *untyped, **untyped) ?{ (?) -> untyped } -> untyped
+    def respond_to_missing?: (Symbol, *untyped) -> bool
+    def deconstruct_keys: (Array[Symbol]?) -> { }
 
     type key_kind = :standard | :function | :media | :modifier | :system
 
+    class Sync < Event
+      def sync?: () -> bool
+      def deconstruct_keys: (Array[Symbol]?) -> { type: :sync }
+    end
+
     class Key < Event
+      # Character handling module
+      module Character
+        def text?: () -> bool
+        def char: () -> String?
+      end
+
+      # Modifier key detection module
+      module Modifier
+        def ctrl?: () -> bool
+        def alt?: () -> bool
+        def shift?: () -> bool
+        def super?: () -> bool
+        def hyper?: () -> bool
+        def meta?: () -> bool
+        def modifier?: () -> bool
+        private def match_modifier_dwim?: (String key_name, Symbol key_sym) -> bool
+      end
+
+      # Media key handling module
+      module Media
+        def media?: () -> bool
+        private def match_media_dwim?: (String key_name) -> bool
+      end
+
+      # Navigation key handling module
+      module Navigation
+        def standard?: () -> bool
+        alias unmodified? standard?
+        private def match_navigation_dwim?: (String key_name, Symbol key_sym) -> bool
+      end
+
+      # System key handling module
+      module System
+        def system?: () -> bool
+        def function?: () -> bool
+        private def match_system_dwim?: (String key_name, Symbol key_sym) -> bool
+      end
+
+      include Character
+      include Modifier
+      include Media
+      include Navigation
+      include System
+
       attr_reader code: String
       attr_reader modifiers: Array[String]
       attr_reader kind: key_kind
@@ -33,14 +86,16 @@ module RatatuiRuby
       def alt?: () -> bool
       def shift?: () -> bool
       def text?: () -> bool
-      def char: () -> String
+      def char: () -> String?
       def media?: () -> bool
       def system?: () -> bool
       def function?: () -> bool
       def modifier?: () -> bool
       def standard?: () -> bool
       def unmodified?: () -> bool
-      def deconstruct_keys: (Array[Symbol]?) -> Hash[Symbol, untyped]
+      def method_missing: (Symbol, *untyped, **untyped) ?{ (?) -> untyped } -> untyped
+      def respond_to_missing?: (Symbol, *untyped) -> bool
+      def deconstruct_keys: (Array[Symbol]?) -> { type: :key, code: String, modifiers: Array[String], kind: key_kind }
     end
 
     class Mouse < Event
@@ -56,7 +111,7 @@ module RatatuiRuby
       def drag?: () -> bool
       def scroll_up?: () -> bool
       def scroll_down?: () -> bool
-      def deconstruct_keys: (Array[Symbol]?) -> Hash[Symbol, untyped]
+      def deconstruct_keys: (Array[Symbol]?) -> { type: :mouse, kind: String, x: Integer, y: Integer, button: String, modifiers: Array[String] }
     end
 
     class Resize < Event
@@ -64,22 +119,27 @@ module RatatuiRuby
       attr_reader height: Integer
 
       def initialize: (width: Integer, height: Integer) -> void
-      def deconstruct_keys: (Array[Symbol]?) -> Hash[Symbol, untyped]
+      def deconstruct_keys: (Array[Symbol]?) -> { type: :resize, width: Integer, height: Integer }
     end
 
     class Paste < Event
       attr_reader content: String
 
       def initialize: (content: String) -> void
-      def deconstruct_keys: (Array[Symbol]?) -> Hash[Symbol, untyped]
+      def deconstruct_keys: (Array[Symbol]?) -> { type: :paste, content: String }
     end
 
     class FocusGained < Event
-      def deconstruct_keys: (Array[Symbol]?) -> Hash[Symbol, untyped]
+      def deconstruct_keys: (Array[Symbol]?) -> { type: :focus_gained }
     end
 
     class FocusLost < Event
-      def deconstruct_keys: (Array[Symbol]?) -> Hash[Symbol, untyped]
+      def deconstruct_keys: (Array[Symbol]?) -> { type: :focus_lost }
+    end
+
+    class None < Event
+      def none?: () -> bool
+      def deconstruct_keys: (Array[Symbol]?) -> { type: :none }
     end
   end
 end

@@ -14,6 +14,7 @@ module RatatuiRuby
       attr_reader bars: Array[BarChart::Bar]
 
       def self.new: (label: String, bars: Array[BarChart::Bar]) -> BarGroup
+      def initialize: (label: String, bars: Array[BarChart::Bar]) -> void
     end
   end
 end

@@ -7,13 +7,16 @@
 
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+# untyped: widget parameter/storage - test mocks accept any widget type for flexibility
+
 module RatatuiRuby
   module TestHelper
     module TestDoubles
       class MockFrame < Data
-        attr_accessor rendered_widgets: Array[{ widget: untyped, area: Rect }]
-        def self.new: (?rendered_widgets: Array[{ widget: untyped, area: Rect }]) -> MockFrame
-        def render_widget: (untyped widget, Rect area) -> void
+        attr_accessor rendered_widgets: Array[{ widget: untyped, area: Layout::Rect }]
+        def self.new: (?rendered_widgets: Array[{ widget: untyped, area: Layout::Rect }]) -> MockFrame
+        def initialize: (?rendered_widgets: Array[{ widget: untyped, area: Layout::Rect }]) -> void
+        def render_widget: (untyped widget, Layout::Rect area) -> void
       end
 
       class StubRect < Data
@@ -22,6 +25,7 @@ module RatatuiRuby
         attr_accessor width: Integer
         attr_accessor height: Integer
         def self.new: (?x: Integer, ?y: Integer, ?width: Integer, ?height: Integer) -> StubRect
+        def initialize: (?x: Integer, ?y: Integer, ?width: Integer, ?height: Integer) -> void
       end
     end
   end

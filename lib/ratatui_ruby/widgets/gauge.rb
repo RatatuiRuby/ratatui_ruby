@@ -64,7 +64,9 @@ module RatatuiRuby
       # [use_unicode] Boolean (default: true).
       def initialize(ratio: nil, percent: nil, label: nil, style: nil, gauge_style: nil, block: nil, use_unicode: true)
         if percent
-          ratio = Float(percent) / 100.0
+          # Float(Numeric) incorrectly returns Float? -- https://github.com/ruby/rbs/issues/2793
+          float_percent = Float(percent) #: Float
+          ratio = float_percent / 100.0
         end
         ratio = Float(ratio || 0.0)
         super(ratio:, label:, style:, gauge_style:, block:, use_unicode:)

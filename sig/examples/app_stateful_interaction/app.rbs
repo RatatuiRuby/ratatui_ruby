@@ -13,12 +13,12 @@ class AppStatefulInteraction
   @list_state: RatatuiRuby::ListState
   @table_state: RatatuiRuby::TableState
   @active_pane: :list | :table
-  @tui: untyped
+  @tui: RatatuiRuby::TUI
   @style_active: RatatuiRuby::Style
   @style_inactive: RatatuiRuby::Style
   @style_highlight: RatatuiRuby::Style
-  @list_area: RatatuiRuby::Rect
-  @table_area: RatatuiRuby::Rect
+  @list_area: RatatuiRuby::Layout::Rect
+  @table_area: RatatuiRuby::Layout::Rect
 
   # @public
   def self.new: () -> AppStatefulInteraction
@@ -29,8 +29,8 @@ class AppStatefulInteraction
   private
 
   def render: () -> void
-  def render_list: (untyped frame, RatatuiRuby::Rect area) -> void
-  def render_table: (untyped frame, RatatuiRuby::Rect area) -> void
+  def render_list: (RatatuiRuby::Frame frame, RatatuiRuby::Layout::Rect area) -> void
+  def render_table: (RatatuiRuby::Frame frame, RatatuiRuby::Layout::Rect area) -> void
   def handle_input: () -> (:quit | nil)
   def scroll_active: (Integer delta) -> void
   def handle_click: (Integer x, Integer y) -> void

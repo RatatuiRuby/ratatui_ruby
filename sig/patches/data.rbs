@@ -1,0 +1,26 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Patch for Data class to support super() calls in Data.define subclasses.
+#
+# The core RBS Data class defines `self.new: (**untyped) -> Data` but not `initialize`.
+# When Steep type-checks `super(items:, ...)` in a Data.define subclass, it looks for
+# the parent's `initialize` method. Since Data has no `initialize` signature in core RBS,
+# Steep can't match arguments and raises errors.
+#
+# This patch adds the missing `initialize` signatures that Data.define generates dynamically.
+class Data
+  # Accept both positional and keyword arguments for the dynamically-generated initialize.
+  # This allows subclasses to call super(foo, bar, ...) or super(foo:, bar:, ...) without type errors.
+  def initialize: (*untyped) -> void
+                | (**untyped) -> void
+  # Allow super() calls from overridden self.new methods to work with any keyword args
+  def self.new: (**untyped) -> instance
+end
+

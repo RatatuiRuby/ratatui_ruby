@@ -1,0 +1,23 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  module OutputGuard
+    # Null IO object that discards all output
+    class NullIO
+      def method_missing: (Symbol name, *untyped args) ?{ (*untyped) -> untyped } -> NullIO
+      def respond_to_missing?: (Symbol name, ?bool include_private) -> true
+    end
+
+    def is_headless?: () -> bool
+    def headless!: () -> void
+    def guard_io: [T] () { () -> T } -> T
+    def terminal_active?: () -> bool
+  end
+end

@@ -160,7 +160,7 @@ module RatatuiRuby
   @experimental_warnings = true
   @tui_session_active = false
   @headless_mode = false
-  @deferred_warnings = []
+  @deferred_warnings = [] #: Array[String]
 
   class << self
     ##
@@ -206,7 +206,7 @@ module RatatuiRuby
   def self.warn_experimental_feature(feature_name)
     return unless experimental_warnings
 
-    @warned_features ||= {}
+    @warned_features ||= {} #: Hash[String, bool]
     return if @warned_features[feature_name]
 
     message = "WARNING: #{feature_name} is an experimental feature and may change in future versions. Disable this warning with RatatuiRuby.experimental_warnings = false."
@@ -281,7 +281,7 @@ module RatatuiRuby
 
     if tree
       _draw(tree)
-    else
+    elsif block
       _draw(&block)
     end
   end

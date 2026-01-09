@@ -15,6 +15,7 @@ module RatatuiRuby
 
       def self.new: (x: Numeric, y: Numeric) -> Point
                   | (Numeric, Numeric) -> Point
+      def initialize: (x: Numeric, y: Numeric) -> void
     end
 
     class Line < Data
@@ -26,6 +27,7 @@ module RatatuiRuby
 
       def self.new: (x1: Numeric, y1: Numeric, x2: Numeric, y2: Numeric, color: String | Symbol) -> Line
                   | (Numeric, Numeric, Numeric, Numeric, String | Symbol) -> Line
+      def initialize: (x1: Numeric, y1: Numeric, x2: Numeric, y2: Numeric, color: String | Symbol) -> void
     end
 
     class Rectangle < Data
@@ -37,6 +39,7 @@ module RatatuiRuby
 
       def self.new: (x: Numeric, y: Numeric, width: Numeric, height: Numeric, color: String | Symbol) -> Rectangle
                   | (Numeric, Numeric, Numeric, Numeric, String | Symbol) -> Rectangle
+      def initialize: (x: Numeric, y: Numeric, width: Numeric, height: Numeric, color: String | Symbol) -> void
     end
 
     class Circle < Data
@@ -47,6 +50,7 @@ module RatatuiRuby
 
       def self.new: (x: Numeric, y: Numeric, radius: Numeric, color: String | Symbol) -> Circle
                   | (Numeric, Numeric, Numeric, String | Symbol) -> Circle
+      def initialize: (x: Numeric, y: Numeric, radius: Numeric, color: String | Symbol) -> void
     end
 
     class Map < Data
@@ -64,6 +68,7 @@ module RatatuiRuby
       attr_reader style: Style?
 
       def self.new: (x: Numeric, y: Numeric, text: String | Text::Line, ?style: Style?) -> Label
+      def initialize: (x: Numeric, y: Numeric, text: String | Text::Line, ?style: Style?) -> void
     end
   end
 
@@ -77,5 +82,6 @@ module RatatuiRuby
     attr_reader background_color: String | Symbol | nil
 
     def self.new: (?shapes: Array[Shape::Line | Shape::Rectangle | Shape::Circle | Shape::Map | Shape::Label], ?x_bounds: Array[Numeric], ?y_bounds: Array[Numeric], ?marker: Symbol, ?block: Block?, ?background_color: String | Symbol | nil) -> Canvas
+    def initialize: (?shapes: Array[Shape::Line | Shape::Rectangle | Shape::Circle | Shape::Map | Shape::Label], ?x_bounds: Array[Numeric], ?y_bounds: Array[Numeric], ?marker: Symbol, ?block: Block?, ?background_color: String | Symbol | nil) -> void
   end
 end

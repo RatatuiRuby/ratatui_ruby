@@ -1,0 +1,50 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  module Widgets
+    class BarChart < Data
+      BAR_KEYS: Array[Symbol]
+
+      attr_reader data: Array[BarChart::BarGroup]
+      attr_reader bar_width: Integer
+      attr_reader bar_gap: Integer
+      attr_reader group_gap: Integer
+      attr_reader max: Integer?
+      attr_reader style: Style?
+      attr_reader block: Block?
+      attr_reader direction: (:vertical | :horizontal)
+      attr_reader label_style: Style?
+      attr_reader value_style: Style?
+      attr_reader bar_set: Hash[Symbol, String]?
+
+      def self.new: (data: Hash[String | Symbol | _ToS, Numeric] | Array[Array[String | Symbol | _ToS | Numeric]] | Array[BarChart::BarGroup], ?bar_width: Numeric, ?bar_gap: Numeric, ?group_gap: Numeric, ?max: Numeric?, ?style: Style?, ?block: Block?, ?direction: (:vertical | :horizontal), ?label_style: Style?, ?value_style: Style?, ?bar_set: Hash[Symbol, String]?) -> BarChart
+      def initialize: (data: Hash[String | Symbol | _ToS, Numeric] | Array[Array[String | Symbol | _ToS | Numeric]] | Array[BarChart::BarGroup], ?bar_width: Numeric, ?bar_gap: Numeric, ?group_gap: Numeric, ?max: Numeric?, ?style: Style?, ?block: Block?, ?direction: (:vertical | :horizontal), ?label_style: Style?, ?value_style: Style?, ?bar_set: Hash[Symbol, String]?) -> void
+
+      class Bar < Data
+        attr_reader value: Integer
+        attr_reader label: (String | Text::Span | Text::Line)?
+        attr_reader style: Style?
+        attr_reader value_style: Style?
+        attr_reader text_value: (String | Text::Span | Text::Line)?
+
+        def self.new: (value: Numeric, ?label: String | Text::Span | Text::Line | nil, ?style: Style?, ?value_style: Style?, ?text_value: String | Text::Span | Text::Line | nil) -> Bar
+        def initialize: (value: Numeric, ?label: String | Text::Span | Text::Line | nil, ?style: Style?, ?value_style: Style?, ?text_value: String | Text::Span | Text::Line | nil) -> void
+      end
+
+      class BarGroup < Data
+        attr_reader label: String
+        attr_reader bars: Array[BarChart::Bar]
+
+        def self.new: (label: String, bars: Array[BarChart::Bar]) -> BarGroup
+        def initialize: (label: String, bars: Array[BarChart::Bar]) -> void
+      end
+    end
+  end
+end

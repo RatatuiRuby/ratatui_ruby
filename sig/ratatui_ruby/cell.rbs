@@ -1,0 +1,41 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+module RatatuiRuby
+  class Cell
+    attr_reader symbol: String
+    attr_reader fg: (Symbol | String | nil)
+    attr_reader bg: (Symbol | String | nil)
+    attr_reader modifiers: Array[String]
+
+    alias char symbol
+
+    def self.new: (?symbol: String?, ?char: String?, ?fg: (Symbol | String | nil), ?bg: (Symbol | String | nil), ?modifiers: Array[String]) -> Cell
+    def self.empty: () -> Cell
+    def self.default: () -> Cell
+    def self.symbol: (String symbol) -> Cell
+    def self.char: (String char) -> Cell
+
+    def initialize: (?symbol: String?, ?char: String?, ?fg: (Symbol | String | nil), ?bg: (Symbol | String | nil), ?modifiers: Array[String]) -> void
+
+    # Modifier predicates
+    def bold?: () -> bool
+    def dim?: () -> bool
+    def italic?: () -> bool
+    def underlined?: () -> bool
+    def slow_blink?: () -> bool
+    def rapid_blink?: () -> bool
+    def reversed?: () -> bool
+    def hidden?: () -> bool
+    def crossed_out?: () -> bool
+
+    def ==: (untyped other) -> bool
+    def inspect: () -> String
+    def to_s: () -> String
+    def deconstruct_keys: (Array[Symbol]? keys) -> { symbol: String, char: String, fg: (Symbol | String)?, bg: (Symbol | String)?, modifiers: Array[String] }
+  end
+end

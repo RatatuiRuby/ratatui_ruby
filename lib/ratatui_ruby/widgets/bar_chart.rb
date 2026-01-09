@@ -215,19 +215,25 @@ module RatatuiRuby
       # SPDX-SnippetEnd
       #++
       def initialize(data:, bar_width: 3, bar_gap: 1, group_gap: 0, max: nil, style: nil, block: nil, direction: :vertical, label_style: nil, value_style: nil, bar_set: nil)
-        if bar_set && !bar_set.is_a?(Symbol)
-          if bar_set.is_a?(Array) && bar_set.size == 9
-            # Convert Array to Hash using BAR_KEYS order
-            bar_set = BAR_KEYS.zip(bar_set).to_h
-          else
-            bar_set = bar_set.dup
-            # Normalize numeric keys (0-8) to symbolic keys
-            BAR_KEYS.each_with_index do |key, i|
-              if (val = bar_set.delete(i) || bar_set.delete(i.to_s))
-                bar_set[key] = val
-              end
-            end
-          end
+        # Normalize bar_set to Hash[Symbol, String] if provided as Array or Hash
+        bar_set = case bar_set
+                  when Symbol, nil
+                    bar_set
+                  when Array
+                    # Convert Array to Hash using BAR_KEYS order
+                    BAR_KEYS.zip(bar_set).to_h
+                  when Hash
+                    # @type var raw_hash: Hash[untyped, untyped]
+                    raw_hash = bar_set.dup
+                    normalized = {} #: Hash[Symbol, String]
+                    # Normalize numeric keys (0-8) to symbolic keys
+                    BAR_KEYS.each_with_index do |key, i|
+                      val = raw_hash.delete(i) || raw_hash.delete(i.to_s) || raw_hash.delete(key)
+                      normalized[key] = val.to_s if val
+                    end
+                    normalized
+                  else
+                    bar_set
         end
 
         # Normalize data to Array of BarGroup
@@ -248,12 +254,13 @@ module RatatuiRuby
           elsif data.first.is_a?(BarGroup)
             data
           elsif data.first.is_a?(Array)
-            # Tuples
+            # Tuples - use type assertion for Steep
             if direction == :horizontal
               bars = data.map do |item|
-                label = item[0].to_s
-                value = item[1]
-                style = item[2]
+                tuple = item #: Array[untyped]
+                label = tuple[0].to_s
+                value = tuple[1]
+                style = tuple[2]
 
                 bar = Bar.new(value:, label:)
                 bar = bar.with(style:) if style
@@ -262,9 +269,10 @@ module RatatuiRuby
               [BarGroup.new(label: "", bars:)]
             else
               data.map do |item|
-                label = item[0].to_s
-                value = item[1]
-                style = item[2]
+                tuple = item #: Array[untyped]
+                label = tuple[0].to_s
+                value = tuple[1]
+                style = tuple[2]
 
                 bar = Bar.new(value:)
                 bar = bar.with(style:) if style

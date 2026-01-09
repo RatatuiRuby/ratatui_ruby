@@ -8,12 +8,17 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  class Style < Data
-    attr_reader fg: (String | Symbol | Integer)?
-    attr_reader bg: (String | Symbol | Integer)?
-    attr_reader modifiers: Array[Symbol]
+  # Style module at RatatuiRuby::Style (contains Style class)
+  module Style
+    # Style class for RatatuiRuby::Style::Style (style/style.rb version)
+    class Style < Data
+      attr_reader fg: (String | Symbol | Integer)?
+      attr_reader bg: (String | Symbol | Integer)?
+      attr_reader modifiers: Array[Symbol]
 
-    def self.new: (?fg: (String | Symbol | Integer)?, ?bg: (String | Symbol | Integer)?, ?modifiers: Array[Symbol]) -> Style
-    def self.default: () -> Style
+      def self.new: (?fg: (String | Symbol | Integer)?, ?bg: (String | Symbol | Integer)?, ?modifiers: Array[Symbol]) -> Style
+      def initialize: (?fg: (String | Symbol | Integer)?, ?bg: (String | Symbol | Integer)?, ?modifiers: Array[Symbol]) -> void
+      def self.default: () -> Style
+    end
   end
 end

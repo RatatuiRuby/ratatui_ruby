@@ -17,6 +17,7 @@ module RatatuiRuby
       attr_reader text_value: (String | Text::Span | Text::Line)?
 
       def self.new: (value: Numeric, ?label: String | Text::Span | Text::Line | nil, ?style: Style?, ?value_style: Style?, ?text_value: String | Text::Span | Text::Line | nil) -> Bar
+      def initialize: (value: Numeric, ?label: String | Text::Span | Text::Line | nil, ?style: Style?, ?value_style: Style?, ?text_value: String | Text::Span | Text::Line | nil) -> void
     end
   end
 end

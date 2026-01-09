@@ -134,18 +134,28 @@ module RatatuiRuby
       #++
       # Returns an Array of <tt>Rect</tt> objects.
       def self.split(area, direction: :vertical, constraints:, flex: :legacy)
-        # Duck-typing: If it lacks geometry methods but can be a Hash, convert it.
-        if !area.respond_to?(:x) && area.respond_to?(:to_h)
-          # Assume it's a Hash-like object with :x, :y, etc.
-          hash = area.to_h
-          area = Rect.new(
-            x: hash.fetch(:x, 0),
-            y: hash.fetch(:y, 0),
-            width: hash.fetch(:width, 0),
-            height: hash.fetch(:height, 0)
-          )
+        # Coerce area to Rect for type safety (supports duck typing via _RectLike interface)
+        rect = case area
+               when Rect
+                 area
+               when Hash
+                 Rect.new(
+                   x: Integer(area.fetch(:x, 0)),
+                   y: Integer(area.fetch(:y, 0)),
+                   width: Integer(area.fetch(:width, 0)),
+                   height: Integer(area.fetch(:height, 0))
+                 )
+               else
+                 # Duck typing: accept any object responding to x, y, width, height
+                 if area.respond_to?(:x) && area.respond_to?(:y) && area.respond_to?(:width) && area.respond_to?(:height)
+                   # @type var rect_like: _RectLike
+                   rect_like = area
+                   Rect.new(x: rect_like.x, y: rect_like.y, width: rect_like.width, height: rect_like.height)
+                 else
+                   raise ArgumentError, "area must be a Rect, Hash, or respond to x/y/width/height, got #{area.class}"
+                 end
         end
-        raw_rects = _split(area, direction, constraints, flex)
+        raw_rects = _split(rect, direction, constraints, flex)
         raw_rects.map { |r| Rect.new(x: r[:x], y: r[:y], width: r[:width], height: r[:height]) }
       end
     end

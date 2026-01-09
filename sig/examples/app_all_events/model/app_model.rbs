@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# MVU application model for the All Events example.
+class AppModel < Data
+  HIGHLIGHT_DURATION_MS: Integer
+
+  attr_reader entries: Array[EventEntry]
+  attr_reader focused: bool
+  attr_reader window_size: [Integer, Integer]
+  attr_reader lit_types: Hash[Symbol, Timestamp]
+  attr_reader none_count: Integer
+  attr_reader color_cycle_index: Integer
+
+  def self.initial: () -> instance
+  def count: (Symbol type) -> Integer
+  def sub_counts: (Symbol type) -> Hash[String, Integer]
+  def lit?: (Symbol type) -> bool
+  def visible: (Integer max_entries) -> Array[EventEntry]
+  def empty?: () -> bool
+  def live_event: (Symbol type) -> { time: Time, description: String }?
+  def next_color: () -> Symbol
+end

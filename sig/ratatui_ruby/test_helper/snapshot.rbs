@@ -10,9 +10,28 @@
 module RatatuiRuby
   module TestHelper
     module Snapshot
-      def assert_snapshot: (String name, ?String? msg) ?{ (Array[String]) -> Array[String] } -> void
-      def assert_screen_matches: (String | Array[String] expected, ?String? msg) ?{ (Array[String]) -> Array[String] } -> void
-      def assert_rich_snapshot: (String name, ?String? msg) ?{ (Array[String]) -> Array[String] } -> void
+      include ::Minitest::Assertions
+
+      # Public assertions
+      def assert_plain_snapshot: (String name, ?String? msg, ?snapshot_dir: String?) ?{ (Array[String]) -> Array[String] } -> void
+      def assert_screen_matches: ((String | Array[String]) expected, ?String? msg) ?{ (Array[String]) -> Array[String] } -> void
+      def assert_rich_snapshot: (String name, ?String? msg, ?snapshot_dir: String?) ?{ (Array[String]) -> Array[String] } -> void
+      def assert_snapshots: (String name, ?String? msg) ?{ (Array[String]) -> Array[String] } -> void
+      def render_rich_buffer: () -> String
+
+      # Methods available via mixin context (from Minitest::Assertions)
+      # untyped: assert_equal from Minitest compares any two values
+      def assert_equal: (untyped expected, untyped actual, ?String? msg) -> void
+
+      # Methods available via mixin context (from Terminal)
+      def buffer_content: () -> Array[String]
+
+      private
+
+      def _render_buffer_with_ansi: () -> String
+      def _ansi_for_color: ((Symbol | String)?, Symbol layer) -> String
+      def _ansi_named_color: (Symbol name, bool is_fg) -> String
+      def _ansi_for_modifiers: (Array[Symbol]?) -> String
     end
   end
 end

@@ -170,8 +170,8 @@ module RatatuiRuby
         if border_set
           border_set = border_set.dup
           %i[top_left top_right bottom_left bottom_right vertical_left vertical_right horizontal_top horizontal_bottom].each do |long_key|
-            short_key = long_key.to_s.split("_").map { |s| s[0] }.join
-            if (val = border_set.delete(short_key.to_sym) || border_set.delete(short_key))
+            short_key = long_key.to_s.split("_").map { |s| s[0] }.join.to_sym
+            if (val = border_set.delete(short_key))
               border_set[long_key] = val
             end
           end
@@ -237,12 +237,18 @@ module RatatuiRuby
         top_border = has_border.call(:top) ? 1 : 0
         bottom_border = has_border.call(:bottom) ? 1 : 0
 
-        # Calculate padding offsets
-        if padding.is_a?(Array)
+        # Calculate padding offsets - ensure all are Integer
+        pad_left, pad_right, pad_top, pad_bottom = if padding.is_a?(Array)
           # [left, right, top, bottom]
-          pad_left, pad_right, pad_top, pad_bottom = padding
+          [
+            Integer(padding[0] || 0),
+            Integer(padding[1] || 0),
+            Integer(padding[2] || 0),
+            Integer(padding[3] || 0),
+          ]
         else
-          pad_left = pad_right = pad_top = pad_bottom = padding
+          p = Integer(padding)
+          [p, p, p, p]
         end
 
         # Compute inner area

@@ -21,4 +21,6 @@ gem "rubycritic", "~> 4.11"
 gem "inch", "~> 0.4"
 gem "flog", "4.8.0"
 
+gem "steep"
+
 gem "nokogiri" # For RDoc sidebar post-processing

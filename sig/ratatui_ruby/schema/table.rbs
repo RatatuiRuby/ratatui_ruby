@@ -11,22 +11,22 @@ module RatatuiRuby
   class Table < Data
     attr_reader header: Array[String | Paragraph]?
     attr_reader rows: Array[Array[String | Paragraph | Style | _ToS]]
-    attr_reader widths: Array[Constraint]
+    attr_reader widths: Array[Layout::Constraint]
     attr_reader block: Block?
     attr_reader footer: Array[String | Paragraph]?
     attr_reader flex: Symbol
-    attr_reader style: (Style | Hash[Symbol, untyped])?
+    attr_reader style: style_input?
     attr_reader column_spacing: Integer?
     attr_reader highlight_spacing: Symbol
     attr_reader column_highlight_style: Style?
     attr_reader selected_column: Integer?
     attr_reader offset: Integer?
 
-    def self.new: (?header: Array[String | Paragraph]?, ?rows: Array[Array[String | Paragraph | Style | _ToS]], ?widths: Array[Constraint], ?row_highlight_style: Style?, ?highlight_symbol: String, ?highlight_spacing: Symbol, ?column_highlight_style: Style?, ?cell_highlight_style: Style?, ?selected_row: Numeric?, ?selected_column: Numeric?, ?offset: Numeric?, ?block: Block?, ?footer: Array[String | Paragraph]?, ?flex: Symbol, ?style: (Style | Hash[Symbol, untyped])?, ?column_spacing: Numeric) -> Table
+    def self.new: (?header: Array[String | Paragraph]?, ?rows: Array[Array[String | Paragraph | Style | _ToS]], ?widths: Array[Layout::Constraint], ?row_highlight_style: Style?, ?highlight_symbol: String, ?highlight_spacing: Symbol, ?column_highlight_style: Style?, ?cell_highlight_style: Style?, ?selected_row: Numeric?, ?selected_column: Numeric?, ?offset: Numeric?, ?block: Block?, ?footer: Array[String | Paragraph]?, ?flex: Symbol, ?style: style_input?, ?column_spacing: Numeric) -> Table
+    def initialize: (?header: Array[String | Paragraph]?, ?rows: Array[Array[String | Paragraph | Style | _ToS]], ?widths: Array[Layout::Constraint], ?row_highlight_style: Style?, ?highlight_symbol: String, ?highlight_spacing: Symbol, ?column_highlight_style: Style?, ?cell_highlight_style: Style?, ?selected_row: Numeric?, ?selected_column: Numeric?, ?offset: Numeric?, ?block: Block?, ?footer: Array[String | Paragraph]?, ?flex: Symbol, ?style: style_input?, ?column_spacing: Numeric) -> void
     def row_selected?: () -> bool
     def column_selected?: () -> bool
     def cell_selected?: () -> bool
     def empty?: () -> bool
   end
 end
-
