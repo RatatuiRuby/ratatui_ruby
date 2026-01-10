@@ -1,9 +1,9 @@
 ┌Simple Rich Text──────────────────────────────────────────────────────────────┐
-│Normal text, Bold Text, Italic Text, Red Text.                                │
+│Normal, Bold, Italic, Red.                                                    │
 │                                                                              │
-│Integer Color Test: Color 0 (Use ↑ ↓ for +/- 1,→ ← for +/- 10)                │
+│Integer Color Test: Color 0 (Use ↑ ↓ for +/- 1, ← → for +/- 10)               │
 │                                                                              │
-│                                                                              │
+│A: Alignment (left)                                                           │
 │                                                                              │
 │                                                                              │
 │                                                                              │

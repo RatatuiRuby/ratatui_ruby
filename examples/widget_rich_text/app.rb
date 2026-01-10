@@ -10,11 +10,13 @@ require "ratatui_ruby"
 
 # Rich Text Example
 # Demonstrates the Span and Line objects for styling individual words
-# within a block of text.
+# within a block of text. Also demonstrates Line alignment methods.
 class WidgetRichText
   def initialize
     @scroll_pos = 0
     @color_index = 0
+    @alignment_index = 0
+    @alignments = [:left, :center, :right]
   end
 
   def run
@@ -46,40 +48,17 @@ class WidgetRichText
 
   private def simple_text_line_example
     # Example 1: A line with mixed styles
+    # Create a base line with spans, then apply alignment using the fluent methods
+    alignment = @alignments[@alignment_index]
+    aligned_line = case alignment
+                   when :left then base_line.left_aligned
+                   when :center then base_line.centered
+                   when :right then base_line.right_aligned
+    end
+
     @tui.paragraph(
       text: [
-        @tui.text_line(
-          spans: [
-            @tui.text_span(
-              content: "Normal text, ",
-              style: nil
-            ),
-            @tui.text_span(
-              content: "Bold Text",
-              style: @tui.style(modifiers: [:bold])
-            ),
-            @tui.text_span(
-              content: ", ",
-              style: nil
-            ),
-            @tui.text_span(
-              content: "Italic Text",
-              style: @tui.style(modifiers: [:italic])
-            ),
-            @tui.text_span(
-              content: ", ",
-              style: nil
-            ),
-            @tui.text_span(
-              content: "Red Text",
-              style: @tui.style(fg: :red)
-            ),
-            @tui.text_span(
-              content: ".",
-              style: nil
-            ),
-          ]
-        ),
+        aligned_line,
         @tui.text_line(spans: []),
         @tui.text_line(
           spans: [
@@ -87,9 +66,16 @@ class WidgetRichText
             @tui.text_span(content: "Color #{@color_index}", style: @tui.style(fg: @color_index)),
             @tui.text_span(content: " (Use "),
             @tui.text_span(content: "↑ ↓", style: @tui.style(modifiers: [:bold])),
-            @tui.text_span(content: " for +/- 1,", style: nil),
-            @tui.text_span(content: "→ ←", style: @tui.style(modifiers: [:bold])),
+            @tui.text_span(content: " for +/- 1, ", style: nil),
+            @tui.text_span(content: "← →", style: @tui.style(modifiers: [:bold])),
             @tui.text_span(content: " for +/- 10)", style: nil),
+          ]
+        ),
+        @tui.text_line(spans: []),
+        @tui.text_line(
+          spans: [
+            @tui.text_span(content: "A", style: @tui.style(modifiers: [:bold, :underlined])),
+            @tui.text_span(content: ": Alignment (#{alignment})", style: nil),
           ]
         ),
       ],
@@ -97,6 +83,21 @@ class WidgetRichText
         title: "Simple Rich Text",
         borders: [:all]
       )
+    )
+  end
+
+  private def base_line
+    # Demonstrates creating a styled line, then using fluent alignment methods
+    @tui.text_line(
+      spans: [
+        @tui.text_span(content: "Normal, ", style: nil),
+        @tui.text_span(content: "Bold", style: @tui.style(modifiers: [:bold])),
+        @tui.text_span(content: ", ", style: nil),
+        @tui.text_span(content: "Italic", style: @tui.style(modifiers: [:italic])),
+        @tui.text_span(content: ", ", style: nil),
+        @tui.text_span(content: "Red", style: @tui.style(fg: :red)),
+        @tui.text_span(content: ".", style: nil),
+      ]
     )
   end
 
@@ -157,6 +158,8 @@ class WidgetRichText
       @color_index = (@color_index + 1) % 256
     elsif event.down?
       @color_index = (@color_index - 1) % 256
+    elsif event == "a"
+      @alignment_index = (@alignment_index + 1) % @alignments.size
     end
 
     nil

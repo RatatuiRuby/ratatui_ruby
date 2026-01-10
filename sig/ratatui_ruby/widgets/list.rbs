@@ -53,6 +53,9 @@ module RatatuiRuby
 
       def selected?: () -> bool
       def empty?: () -> bool
+      def len: () -> Integer
+      alias length len
+      alias size len
     end
   end
 end

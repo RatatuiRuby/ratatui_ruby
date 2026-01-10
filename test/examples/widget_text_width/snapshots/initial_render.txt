@@ -2,11 +2,11 @@
 │Sample: Hello, World!                                                         │
 │                                                                              │
 │Display Width (text_width): 13 cells                                          │
+│Display Width (span.width): 13 cells                                          │
 │Display Width (line.width): 13 cells                                          │
 │Character Count: 13                                                           │
 │                                                                              │
 │Simple English text                                                           │
-│                                                                              │
 │                                                                              │
 │                                                                              │
 │                                                                              │

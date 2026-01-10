@@ -1,9 +1,9 @@
 [0m┌Simple Rich Text──────────────────────────────────────────────────────────────┐[0m
-[0m│Normal text, [0mBold Text[0m, [0mItalic Text[0m, [31mRed Text.                                │[0m
+[0m│Normal, [0mBold[0m, [0mItalic[0m, [31mRed.                                                    │[0m
 [0m│                                                                              │[0m
-[0m│Integer Color Test: [38;5;0mColor 0 (Use [0m↑ ↓[0m for +/- 1,[0m→ ←[0m for +/- 10)                │[0m
+[0m│Integer Color Test: [38;5;0mColor 0 (Use [0m↑ ↓[0m for +/- 1, [0m← →[0m for +/- 10)               │[0m
 [0m│                                                                              │[0m
-[0m│                                                                              │[0m
+[0m│[0mA[0m: Alignment (left)                                                           │[0m
 [0m│                                                                              │[0m
 [0m│                                                                              │[0m
 [0m│                                                                              │[0m

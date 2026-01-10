@@ -1,5 +1,5 @@
 [0mList Widget - Interactive Attribute Cycling                                     [0m
-[0m┌Large List | Sel: none | Offset: auto─────────────────────────────────────────┐[0m
+[0m┌Large List (len: 200) | Sel: none | Offset: auto──────────────────────────────┐[0m
 [0m│   Item 1                                                                     │[0m
 [0m│   Item 2                                                                     │[0m
 [0m│   Item 3                                                                     │[0m

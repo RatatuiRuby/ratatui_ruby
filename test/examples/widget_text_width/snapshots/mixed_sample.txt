@@ -2,11 +2,11 @@
 │Sample: Hi 你o好👍 👍W                                                            │
 │                                                                              │
 │Display Width (text_width): 10 cells                                          │
+│Display Width (span.width): 10 cells                                          │
 │Display Width (line.width): 10 cells                                          │
 │Character Count: 7                                                            │
 │                                                                              │
 │ASCII + CJK + emoji                                                           │
-│                                                                              │
 │                                                                              │
 │                                                                              │
 │                                                                              │

@@ -2,11 +2,11 @@
 │Sample:                                                                       │
 │                                                                              │
 │Display Width (text_width): 0 cells                                           │
+│Display Width (span.width): 0 cells                                           │
 │Display Width (line.width): 0 cells                                           │
 │Character Count: 0                                                            │
 │                                                                              │
 │Empty string                                                                  │
-│                                                                              │
 │                                                                              │
 │                                                                              │
 │                                                                              │

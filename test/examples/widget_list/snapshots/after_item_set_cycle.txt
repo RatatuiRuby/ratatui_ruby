@@ -1,5 +1,5 @@
 List Widget - Interactive Attribute Cycling                                     
-┌Large List | Sel: none | Offset: auto─────────────────────────────────────────┐
+┌Large List (len: 200) | Sel: none | Offset: auto──────────────────────────────┐
 │   Item 1                                                                     │
 │   Item 2                                                                     │
 │   Item 3                                                                     │

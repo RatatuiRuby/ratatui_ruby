@@ -258,8 +258,8 @@ class WidgetList
       title = @tui.paragraph(text: "List Widget - Interactive Attribute Cycling")
       frame.render_widget(title, title_area)
 
-      # Render list
-      list = @tui.list(
+      # Build list first to demonstrate List#len and List#empty? query methods
+      base_list = @tui.list(
         items:,
         selected_index: effective_selection,
         offset: effective_offset,
@@ -269,9 +269,15 @@ class WidgetList
         repeat_highlight_symbol: repeat_config[:repeat],
         highlight_spacing: spacing_config[:spacing],
         direction: direction_config[:direction],
-        scroll_padding: scroll_padding_config[:padding],
+        scroll_padding: scroll_padding_config[:padding]
+      )
+
+      # Use List#len (or #length, #size aliases) query method
+      item_count = base_list.len
+
+      list = base_list.with(
         block: @tui.block(
-          title: "#{@item_sets[@item_set_index][:name]} | Sel: #{selection_label} | Offset: #{offset_label}",
+          title: "#{@item_sets[@item_set_index][:name]} (len: #{item_count}) | Sel: #{selection_label} | Offset: #{offset_label}",
           borders: [:all]
         )
       )

@@ -164,19 +164,17 @@ module RatatuiRuby
 
     # Span methods
     def test_span_width
-      skip "v1.0.0 Blocker: Span#width not implemented. See doc/contributors/v1.0.0_blockers.md"
       span = RatatuiRuby::Text::Span.new(content: "Hello")
       assert_equal 5, span.width
     end
 
     def test_span_raw
-      skip "v1.0.0 Blocker: Span.raw not implemented. See doc/contributors/v1.0.0_blockers.md"
       span = RatatuiRuby::Text::Span.raw("Hello")
       assert_equal "Hello", span.content
+      assert_nil span.style
     end
 
     def test_span_patch_style
-      skip "v1.0.0 Blocker: Span#patch_style not implemented. See doc/contributors/v1.0.0_blockers.md"
       span = RatatuiRuby::Text::Span.new(content: "Hello", style: RatatuiRuby::Style::Style.new(fg: :red))
       patched = span.patch_style(RatatuiRuby::Style::Style.new(bg: :blue))
       assert_equal :red, patched.style.fg
@@ -184,44 +182,39 @@ module RatatuiRuby
     end
 
     def test_span_reset_style
-      skip "v1.0.0 Blocker: Span#reset_style not implemented. See doc/contributors/v1.0.0_blockers.md"
       span = RatatuiRuby::Text::Span.new(content: "Hello", style: RatatuiRuby::Style::Style.new(fg: :red))
       reset = span.reset_style
-      assert_nil reset.style.fg
+      assert_nil reset.style
     end
 
     # Line methods
     def test_line_left_aligned
-      skip "v1.0.0 Blocker: Line#left_aligned not implemented. See doc/contributors/v1.0.0_blockers.md"
       line = RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "Hello")])
       aligned = line.left_aligned
       assert_equal :left, aligned.alignment
     end
 
     def test_line_centered
-      skip "v1.0.0 Blocker: Line#centered not implemented. See doc/contributors/v1.0.0_blockers.md"
       line = RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "Hello")])
       centered = line.centered
       assert_equal :center, centered.alignment
     end
 
     def test_line_right_aligned
-      skip "v1.0.0 Blocker: Line#right_aligned not implemented. See doc/contributors/v1.0.0_blockers.md"
       line = RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "Hello")])
       aligned = line.right_aligned
       assert_equal :right, aligned.alignment
     end
 
     def test_line_push_span
-      skip "v1.0.0 Blocker: Line#push_span not implemented. See doc/contributors/v1.0.0_blockers.md"
       line = RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "Hello")])
       new_span = RatatuiRuby::Text::Span.new(content: " World")
-      line.push_span(new_span)
-      assert_equal 2, line.spans.size
+      updated = line.push_span(new_span)
+      assert_equal 2, updated.spans.size
+      assert_equal 1, line.spans.size # Original unchanged (immutable)
     end
 
     def test_line_patch_style
-      skip "v1.0.0 Blocker: Line#patch_style not implemented. See doc/contributors/v1.0.0_blockers.md"
       line = RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "Hello")])
       patched = line.patch_style(RatatuiRuby::Style::Style.new(fg: :red))
       # Should apply to all spans
@@ -229,12 +222,11 @@ module RatatuiRuby
     end
 
     def test_line_reset_style
-      skip "v1.0.0 Blocker: Line#reset_style not implemented. See doc/contributors/v1.0.0_blockers.md"
       line = RatatuiRuby::Text::Line.new(
         spans: [RatatuiRuby::Text::Span.new(content: "Hello", style: RatatuiRuby::Style::Style.new(fg: :red))]
       )
       reset = line.reset_style
-      assert_nil reset.spans.first.style.fg
+      assert_nil reset.spans.first.style
     end
   end
 end

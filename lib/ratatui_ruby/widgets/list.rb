@@ -154,17 +154,69 @@ module RatatuiRuby
 
       # Returns true if an item is selected.
       #
-      # @return [Boolean]
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   list = Widgets::List.new(items: %w[a b c])
+      #   list.selected?  # => false
+      #
+      #   list = Widgets::List.new(items: %w[a b c], selected_index: 1)
+      #   list.selected?  # => true
+      #
+      #--
+      # SPDX-SnippetEnd
+      #++
+      # Returns: Boolean.
       def selected?
         !selected_index.nil?
       end
 
-      # Returns true if the list has no items.
+      # Returns true if the list contains no items.
       #
-      # @return [Boolean]
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   list = Widgets::List.new(items: [])
+      #   list.empty?  # => true
+      #
+      #--
+      # SPDX-SnippetEnd
+      #++
+      # Returns: Boolean.
       def empty?
         items.empty?
       end
+
+      # Returns the number of items in the list.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   list = Widgets::List.new(items: %w[alpha beta gamma])
+      #   list.len  # => 3
+      #
+      #--
+      # SPDX-SnippetEnd
+      #++
+      # Returns: Integer.
+      def len
+        items.length
+      end
+
+      alias length len
+      alias size len
     end
   end
 end

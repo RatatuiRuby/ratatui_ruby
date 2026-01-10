@@ -16,6 +16,12 @@ module RatatuiRuby
       def initialize: (?spans: Array[Span], ?alignment: Symbol?, ?style: Style::Style?) -> void
       def self.from_string: (String, ?alignment: Symbol?) -> Line
       def width: () -> Integer
+      def left_aligned: () -> Line
+      def centered: () -> Line
+      def right_aligned: () -> Line
+      def push_span: (Span) -> Line
+      def patch_style: (Style::Style?) -> Line
+      def reset_style: () -> Line
     end
   end
 end

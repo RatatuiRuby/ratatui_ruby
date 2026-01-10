@@ -222,6 +222,20 @@ class TestList < Minitest::Test
     refute RatatuiRuby::Widgets::List.new(items: ["a"]).empty?
   end
 
+  def test_len
+    # Ratatui-aligned: list.len() returns number of items
+    assert_equal 0, RatatuiRuby::Widgets::List.new(items: []).len
+    assert_equal 1, RatatuiRuby::Widgets::List.new(items: ["a"]).len
+    assert_equal 3, RatatuiRuby::Widgets::List.new(items: %w[a b c]).len
+  end
+
+  def test_length_and_size_aliases
+    # Ruby-idiomatic aliases for len
+    list = RatatuiRuby::Widgets::List.new(items: %w[a b c])
+    assert_equal list.len, list.length
+    assert_equal list.len, list.size
+  end
+
   def test_highlight_spacing_constants
     assert_equal :always, RatatuiRuby::Widgets::List::HIGHLIGHT_ALWAYS
     assert_equal :when_selected, RatatuiRuby::Widgets::List::HIGHLIGHT_WHEN_SELECTED

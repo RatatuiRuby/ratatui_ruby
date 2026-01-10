@@ -14,6 +14,10 @@ module RatatuiRuby
       def self.new: (content: String, ?style: Style::Style?) -> Span
       def initialize: (content: String, ?style: Style::Style?) -> void
       def self.styled: (String, ?Style?) -> Span
+      def width: () -> Integer
+      def self.raw: (String) -> Span
+      def patch_style: (Style::Style?) -> Span
+      def reset_style: () -> Span
     end
   end
 end

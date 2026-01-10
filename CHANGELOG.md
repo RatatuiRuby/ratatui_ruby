@@ -27,6 +27,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Remote Debugging**: Debug mode now integrates with Ruby's `debug` gem for remote debugging. `RR_DEBUG=1` stops at startup and waits for debugger attachment. `RatatuiRuby.debug_mode!` continues running in nonstop mode. Attach from another terminal with `rdbg --attach`.
 - **Debug.suppress_debug_mode**: New block method temporarily suppresses Ruby-side debug checks within its block. Rust backtraces remain enabled. Useful for testing production behavior in debug mode environments.
 - **DWIM Hash Coercion**: All widget factory methods now accept both `tui.table(hash)` and `tui.table(**hash)` calling styles. When a bare Hash is passed as the first positional argument, it is automatically splatted into keyword arguments. Unknown keys are silently ignored in production mode; in debug mode (`RR_DEBUG=1`), they raise `ArgumentError` for early typo detection.
+- **Ratatui-Aligned Text Methods**: New methods on `Text::Span` and `Text::Line` matching Ratatui's API for style manipulation:
+  - `Span#width` — display width in terminal cells (unicode-aware)
+  - `Span.raw(content)` — factory for unstyled spans
+  - `Span#patch_style(style)` — merge style onto existing style
+  - `Span#reset_style` — clear all styling
+  - `Line#left_aligned`, `Line#centered`, `Line#right_aligned` — fluent alignment setters
+  - `Line#push_span(span)` — append span (returns new Line, immutable)
+  - `Line#patch_style(style)`, `Line#reset_style` — style manipulation for all spans
+- **List Query Methods**: New methods on `List` matching Ratatui's API:
+  - `List#len` — number of items (with Ruby aliases `length`, `size`)
 
 ### Changed
 

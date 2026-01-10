@@ -1,5 +1,5 @@
 List Widget - Interactive Attribute Cycling                                     
-┌Programming | Sel: none | Offset: 10──────────────────────────────────────────┐
+┌Programming (len: 48) | Sel: none | Offset: 10────────────────────────────────┐
 │   Objective-C                                                                │
 │   PHP                                                                        │
 │   TypeScript                                                                 │

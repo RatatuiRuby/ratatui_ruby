@@ -1,5 +1,5 @@
 List Widget - Interactive Attribute Cycling                                     
-┌Programming | Sel: none | Offset: auto────────────────────────────────────────┐
+┌Programming (len: 48) | Sel: none | Offset: auto──────────────────────────────┐
 │  Ruby                                                                        │
 │  Rust                                                                        │
 │  Python                                                                      │
