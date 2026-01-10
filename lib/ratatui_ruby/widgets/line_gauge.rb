@@ -60,6 +60,7 @@ module RatatuiRuby
       # Creates a new LineGauge.
       #
       # [ratio] Float (0.0 - 1.0).
+      # [percent] Integer (0 - 100), alternative to ratio.
       # [label] String or Text::Span (optional).
       # [style] Style (optional, base style for the gauge).
       # [filled_style] Style.
@@ -67,9 +68,14 @@ module RatatuiRuby
       # [block] Block.
       # [filled_symbol] String (default: <tt>"█"</tt>).
       # [unfilled_symbol] String (default: <tt>"░"</tt>).
-      def initialize(ratio: 0.0, label: nil, style: nil, filled_style: nil, unfilled_style: nil, block: nil, filled_symbol: "█", unfilled_symbol: "░")
+      def initialize(ratio: nil, percent: nil, label: nil, style: nil, filled_style: nil, unfilled_style: nil, block: nil, filled_symbol: "█", unfilled_symbol: "░")
+        if percent
+          float_percent = Float(percent)
+          ratio = float_percent / 100.0
+        end
+        ratio = Float(ratio || 0.0)
         super(
-          ratio: Float(ratio),
+          ratio:,
           label:,
           style:,
           filled_style:,
@@ -82,16 +88,65 @@ module RatatuiRuby
 
       # Returns true if the gauge has any fill (ratio > 0).
       #
-      # @return [Boolean]
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   Widgets::LineGauge.new(ratio: 0.0).filled?  # => false
+      #   Widgets::LineGauge.new(ratio: 0.5).filled?  # => true
+      #--
+      # SPDX-SnippetEnd
+      #++
       def filled?
         ratio > 0
       end
 
       # Returns true if the gauge is at 100% or more (ratio >= 1.0).
       #
-      # @return [Boolean]
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   Widgets::LineGauge.new(ratio: 0.99).complete?  # => false
+      #   Widgets::LineGauge.new(ratio: 1.0).complete?   # => true
+      #--
+      # SPDX-SnippetEnd
+      #++
       def complete?
         ratio >= 1.0
+      end
+
+      # Returns the progress as an integer percentage (0-100).
+      #
+      # LineGauge stores progress as a ratio (0.0 to 1.0). User-facing code often
+      # displays percentages. Converting manually is tedious.
+      #
+      # This is the inverse of passing <tt>percent:</tt> to the constructor.
+      # Rounds down to the nearest integer.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   lg = Widgets::LineGauge.new(percent: 75)
+      #   lg.percent  # => 75
+      #
+      #   lg = Widgets::LineGauge.new(ratio: 0.456)
+      #   lg.percent  # => 45
+      #--
+      # SPDX-SnippetEnd
+      #++
+      def percent
+        (ratio * 100).to_i
       end
     end
   end

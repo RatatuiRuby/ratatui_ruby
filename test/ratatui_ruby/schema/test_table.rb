@@ -719,4 +719,7 @@ class TestTable < Minitest::Test
     assert_equal :space_around, RatatuiRuby::Widgets::Table::FLEX_SPACE_AROUND
     assert_equal :space_evenly, RatatuiRuby::Widgets::Table::FLEX_SPACE_EVENLY
   end
+
+  # NOTE: No 'selection' alias - it's ambiguous whether it returns a row or an index.
+  # Use selected_row for the row index, selected_column for the column index.
 end

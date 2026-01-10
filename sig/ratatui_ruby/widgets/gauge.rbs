@@ -38,6 +38,7 @@ module RatatuiRuby
 
       def filled?: () -> bool
       def complete?: () -> bool
+      def percent: () -> Integer
     end
   end
 end

@@ -1,0 +1,48 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  module Widgets
+    # Options hash type for LineGauge constructor arguments.
+    type line_gauge_options = {
+      ?ratio: _ToF?,
+      ?percent: _ToF?,
+      ?label: String | Text::Span | nil,
+      ?style: Style::Style?,
+      ?filled_style: Style::Style?,
+      ?unfilled_style: Style::Style?,
+      ?block: Widgets::Block?,
+      ?filled_symbol: String,
+      ?unfilled_symbol: String
+    }
+
+    class LineGauge < Data
+      attr_reader ratio: Float
+      attr_reader label: (String | Text::Span)?
+      attr_reader style: Style::Style?
+      attr_reader filled_style: Style::Style?
+      attr_reader unfilled_style: Style::Style?
+      attr_reader block: Widgets::Block?
+      attr_reader filled_symbol: String
+      attr_reader unfilled_symbol: String
+
+      include CoerceableWidget
+
+      def self.coerce_args: (line_gauge_options first, ?line_gauge_options kwargs) -> LineGauge
+                          | (nil first, line_gauge_options kwargs) -> LineGauge
+
+      def self.new: (?ratio: _ToF?, ?percent: _ToF?, ?label: String | Text::Span | nil, ?style: Style::Style?, ?filled_style: Style::Style?, ?unfilled_style: Style::Style?, ?block: Widgets::Block?, ?filled_symbol: String, ?unfilled_symbol: String) -> LineGauge
+      def initialize: (?ratio: _ToF?, ?percent: _ToF?, ?label: String | Text::Span | nil, ?style: Style::Style?, ?filled_style: Style::Style?, ?unfilled_style: Style::Style?, ?block: Widgets::Block?, ?filled_symbol: String, ?unfilled_symbol: String) -> void
+
+      def filled?: () -> bool
+      def complete?: () -> bool
+      def percent: () -> Integer
+    end
+  end
+end

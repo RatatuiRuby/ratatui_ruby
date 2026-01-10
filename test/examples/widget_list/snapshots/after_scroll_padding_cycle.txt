@@ -1,5 +1,5 @@
 List Widget - Interactive Attribute Cycling                                     
-┌Programming (len: 48) | Sel: 6 | Offset: auto─────────────────────────────────┐
+┌Programming (len: 48) | index: 6 → C#─────────────────────────────────────────┐
 │   Ruby                                                                       │
 │   Rust                                                                       │
 │   Python                                                                     │

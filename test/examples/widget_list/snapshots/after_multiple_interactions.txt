@@ -1,5 +1,5 @@
 List Widget - Interactive Attribute Cycling                                     
-┌Programming (len: 48) | Sel: 7 | Offset: auto─────────────────────────────────┐
+┌Programming (len: 48) | index: 7 → Java───────────────────────────────────────┐
 │  Ruby                                                                        │
 │  Rust                                                                        │
 │  Python                                                                      │

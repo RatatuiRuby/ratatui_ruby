@@ -40,6 +40,13 @@ module RatatuiRuby
         Widgets::ListItem.coerce_args(first, kwargs)
       end
 
+      # Creates a Widgets::ListItem (DWIM alias).
+      #
+      # Terse alias for list_item. Clear in list context.
+      #
+      # @return [Widgets::ListItem]
+      alias item list_item
+
       # Creates a Widgets::Table.
       # @return [Widgets::Table]
       def table(first = nil, **kwargs)

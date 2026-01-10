@@ -34,6 +34,8 @@ module RatatuiRuby
       def intersection: (Rect other) -> Rect?
       def union: (Rect other) -> Rect
       def inner: (Integer margin) -> Rect
+      def outer: (Integer margin) -> Rect
+      def resize: (Size new_size) -> Rect
       def offset: (Integer dx, Integer dy) -> Rect
       def clamp: (Rect other) -> Rect
 
@@ -48,6 +50,11 @@ module RatatuiRuby
       # Conversions
       def as_position: () -> Position
       def as_size: () -> Size
+
+      # Centering
+      def centered_horizontally: (Constraint) -> Rect
+      def centered_vertically: (Constraint) -> Rect
+      def centered: (Constraint, Constraint) -> Rect
 
       # Ruby-idiomatic aliases
       alias position as_position

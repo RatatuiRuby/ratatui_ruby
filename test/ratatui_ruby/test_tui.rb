@@ -243,6 +243,69 @@ class TestTUI < Minitest::Test
     assert_kind_of RatatuiRuby::Widgets::Shape::Label, tui.shape_label({ x: 0, y: 0, text: "Hi" })
   end
 
+  # TUI Audit: `item` is an alias for `list_item` (DWIM)
+  def test_item_alias_for_list_item
+    tui = RatatuiRuby::TUI.new
+
+    # item() should be an alias for list_item()
+    item = tui.item(content: "Test Item")
+    assert_kind_of RatatuiRuby::Widgets::ListItem, item
+    assert_equal "Test Item", item.content
+
+    # Should produce the same result as list_item
+    list_item = tui.list_item(content: "Test Item")
+    assert_equal list_item, item
+  end
+
+  # TUI Audit: Terse shape aliases (circle, point, rectangle, map, label)
+  def test_terse_shape_aliases
+    tui = RatatuiRuby::TUI.new
+
+    # circle() should be an alias for shape_circle()
+    circle = tui.circle(x: 5.0, y: 5.0, radius: 2.5, color: :green)
+    assert_kind_of RatatuiRuby::Widgets::Shape::Circle, circle
+    assert_equal tui.shape_circle(x: 5.0, y: 5.0, radius: 2.5, color: :green), circle
+
+    # point() should be an alias for shape_point()
+    point = tui.point(x: 1.0, y: 2.0)
+    assert_kind_of RatatuiRuby::Widgets::Shape::Point, point
+    assert_equal tui.shape_point(x: 1.0, y: 2.0), point
+
+    # NOTE: No rectangle() alias - would conflict with Layout::Rect concept.
+    # Use shape_rectangle() explicitly.
+
+    # map() should be an alias for shape_map()
+    map = tui.map(color: :yellow, resolution: :high)
+    assert_kind_of RatatuiRuby::Widgets::Shape::Map, map
+    assert_equal tui.shape_map(color: :yellow, resolution: :high), map
+
+    # label() should be an alias for shape_label()
+    label = tui.label(x: 0.0, y: 0.0, text: "Hi")
+    assert_kind_of RatatuiRuby::Widgets::Shape::Label, label
+    assert_equal tui.shape_label(x: 0.0, y: 0.0, text: "Hi"), label
+  end
+
+  # TUI Audit: Bidirectional shape aliases (*_shape)
+  def test_bidirectional_shape_aliases
+    tui = RatatuiRuby::TUI.new
+
+    # circle_shape() should be an alias for shape_circle()
+    assert_equal tui.shape_circle(x: 5.0, y: 5.0, radius: 2.5, color: :green), tui.circle_shape(x: 5.0, y: 5.0, radius: 2.5, color: :green)
+
+    # point_shape() should be an alias for shape_point()
+    assert_equal tui.shape_point(x: 1.0, y: 2.0), tui.point_shape(x: 1.0, y: 2.0)
+
+    # rectangle_shape() should be an alias for shape_rectangle()
+    # (Note: terse 'rectangle' is excluded, but 'rectangle_shape' is unambiguous)
+    assert_equal tui.shape_rectangle(x: 0.0, y: 0.0, width: 5.0, height: 5.0, color: :blue), tui.rectangle_shape(x: 0.0, y: 0.0, width: 5.0, height: 5.0, color: :blue)
+
+    # map_shape() should be an alias for shape_map()
+    assert_equal tui.shape_map(color: :yellow, resolution: :high), tui.map_shape(color: :yellow, resolution: :high)
+
+    # label_shape() should be an alias for shape_label()
+    assert_equal tui.shape_label(x: 0.0, y: 0.0, text: "Hi"), tui.label_shape(x: 0.0, y: 0.0, text: "Hi")
+  end
+
   # DWIM: Unknown keys raise in debug mode (TestHelper enables debug mode)
   def test_unknown_keys_raise_in_debug_mode
     tui = RatatuiRuby::TUI.new

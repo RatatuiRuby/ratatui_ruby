@@ -76,16 +76,65 @@ module RatatuiRuby
 
       # Returns true if the gauge has any fill (ratio > 0).
       #
-      # @return [Boolean]
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   Widgets::Gauge.new(ratio: 0.0).filled?  # => false
+      #   Widgets::Gauge.new(ratio: 0.5).filled?  # => true
+      #--
+      # SPDX-SnippetEnd
+      #++
       def filled?
         ratio > 0
       end
 
       # Returns true if the gauge is at 100% or more (ratio >= 1.0).
       #
-      # @return [Boolean]
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   Widgets::Gauge.new(ratio: 0.99).complete?  # => false
+      #   Widgets::Gauge.new(ratio: 1.0).complete?   # => true
+      #--
+      # SPDX-SnippetEnd
+      #++
       def complete?
         ratio >= 1.0
+      end
+
+      # Returns the progress as an integer percentage (0-100).
+      #
+      # Gauge stores progress as a ratio (0.0 to 1.0). User-facing code often
+      # displays percentages. Converting manually is tedious.
+      #
+      # This is the inverse of passing <tt>percent:</tt> to the constructor.
+      # Rounds down to the nearest integer.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   gauge = Widgets::Gauge.new(percent: 75)
+      #   gauge.percent  # => 75
+      #
+      #   gauge = Widgets::Gauge.new(ratio: 0.456)
+      #   gauge.percent  # => 45
+      #--
+      # SPDX-SnippetEnd
+      #++
+      def percent
+        (ratio * 100).to_i
       end
     end
   end

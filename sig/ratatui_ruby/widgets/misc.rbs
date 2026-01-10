@@ -28,17 +28,7 @@ module RatatuiRuby
       ?y: _ToI
     }
 
-    # Options hash type for LineGauge constructor arguments.
-    type line_gauge_options = {
-      ?ratio: _ToF,
-      ?label: String | Text::Span | nil,
-      ?style: Style::Style?,
-      ?filled_style: Style::Style?,
-      ?unfilled_style: Style::Style?,
-      ?block: Widgets::Block?,
-      ?filled_symbol: String,
-      ?unfilled_symbol: String
-    }
+    # NOTE: line_gauge_options and LineGauge are now defined in line_gauge.rbs
 
     # Options hash type for ListItem constructor arguments.
     type list_item_options = {
@@ -104,26 +94,7 @@ module RatatuiRuby
       def initialize: (x: _ToI, y: _ToI) -> void
     end
 
-    class LineGauge < Data
-      attr_reader ratio: Float
-      attr_reader label: (String | Text::Span)?
-      attr_reader filled_style: Style::Style?
-      attr_reader unfilled_style: Style::Style?
-      attr_reader block: Widgets::Block?
-      attr_reader filled_symbol: String
-      attr_reader unfilled_symbol: String
-
-      include CoerceableWidget
-
-      def self.coerce_args: (line_gauge_options first, ?line_gauge_options kwargs) -> LineGauge
-                          | (nil first, line_gauge_options kwargs) -> LineGauge
-
-      def self.new: (?ratio: _ToF, ?label: String | Text::Span | nil, ?style: Style::Style?, ?filled_style: Style::Style?, ?unfilled_style: Style::Style?, ?block: Widgets::Block?, ?filled_symbol: String, ?unfilled_symbol: String) -> LineGauge
-      def initialize: (?ratio: _ToF, ?label: String | Text::Span | nil, ?style: Style::Style?, ?filled_style: Style::Style?, ?unfilled_style: Style::Style?, ?block: Widgets::Block?, ?filled_symbol: String, ?unfilled_symbol: String) -> void
-
-      def filled?: () -> bool
-      def complete?: () -> bool
-    end
+    # NOTE: LineGauge is now defined in line_gauge.rbs
 
     class ListItem < Data
       attr_reader content: String | Text::Span | Text::Line

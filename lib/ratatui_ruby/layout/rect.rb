@@ -379,6 +379,37 @@ module RatatuiRuby
         )
       end
 
+      # Expands the rect by a uniform margin on all sides.
+      #
+      # Containers wrap content with decorations. Adding margin to all four edges inline is verbose.
+      # Off-by-one errors happen when you forget to double the margin.
+      #
+      # This method computes the outer area. Saturates x/y at 0 when margin exceeds position.
+      # Use Rect#clamp to constrain the result if it may exceed screen bounds.
+      #
+      # [margin] Integer expansion on all sides.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   rect = Layout::Rect.new(x: 10, y: 10, width: 20, height: 10)
+      #   rect.outer(5) # => Rect(x: 5, y: 5, width: 30, height: 20)
+      #--
+      # SPDX-SnippetEnd
+      #++
+      def outer(margin)
+        new_x = [x - margin, 0].max
+        new_y = [y - margin, 0].max
+        new_width = right + margin - new_x
+        new_height = bottom + margin - new_y
+
+        Rect.new(x: new_x, y: new_y, width: new_width, height: new_height)
+      end
+
       # Moves the rect without changing size.
       #
       # Animations and drag-and-drop shift widgets.
@@ -403,6 +434,32 @@ module RatatuiRuby
       #++
       def offset(dx, dy)
         Rect.new(x: x + dx, y: y + dy, width:, height:)
+      end
+
+      # Changes dimensions while preserving position.
+      #
+      # Window resizing and responsive layouts adjust size mid-session.
+      # Creating a new rect with the same position but different size is common.
+      #
+      # This method returns a resized copy. Position unchanged.
+      #
+      # [new_size] Size object with new dimensions.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   rect = Layout::Rect.new(x: 10, y: 5, width: 20, height: 10)
+      #   rect.resize(Size.new(width: 40, height: 20))
+      #   # => Rect(x: 10, y: 5, width: 40, height: 20)
+      #--
+      # SPDX-SnippetEnd
+      #++
+      def resize(new_size)
+        Rect.new(x:, y:, width: new_size.width, height: new_size.height)
       end
 
       # Constrains the rect to fit inside bounds.
@@ -561,6 +618,87 @@ module RatatuiRuby
       #++
       def as_size
         Size.new(width:, height:)
+      end
+
+      # Returns a new Rect, centered horizontally within this rect based on the constraint.
+      #
+      # Modal dialogs and centered content need horizontal centering.
+      # Computing the left offset manually is error-prone.
+      #
+      # This method uses Layout to compute the centered position.
+      #
+      # [constraint] Constraint defining the width of the centered area.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   rect = Layout::Rect.new(x: 0, y: 0, width: 100, height: 24)
+      #   rect.centered_horizontally(Constraint.length(40))
+      #   # => Rect(x: 30, y: 0, width: 40, height: 24)
+      #--
+      # SPDX-SnippetEnd
+      #++
+      def centered_horizontally(constraint)
+        areas = Layout.split(self, direction: :horizontal, constraints: [constraint], flex: :center)
+        areas.first
+      end
+
+      # Returns a new Rect, centered vertically within this rect based on the constraint.
+      #
+      # Modal dialogs and centered content need vertical centering.
+      # Computing the top offset manually is error-prone.
+      #
+      # This method uses Layout to compute the centered position.
+      #
+      # [constraint] Constraint defining the height of the centered area.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   rect = Layout::Rect.new(x: 0, y: 0, width: 80, height: 100)
+      #   rect.centered_vertically(Constraint.length(20))
+      #   # => Rect(x: 0, y: 40, width: 80, height: 20)
+      #--
+      # SPDX-SnippetEnd
+      #++
+      def centered_vertically(constraint)
+        areas = Layout.split(self, direction: :vertical, constraints: [constraint], flex: :center)
+        areas.first
+      end
+
+      # Returns a new Rect, centered both horizontally and vertically within this rect.
+      #
+      # Modal dialogs often need exact centering on both axes.
+      # Computing both offsets manually is tedious.
+      #
+      # This method chains centered_horizontally and centered_vertically.
+      #
+      # [horizontal_constraint] Constraint defining the width of the centered area.
+      # [vertical_constraint] Constraint defining the height of the centered area.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   rect = Layout::Rect.new(x: 0, y: 0, width: 100, height: 100)
+      #   rect.centered(Constraint.length(40), Constraint.length(20))
+      #   # => Rect(x: 30, y: 40, width: 40, height: 20)
+      #--
+      # SPDX-SnippetEnd
+      #++
+      def centered(horizontal_constraint, vertical_constraint)
+        centered_horizontally(horizontal_constraint).centered_vertically(vertical_constraint)
       end
 
       # Ruby-idiomatic aliases (TIMTOWTDI)

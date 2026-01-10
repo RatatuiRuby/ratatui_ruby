@@ -37,24 +37,26 @@ class WidgetCanvas
 
   private def render
     @tui.draw do |frame|
-      # Define shapes
+      # Define shapes using terse aliases (circle, rectangle, point, map, label)
+      # These are shorter forms of shape_circle, shape_rectangle, etc.
       shapes = []
 
-      # 1. Static Grid (Lines)
+      # 1. Static Grid (Lines) - using shape_line (no terse alias for line)
       (-100..100).step(20) do |i|
         shapes << @tui.shape_line(x1: i.to_f, y1: -100.0, x2: i.to_f, y2: 100.0, color: :gray)
         shapes << @tui.shape_line(x1: -100.0, y1: i.to_f, x2: 100.0, y2: i.to_f, color: :gray)
       end
 
-      # 2. Moving Circle (The "Player")
-      shapes << @tui.shape_circle(
+      # 2. Moving Circle (The "Player") - using terse 'circle' alias
+      shapes << @tui.circle(
         x: @x_offset,
         y: @y_offset,
         radius: 10.0,
         color: :green
       )
 
-      # 3. Static Rectangle (Target)
+      # 3. Static Rectangle (Target) - using shape_rectangle (no 'rectangle' alias
+      #    to avoid confusion with Layout::Rect)
       shapes << @tui.shape_rectangle(
         x: 30.0,
         y: 30.0,
@@ -63,16 +65,16 @@ class WidgetCanvas
         color: :red
       )
 
-      # 4. Points (Starfield)
+      # 4. Points (Starfield) - using terse 'point' alias
       # Deterministic "random" points
       10.times do |i|
-        shapes << @tui.shape_point(
+        shapes << @tui.point(
           x: ((i * 37) % 200) - 100.0,
           y: ((i * 19) % 200) - 100.0
         )
       end
 
-      # 5. Label
+      # 5. Connecting line from origin to player position
       shapes << @tui.shape_line(x1: 0.0, y1: 0.0, x2: @x_offset, y2: @y_offset, color: :yellow)
 
       canvas = @tui.canvas(

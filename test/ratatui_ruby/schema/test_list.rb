@@ -246,4 +246,23 @@ class TestList < Minitest::Test
     assert_equal :top_to_bottom, RatatuiRuby::Widgets::List::DIRECTION_TOP_TO_BOTTOM
     assert_equal :bottom_to_top, RatatuiRuby::Widgets::List::DIRECTION_BOTTOM_TO_TOP
   end
+
+  # NOTE: No 'selection' alias - it's ambiguous whether it returns an item or index.
+  # Use selected_index for the index, selected_item for the item.
+
+  # DWIM: selected_item returns the actual item at the selected index
+  def test_selected_item
+    list = RatatuiRuby::Widgets::List.new(items: %w[alpha beta gamma], selected_index: 1)
+    assert_equal "beta", list.selected_item
+  end
+
+  def test_selected_item_when_no_selection
+    list = RatatuiRuby::Widgets::List.new(items: %w[a b c])
+    assert_nil list.selected_item
+  end
+
+  def test_selected_item_with_first_item
+    list = RatatuiRuby::Widgets::List.new(items: %w[first second third], selected_index: 0)
+    assert_equal "first", list.selected_item
+  end
 end

@@ -217,6 +217,36 @@ module RatatuiRuby
 
       alias length len
       alias size len
+
+      # NOTE: No 'selection' alias - it's ambiguous whether it returns an item or index.
+      # Use selected_index for the index, selected_item for the item.
+
+      # Returns the currently selected item, or nil if nothing is selected.
+      #
+      # Accessing the selected item directly requires looking up +items[selected_index]+
+      # after checking that +selected_index+ is not nil. This is verbose.
+      #
+      # This method encapsulates that pattern.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   list = Widgets::List.new(items: %w[alpha beta gamma], selected_index: 1)
+      #   list.selected_item  # => "beta"
+      #
+      #--
+      # SPDX-SnippetEnd
+      #++
+      # Returns: The item at the selected index, or nil if no selection.
+      def selected_item
+        return nil if selected_index.nil?
+
+        items[selected_index]
+      end
     end
   end
 end

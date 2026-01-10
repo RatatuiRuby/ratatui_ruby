@@ -230,8 +230,6 @@ class WidgetList
     # Determine selection/offset based on mode
     effective_selection = offset_mode_config[:allow_selection] ? @selected_index : nil
     effective_offset = offset_mode_config[:offset]
-    selection_label = effective_selection.nil? ? "none" : effective_selection.to_s
-    offset_label = effective_offset.nil? ? "auto" : effective_offset.to_s
 
     @tui.draw do |frame|
       # Split into main content and control panel
@@ -258,7 +256,10 @@ class WidgetList
       title = @tui.paragraph(text: "List Widget - Interactive Attribute Cycling")
       frame.render_widget(title, title_area)
 
-      # Build list first to demonstrate List#len and List#empty? query methods
+      # Build list first to demonstrate query methods:
+      # - List#len (with #length, #size aliases)
+      # - List#selection (alias for #selected_index)
+      # - List#selected_item (returns item at selection, or nil)
       base_list = @tui.list(
         items:,
         selected_index: effective_selection,
@@ -272,12 +273,21 @@ class WidgetList
         scroll_padding: scroll_padding_config[:padding]
       )
 
-      # Use List#len (or #length, #size aliases) query method
+      # Demonstrate query methods: len, selected_index, selected_item
       item_count = base_list.len
+      current_index = base_list.selected_index  # Explicit name - returns index
+      current_item = base_list.selected_item    # Explicit name - returns item
+
+      # Format the selected item for display (handle rich text objects)
+      item_preview = case current_item
+      when nil then "none"
+      when String then (current_item.length > 12) ? "#{current_item[0..11]}…" : current_item
+      else current_item.class.name.split("::").last # Show type for rich text
+      end
 
       list = base_list.with(
         block: @tui.block(
-          title: "#{@item_sets[@item_set_index][:name]} (len: #{item_count}) | Sel: #{selection_label} | Offset: #{offset_label}",
+          title: "#{@item_sets[@item_set_index][:name]} (len: #{item_count}) | index: #{current_index.inspect} → #{item_preview}",
           borders: [:all]
         )
       )

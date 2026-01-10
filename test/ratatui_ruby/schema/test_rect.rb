@@ -169,6 +169,55 @@ class TestRect < Minitest::Test
     assert_equal 6, result.height
   end
 
+  # Rect#outer expands by margin (inverse of Rect#inner)
+  def test_rect_outer_expands_by_margin
+    rect = RatatuiRuby::Layout::Rect.new(x: 10, y: 10, width: 20, height: 10)
+    result = rect.outer(5)
+    assert_equal 5, result.x      # 10 - 5
+    assert_equal 5, result.y      # 10 - 5
+    assert_equal 30, result.width # 20 + 10 (5*2)
+    assert_equal 20, result.height # 10 + 10 (5*2)
+  end
+
+  def test_rect_outer_saturates_at_zero
+    # When margin exceeds position, x/y saturate at 0
+    rect = RatatuiRuby::Layout::Rect.new(x: 3, y: 2, width: 10, height: 10)
+    result = rect.outer(5)
+    assert_equal 0, result.x     # saturates at 0 (3 - 5 would be -2)
+    assert_equal 0, result.y     # saturates at 0 (2 - 5 would be -3)
+    # Width/height grow to fill the expanded area
+    assert_equal 18, result.width  # right edge was at 13, now at 18 (13 + 5)
+    assert_equal 17, result.height # bottom edge was at 12, now at 17 (12 + 5)
+  end
+
+  def test_rect_outer_is_inverse_of_inner
+    # outer(margin).inner(margin) should return the original rect
+    rect = RatatuiRuby::Layout::Rect.new(x: 10, y: 10, width: 20, height: 10)
+    result = rect.outer(3).inner(3)
+    assert_equal rect, result
+  end
+
+  # Rect#resize changes dimensions while preserving position
+  def test_rect_resize_changes_dimensions
+    rect = RatatuiRuby::Layout::Rect.new(x: 10, y: 5, width: 20, height: 10)
+    new_size = RatatuiRuby::Layout::Size.new(width: 40, height: 20)
+    result = rect.resize(new_size)
+
+    assert_equal 10, result.x      # position preserved
+    assert_equal 5, result.y       # position preserved
+    assert_equal 40, result.width  # new dimensions
+    assert_equal 20, result.height # new dimensions
+  end
+
+  def test_rect_resize_returns_new_rect
+    rect = RatatuiRuby::Layout::Rect.new(x: 10, y: 5, width: 20, height: 10)
+    new_size = RatatuiRuby::Layout::Size.new(width: 5, height: 5)
+    result = rect.resize(new_size)
+
+    refute_same rect, result # should return a new instance
+    assert_equal 20, rect.width # original unchanged
+  end
+
   def test_rect_offset
     rect = RatatuiRuby::Layout::Rect.new(x: 10, y: 5, width: 20, height: 10)
     result = rect.offset(5, 3)
@@ -236,5 +285,45 @@ class TestRect < Minitest::Test
     # Rect#size is an alias for Rect#as_size
     rect = RatatuiRuby::Layout::Rect.new(x: 10, y: 5, width: 80, height: 24)
     assert_equal rect.as_size, rect.size
+  end
+
+  # Rect#centered_horizontally centers rect within constraint
+  def test_rect_centered_horizontally
+    rect = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 100, height: 24)
+    constraint = RatatuiRuby::Layout::Constraint.length(40)
+    result = rect.centered_horizontally(constraint)
+
+    # Should be 40 wide, centered in 100 => x = 30
+    assert_equal 30, result.x
+    assert_equal 0, result.y
+    assert_equal 40, result.width
+    assert_equal 24, result.height
+  end
+
+  # Rect#centered_vertically centers rect within constraint
+  def test_rect_centered_vertically
+    rect = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 80, height: 100)
+    constraint = RatatuiRuby::Layout::Constraint.length(20)
+    result = rect.centered_vertically(constraint)
+
+    # Should be 20 tall, centered in 100 => y = 40
+    assert_equal 0, result.x
+    assert_equal 40, result.y
+    assert_equal 80, result.width
+    assert_equal 20, result.height
+  end
+
+  # Rect#centered centers rect on both axes
+  def test_rect_centered
+    rect = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 100, height: 100)
+    h_constraint = RatatuiRuby::Layout::Constraint.length(40)
+    v_constraint = RatatuiRuby::Layout::Constraint.length(20)
+    result = rect.centered(h_constraint, v_constraint)
+
+    # Should be 40x20, centered in 100x100
+    assert_equal 30, result.x     # (100 - 40) / 2
+    assert_equal 40, result.y     # (100 - 20) / 2
+    assert_equal 40, result.width
+    assert_equal 20, result.height
   end
 end

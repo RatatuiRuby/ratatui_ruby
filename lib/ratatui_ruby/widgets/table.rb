@@ -205,6 +205,9 @@ module RatatuiRuby
       def empty?
         rows.empty?
       end
+
+      # NOTE: No 'selection' alias - it's ambiguous whether it returns a row or index.
+      # Use selected_row for the row index, selected_column for the column index.
     end
   end
 end

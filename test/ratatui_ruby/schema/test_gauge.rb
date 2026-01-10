@@ -29,6 +29,22 @@ class TestGauge < Minitest::Test
     assert_in_delta 0.5, g.ratio
   end
 
+  # DWIM: percent reader converts ratio back to percentage
+  def test_percent_reader
+    g = RatatuiRuby::Widgets::Gauge.new(ratio: 0.75)
+    assert_equal 75, g.percent
+  end
+
+  def test_percent_reader_rounds_to_integer
+    g = RatatuiRuby::Widgets::Gauge.new(ratio: 0.333)
+    assert_equal 33, g.percent
+  end
+
+  def test_percent_reader_matches_percent_input
+    g = RatatuiRuby::Widgets::Gauge.new(percent: 42)
+    assert_equal 42, g.percent
+  end
+
   def test_use_unicode_attributes
     g_default = RatatuiRuby::Widgets::Gauge.new(ratio: 0.5)
     assert_equal true, g_default.use_unicode
@@ -165,6 +181,17 @@ class TestLineGauge < Minitest::Test
     refute RatatuiRuby::Widgets::LineGauge.new(ratio: 0.99).complete?
     assert RatatuiRuby::Widgets::LineGauge.new(ratio: 1.0).complete?
     assert RatatuiRuby::Widgets::LineGauge.new(ratio: 1.5).complete?
+  end
+
+  # DWIM: percent: constructor arg and percent reader
+  def test_line_gauge_percent_constructor
+    lg = RatatuiRuby::Widgets::LineGauge.new(percent: 75)
+    assert_in_delta 0.75, lg.ratio
+  end
+
+  def test_line_gauge_percent_reader
+    lg = RatatuiRuby::Widgets::LineGauge.new(ratio: 0.42)
+    assert_equal 42, lg.percent
   end
 end
 

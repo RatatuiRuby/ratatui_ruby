@@ -10,11 +10,26 @@
 module RatatuiRuby
   class TUI
     module CanvasFactories
+      # Core shape methods
       def shape_map: (?color: (String | Symbol), ?resolution: Symbol) -> Widgets::Shape::Map
       def shape_line: (x1: _ToF, y1: _ToF, x2: _ToF, y2: _ToF, color: (String | Symbol)) -> Widgets::Shape::Line
       def shape_point: (x: _ToF, y: _ToF) -> Widgets::Shape::Point
       def shape_circle: (x: _ToF, y: _ToF, radius: _ToF, color: (String | Symbol)) -> Widgets::Shape::Circle
       def shape_rectangle: (x: _ToF, y: _ToF, width: _ToF, height: _ToF, color: (String | Symbol)) -> Widgets::Shape::Rectangle
+      def shape_label: (x: _ToF, y: _ToF, ?text: String?, ?line: Text::Line?) -> Widgets::Shape::Label
+
+      # Terse aliases (DWIM) - no rectangle to avoid confusion with Layout::Rect
+      alias circle shape_circle
+      alias point shape_point
+      alias map shape_map
+      def label: (?untyped first, **untyped kwargs) -> Widgets::Shape::Label
+
+      # Bidirectional aliases (*_shape)
+      alias circle_shape shape_circle
+      alias point_shape shape_point
+      alias rectangle_shape shape_rectangle
+      alias map_shape shape_map
+      alias label_shape label
     end
   end
 end

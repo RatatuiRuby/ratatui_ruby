@@ -72,6 +72,7 @@ module RatatuiRuby
       def column_selected?: () -> bool
       def cell_selected?: () -> bool
       def empty?: () -> bool
+      # NOTE: No 'selection' alias - use selected_row or selected_column
     end
   end
 end

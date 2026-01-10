@@ -67,6 +67,19 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Layout.split_with_spacers**: New class method returns both content segments and spacer Rects, enabling custom rendering of dividers or separators between layout sections.
 - **Canvas#get_point**: Converts canvas coordinates to normalized [0.0, 1.0] grid coordinates for hit testing. Returns `nil` for out-of-bounds coordinates. Also aliased as `point` and `[]` for Ruby-idiomatic access.
 - **Row#enable_strikethrough**: Returns a new Row with `:crossed_out` modifier for indicating cancelled or deleted items. Also aliased as `strikethrough`. Note: Strikethrough (SGR 9) is not supported by all terminals; macOS Terminal.app notably lacks support while Kitty, iTerm2, Alacritty, and WezTerm render it correctly.
+- **Rect Geometry Methods**: New methods on `Rect` for geometry manipulation:
+  - `Rect#outer(margin)` — expands a rectangle by a margin (inverse of `inner`)
+  - `Rect#resize(size)` — changes dimensions while preserving top-left position
+  - `Rect#centered_horizontally(constraint)` — centers horizontally using Layout
+  - `Rect#centered_vertically(constraint)` — centers vertically using Layout
+  - `Rect#centered(h, v)` — centers on both axes
+- **TUI Shape Aliases (DWIM)**: Canvas shape factories now have terse and bidirectional aliases:
+  - Terse: `circle()`, `point()`, `map()`, `label()` (shorter forms of `shape_*`)
+  - Bidirectional: `circle_shape()`, `point_shape()`, `rectangle_shape()`, `map_shape()`, `label_shape()` (same as `shape_*`)
+  - Note: Terse `rectangle` is intentionally excluded to avoid confusion with `Layout::Rect`; use `shape_rectangle()` or `rectangle_shape()`.
+- **TUI `item` Alias**: `tui.item(...)` is now an alias for `tui.list_item(...)`, providing a terser API when building lists.
+- **Gauge and LineGauge `percent`**: Both widgets now have a `percent` reader that returns the ratio as an integer percentage (0-100). `LineGauge` also now accepts a `percent:` constructor parameter matching `Gauge`.
+- **List#selected_item**: Returns the item at the selected index (or nil if nothing is selected).
 
 ### Changed
 
