@@ -10,6 +10,8 @@ module RatatuiRuby
   #
   # This module mirrors +ratatui::layout+ and contains:
   # - {Rect} — Rectangle geometry
+  # - {Position} — Terminal coordinates
+  # - {Size} — Terminal dimensions
   # - {Constraint} — Sizing rules
   # - {Layout} — Space distribution
   module Layout
@@ -17,5 +19,7 @@ module RatatuiRuby
 end
 
 require_relative "layout/rect"
+require_relative "layout/position"
+require_relative "layout/size"
 require_relative "layout/constraint"
 require_relative "layout/layout"

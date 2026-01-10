@@ -4,16 +4,16 @@
 [0m│  Settings      ││  x:18 y:0 width:62 height:19                               │[0m
 [0m│  Logs          ││[0mEdge Accessors:[0m                                             │[0m
 [0m│  Help          ││  left:18 right:80 top:0 bottom:19                          │[0m
-[0m│                ││[0mSize Methods:[0m                                               │[0m
-[0m│                ││  area:1178 empty?:false                                    │[0m
+[0m│                ││[0mConversion Methods [0m[90m(as_position/as_size):                   │[0m
+[0m│                ││  Position: x=18 y=0  Size: 62x19                           │[0m
 [0m│                ││[0mGeometry Transformations:[0m                                   │[0m
 [0m│                ││  inner(2): x:20 y:2 w:58 h:15                              │[0m
 [0m│                ││  offset(3,2): x:21 y:2  clamp: x:0 y:0                     │[0m
 [0m│                ││  union(sidebar): w:80 h:19                                 │[0m
-[0m│                ││[0mIterators:[0m                                                  │[0m
-[0m│                ││  rows:19 columns:62 positions:1178                         │[0m
 [0m│                ││[0mHit Testing [0m[90m(Rect#contains?):                               │[0m
 [0m│                ││  Clicks: 0  |  Layout changed: sidebar_width=18            │[0m
+[0m│                ││                                                            │[0m
+[0m│                ││                                                            │[0m
 [0m│                ││                                                            │[0m
 [0m│                ││                                                            │[0m
 [0m└────────────────┘└────────────────────────────────────────────────────────────┘[0m

@@ -10,10 +10,16 @@
 module RatatuiRuby
   class TableState
     def self.new: (?Integer? selected) -> TableState
+    def self.with_selected_cell: ([Integer, Integer]? cell) -> TableState
     def select: (Integer? index) -> nil
     def selected: () -> Integer?
     def select_column: (Integer? index) -> nil
     def selected_column: () -> Integer?
+    def selected_cell: () -> [Integer, Integer]?
+    def select_next_column: () -> nil
+    def select_previous_column: () -> nil
+    def select_first_column: () -> nil
+    def select_last_column: () -> nil
     def offset: () -> Integer
     def scroll_down_by: (Integer n) -> nil
     def scroll_up_by: (Integer n) -> nil

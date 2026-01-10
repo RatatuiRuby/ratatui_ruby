@@ -66,27 +66,8 @@ class TestDraw < Minitest::Test
     end
   end
 
-  # Gap tests - verify Buffer query methods from v1.0.0_blockers.md
-  def test_buffer_content
-    skip "v1.0.0 Blocker: Buffer#content not implemented. See doc/contributors/v1.0.0_blockers.md"
-    with_test_terminal(10, 5) do
-      RatatuiRuby.draw { |f| f.render_widget(RatatuiRuby::Widgets::Paragraph.new(text: "Hi"), f.area) }
-      cells = RatatuiRuby::Buffer.content
-      refute_nil cells
-    end
-  end
-
-  def test_buffer_get
-    skip "v1.0.0 Blocker: Buffer#get not implemented. See doc/contributors/v1.0.0_blockers.md"
-    with_test_terminal(10, 5) do
-      RatatuiRuby.draw { |f| f.render_widget(RatatuiRuby::Widgets::Paragraph.new(text: "Hi"), f.area) }
-      cell = RatatuiRuby::Buffer.get(0, 0)
-      assert_equal "H", cell.char
-    end
-  end
-
+  # Buffer query methods - Note: these use computed values, not Rust bindings
   def test_buffer_index_of
-    skip "v1.0.0 Blocker: Buffer#index_of not implemented. See doc/contributors/v1.0.0_blockers.md"
     with_test_terminal(10, 5) do
       index = RatatuiRuby::Buffer.index_of(5, 2)
       assert_equal 25, index # 2 * 10 + 5
@@ -94,11 +75,38 @@ class TestDraw < Minitest::Test
   end
 
   def test_buffer_pos_of
-    skip "v1.0.0 Blocker: Buffer#pos_of not implemented. See doc/contributors/v1.0.0_blockers.md"
     with_test_terminal(10, 5) do
       x, y = RatatuiRuby::Buffer.pos_of(25)
       assert_equal 5, x
       assert_equal 2, y
+    end
+  end
+
+  def test_buffer_get
+    with_test_terminal(10, 5) do
+      RatatuiRuby.draw { |f| f.render_widget(RatatuiRuby::Widgets::Paragraph.new(text: "Hi"), f.area) }
+      cell = RatatuiRuby::Buffer.get(0, 0)
+      assert_equal "H", cell.char
+    end
+  end
+
+  def test_buffer_content
+    with_test_terminal(10, 5) do
+      RatatuiRuby.draw { |f| f.render_widget(RatatuiRuby::Widgets::Paragraph.new(text: "Hi"), f.area) }
+      cells = RatatuiRuby::Buffer.content
+      assert_equal 50, cells.size # 10 * 5 = 50 cells
+      assert_equal "H", cells[0].char
+      assert_equal "i", cells[1].char
+    end
+  end
+
+  # Ruby-idiomatic alias (TIMTOWTDI)
+  def test_buffer_subscript_alias
+    # Buffer[x, y] is an alias for Buffer.get(x, y)
+    with_test_terminal(10, 5) do
+      RatatuiRuby.draw { |f| f.render_widget(RatatuiRuby::Widgets::Paragraph.new(text: "Hi"), f.area) }
+      assert_equal RatatuiRuby::Buffer.get(0, 0), RatatuiRuby::Buffer[0, 0]
+      assert_equal "H", RatatuiRuby::Buffer[0, 0].char
     end
   end
 end

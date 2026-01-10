@@ -1,0 +1,18 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+module RatatuiRuby
+  module Buffer
+    def self.index_of: (Integer x, Integer y) -> Integer
+    def self.pos_of: (Integer index) -> [Integer, Integer]
+    def self.get: (Integer x, Integer y) -> Cell
+    def self.content: () -> Array[Cell]
+
+    # Ruby-idiomatic alias
+    alias self.[] self.get
+  end
+end

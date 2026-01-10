@@ -4,16 +4,16 @@
 │  Settings      ││  x:18 y:0 width:62 height:19                               │
 │  Logs          ││Edge Accessors:                                             │
 │  Help          ││  left:18 right:80 top:0 bottom:19                          │
-│                ││Size Methods:                                               │
-│                ││  area:1178 empty?:false                                    │
+│                ││Conversion Methods (as_position/as_size):                   │
+│                ││  Position: x=18 y=0  Size: 62x19                           │
 │                ││Geometry Transformations:                                   │
 │                ││  inner(2): x:20 y:2 w:58 h:15                              │
 │                ││  offset(3,2): x:21 y:2  clamp: x:0 y:0                     │
 │                ││  union(sidebar): w:80 h:19                                 │
-│                ││Iterators:                                                  │
-│                ││  rows:19 columns:62 positions:1178                         │
 │                ││Hit Testing (Rect#contains?):                               │
 │                ││  Clicks: 0  |  Layout changed: sidebar_width=18            │
+│                ││                                                            │
+│                ││                                                            │
 │                ││                                                            │
 │                ││                                                            │
 └────────────────┘└────────────────────────────────────────────────────────────┘

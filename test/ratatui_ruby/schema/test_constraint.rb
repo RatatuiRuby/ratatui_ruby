@@ -185,8 +185,16 @@ class TestConstraint < Minitest::Test
   end
 
   def test_constraint_apply
-    skip "v1.0.0 Blocker: Constraint#apply not implemented. See doc/contributors/v1.0.0_blockers.md"
     c = RatatuiRuby::Layout::Constraint.percentage(50)
     assert_equal 10, c.apply(20)
+  end
+
+  # Ruby-idiomatic alias (TIMTOWTDI)
+  def test_constraint_call_alias
+    # Constraint#call is an alias for Constraint#apply
+    # This allows constraints to be used as proc-like objects: constraint.(100)
+    c = RatatuiRuby::Layout::Constraint.percentage(50)
+    assert_equal c.apply(100), c.call(100)
+    assert_equal c.apply(100), c.(100) # proc-like invocation
   end
 end

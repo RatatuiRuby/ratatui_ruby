@@ -1,4 +1,4 @@
-╭Hex Color Gradient (Press 'q' or Ctrl+C to exit)──────────────────────────────╮
+╭Color.hsl + hex Gradient (Press 'q' to exit)──────────────────────────────────╮
 │                                                                              │
 │                                                                              │
 │                                                                              │

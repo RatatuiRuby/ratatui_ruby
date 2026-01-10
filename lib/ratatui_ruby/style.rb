@@ -10,8 +10,10 @@ module RatatuiRuby
   #
   # This module mirrors +ratatui::style+ and contains:
   # - {Style} — Colors and modifiers
+  # - {Color} — Color constructors
   module Style
   end
 end
 
 require_relative "style/style"
+require_relative "style/color"

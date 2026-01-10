@@ -204,6 +204,10 @@ fn init() -> Result<(), Error> {
     )?;
     m.define_module_function("_get_cell_at", function!(terminal::get_cell_at, 2))?;
     m.define_module_function("resize_terminal", function!(terminal::resize_terminal, 2))?;
+    m.define_module_function(
+        "_get_terminal_area",
+        function!(terminal::get_terminal_area, 0),
+    )?;
 
     // Register Layout.split on the Layout::Layout class (inside the Layout module)
     let layout_mod = m.const_get::<_, magnus::RModule>("Layout")?;

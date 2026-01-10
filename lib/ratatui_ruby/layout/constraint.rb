@@ -283,6 +283,55 @@ module RatatuiRuby
       def self.from_ratios(pairs)
         pairs.map { |n, d| ratio(n, d) }
       end
+
+      # Computes the size this constraint would produce given available space.
+      #
+      # Layout engines use constraints to compute actual dimensions.
+      # Calling apply lets you preview the result without rendering.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   Constraint.percentage(50).apply(100) # => 50
+      #   Constraint.length(10).apply(100)     # => 10
+      #   Constraint.min(10).apply(5)          # => 10
+      #   Constraint.max(10).apply(15)         # => 10
+      #   Constraint.ratio(1, 4).apply(100)    # => 25
+      #--
+      # SPDX-SnippetEnd
+      #++
+      #
+      # [length] Available space (Integer).
+      #
+      # Returns the computed size (Integer).
+      def apply(length)
+        length = Integer(length)
+        case type
+        when :length
+          value
+        when :percentage
+          (length * value) / 100
+        when :min
+          [value, length].max
+        when :max
+          [value, length].min
+        when :fill
+          length
+        when :ratio
+          numerator, denominator = value
+          denominator.zero? ? 0 : (length * numerator) / denominator
+        else
+          length
+        end
+      end
+
+      # Ruby-idiomatic alias (TIMTOWTDI)
+      # Allows proc-like invocation: constraint.(100)
+      alias call apply
     end
   end
 end

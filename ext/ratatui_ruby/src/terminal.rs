@@ -109,6 +109,36 @@ pub fn get_buffer_content() -> Result<String, Error> {
     }
 }
 
+pub fn get_terminal_area() -> Result<magnus::RHash, Error> {
+    let ruby = magnus::Ruby::get().unwrap();
+    let term_lock = TERMINAL.lock().unwrap();
+    if let Some(wrapper) = term_lock.as_ref() {
+        let hash = ruby.hash_new();
+        match wrapper {
+            TerminalWrapper::Crossterm(term) => {
+                let size = term.size().unwrap_or_default();
+                hash.aset("x", 0u16)?;
+                hash.aset("y", 0u16)?;
+                hash.aset("width", size.width)?;
+                hash.aset("height", size.height)?;
+            }
+            TerminalWrapper::Test(term) => {
+                let area = term.backend().buffer().area;
+                hash.aset("x", area.x)?;
+                hash.aset("y", area.y)?;
+                hash.aset("width", area.width)?;
+                hash.aset("height", area.height)?;
+            }
+        }
+        Ok(hash)
+    } else {
+        let module = ruby.define_module("RatatuiRuby")?;
+        let error_base = module.const_get::<_, magnus::RClass>("Error")?;
+        let error_class = error_base.const_get("Terminal")?;
+        Err(Error::new(error_class, "Terminal is not initialized"))
+    }
+}
+
 pub fn get_cursor_position() -> Result<Option<(u16, u16)>, Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let mut term_lock = TERMINAL.lock().unwrap();

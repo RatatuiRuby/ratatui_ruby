@@ -37,6 +37,32 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - `Line#patch_style(style)`, `Line#reset_style` — style manipulation for all spans
 - **List Query Methods**: New methods on `List` matching Ratatui's API:
   - `List#len` — number of items (with Ruby aliases `length`, `size`)
+- **TableState Navigation Methods**: New methods on `TableState` matching Ratatui's API for column navigation:
+  - `selected_cell` — returns `[row, column]` tuple when both are selected
+  - `with_selected_cell(cell)` — constructor to create state with both row and column selected
+  - `select_next_column` — select the next column (or first if none selected)
+  - `select_previous_column` — select the previous column (saturates at 0)
+  - `select_first_column` — select column 0
+  - `select_last_column` — select the last column (clamped during rendering)
+- **Buffer Query Methods**: New module methods on `Buffer` matching Ratatui's API for buffer inspection:
+  - `Buffer.content` — returns all cells as an array
+  - `Buffer.get(x, y)` — returns the Cell at the specified position
+  - `Buffer.index_of(x, y)` — converts position to linear buffer index
+  - `Buffer.pos_of(index)` — converts linear index to position coordinates
+- **Rect Conversion Methods**: New methods on `Rect` for extracting geometry components:
+  - `Rect#as_position` — returns a `Position` object containing x and y coordinates
+  - `Rect#as_size` — returns a `Size` object containing width and height
+- **Position and Size Classes**: New layout primitives matching Ratatui's API:
+  - `Layout::Position` — represents terminal coordinates (x, y)
+  - `Layout::Size` — represents terminal dimensions (width, height)
+- **Constraint#apply**: Computes the constrained size for a given available space. For example, `Constraint.percentage(50).apply(100)` returns `50`. Also aliased as `call` for proc-like invocation (`constraint.(100)`).
+- **Color Module**: New `Style::Color` module with constructors matching Ratatui's API:
+  - `Color.from_u32(0xRRGGBB)` — creates a color from a hex integer (aliased as `Color.hex`)
+  - `Color.from_hsl(h, s, l)` — creates a color from HSL values (aliased as `Color.hsl`)
+- **Ruby-Idiomatic Aliases**: All new APIs include shorter, more Ruby-ish aliases following TIMTOWTDI:
+  - `Rect#position` (alias for `as_position`), `Rect#size` (alias for `as_size`)
+  - `Buffer[x, y]` (alias for `Buffer.get`)
+  - `Constraint#call` (alias for `apply`, enables `constraint.(n)` syntax)
 
 ### Changed
 

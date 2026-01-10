@@ -212,7 +212,6 @@ class TestRect < Minitest::Test
   end
 
   def test_rect_as_position
-    skip "v1.0.0 Blocker: Rect#as_position not implemented. See doc/contributors/v1.0.0_blockers.md"
     rect = RatatuiRuby::Layout::Rect.new(x: 10, y: 5, width: 80, height: 24)
     pos = rect.as_position
     assert_equal 10, pos.x
@@ -220,10 +219,22 @@ class TestRect < Minitest::Test
   end
 
   def test_rect_as_size
-    skip "v1.0.0 Blocker: Rect#as_size not implemented. See doc/contributors/v1.0.0_blockers.md"
     rect = RatatuiRuby::Layout::Rect.new(x: 10, y: 5, width: 80, height: 24)
     size = rect.as_size
     assert_equal 80, size.width
     assert_equal 24, size.height
+  end
+
+  # Ruby-idiomatic aliases (TIMTOWTDI)
+  def test_rect_position_alias
+    # Rect#position is an alias for Rect#as_position
+    rect = RatatuiRuby::Layout::Rect.new(x: 10, y: 5, width: 80, height: 24)
+    assert_equal rect.as_position, rect.position
+  end
+
+  def test_rect_size_alias
+    # Rect#size is an alias for Rect#as_size
+    rect = RatatuiRuby::Layout::Rect.new(x: 10, y: 5, width: 80, height: 24)
+    assert_equal rect.as_size, rect.size
   end
 end

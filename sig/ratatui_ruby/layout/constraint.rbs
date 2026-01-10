@@ -28,6 +28,12 @@ module RatatuiRuby
       def self.from_maxes: (Enumerable[_ToI]) -> Array[Constraint]
       def self.from_fills: (Enumerable[_ToI]) -> Array[Constraint]
       def self.from_ratios: (Enumerable[[_ToI, _ToI]]) -> Array[Constraint]
+
+      # Instance methods
+      def apply: (_ToInt) -> Integer
+
+      # Ruby-idiomatic alias
+      alias call apply
     end
   end
 end

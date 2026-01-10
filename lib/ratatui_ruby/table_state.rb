@@ -96,5 +96,56 @@ module RatatuiRuby
     # Scrolls up by +n+ rows.
     #
     # (Native method implemented in Rust)
+
+    ##
+    # :method: selected_cell
+    # :call-seq: selected_cell() -> Array or nil
+    #
+    # Returns the currently selected cell as <tt>[row, column]</tt>.
+    # Returns +nil+ if either row or column is not selected.
+    #
+    # (Native method implemented in Rust)
+
+    ##
+    # :method: select_next_column
+    # :call-seq: select_next_column() -> nil
+    #
+    # Selects the next column, or column 0 if none selected.
+    #
+    # (Native method implemented in Rust)
+
+    ##
+    # :method: select_previous_column
+    # :call-seq: select_previous_column() -> nil
+    #
+    # Selects the previous column. Saturates at 0.
+    #
+    # (Native method implemented in Rust)
+
+    ##
+    # :method: select_first_column
+    # :call-seq: select_first_column() -> nil
+    #
+    # Selects column 0.
+    #
+    # (Native method implemented in Rust)
+
+    ##
+    # :method: select_last_column
+    # :call-seq: select_last_column() -> nil
+    #
+    # Selects the last column. The index is clamped during rendering.
+    #
+    # (Native method implemented in Rust)
+
+    ##
+    # :singleton-method: with_selected_cell
+    # :call-seq: with_selected_cell(cell) -> TableState
+    #
+    # Creates a new TableState with both row and column selected.
+    #
+    # [cell] <tt>[row, column]</tt> array, or +nil+.
+    #
+    # (Native method implemented in Rust)
   end
 end

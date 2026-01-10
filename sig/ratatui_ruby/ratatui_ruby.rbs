@@ -97,5 +97,8 @@ module RatatuiRuby
   # Headless mode
   def self.headless!: () -> void
   def self.headless?: () -> bool
+
+  # Terminal area accessor (internal, returns Hash with String keys from Rust FFI)
+  def self._get_terminal_area: () -> Hash[String, Integer]
 end
 

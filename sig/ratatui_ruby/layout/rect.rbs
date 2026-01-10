@@ -44,6 +44,14 @@ module RatatuiRuby
                  | () { (Rect) -> void } -> void
       def positions: () -> Enumerator[[Integer, Integer], void]
                    | () { ([Integer, Integer]) -> void } -> void
+
+      # Conversions
+      def as_position: () -> Position
+      def as_size: () -> Size
+
+      # Ruby-idiomatic aliases
+      alias position as_position
+      alias size as_size
     end
   end
 end

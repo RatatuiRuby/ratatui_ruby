@@ -4,16 +4,16 @@
 [0m│  Settings        ││  x:20 y:0 width:60 height:19                             │[0m
 [0m│  Logs            ││[0mEdge Accessors:[0m                                           │[0m
 [0m│  Help            ││  left:20 right:80 top:0 bottom:19                        │[0m
-[0m│                  ││[0mSize Methods:[0m                                             │[0m
-[0m│                  ││  area:1140 empty?:false                                  │[0m
+[0m│                  ││[0mConversion Methods [0m[90m(as_position/as_size):                 │[0m
+[0m│                  ││  Position: x=20 y=0  Size: 60x19                         │[0m
 [0m│                  ││[0mGeometry Transformations:[0m                                 │[0m
 [0m│                  ││  inner(2): x:22 y:2 w:56 h:15                            │[0m
 [0m│                  ││  offset(3,2): x:23 y:2  clamp: x:0 y:0                   │[0m
 [0m│                  ││  union(sidebar): w:80 h:19                               │[0m
-[0m│                  ││[0mIterators:[0m                                                │[0m
-[0m│                  ││  rows:19 columns:60 positions:1140                       │[0m
 [0m│                  ││[0mHit Testing [0m[90m(Rect#contains?):                             │[0m
 [0m│                  ││  Clicks: 0  |  Click any panel to test Rect#contains?    │[0m
+[0m│                  ││                                                          │[0m
+[0m│                  ││                                                          │[0m
 [0m│                  ││                                                          │[0m
 [0m│                  ││                                                          │[0m
 [0m└──────────────────┘└──────────────────────────────────────────────────────────┘[0m

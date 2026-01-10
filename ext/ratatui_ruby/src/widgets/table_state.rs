@@ -69,6 +69,40 @@ impl RubyTableState {
         self.inner.borrow_mut().scroll_up_by(amount);
     }
 
+    /// Returns the currently selected cell as (row, column) tuple.
+    /// Returns None if either row or column is not selected.
+    pub fn selected_cell(&self) -> Option<(usize, usize)> {
+        self.inner.borrow().selected_cell()
+    }
+
+    /// Selects the next column or the first one if no column is selected.
+    pub fn select_next_column(&self) {
+        self.inner.borrow_mut().select_next_column();
+    }
+
+    /// Selects the previous column or the last one if no column is selected.
+    pub fn select_previous_column(&self) {
+        self.inner.borrow_mut().select_previous_column();
+    }
+
+    /// Selects the first column.
+    pub fn select_first_column(&self) {
+        self.inner.borrow_mut().select_first_column();
+    }
+
+    /// Selects the last column.
+    pub fn select_last_column(&self) {
+        self.inner.borrow_mut().select_last_column();
+    }
+
+    /// Creates a new `RubyTableState` with a selected cell (row, column).
+    pub fn with_selected_cell(cell: Option<(usize, usize)>) -> Self {
+        let state = TableState::default().with_selected_cell(cell);
+        Self {
+            inner: RefCell::new(state),
+        }
+    }
+
     /// Borrows the inner `TableState` mutably for rendering.
     pub fn borrow_mut(&self) -> std::cell::RefMut<'_, TableState> {
         self.inner.borrow_mut()
@@ -79,12 +113,33 @@ impl RubyTableState {
 pub fn register(ruby: &Ruby, module: magnus::RModule) -> Result<(), Error> {
     let class = module.define_class("TableState", ruby.class_object())?;
     class.define_singleton_method("new", function!(RubyTableState::new, 1))?;
+    class.define_singleton_method(
+        "with_selected_cell",
+        function!(RubyTableState::with_selected_cell, 1),
+    )?;
     class.define_method("select", method!(RubyTableState::select, 1))?;
     class.define_method("selected", method!(RubyTableState::selected, 0))?;
     class.define_method("select_column", method!(RubyTableState::select_column, 1))?;
     class.define_method(
         "selected_column",
         method!(RubyTableState::selected_column, 0),
+    )?;
+    class.define_method("selected_cell", method!(RubyTableState::selected_cell, 0))?;
+    class.define_method(
+        "select_next_column",
+        method!(RubyTableState::select_next_column, 0),
+    )?;
+    class.define_method(
+        "select_previous_column",
+        method!(RubyTableState::select_previous_column, 0),
+    )?;
+    class.define_method(
+        "select_first_column",
+        method!(RubyTableState::select_first_column, 0),
+    )?;
+    class.define_method(
+        "select_last_column",
+        method!(RubyTableState::select_last_column, 0),
     )?;
     class.define_method("offset", method!(RubyTableState::offset, 0))?;
     class.define_method("scroll_down_by", method!(RubyTableState::scroll_down_by, 1))?;

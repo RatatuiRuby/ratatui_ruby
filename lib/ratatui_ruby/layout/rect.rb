@@ -516,6 +516,56 @@ module RatatuiRuby
           end
         end
       end
+
+      # Extracts the position (x, y) from this rect.
+      #
+      # Layout code sometimes separates position from size.
+      # Extracting x and y into multiple variables is verbose.
+      #
+      # This method returns a Position object containing just the coordinates.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   rect = Layout::Rect.new(x: 10, y: 5, width: 80, height: 24)
+      #   rect.as_position # => Position(x: 10, y: 5)
+      #--
+      # SPDX-SnippetEnd
+      #++
+      def as_position
+        Position.new(x:, y:)
+      end
+
+      # Extracts the size (width, height) from this rect.
+      #
+      # Layout code sometimes separates size from position.
+      # Extracting width and height into multiple variables is verbose.
+      #
+      # This method returns a Size object containing just the dimensions.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   rect = Layout::Rect.new(x: 10, y: 5, width: 80, height: 24)
+      #   rect.as_size # => Size(width: 80, height: 24)
+      #--
+      # SPDX-SnippetEnd
+      #++
+      def as_size
+        Size.new(width:, height:)
+      end
+
+      # Ruby-idiomatic aliases (TIMTOWTDI)
+      alias position as_position
+      alias size as_size
     end
   end
 end

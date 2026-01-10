@@ -62,13 +62,11 @@ class TestStyle < Minitest::Test
 
   # Gap tests - verify Color constructors from v1.0.0_blockers.md
   def test_color_from_u32
-    skip "v1.0.0 Blocker: Color.from_u32 not implemented. See doc/contributors/v1.0.0_blockers.md"
     color = RatatuiRuby::Style::Color.from_u32(0xFF0000) # Red
     refute_nil color
   end
 
   def test_color_from_hsl
-    skip "v1.0.0 Blocker: Color.from_hsl not implemented. See doc/contributors/v1.0.0_blockers.md"
     color = RatatuiRuby::Style::Color.from_hsl(0, 100, 50) # Red
     refute_nil color
   end
@@ -77,5 +75,16 @@ class TestStyle < Minitest::Test
     skip "v1.0.0 Blocker: Color.from_hsluv not implemented. See doc/contributors/v1.0.0_blockers.md"
     color = RatatuiRuby::Style::Color.from_hsluv(0, 100, 50)
     refute_nil color
+  end
+
+  # Ruby-idiomatic aliases (TIMTOWTDI)
+  def test_color_hex_alias
+    # Color.hex is an alias for Color.from_u32
+    assert_equal RatatuiRuby::Style::Color.from_u32(0xFF0000), RatatuiRuby::Style::Color.hex(0xFF0000)
+  end
+
+  def test_color_hsl_alias
+    # Color.hsl is an alias for Color.from_hsl
+    assert_equal RatatuiRuby::Style::Color.from_hsl(120, 100, 50), RatatuiRuby::Style::Color.hsl(120, 100, 50)
   end
 end

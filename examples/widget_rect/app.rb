@@ -97,6 +97,10 @@ class WidgetRect
     clamped = r.clamp(bounds)
     union_r = r.union(@sidebar_rect)
 
+    # Extract position and size from rect
+    pos = r.position # => Position(x:, y:)
+    size = r.size    # => Size(width:, height:)
+
     text_content = [
       @tui.text_line(spans: [
         @tui.text_span(content: "Active View: ", style: @label_style),
@@ -112,19 +116,16 @@ class WidgetRect
       ]),
       "  left:#{r.left} right:#{r.right} top:#{r.top} bottom:#{r.bottom}",
       @tui.text_line(spans: [
-        @tui.text_span(content: "Size Methods:", style: @label_style),
+        @tui.text_span(content: "Conversion Methods ", style: @label_style),
+        @tui.text_span(content: "(as_position/as_size):", style: @dim_style),
       ]),
-      "  area:#{r.area} empty?:#{r.empty?}",
+      "  Position: x=#{pos.x} y=#{pos.y}  Size: #{size.width}x#{size.height}",
       @tui.text_line(spans: [
         @tui.text_span(content: "Geometry Transformations:", style: @label_style),
       ]),
       "  inner(2): x:#{inner_r.x} y:#{inner_r.y} w:#{inner_r.width} h:#{inner_r.height}",
       "  offset(3,2): x:#{offset_r.x} y:#{offset_r.y}  clamp: x:#{clamped.x} y:#{clamped.y}",
       "  union(sidebar): w:#{union_r.width} h:#{union_r.height}",
-      @tui.text_line(spans: [
-        @tui.text_span(content: "Iterators:", style: @label_style),
-      ]),
-      "  rows:#{r.height} columns:#{r.width} positions:#{r.area}",
       @tui.text_line(spans: [
         @tui.text_span(content: "Hit Testing ", style: @label_style),
         @tui.text_span(content: "(Rect#contains?):", style: @dim_style),

@@ -206,6 +206,11 @@ class WidgetLayoutSplit
   end
 
   private def render_controls(frame, area)
+    # Demonstrate Constraint#call - show computed sizes for 100 units
+    constraints = current_constraints
+    applied = constraints.map { |c| c.(100) } # proc-like invocation
+    apply_str = "constraint.(100): #{applied.join(', ')}"
+
     controls = @tui.block(
       title: "Controls",
       borders: [:all],
@@ -221,12 +226,13 @@ class WidgetLayoutSplit
             ]),
             @tui.text_line(spans: [
               @tui.text_span(content: "c", style: @hotkey_style),
-              @tui.text_span(content: ": Constraints (#{current_constraint_name})"),
-            ]),
-            # Row 3: Quit
-            @tui.text_line(spans: [
+              @tui.text_span(content: ": Constraints (#{current_constraint_name})  "),
               @tui.text_span(content: "q", style: @hotkey_style),
               @tui.text_span(content: ": Quit"),
+            ]),
+            # Row 3: Apply demonstration
+            @tui.text_line(spans: [
+              @tui.text_span(content: apply_str, style: @tui.style(fg: :dark_gray)),
             ]),
           ]
         ),
