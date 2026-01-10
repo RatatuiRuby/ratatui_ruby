@@ -26,6 +26,27 @@ module RatatuiRuby
   #
   # Use it within <tt>RatatuiRuby.run</tt> to build your interface cleanly.
   #
+  # == "Do What I Mean" (DWIM) Coercion
+  #
+  # The TUI factories add a *DWIM argument coercion layer* that the underlying
+  # Widget classes don't have. This means:
+  #
+  # - <tt>tui.table(rows: [...])</tt> coerces types, normalizes arrays, etc.
+  # - <tt>RatatuiRuby::Widgets::Table.new(rows: [...])</tt> passes arguments directly
+  #--
+  # SPDX-SnippetBegin
+  # SPDX-FileCopyrightText: 2026 Kerrick Long
+  # SPDX-License-Identifier: MIT-0
+  #++
+  #   to Rust without coercion — invalid types will raise <tt>TypeError</tt>.
+  #
+  #--
+  # SPDX-SnippetEnd
+  #++
+  # If you bypass the factories and call <tt>Widgets::Table.new</tt> directly,
+  # you're responsible for providing correctly-typed arguments. This is useful
+  # for debugging (to trigger real Rust TypeErrors) or performance-critical code.
+  #
   # == Thread/Ractor Safety
   #
   # Session is an *I/O handle*, not a data object. It has side effects (draw,
@@ -39,7 +60,7 @@ module RatatuiRuby
   # [Core] Terminal operations: draw, poll_event, get_cell_at, draw_cell.
   # [LayoutFactories] Layout helpers: rect, constraint_*, layout, layout_split.
   # [StyleFactories] Style helpers: style.
-  # [WidgetFactories] Widget creation: block, paragraph, list, table, etc.
+  # [WidgetFactories] Widget creation: block, paragraph, list, table, etc. (DWIM coercion)
   # [TextFactories] Text helpers: span, line, text_width.
   # [StateFactories] State objects: list_state, table_state, scrollbar_state.
   # [CanvasFactories] Canvas shapes: shape_map, shape_line, shape_point, etc.

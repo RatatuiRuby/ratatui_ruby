@@ -96,8 +96,9 @@ module RatatuiRuby
     # Auto-enables debug mode when TestHelper is included.
     #
     # This ensures Rust backtraces are available in tests.
+    # Skips remote debugging since tests don't need it.
     def self.included(base)
-      RatatuiRuby::Debug.enable!
+      RatatuiRuby::Debug.enable!(source: :test)
     end
 
     include Terminal

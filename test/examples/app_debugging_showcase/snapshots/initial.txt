@@ -1,0 +1,24 @@
+┌─────────────────────────────────── Status ───────────────────────────────────┐
+│                    RR_DEBUG=1 detected — debug mode active                   │
+└──────────────────────────────────────────────────────────────────────────────┘
+┌ Current Debug Configuration ─────────────────────────────────────────────────┐
+│Rust Backtraces:  ✓ enabled                                                   │
+│Full Debug Mode:  ✓ enabled                                                   │
+│Remote Debugging: ✗ not configured                                            │
+└──────────────────────────────────────────────────────────────────────────────┘
+┌ Available Actions ───────────────────────────────────────────────────────────┐
+│[d] Enable debug_mode! and show socket info                                   │
+│[p] Trigger test_panic! to verify backtrace visibility                        │
+│[t] Cause TypeError (pass wrong type to widget)                               │
+│[b] Refresh debug status                                                      │
+└──────────────────────────────────────────────────────────────────────────────┘
+┌ Remote Debugging ────────────────────────────────────────────────────────────┐
+│Socket: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX│
+│Attach: rdbg --attach                                                         │
+│Hint: type 'continue' if you see SIGURG                                       │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+                                                                                
+┌──────────────────────────────────────────────────────────────────────────────┐
+│     [d] debug_mode!  [p] test_panic!  [t] TypeError  [b] status  [q] quit    │
+└──────────────────────────────────────────────────────────────────────────────┘

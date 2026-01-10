@@ -7,21 +7,24 @@
 
 TUI applications are harder to debug than typical Ruby programs. The terminal is in raw mode. Standard output corrupts the display. Debuggers that rely on REPL input conflict with the event loop. Rust panics produce cryptic stack traces without symbols.
 
-This guide covers the tools RatatuiRuby provides and explains what works (and what does not) when debugging TUI apps.
+This guide covers what RatatuiRuby offers and what works (and what does not) when debugging TUI apps.
 
 ## Debug Mode
 
-RatatuiRuby ships with debug symbols in release builds. Call `RatatuiRuby::Debug.enable!` to activate Rust backtraces with meaningful stack frames.
+RatatuiRuby ships with debug symbols in release builds. Call `RatatuiRuby::Debug.enable!` to get Rust backtraces with meaningful stack frames.
 
 ### Activation Methods
 
-Three ways to enable debug features:
+You can turn on debug features in three ways.
 
-1. **Environment variable (Rust only):** `RUST_BACKTRACE=1` enables Rust backtraces without Ruby-side debug features.
+1. **Environment variable (Rust only):** `RUST_BACKTRACE=1` turns on Rust backtraces without Ruby-side debug features.
 
-2. **Environment variable (full):** `RR_DEBUG=1` enables full debug mode at process startup.
+2. **Environment variable (full):** `RR_DEBUG=1` turns on full debug mode at process startup.
 
 3. **Programmatic:** Call `RatatuiRuby.debug_mode!` or `RatatuiRuby::Debug.enable!`.
+
+> [!WARNING]
+> Debug mode opens a remote debugging socket. This is a **security vulnerability**. Do not use it in production. See [Remote Debugging](#remote-debugging) for details.
 
 Including `RatatuiRuby::TestHelper` auto-enables debug mode. Test authors get backtraces automatically.
 
@@ -41,11 +44,38 @@ RatatuiRuby.debug_mode!
 ```
 <!-- SPDX-SnippetEnd -->
 
-## Debugging Rendering Issues
+### Panics vs. Exceptions
+
+Rust backtraces only appear for **panics** (unrecoverable crashes). When Rust code raises a Ruby exception (like `TypeError`), Ruby handles the backtrace. Rust provides the error message.
+
+| Error Type | Backtrace | When It Happens |
+|------------|-----------|-----------------|
+| **Panic** | Rust stack trace | Internal Rust bug, `Debug.test_panic!` |
+| **Exception** | Ruby stack trace | Type mismatch, invalid arguments |
+
+The `RUST_BACKTRACE=1` environment variable and `Debug.enable!` affect panic backtraces. Exceptions always show Ruby backtraces, but RatatuiRuby includes **contextual error messages** showing the actual value that caused the error:
+
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
+```
+# Without context (generic):
+expected array for rows
+
+# With context (RatatuiRuby):
+expected array for rows, got 42
+```
+<!-- SPDX-SnippetEnd -->
+
+## Inspecting the Buffer
+
+The following methods help you debug rendering issues from tests or scripts.
 
 ### print_buffer
 
-The `print_buffer` method outputs the current terminal buffer to STDOUT with full ANSI colors. Call it inside `with_test_terminal` to see exactly what would render.
+Outputs the current terminal buffer to STDOUT with full ANSI colors. Call it inside `with_test_terminal` to see exactly what would render.
 
 <!-- SPDX-SnippetBegin -->
 <!--
@@ -62,7 +92,7 @@ end
 
 ### buffer_content
 
-The `buffer_content` method returns the terminal buffer as an array of strings (one per row). Use it for programmatic inspection.
+Returns the terminal buffer as an array of strings (one per row). Use it for programmatic inspection.
 
 <!-- SPDX-SnippetBegin -->
 <!--
@@ -79,7 +109,7 @@ end
 
 ### get_cell
 
-The `get_cell(x, y)` method returns a `Buffer::Cell` with the character, foreground color, background color, and modifiers at specific coordinates.
+Returns a `Buffer::Cell` with the character, foreground color, background color, and modifiers at specific coordinates.
 
 <!-- SPDX-SnippetBegin -->
 <!--
@@ -156,7 +186,88 @@ end
 ```
 <!-- SPDX-SnippetEnd -->
 
-**Log to a file.** Write debug output to a log file instead of stdout.
+## Remote Debugging
+
+Debug mode uses [Ruby's `debug` gem](https://rubygems.org/gems/debug) for [remote debugging](https://github.com/ruby/debug?tab=readme-ov-file#readme). Attach from another terminal (or IDE or Chrome DevTools) while the TUI runs.
+
+![Debugging Showcase](../images/app_debugging_showcase.gif)
+
+For a hands-on demo, see the [Debugging Showcase](../../examples/app_debugging_showcase/README.md) example.
+
+Debug mode loads the `debug` gem and creates a UNIX domain socket. Debuggers attach from another terminal. This works well for TUI apps since the main terminal is in raw mode.
+
+### How It Works
+
+- **`RR_DEBUG=1`**: Loads `debug/open`. The app stops at startup and waits for a debugger to attach.
+- **`RatatuiRuby.debug_mode!`**: Loads `debug/open_nonstop`. The app continues running. Attach whenever you want.
+
+Attach from another terminal with `rdbg --attach`.
+
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
+```sh
+$ rdbg --attach
+```
+<!-- SPDX-SnippetEnd -->
+
+> [!CAUTION]
+> Remote debugging opens a backdoor to your application. This is a **security vulnerability**. The `debug/open_nonstop` mode is particularly dangerous because it allows attachment at any time. Do not run debug mode in production. Anyone who can access the socket can execute arbitrary code.
+
+### Example: Debugging a Running TUI
+
+Terminal 1 (your app):
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
+```sh
+$ ruby my_tui_app.rb
+# App starts, TUI is running
+# In your code: RatatuiRuby.debug_mode!
+# Console shows: DEBUGGER: Debugger can attach via UNIX domain socket (...)
+```
+<!-- SPDX-SnippetEnd -->
+
+Terminal 2 (debugger):
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
+```sh
+$ rdbg --attach
+# Now you have a full debugger REPL
+(rdbg) info locals
+(rdbg) break MyApp#handle_key
+(rdbg) continue
+```
+<!-- SPDX-SnippetEnd -->
+
+### Requirements
+
+Add the `debug` gem to your Gemfile:
+
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
+```ruby
+gem "debug", ">= 1.0"
+```
+<!-- SPDX-SnippetEnd -->
+
+If `RR_DEBUG=1` is set but the debug gem is missing, RatatuiRuby raises a `LoadError` with installation instructions.
+
+## File Logging
+
+You can write debug output to a log file instead of stdout.
+
+### Basic Logging
 
 <!-- SPDX-SnippetBegin -->
 <!--
@@ -173,9 +284,92 @@ end
 ```
 <!-- SPDX-SnippetEnd -->
 
+Then tail the log in a separate terminal.
+
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
+```bash
+tail -f debug.log
+```
+<!-- SPDX-SnippetEnd -->
+
+### Timestamped Logging
+
+For high-frequency logging (like inside a render loop), use timestamped files to avoid overwrites:
+
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
+```ruby
+FileUtils.mkdir_p(File.join(Dir.tmpdir, "my_debug"))
+timestamp = Time.now.strftime('%Y%m%d_%H%M%S_%N')
+File.write(
+  File.join(Dir.tmpdir, "my_debug", "#{timestamp}.log"),
+  "variable=#{value.inspect}\n"
+)
+```
+<!-- SPDX-SnippetEnd -->
+
+Then tail the directory.
+
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
+```bash
+watch -n 0.5 'ls -la /tmp/my_debug/ && cat /tmp/my_debug/*.log'
+```
+<!-- SPDX-SnippetEnd -->
+
+## REPL Without the TUI
+
+Unit tests verify correctness, but sometimes you want to poke at objects interactively. Wrap your main execution in a guard:
+
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
+```ruby
+if __FILE__ == $PROGRAM_NAME
+  MyApp.new.run
+end
+```
+<!-- SPDX-SnippetEnd -->
+
+Then load the file without entering raw mode.
+
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
+```bash
+ruby -e 'load "./bin/my_tui"; obj = MyClass.new; puts obj.result'
+```
+<!-- SPDX-SnippetEnd -->
+
+This exercises domain logic without the terminal conflict. Use it for exploration. Write tests with [TestHelper](application_testing.md) for regression coverage.
+
+## Isolating Terminal Issues
+
+Sometimes code works in a `ruby -e` script but fails in the TUI. Here are common causes.
+
+1. **Thread context.** Ruby threads share the process's terminal state.
+2. **Raw mode.** External commands fail when stdin/stdout are reconfigured.
+3. **SSH/Git auth.** Commands that prompt for credentials hang or return empty.
+
+See [Async Operations](./async.md) for solutions.
+
 ## Error Classes
 
-RatatuiRuby provides semantic exception classes for different failure modes:
+RatatuiRuby has semantic exception classes for different failure modes:
 
 | Class | Meaning |
 |-------|---------|
@@ -204,4 +398,4 @@ end
 ## Further Reading
 
 - [Application Testing Guide](application_testing.md) — Test helpers, snapshots, event injection
-- [RatatuiRuby::Debug](../lib/ratatui_ruby/debug.rb) — Debug module source
+- [RatatuiRuby::Debug](../../lib/ratatui_ruby/debug.rb) — Debug module source

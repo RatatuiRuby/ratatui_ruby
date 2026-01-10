@@ -258,20 +258,25 @@ These larger examples combine widgets into complete applications, demonstrating 
 |-------------|--------------|-------------------|
 | [All Events](../examples/app_all_events/app.rb) | Model-View-Update | Event handling, unidirectional data flow, scalable structure |
 | [Color Picker](../examples/app_color_picker/app.rb) | Component-Based | Hit testing, modal dialogs, encapsulated state |
+| [Debugging Showcase](../examples/app_debugging_showcase/app.rb) | Simple Loop | Remote debugging, Rust backtraces, improved error messages |
 | [Login Form](../examples/app_login_form/app.rb) | Overlay + Center | Modal forms, cursor positioning, text input |
 | [Stateful Interaction](../examples/app_stateful_interaction/app.rb) | State Objects | ListState/TableState, offset read-back, mouse click-to-row |
 
 #### All Events
 
-[![all_events](./images/app_all_events.png)](../examples/app_all_events/README.md)
+[![all_events](../images/app_all_events.png)](../examples/app_all_events/README.md)
 
 #### Color Picker
 
-[![color_picker](./images/app_color_picker.png)](../examples/app_color_picker/README.md)
+[![color_picker](../images/app_color_picker.png)](../examples/app_color_picker/README.md)
+
+#### Debugging Showcase
+
+[![debugging_showcase](../images/app_debugging_showcase.gif)](../examples/app_debugging_showcase/README.md)
 
 #### Login Form
 
-[![login_form](./images/app_login_form.png)](../examples/app_login_form/README.md)
+[![login_form](../images/app_login_form.png)](../examples/app_login_form/README.md)
 
 
 ## Next Steps

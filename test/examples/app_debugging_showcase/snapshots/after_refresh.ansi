@@ -1,0 +1,24 @@
+[0m[33m┌─────────────────────────────────── Status ───────────────────────────────────┐[0m
+[0m[33m│                      Debug status refreshed at XX:XX:XX                      [33m│[0m
+[0m[33m└──────────────────────────────────────────────────────────────────────────────┘[0m
+[0m[36m┌ Current Debug Configuration ─────────────────────────────────────────────────┐[0m
+[0m[36m│Rust Backtraces:  ✓ enabled                                                   [36m│[0m
+[0m[36m│Full Debug Mode:  ✓ enabled                                                   [36m│[0m
+[0m[36m│Remote Debugging: ✗ not configured                                            [36m│[0m
+[0m[36m└──────────────────────────────────────────────────────────────────────────────┘[0m
+[0m[32m┌ Available Actions ───────────────────────────────────────────────────────────┐[0m
+[0m[32m│[d] Enable debug_mode! and show socket info                                   [32m│[0m
+[0m[32m│[p] Trigger test_panic! to verify backtrace visibility                        [32m│[0m
+[0m[32m│[t] Cause TypeError (pass wrong type to widget)                               [32m│[0m
+[0m[32m│[b] Refresh debug status                                                      [32m│[0m
+[0m[32m└──────────────────────────────────────────────────────────────────────────────┘[0m
+[0m[35m┌ Remote Debugging ────────────────────────────────────────────────────────────┐[0m
+[0m[35m│Socket: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX│[0m
+[0m[35m│Attach: rdbg --attach                                                         [35m│[0m
+[0m[35m│Hint: type 'continue' if you see SIGURG                                       [35m│[0m
+[0m[35m│                                                                              [35m│[0m
+[0m[35m└──────────────────────────────────────────────────────────────────────────────┘[0m
+[0m                                                                                [0m
+[0m[90m┌──────────────────────────────────────────────────────────────────────────────┐[0m
+[0m[90m│     [d] debug_mode!  [p] test_panic!  [t] TypeError  [b] status  [q] quit    [90m│[0m
+[0m[90m└──────────────────────────────────────────────────────────────────────────────┘[0m

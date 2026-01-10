@@ -1,0 +1,8 @@
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
+# Minimal stub for debug gem's DEBUGGER__ constant
+# Full library causes Steep deadlock on Ruby 4.0 (Steep 1.10.0 threading issue)
+module DEBUGGER__
+  def self.create_unix_domain_socket_name: () -> String?
+end

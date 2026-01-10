@@ -49,4 +49,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake-compiler", "~> 1.2"
   spec.add_development_dependency "rdoc", "~> 7.0"
   spec.add_development_dependency "faker", "~> 3.5.3"
+  spec.add_development_dependency "debug", ">= 1.0"
 end

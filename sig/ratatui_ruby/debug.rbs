@@ -8,12 +8,18 @@ module RatatuiRuby
   module Debug
     @rust_backtrace_enabled: bool
     @debug_mode_enabled: bool
+    @remote_debugging_mode: (:open | :open_nonstop)?
+    @socket_path: String?
+
+    type source = :env | :test | :programmatic
 
     # Enables Rust backtraces only.
     def self.enable_rust_backtrace!: () -> void
 
     # Enables full debug mode (Rust backtraces + Ruby-side features).
-    def self.enable!: () -> void
+    # Returns the socket path for remote debugging (nil on Windows or in test mode).
+    # source: :env (from RR_DEBUG), :test (from TestHelper), :programmatic (default)
+    def self.enable!: (?source: source) -> String?
 
     # Returns whether full debug mode is enabled.
     def self.enabled?: () -> bool
@@ -21,11 +27,19 @@ module RatatuiRuby
     # Returns whether Rust backtraces are enabled.
     def self.rust_backtrace_enabled?: () -> bool
 
+    # Returns the remote debugging mode for debug gem integration.
+    def self.remote_debugging_mode: () -> (:open | :open_nonstop)?
+
     # Triggers a Rust panic for backtrace verification.
     # WARNING: Crashes your process. Use only for debugging.
     def self.test_panic!: () -> bot
 
     # Temporarily suppresses Ruby-side debug mode checks within the block.
     def self.suppress_debug_mode: [T] () { () -> T } -> T
+
+    private
+
+    # Enables remote debugging via the debug gem. Returns socket path.
+    def self.enable_remote_debugging!: () -> String?
   end
 end
