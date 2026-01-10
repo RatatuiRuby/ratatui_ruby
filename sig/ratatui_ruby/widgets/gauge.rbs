@@ -11,21 +11,21 @@ module RatatuiRuby
   module Widgets
     # Options hash type for Gauge constructor arguments.
     type gauge_options = {
-      ?ratio: Numeric?,
-      ?percent: Numeric?,
+      ?ratio: _ToF?,
+      ?percent: _ToF?,
       ?label: String | Text::Span | nil,
-      ?style: Style?,
-      ?gauge_style: Style?,
-      ?block: Block?,
+      ?style: Style::Style?,
+      ?gauge_style: Style::Style?,
+      ?block: Widgets::Block?,
       ?use_unicode: bool
     }
 
     class Gauge < Data
       attr_reader ratio: Float
       attr_reader label: (String | Text::Span)?
-      attr_reader style: Style?
-      attr_reader gauge_style: Style?
-      attr_reader block: Block?
+      attr_reader style: Style::Style?
+      attr_reader gauge_style: Style::Style?
+      attr_reader block: Widgets::Block?
       attr_reader use_unicode: bool
 
       include CoerceableWidget
@@ -33,8 +33,8 @@ module RatatuiRuby
       def self.coerce_args: (gauge_options first, ?gauge_options kwargs) -> Gauge
                           | (nil first, gauge_options kwargs) -> Gauge
 
-      def self.new: (?ratio: Numeric?, ?percent: Numeric?, ?label: String | Text::Span | nil, ?style: Style?, ?gauge_style: Style?, ?block: Block?, ?use_unicode: bool) -> Gauge
-      def initialize: (?ratio: Numeric?, ?percent: Numeric?, ?label: String | Text::Span | nil, ?style: Style?, ?gauge_style: Style?, ?block: Block?, ?use_unicode: bool) -> void
+      def self.new: (?ratio: _ToF?, ?percent: _ToF?, ?label: String | Text::Span | nil, ?style: Style::Style?, ?gauge_style: Style::Style?, ?block: Widgets::Block?, ?use_unicode: bool) -> Gauge
+      def initialize: (?ratio: _ToF?, ?percent: _ToF?, ?label: String | Text::Span | nil, ?style: Style::Style?, ?gauge_style: Style::Style?, ?block: Widgets::Block?, ?use_unicode: bool) -> void
 
       def filled?: () -> bool
       def complete?: () -> bool

@@ -14,8 +14,8 @@ module RatatuiRuby
       ?datasets: Array[Dataset],
       ?x_axis: Axis,
       ?y_axis: Axis,
-      ?block: Block?,
-      ?style: Style?,
+      ?block: Widgets::Block?,
+      ?style: Style::Style?,
       ?legend_position: Symbol?,
       ?hidden_legend_constraints: Array[Layout::Constraint]
     }
@@ -23,8 +23,8 @@ module RatatuiRuby
     # Options hash type for Dataset constructor arguments.
     type dataset_options = {
       ?name: String | Symbol,
-      ?data: Array[[Numeric, Numeric]],
-      ?style: Style?,
+      ?data: Array[[_ToF, _ToF]],
+      ?style: Style::Style?,
       ?marker: Symbol,
       ?graph_type: Symbol
     }
@@ -32,9 +32,9 @@ module RatatuiRuby
     # Options hash type for Axis constructor arguments.
     type axis_options = {
       ?title: String,
-      ?bounds: [Numeric, Numeric],
+      ?bounds: [_ToF, _ToF],
       ?labels: Array[String],
-      ?style: Style?,
+      ?style: Style::Style?,
       ?labels_alignment: Symbol?
     }
 
@@ -42,8 +42,8 @@ module RatatuiRuby
       attr_reader datasets: Array[Dataset]
       attr_reader x_axis: Axis
       attr_reader y_axis: Axis
-      attr_reader block: Block?
-      attr_reader style: Style?
+      attr_reader block: Widgets::Block?
+      attr_reader style: Style::Style?
       attr_reader legend_position: Symbol?
       attr_reader hidden_legend_constraints: Array[Layout::Constraint]
 
@@ -52,14 +52,14 @@ module RatatuiRuby
       def self.coerce_args: (chart_options first, ?chart_options kwargs) -> Chart
                           | (nil first, chart_options kwargs) -> Chart
 
-      def self.new: (datasets: Array[Dataset], x_axis: Axis, y_axis: Axis, ?block: Block?, ?style: Style?, ?legend_position: Symbol?, ?hidden_legend_constraints: Array[Layout::Constraint]) -> Chart
-      def initialize: (datasets: Array[Dataset], x_axis: Axis, y_axis: Axis, ?block: Block?, ?style: Style?, ?legend_position: Symbol?, ?hidden_legend_constraints: Array[Layout::Constraint]) -> void
+      def self.new: (datasets: Array[Dataset], x_axis: Axis, y_axis: Axis, ?block: Widgets::Block?, ?style: Style::Style?, ?legend_position: Symbol?, ?hidden_legend_constraints: Array[Layout::Constraint]) -> Chart
+      def initialize: (datasets: Array[Dataset], x_axis: Axis, y_axis: Axis, ?block: Widgets::Block?, ?style: Style::Style?, ?legend_position: Symbol?, ?hidden_legend_constraints: Array[Layout::Constraint]) -> void
     end
 
     class Dataset < Data
       attr_reader name: String | Symbol
       attr_reader data: Array[[Float, Float]]
-      attr_reader style: Style?
+      attr_reader style: Style::Style?
       attr_reader marker: Symbol
       attr_reader graph_type: Symbol
 
@@ -68,15 +68,15 @@ module RatatuiRuby
       def self.coerce_args: (dataset_options first, ?dataset_options kwargs) -> Dataset
                           | (nil first, dataset_options kwargs) -> Dataset
 
-      def self.new: (name: String | Symbol, data: Array[[Numeric, Numeric]], ?style: Style?, ?marker: Symbol, ?graph_type: Symbol) -> Dataset
-      def initialize: (name: String | Symbol, data: Array[[Numeric, Numeric]], ?style: Style?, ?marker: Symbol, ?graph_type: Symbol) -> void
+      def self.new: (name: String | Symbol, data: Array[[_ToF, _ToF]], ?style: Style::Style?, ?marker: Symbol, ?graph_type: Symbol) -> Dataset
+      def initialize: (name: String | Symbol, data: Array[[_ToF, _ToF]], ?style: Style::Style?, ?marker: Symbol, ?graph_type: Symbol) -> void
     end
 
     class Axis < Data
       attr_reader title: String
       attr_reader bounds: [Float, Float]
       attr_reader labels: Array[String]
-      attr_reader style: Style?
+      attr_reader style: Style::Style?
       attr_reader labels_alignment: Symbol?
 
       include CoerceableWidget
@@ -84,8 +84,8 @@ module RatatuiRuby
       def self.coerce_args: (axis_options first, ?axis_options kwargs) -> Axis
                           | (nil first, axis_options kwargs) -> Axis
 
-      def self.new: (?title: String, ?bounds: [Numeric, Numeric], ?labels: Array[String], ?style: Style?, ?labels_alignment: Symbol?) -> Axis
-      def initialize: (?title: String, ?bounds: [Numeric, Numeric], ?labels: Array[String], ?style: Style?, ?labels_alignment: Symbol?) -> void
+      def self.new: (?title: String, ?bounds: [_ToF, _ToF], ?labels: Array[String], ?style: Style::Style?, ?labels_alignment: Symbol?) -> Axis
+      def initialize: (?title: String, ?bounds: [_ToF, _ToF], ?labels: Array[String], ?style: Style::Style?, ?labels_alignment: Symbol?) -> void
     end
   end
 end

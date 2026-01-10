@@ -11,19 +11,19 @@ module RatatuiRuby
   module Widgets
     # Options hash type for Scrollbar constructor arguments.
     type scrollbar_options = {
-      ?content_length: Numeric,
-      ?position: Numeric,
+      ?content_length: _ToI,
+      ?position: _ToI,
       ?orientation: Symbol,
       ?thumb_symbol: String,
-      ?thumb_style: Style?,
+      ?thumb_style: Style::Style?,
       ?track_symbol: String?,
-      ?track_style: Style?,
+      ?track_style: Style::Style?,
       ?begin_symbol: String?,
-      ?begin_style: Style?,
+      ?begin_style: Style::Style?,
       ?end_symbol: String?,
-      ?end_style: Style?,
-      ?style: Style?,
-      ?block: Block?
+      ?end_style: Style::Style?,
+      ?style: Style::Style?,
+      ?block: Widgets::Block?
     }
 
     class Scrollbar < Data
@@ -31,23 +31,23 @@ module RatatuiRuby
       attr_reader position: Integer
       attr_reader orientation: Symbol
       attr_reader thumb_symbol: String
-      attr_reader thumb_style: Style?
+      attr_reader thumb_style: Style::Style?
       attr_reader track_symbol: String?
-      attr_reader track_style: Style?
+      attr_reader track_style: Style::Style?
       attr_reader begin_symbol: String?
-      attr_reader begin_style: Style?
+      attr_reader begin_style: Style::Style?
       attr_reader end_symbol: String?
-      attr_reader end_style: Style?
-      attr_reader style: Style?
-      attr_reader block: Block?
+      attr_reader end_style: Style::Style?
+      attr_reader style: Style::Style?
+      attr_reader block: Widgets::Block?
 
       include CoerceableWidget
 
       def self.coerce_args: (scrollbar_options first, ?scrollbar_options kwargs) -> Scrollbar
                           | (nil first, scrollbar_options kwargs) -> Scrollbar
 
-      def self.new: (content_length: Numeric, position: Numeric, ?orientation: Symbol, ?thumb_symbol: String, ?thumb_style: Style?, ?track_symbol: String?, ?track_style: Style?, ?begin_symbol: String?, ?begin_style: Style?, ?end_symbol: String?, ?end_style: Style?, ?style: Style?, ?block: Block?) -> Scrollbar
-      def initialize: (content_length: Numeric, position: Numeric, ?orientation: Symbol, ?thumb_symbol: String, ?thumb_style: Style?, ?track_symbol: String?, ?track_style: Style?, ?begin_symbol: String?, ?begin_style: Style?, ?end_symbol: String?, ?end_style: Style?, ?style: Style?, ?block: Block?) -> void
+      def self.new: (content_length: _ToI, position: _ToI, ?orientation: Symbol, ?thumb_symbol: String, ?thumb_style: Style::Style?, ?track_symbol: String?, ?track_style: Style::Style?, ?begin_symbol: String?, ?begin_style: Style::Style?, ?end_symbol: String?, ?end_style: Style::Style?, ?style: Style::Style?, ?block: Widgets::Block?) -> Scrollbar
+      def initialize: (content_length: _ToI, position: _ToI, ?orientation: Symbol, ?thumb_symbol: String, ?thumb_style: Style::Style?, ?track_symbol: String?, ?track_style: Style::Style?, ?begin_symbol: String?, ?begin_style: Style::Style?, ?end_symbol: String?, ?end_style: Style::Style?, ?style: Style::Style?, ?block: Widgets::Block?) -> void
     end
   end
 end

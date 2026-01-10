@@ -10,9 +10,9 @@
 module RatatuiRuby
   # Widget to clear/reset a terminal area before rendering.
   class Clear < Data
-    attr_reader block: Block?
+    attr_reader block: Widgets::Block?
 
-    def self.new: (?block: Block?) -> Clear
-    def initialize: (?block: Block?) -> void
+    def self.new: (?block: Widgets::Block?) -> Clear
+    def initialize: (?block: Widgets::Block?) -> void
   end
 end

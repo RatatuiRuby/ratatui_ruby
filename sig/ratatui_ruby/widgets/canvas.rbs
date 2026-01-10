@@ -12,10 +12,10 @@ module RatatuiRuby
     # Options hash type for Canvas constructor arguments.
     type canvas_options = {
       ?shapes: Array[Shape::Line | Shape::Rectangle | Shape::Circle | Shape::Map | Shape::Label | Shape::Point],
-      ?x_bounds: Array[Numeric],
-      ?y_bounds: Array[Numeric],
+      ?x_bounds: Array[_ToF],
+      ?y_bounds: Array[_ToF],
       ?marker: Symbol,
-      ?block: Block?,
+      ?block: Widgets::Block?,
       ?background_color: (String | Symbol)?
     }
 
@@ -24,7 +24,7 @@ module RatatuiRuby
       attr_reader x_bounds: Array[Float]
       attr_reader y_bounds: Array[Float]
       attr_reader marker: Symbol
-      attr_reader block: Block?
+      attr_reader block: Widgets::Block?
       attr_reader background_color: (String | Symbol)?
 
       include CoerceableWidget
@@ -32,8 +32,8 @@ module RatatuiRuby
       def self.coerce_args: (canvas_options first, ?canvas_options kwargs) -> Canvas
                           | (nil first, canvas_options kwargs) -> Canvas
 
-      def self.new: (?shapes: Array[Shape::Line | Shape::Rectangle | Shape::Circle | Shape::Map | Shape::Label | Shape::Point], ?x_bounds: Array[Numeric], ?y_bounds: Array[Numeric], ?marker: Symbol, ?block: Block?, ?background_color: (String | Symbol)?) -> Canvas
-      def initialize: (?shapes: Array[Shape::Line | Shape::Rectangle | Shape::Circle | Shape::Map | Shape::Label | Shape::Point], ?x_bounds: Array[Numeric], ?y_bounds: Array[Numeric], ?marker: Symbol, ?block: Block?, ?background_color: (String | Symbol)?) -> void
+      def self.new: (?shapes: Array[Shape::Line | Shape::Rectangle | Shape::Circle | Shape::Map | Shape::Label | Shape::Point], ?x_bounds: Array[_ToF], ?y_bounds: Array[_ToF], ?marker: Symbol, ?block: Widgets::Block?, ?background_color: (String | Symbol)?) -> Canvas
+      def initialize: (?shapes: Array[Shape::Line | Shape::Rectangle | Shape::Circle | Shape::Map | Shape::Label | Shape::Point], ?x_bounds: Array[_ToF], ?y_bounds: Array[_ToF], ?marker: Symbol, ?block: Widgets::Block?, ?background_color: (String | Symbol)?) -> void
     end
 
     module Shape
@@ -41,8 +41,8 @@ module RatatuiRuby
         attr_reader x: Float
         attr_reader y: Float
 
-        def self.new: (x: Numeric, y: Numeric) -> Point
-        def initialize: (x: Numeric, y: Numeric) -> void
+        def self.new: (x: _ToF, y: _ToF) -> Point
+        def initialize: (x: _ToF, y: _ToF) -> void
       end
 
       class Line < Data
@@ -52,8 +52,8 @@ module RatatuiRuby
         attr_reader y2: Float
         attr_reader color: (String | Symbol)
 
-        def self.new: (x1: Numeric, y1: Numeric, x2: Numeric, y2: Numeric, color: (String | Symbol)) -> Line
-        def initialize: (x1: Numeric, y1: Numeric, x2: Numeric, y2: Numeric, color: (String | Symbol)) -> void
+        def self.new: (x1: _ToF, y1: _ToF, x2: _ToF, y2: _ToF, color: (String | Symbol)) -> Line
+        def initialize: (x1: _ToF, y1: _ToF, x2: _ToF, y2: _ToF, color: (String | Symbol)) -> void
       end
 
       class Rectangle < Data
@@ -63,8 +63,8 @@ module RatatuiRuby
         attr_reader height: Float
         attr_reader color: (String | Symbol)
 
-        def self.new: (x: Numeric, y: Numeric, width: Numeric, height: Numeric, color: (String | Symbol)) -> Rectangle
-        def initialize: (x: Numeric, y: Numeric, width: Numeric, height: Numeric, color: (String | Symbol)) -> void
+        def self.new: (x: _ToF, y: _ToF, width: _ToF, height: _ToF, color: (String | Symbol)) -> Rectangle
+        def initialize: (x: _ToF, y: _ToF, width: _ToF, height: _ToF, color: (String | Symbol)) -> void
       end
 
       class Circle < Data
@@ -73,8 +73,8 @@ module RatatuiRuby
         attr_reader radius: Float
         attr_reader color: (String | Symbol)
 
-        def self.new: (x: Numeric, y: Numeric, radius: Numeric, color: (String | Symbol)) -> Circle
-        def initialize: (x: Numeric, y: Numeric, radius: Numeric, color: (String | Symbol)) -> void
+        def self.new: (x: _ToF, y: _ToF, radius: _ToF, color: (String | Symbol)) -> Circle
+        def initialize: (x: _ToF, y: _ToF, radius: _ToF, color: (String | Symbol)) -> void
       end
 
       class Map < Data

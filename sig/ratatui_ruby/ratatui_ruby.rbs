@@ -8,7 +8,17 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  type widget = Paragraph | Layout | List | Gauge | Table | Tabs | BarChart | Block | Sparkline
+  # Common type aliases for widget parameters
+  type alignment = :left | :center | :right
+  type border_side = :top | :bottom | :left | :right | :all
+  type border_type = :plain | :rounded | :double | :thick | :hidden | :quadrant_inside | :quadrant_outside
+  type title_position = :top | :bottom
+  type style_input = Style::Style | { ?fg: (Symbol | String | Integer), ?bg: (Symbol | String | Integer), ?modifiers: Array[Symbol] }
+  type title_entry = String | { content: (String | Text::Line), ?alignment: alignment, ?position: title_position, ?style: style_input }
+  type border_set_hash = { ?top_left: String, ?top_right: String, ?bottom_left: String, ?bottom_right: String, ?vertical_left: String, ?vertical_right: String, ?horizontal_top: String, ?horizontal_bottom: String }
+  type date_key = Date | [Integer, Integer, Integer]
+
+  type widget = Widgets::Paragraph | Layout::Layout | Widgets::List | Widgets::Gauge | Widgets::Table | Widgets::Tabs | Widgets::BarChart | Widgets::Block | Widgets::Sparkline
 
   interface _ToS
     def to_s: () -> String

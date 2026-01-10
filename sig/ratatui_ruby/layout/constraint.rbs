@@ -1,0 +1,33 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+module RatatuiRuby
+  module Layout
+    class Constraint < Data
+      attr_reader type: Symbol
+      attr_reader value: (Integer | Array[Integer])
+      def self.length: (_ToI) -> Constraint
+      def self.percentage: (_ToI) -> Constraint
+      def self.min: (_ToI) -> Constraint
+      def self.max: (_ToI) -> Constraint
+      def self.fill: (?_ToI) -> Constraint
+      def self.ratio: (_ToI, _ToI) -> Constraint
+      def self.new: (type: Symbol, value: (Integer | Array[Integer])) -> Constraint
+      def initialize: (type: Symbol, value: (Integer | Array[Integer])) -> void
+
+      # Batch constructors
+      def self.from_lengths: (Enumerable[_ToI]) -> Array[Constraint]
+      def self.from_percentages: (Enumerable[_ToI]) -> Array[Constraint]
+      def self.from_mins: (Enumerable[_ToI]) -> Array[Constraint]
+      def self.from_maxes: (Enumerable[_ToI]) -> Array[Constraint]
+      def self.from_fills: (Enumerable[_ToI]) -> Array[Constraint]
+      def self.from_ratios: (Enumerable[[_ToI, _ToI]]) -> Array[Constraint]
+    end
+  end
+end

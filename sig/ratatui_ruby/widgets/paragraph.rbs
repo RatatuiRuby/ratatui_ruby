@@ -15,16 +15,16 @@ module RatatuiRuby
       ?style: Style::Style?,
       ?fg: (String | Symbol)?,
       ?bg: (String | Symbol)?,
-      ?block: Block?,
+      ?block: Widgets::Block?,
       ?wrap: bool,
       ?alignment: Symbol,
-      ?scroll: [Numeric, Numeric]
+      ?scroll: [_ToI, _ToI]
     }
 
     class Paragraph < Data
       attr_reader text: String
       attr_reader style: Style::Style?
-      attr_reader block: Block?
+      attr_reader block: Widgets::Block?
       attr_reader wrap: bool
       attr_reader alignment: Symbol
       attr_reader scroll: [Integer, Integer]
@@ -35,9 +35,9 @@ module RatatuiRuby
                           | (nil first, paragraph_options kwargs) -> Paragraph
 
       # Legacy constructor with fg/bg convenience params
-      def self.new: (text: String, ?style: Style::Style?, ?fg: (String | Symbol)?, ?bg: (String | Symbol)?, ?block: Block?, ?wrap: bool, ?alignment: Symbol, ?scroll: [Numeric, Numeric]) -> Paragraph
+      def self.new: (text: String, ?style: Style::Style?, ?fg: (String | Symbol)?, ?bg: (String | Symbol)?, ?block: Widgets::Block?, ?wrap: bool, ?alignment: Symbol, ?scroll: [_ToI, _ToI]) -> Paragraph
       # Instance initialize
-      def initialize: (?text: String, ?style: Style::Style?, ?block: Block?, ?wrap: bool, ?alignment: Symbol, ?scroll: Array[Integer]) -> void
+      def initialize: (?text: String, ?style: Style::Style?, ?block: Widgets::Block?, ?wrap: bool, ?alignment: Symbol, ?scroll: Array[Integer]) -> void
       def line_count: (Integer width) -> Integer
       def line_width: () -> Integer
     end

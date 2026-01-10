@@ -12,25 +12,25 @@ module RatatuiRuby
     module Shape
       # Options hash type for Shape::Label constructor arguments.
       type label_options = {
-        ?x: Numeric,
-        ?y: Numeric,
+        ?x: _ToF,
+        ?y: _ToF,
         ?text: String | Text::Line,
-        ?style: Style?
+        ?style: Style::Style?
       }
 
       class Label < Data
         attr_reader x: Float
         attr_reader y: Float
         attr_reader text: String | Text::Line
-        attr_reader style: Style?
+        attr_reader style: Style::Style?
 
         include CoerceableWidget
 
         def self.coerce_args: (label_options first, ?label_options kwargs) -> Label
                             | (nil first, label_options kwargs) -> Label
 
-        def self.new: (x: Numeric, y: Numeric, text: String | Text::Line, ?style: Style?) -> Label
-        def initialize: (x: Numeric, y: Numeric, text: String | Text::Line, ?style: Style?) -> void
+        def self.new: (x: _ToF, y: _ToF, text: String | Text::Line, ?style: Style::Style?) -> Label
+        def initialize: (x: _ToF, y: _ToF, text: String | Text::Line, ?style: Style::Style?) -> void
       end
     end
   end

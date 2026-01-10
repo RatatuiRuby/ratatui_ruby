@@ -11,25 +11,25 @@ module RatatuiRuby
   module Widgets
     # Options hash type for BarChart constructor arguments.
     type bar_chart_options = {
-      ?data: Hash[String | Symbol | _ToS, Numeric] | Array[Array[String | Symbol | _ToS | Numeric]] | Array[BarChart::BarGroup],
-      ?bar_width: Numeric,
-      ?bar_gap: Numeric,
-      ?group_gap: Numeric,
-      ?max: Numeric?,
-      ?style: Style?,
-      ?block: Block?,
+      ?data: Hash[String | Symbol | _ToS, _ToI] | Array[Array[String | Symbol | _ToS | _ToI]] | Array[BarChart::BarGroup],
+      ?bar_width: _ToI,
+      ?bar_gap: _ToI,
+      ?group_gap: _ToI,
+      ?max: _ToI?,
+      ?style: Style::Style?,
+      ?block: Widgets::Block?,
       ?direction: (:vertical | :horizontal),
-      ?label_style: Style?,
-      ?value_style: Style?,
+      ?label_style: Style::Style?,
+      ?value_style: Style::Style?,
       ?bar_set: Hash[Symbol, String]?
     }
 
     # Options hash type for BarChart::Bar constructor arguments.
     type bar_options = {
-      ?value: Numeric,
+      ?value: _ToI,
       ?label: String | Text::Span | Text::Line | nil,
-      ?style: Style?,
-      ?value_style: Style?,
+      ?style: Style::Style?,
+      ?value_style: Style::Style?,
       ?text_value: String | Text::Span | Text::Line | nil
     }
 
@@ -47,11 +47,11 @@ module RatatuiRuby
       attr_reader bar_gap: Integer
       attr_reader group_gap: Integer
       attr_reader max: Integer?
-      attr_reader style: Style?
-      attr_reader block: Block?
+      attr_reader style: Style::Style?
+      attr_reader block: Widgets::Block?
       attr_reader direction: (:vertical | :horizontal)
-      attr_reader label_style: Style?
-      attr_reader value_style: Style?
+      attr_reader label_style: Style::Style?
+      attr_reader value_style: Style::Style?
       attr_reader bar_set: Hash[Symbol, String]?
 
       include CoerceableWidget
@@ -59,14 +59,14 @@ module RatatuiRuby
       def self.coerce_args: (bar_chart_options first, ?bar_chart_options kwargs) -> BarChart
                           | (nil first, bar_chart_options kwargs) -> BarChart
 
-      def self.new: (data: Hash[String | Symbol | _ToS, Numeric] | Array[Array[String | Symbol | _ToS | Numeric]] | Array[BarChart::BarGroup], ?bar_width: Numeric, ?bar_gap: Numeric, ?group_gap: Numeric, ?max: Numeric?, ?style: Style?, ?block: Block?, ?direction: (:vertical | :horizontal), ?label_style: Style?, ?value_style: Style?, ?bar_set: Hash[Symbol, String]?) -> BarChart
-      def initialize: (data: Hash[String | Symbol | _ToS, Numeric] | Array[Array[String | Symbol | _ToS | Numeric]] | Array[BarChart::BarGroup], ?bar_width: Numeric, ?bar_gap: Numeric, ?group_gap: Numeric, ?max: Numeric?, ?style: Style?, ?block: Block?, ?direction: (:vertical | :horizontal), ?label_style: Style?, ?value_style: Style?, ?bar_set: Hash[Symbol, String]?) -> void
+      def self.new: (data: Hash[String | Symbol | _ToS, _ToI] | Array[Array[String | Symbol | _ToS | _ToI]] | Array[BarChart::BarGroup], ?bar_width: _ToI, ?bar_gap: _ToI, ?group_gap: _ToI, ?max: _ToI?, ?style: Style::Style?, ?block: Widgets::Block?, ?direction: (:vertical | :horizontal), ?label_style: Style::Style?, ?value_style: Style::Style?, ?bar_set: Hash[Symbol, String]?) -> BarChart
+      def initialize: (data: Hash[String | Symbol | _ToS, _ToI] | Array[Array[String | Symbol | _ToS | _ToI]] | Array[BarChart::BarGroup], ?bar_width: _ToI, ?bar_gap: _ToI, ?group_gap: _ToI, ?max: _ToI?, ?style: Style::Style?, ?block: Widgets::Block?, ?direction: (:vertical | :horizontal), ?label_style: Style::Style?, ?value_style: Style::Style?, ?bar_set: Hash[Symbol, String]?) -> void
 
       class Bar < Data
         attr_reader value: Integer
         attr_reader label: (String | Text::Span | Text::Line)?
-        attr_reader style: Style?
-        attr_reader value_style: Style?
+        attr_reader style: Style::Style?
+        attr_reader value_style: Style::Style?
         attr_reader text_value: (String | Text::Span | Text::Line)?
 
         include CoerceableWidget
@@ -74,8 +74,8 @@ module RatatuiRuby
         def self.coerce_args: (bar_options first, ?bar_options kwargs) -> Bar
                             | (nil first, bar_options kwargs) -> Bar
 
-        def self.new: (value: Numeric, ?label: String | Text::Span | Text::Line | nil, ?style: Style?, ?value_style: Style?, ?text_value: String | Text::Span | Text::Line | nil) -> Bar
-        def initialize: (value: Numeric, ?label: String | Text::Span | Text::Line | nil, ?style: Style?, ?value_style: Style?, ?text_value: String | Text::Span | Text::Line | nil) -> void
+        def self.new: (value: _ToI, ?label: String | Text::Span | Text::Line | nil, ?style: Style::Style?, ?value_style: Style::Style?, ?text_value: String | Text::Span | Text::Line | nil) -> Bar
+        def initialize: (value: _ToI, ?label: String | Text::Span | Text::Line | nil, ?style: Style::Style?, ?value_style: Style::Style?, ?text_value: String | Text::Span | Text::Line | nil) -> void
       end
 
       class BarGroup < Data

@@ -13,21 +13,21 @@ module RatatuiRuby
     # Used by coerce_args for DWIM bare-hash acceptance.
     type table_options = {
       ?header: Array[String | Paragraph]?,
-      ?rows: Array[Array[String | Paragraph | Style | _ToS]],
+      ?rows: Array[Array[String | Paragraph | Style::Style | _ToS]],
       ?widths: Array[Layout::Constraint | Integer],
-      ?row_highlight_style: Style?,
+      ?row_highlight_style: Style::Style?,
       ?highlight_symbol: String?,
       ?highlight_spacing: Symbol,
-      ?column_highlight_style: Style?,
-      ?cell_highlight_style: Style?,
-      ?selected_row: Numeric?,
-      ?selected_column: Numeric?,
-      ?offset: Numeric?,
-      ?block: Block?,
+      ?column_highlight_style: Style::Style?,
+      ?cell_highlight_style: Style::Style?,
+      ?selected_row: _ToI?,
+      ?selected_column: _ToI?,
+      ?offset: _ToI?,
+      ?block: Widgets::Block?,
       ?footer: Array[String | Paragraph]?,
       ?flex: Symbol,
       ?style: style_input?,
-      ?column_spacing: Numeric
+      ?column_spacing: _ToI
     }
 
     class Table < Data
@@ -43,20 +43,20 @@ module RatatuiRuby
       FLEX_SPACE_EVENLY: Symbol
 
       attr_reader header: Array[String | Paragraph]?
-      attr_reader rows: Array[Array[String | Paragraph | Style | _ToS]]
+      attr_reader rows: Array[Array[String | Paragraph | Style::Style | _ToS]]
       attr_reader widths: Array[Layout::Constraint]
-      attr_reader block: Block?
+      attr_reader block: Widgets::Block?
       attr_reader footer: Array[String | Paragraph]?
       attr_reader flex: Symbol
       attr_reader style: style_input?
       attr_reader column_spacing: Integer?
       attr_reader highlight_spacing: Symbol
-      attr_reader column_highlight_style: Style?
+      attr_reader column_highlight_style: Style::Style?
       attr_reader selected_column: Integer?
       attr_reader offset: Integer?
-      attr_reader row_highlight_style: Style?
+      attr_reader row_highlight_style: Style::Style?
       attr_reader highlight_symbol: String?
-      attr_reader cell_highlight_style: Style?
+      attr_reader cell_highlight_style: Style::Style?
       attr_reader selected_row: Integer?
 
       include CoerceableWidget
@@ -65,8 +65,8 @@ module RatatuiRuby
       def self.coerce_args: (table_options first, ?table_options kwargs) -> Table
                           | (nil first, table_options kwargs) -> Table
 
-      def self.new: (?header: Array[String | Paragraph]?, ?rows: Array[Array[String | Paragraph | Style | _ToS]], ?widths: Array[Layout::Constraint | Integer], ?row_highlight_style: Style?, ?highlight_symbol: String?, ?highlight_spacing: Symbol, ?column_highlight_style: Style?, ?cell_highlight_style: Style?, ?selected_row: Numeric?, ?selected_column: Numeric?, ?offset: Numeric?, ?block: Block?, ?footer: Array[String | Paragraph]?, ?flex: Symbol, ?style: style_input?, ?column_spacing: Numeric) -> Table
-      def initialize: (?header: Array[String | Paragraph]?, ?rows: Array[Array[String | Paragraph | Style | _ToS]], ?widths: Array[Layout::Constraint | Integer], ?row_highlight_style: Style?, ?highlight_symbol: String?, ?highlight_spacing: Symbol, ?column_highlight_style: Style?, ?cell_highlight_style: Style?, ?selected_row: Numeric?, ?selected_column: Numeric?, ?offset: Numeric?, ?block: Block?, ?footer: Array[String | Paragraph]?, ?flex: Symbol, ?style: style_input?, ?column_spacing: Numeric) -> void
+      def self.new: (?header: Array[String | Paragraph]?, ?rows: Array[Array[String | Paragraph | Style::Style | _ToS]], ?widths: Array[Layout::Constraint | Integer], ?row_highlight_style: Style::Style?, ?highlight_symbol: String?, ?highlight_spacing: Symbol, ?column_highlight_style: Style::Style?, ?cell_highlight_style: Style::Style?, ?selected_row: _ToI?, ?selected_column: _ToI?, ?offset: _ToI?, ?block: Widgets::Block?, ?footer: Array[String | Paragraph]?, ?flex: Symbol, ?style: style_input?, ?column_spacing: _ToI) -> Table
+      def initialize: (?header: Array[String | Paragraph]?, ?rows: Array[Array[String | Paragraph | Style::Style | _ToS]], ?widths: Array[Layout::Constraint | Integer], ?row_highlight_style: Style::Style?, ?highlight_symbol: String?, ?highlight_spacing: Symbol, ?column_highlight_style: Style::Style?, ?cell_highlight_style: Style::Style?, ?selected_row: _ToI?, ?selected_column: _ToI?, ?offset: _ToI?, ?block: Widgets::Block?, ?footer: Array[String | Paragraph]?, ?flex: Symbol, ?style: style_input?, ?column_spacing: _ToI) -> void
 
       def row_selected?: () -> bool
       def column_selected?: () -> bool

@@ -1,0 +1,21 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+module RatatuiRuby
+  module Text
+    class Line < Data
+      attr_reader spans: Array[Span]
+      attr_reader alignment: Symbol?
+      attr_reader style: Style::Style?
+
+      def self.new: (?spans: Array[Span], ?alignment: Symbol?, ?style: Style::Style?) -> Line
+      def initialize: (?spans: Array[Span], ?alignment: Symbol?, ?style: Style::Style?) -> void
+      def self.from_string: (String, ?alignment: Symbol?) -> Line
+      def width: () -> Integer
+    end
+  end
+end

@@ -7,5 +7,5 @@ class Timestamp < Data
   def self.now: () -> instance
   def self.current: () -> Integer
   def elapsed?: (Integer duration_ms) -> bool
-  def self.new: (?milliseconds: Numeric) -> instance
+  def self.new: (?milliseconds: _ToI) -> instance
 end

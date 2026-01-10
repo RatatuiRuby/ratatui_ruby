@@ -1,0 +1,19 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+module RatatuiRuby
+  module Text
+    class Span < Data
+      attr_reader content: String
+      attr_reader style: Style::Style?
+
+      def self.new: (content: String, ?style: Style::Style?) -> Span
+      def initialize: (content: String, ?style: Style::Style?) -> void
+      def self.styled: (String, ?Style?) -> Span
+    end
+  end
+end

@@ -11,10 +11,10 @@ module RatatuiRuby
   class TUI
     module CanvasFactories
       def shape_map: (?color: (String | Symbol), ?resolution: Symbol) -> Widgets::Shape::Map
-      def shape_line: (x1: Numeric, y1: Numeric, x2: Numeric, y2: Numeric, color: (String | Symbol)) -> Widgets::Shape::Line
-      def shape_point: (x: Numeric, y: Numeric) -> Widgets::Shape::Point
-      def shape_circle: (x: Numeric, y: Numeric, radius: Numeric, color: (String | Symbol)) -> Widgets::Shape::Circle
-      def shape_rectangle: (x: Numeric, y: Numeric, width: Numeric, height: Numeric, color: (String | Symbol)) -> Widgets::Shape::Rectangle
+      def shape_line: (x1: _ToF, y1: _ToF, x2: _ToF, y2: _ToF, color: (String | Symbol)) -> Widgets::Shape::Line
+      def shape_point: (x: _ToF, y: _ToF) -> Widgets::Shape::Point
+      def shape_circle: (x: _ToF, y: _ToF, radius: _ToF, color: (String | Symbol)) -> Widgets::Shape::Circle
+      def shape_rectangle: (x: _ToF, y: _ToF, width: _ToF, height: _ToF, color: (String | Symbol)) -> Widgets::Shape::Rectangle
     end
   end
 end

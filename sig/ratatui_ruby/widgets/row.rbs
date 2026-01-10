@@ -12,7 +12,7 @@ module RatatuiRuby
     # Options hash type for Row constructor arguments.
     type row_options = {
       ?cells: Array[Row::cell_content],
-      ?style: Style?,
+      ?style: Style::Style?,
       ?height: Integer?,
       ?top_margin: Integer?,
       ?bottom_margin: Integer?
@@ -22,7 +22,7 @@ module RatatuiRuby
       type cell_content = String | Text::Span | Text::Line | Paragraph | Cell
 
       attr_reader cells: Array[cell_content]
-      attr_reader style: Style?
+      attr_reader style: Style::Style?
       attr_reader height: Integer?
       attr_reader top_margin: Integer?
       attr_reader bottom_margin: Integer?
@@ -32,8 +32,8 @@ module RatatuiRuby
       def self.coerce_args: (row_options first, ?row_options kwargs) -> Row
                           | (nil first, row_options kwargs) -> Row
 
-      def self.new: (cells: Array[cell_content], ?style: Style?, ?height: Integer?, ?top_margin: Integer?, ?bottom_margin: Integer?) -> Row
-      def initialize: (cells: Array[cell_content], ?style: Style?, ?height: Integer?, ?top_margin: Integer?, ?bottom_margin: Integer?) -> void
+      def self.new: (cells: Array[cell_content], ?style: Style::Style?, ?height: Integer?, ?top_margin: Integer?, ?bottom_margin: Integer?) -> Row
+      def initialize: (cells: Array[cell_content], ?style: Style::Style?, ?height: Integer?, ?top_margin: Integer?, ?bottom_margin: Integer?) -> void
     end
   end
 end

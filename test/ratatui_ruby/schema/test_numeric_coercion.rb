@@ -200,7 +200,7 @@ class TestNumericCoercion < Minitest::Test
       padding_right: 3
     )
     assert_equal 1, tabs.selected_index
-    # padding now accepts duck-typed values (Integer, String, Line) without coercion
+    # padding accepts Integer, String, or Line without coercion
     assert_equal 2, tabs.padding_left
     assert_equal 3, tabs.padding_right
   end

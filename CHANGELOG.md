@@ -29,8 +29,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - **`tui.draw` Argument Validation (Breaking)**: `tui.draw` now validates its arguments. Calling `draw` with neither a tree nor a block raises `ArgumentError`, as does calling it with both. Previously this produced undefined behavior.
 - **`Layout.split` Stricter Type Checking (Breaking)**: `Layout.split` now rejects invalid `area` arguments with a clear `ArgumentError` instead of silently misbehaving. Objects must be a `Rect`, `Hash` with `:x/:y/:width/:height` keys, or respond to all four geometry methods.
+- **Schema Directory Removed (Breaking)**: The legacy `lib/ratatui_ruby/schema/` directory has been removed. All widget classes now live exclusively in their proper namespaces (`Widgets::`, `Layout::`, `Text::`, etc.). Direct usage like `RatatuiRuby::Paragraph` (without `Widgets::`) is no longer supported. Use `RatatuiRuby::Widgets::Paragraph` or the TUI facade (`tui.paragraph`).
 
 ### Fixed
+
+- **Tabs Padding Coercion**: `Tabs` `padding_left` and `padding_right` now correctly coerce duck-typed integer values (objects responding to `to_int`/`to_i`) via `Integer()`. Previously these parameters were passed through without coercion, inconsistent with other integer parameters. `Text::Line` values are still accepted as-is for styled padding.
 
 ### Removed
 

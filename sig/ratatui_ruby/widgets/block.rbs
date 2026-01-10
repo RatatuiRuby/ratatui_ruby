@@ -20,7 +20,7 @@ module RatatuiRuby
       ?border_type: border_type?,
       ?border_set: border_set_hash?,
       ?style: style_input?,
-      ?padding: (Numeric | Array[Numeric]),
+      ?padding: (_ToI | Array[_ToI]),
       ?children: Array[widget]
     }
 
@@ -42,8 +42,8 @@ module RatatuiRuby
       def self.coerce_args: (block_options first, ?block_options kwargs) -> Block
                           | (nil first, block_options kwargs) -> Block
 
-      def self.new: (?title: String?, ?titles: Array[title_entry], ?title_alignment: alignment?, ?title_style: style_input?, ?borders: Array[border_side], ?border_style: style_input?, ?border_type: border_type?, ?border_set: border_set_hash?, ?style: style_input?, ?padding: (Numeric | Array[Numeric]), ?children: Array[widget]) -> Block
-      def initialize: (?title: String?, ?titles: Array[title_entry], ?title_alignment: alignment?, ?title_style: style_input?, ?borders: Array[border_side], ?border_style: style_input?, ?border_type: border_type?, ?border_set: border_set_hash?, ?style: style_input?, ?padding: (Numeric | Array[Numeric]), ?children: Array[widget]) -> void
+      def self.new: (?title: String?, ?titles: Array[title_entry], ?title_alignment: alignment?, ?title_style: style_input?, ?borders: Array[border_side], ?border_style: style_input?, ?border_type: border_type?, ?border_set: border_set_hash?, ?style: style_input?, ?padding: (_ToI | Array[_ToI]), ?children: Array[widget]) -> Block
+      def initialize: (?title: String?, ?titles: Array[title_entry], ?title_alignment: alignment?, ?title_style: style_input?, ?borders: Array[border_side], ?border_style: style_input?, ?border_type: border_type?, ?border_set: border_set_hash?, ?style: style_input?, ?padding: (_ToI | Array[_ToI]), ?children: Array[widget]) -> void
 
       def inner: (Layout::Rect area) -> Layout::Rect
     end

@@ -11,14 +11,14 @@ module RatatuiRuby
   module Widgets
     # Options hash type for Calendar constructor arguments.
     type calendar_options = {
-      ?year: Numeric,
-      ?month: Numeric,
+      ?year: _ToI,
+      ?month: _ToI,
       ?events: Hash[date_key, Style],
-      ?default_style: Style?,
-      ?header_style: Style?,
-      ?block: Block?,
+      ?default_style: Style::Style?,
+      ?header_style: Style::Style?,
+      ?block: Widgets::Block?,
       ?show_weekdays_header: bool,
-      ?show_surrounding: Style?,
+      ?show_surrounding: Style::Style?,
       ?show_month_header: bool
     }
 
@@ -26,11 +26,11 @@ module RatatuiRuby
       attr_reader year: Integer
       attr_reader month: Integer
       attr_reader events: Hash[date_key, Style]
-      attr_reader default_style: Style?
-      attr_reader header_style: Style?
-      attr_reader block: Block?
+      attr_reader default_style: Style::Style?
+      attr_reader header_style: Style::Style?
+      attr_reader block: Widgets::Block?
       attr_reader show_weekdays_header: bool
-      attr_reader show_surrounding: Style?
+      attr_reader show_surrounding: Style::Style?
       attr_reader show_month_header: bool
 
       include CoerceableWidget
@@ -38,8 +38,8 @@ module RatatuiRuby
       def self.coerce_args: (calendar_options first, ?calendar_options kwargs) -> Calendar
                           | (nil first, calendar_options kwargs) -> Calendar
 
-      def self.new: (year: Numeric, month: Numeric, ?events: Hash[date_key, Style], ?default_style: Style?, ?header_style: Style?, ?block: Block?, ?show_weekdays_header: bool, ?show_surrounding: Style?, ?show_month_header: bool) -> Calendar
-      def initialize: (year: Numeric, month: Numeric, ?events: Hash[date_key, Style], ?default_style: Style?, ?header_style: Style?, ?block: Block?, ?show_weekdays_header: bool, ?show_surrounding: Style?, ?show_month_header: bool) -> void
+      def self.new: (year: _ToI, month: _ToI, ?events: Hash[date_key, Style], ?default_style: Style::Style?, ?header_style: Style::Style?, ?block: Widgets::Block?, ?show_weekdays_header: bool, ?show_surrounding: Style::Style?, ?show_month_header: bool) -> Calendar
+      def initialize: (year: _ToI, month: _ToI, ?events: Hash[date_key, Style], ?default_style: Style::Style?, ?header_style: Style::Style?, ?block: Widgets::Block?, ?show_weekdays_header: bool, ?show_surrounding: Style::Style?, ?show_month_header: bool) -> void
     end
   end
 end

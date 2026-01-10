@@ -67,8 +67,8 @@ module RatatuiRuby
       # [divider] String (optional).
       # [highlight_style] Style (optional).
       # [style] Style (optional).
-      # [padding_left] Integer, String, or Line (default: 0).
-      # [padding_right] Integer, String, or Line (default: 0).
+      # [padding_left] String, Line, or anything that responds to <tt>to_i</tt> (default: 0).
+      # [padding_right] String, Line, or anything that responds to <tt>to_i</tt> (default: 0).
       def initialize(titles: [], selected_index: 0, block: nil, divider: nil, highlight_style: nil, style: nil, padding_left: 0, padding_right: 0)
         super(
           titles:,
@@ -77,8 +77,8 @@ module RatatuiRuby
           divider:,
           highlight_style:,
           style:,
-          padding_left:,
-          padding_right:
+          padding_left: (padding_left.is_a?(Text::Line) || padding_left.is_a?(String)) ? padding_left : Integer(padding_left),
+          padding_right: (padding_right.is_a?(Text::Line) || padding_right.is_a?(String)) ? padding_right : Integer(padding_right)
         )
       end
 

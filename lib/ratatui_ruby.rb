@@ -12,8 +12,8 @@ require_relative "ratatui_ruby/layout"   # Layout::Rect, Layout::Constraint, Lay
 require_relative "ratatui_ruby/style"    # Style::Style
 require_relative "ratatui_ruby/widgets"  # Widgets::Block, Widgets::Paragraph, etc.
 require_relative "ratatui_ruby/buffer"   # Buffer::Cell (for inspection)
-require_relative "ratatui_ruby/schema/text"  # Text::Span, Text::Line
-require_relative "ratatui_ruby/schema/draw"  # Draw commands
+require_relative "ratatui_ruby/text"    # Text::Span, Text::Line, Text.width
+require_relative "ratatui_ruby/draw"    # Draw commands
 
 # Event types
 require_relative "ratatui_ruby/event"

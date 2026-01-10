@@ -12,30 +12,30 @@ module RatatuiRuby
     # Options hash type for Cell constructor arguments.
     type cell_options = {
       ?content: String | Text::Span | Text::Line | Paragraph,
-      ?style: Style?
+      ?style: Style::Style?
     }
 
     # Options hash type for Center constructor arguments.
     type center_options = {
       ?child: widget,
-      ?width_percent: Numeric,
-      ?height_percent: Numeric
+      ?width_percent: _ToF,
+      ?height_percent: _ToF
     }
 
     # Options hash type for Cursor constructor arguments.
     type cursor_options = {
-      ?x: Numeric,
-      ?y: Numeric
+      ?x: _ToI,
+      ?y: _ToI
     }
 
     # Options hash type for LineGauge constructor arguments.
     type line_gauge_options = {
-      ?ratio: Numeric,
+      ?ratio: _ToF,
       ?label: String | Text::Span | nil,
-      ?style: Style?,
-      ?filled_style: Style?,
-      ?unfilled_style: Style?,
-      ?block: Block?,
+      ?style: Style::Style?,
+      ?filled_style: Style::Style?,
+      ?unfilled_style: Style::Style?,
+      ?block: Widgets::Block?,
       ?filled_symbol: String,
       ?unfilled_symbol: String
     }
@@ -43,7 +43,7 @@ module RatatuiRuby
     # Options hash type for ListItem constructor arguments.
     type list_item_options = {
       ?content: String | Text::Span | Text::Line,
-      ?style: Style?
+      ?style: Style::Style?
     }
 
     # Options hash type for Overlay constructor arguments.
@@ -53,7 +53,7 @@ module RatatuiRuby
 
     # Options hash type for Clear constructor arguments.
     type clear_options = {
-      ?block: Block?
+      ?block: Widgets::Block?
     }
 
     # Options hash type for RatatuiLogo constructor arguments (empty).
@@ -61,20 +61,20 @@ module RatatuiRuby
 
     # Options hash type for RatatuiMascot constructor arguments.
     type ratatui_mascot_options = {
-      ?block: Block?
+      ?block: Widgets::Block?
     }
 
     class Cell < Data
       attr_reader content: String | Text::Span | Text::Line | Paragraph
-      attr_reader style: Style?
+      attr_reader style: Style::Style?
 
       include CoerceableWidget
 
       def self.coerce_args: (cell_options first, ?cell_options kwargs) -> Cell
                           | (nil first, cell_options kwargs) -> Cell
 
-      def self.new: (content: String | Text::Span | Text::Line | Paragraph, ?style: Style?) -> Cell
-      def initialize: (content: String | Text::Span | Text::Line | Paragraph, ?style: Style?) -> void
+      def self.new: (content: String | Text::Span | Text::Line | Paragraph, ?style: Style::Style?) -> Cell
+      def initialize: (content: String | Text::Span | Text::Line | Paragraph, ?style: Style::Style?) -> void
     end
 
     class Center < Data
@@ -87,8 +87,8 @@ module RatatuiRuby
       def self.coerce_args: (center_options first, ?center_options kwargs) -> Center
                           | (nil first, center_options kwargs) -> Center
 
-      def self.new: (child: widget, ?width_percent: Numeric, ?height_percent: Numeric) -> Center
-      def initialize: (child: widget, ?width_percent: Numeric, ?height_percent: Numeric) -> void
+      def self.new: (child: widget, ?width_percent: _ToF, ?height_percent: _ToF) -> Center
+      def initialize: (child: widget, ?width_percent: _ToF, ?height_percent: _ToF) -> void
     end
 
     class Cursor < Data
@@ -100,16 +100,16 @@ module RatatuiRuby
       def self.coerce_args: (cursor_options first, ?cursor_options kwargs) -> Cursor
                           | (nil first, cursor_options kwargs) -> Cursor
 
-      def self.new: (x: Numeric, y: Numeric) -> Cursor
-      def initialize: (x: Numeric, y: Numeric) -> void
+      def self.new: (x: _ToI, y: _ToI) -> Cursor
+      def initialize: (x: _ToI, y: _ToI) -> void
     end
 
     class LineGauge < Data
       attr_reader ratio: Float
       attr_reader label: (String | Text::Span)?
-      attr_reader filled_style: Style?
-      attr_reader unfilled_style: Style?
-      attr_reader block: Block?
+      attr_reader filled_style: Style::Style?
+      attr_reader unfilled_style: Style::Style?
+      attr_reader block: Widgets::Block?
       attr_reader filled_symbol: String
       attr_reader unfilled_symbol: String
 
@@ -118,8 +118,8 @@ module RatatuiRuby
       def self.coerce_args: (line_gauge_options first, ?line_gauge_options kwargs) -> LineGauge
                           | (nil first, line_gauge_options kwargs) -> LineGauge
 
-      def self.new: (?ratio: Numeric, ?label: String | Text::Span | nil, ?style: Style?, ?filled_style: Style?, ?unfilled_style: Style?, ?block: Block?, ?filled_symbol: String, ?unfilled_symbol: String) -> LineGauge
-      def initialize: (?ratio: Numeric, ?label: String | Text::Span | nil, ?style: Style?, ?filled_style: Style?, ?unfilled_style: Style?, ?block: Block?, ?filled_symbol: String, ?unfilled_symbol: String) -> void
+      def self.new: (?ratio: _ToF, ?label: String | Text::Span | nil, ?style: Style::Style?, ?filled_style: Style::Style?, ?unfilled_style: Style::Style?, ?block: Widgets::Block?, ?filled_symbol: String, ?unfilled_symbol: String) -> LineGauge
+      def initialize: (?ratio: _ToF, ?label: String | Text::Span | nil, ?style: Style::Style?, ?filled_style: Style::Style?, ?unfilled_style: Style::Style?, ?block: Widgets::Block?, ?filled_symbol: String, ?unfilled_symbol: String) -> void
 
       def filled?: () -> bool
       def complete?: () -> bool
@@ -127,15 +127,15 @@ module RatatuiRuby
 
     class ListItem < Data
       attr_reader content: String | Text::Span | Text::Line
-      attr_reader style: Style?
+      attr_reader style: Style::Style?
 
       include CoerceableWidget
 
       def self.coerce_args: (list_item_options first, ?list_item_options kwargs) -> ListItem
                           | (nil first, list_item_options kwargs) -> ListItem
 
-      def self.new: (content: String | Text::Span | Text::Line, ?style: Style?) -> ListItem
-      def initialize: (content: String | Text::Span | Text::Line, ?style: Style?) -> void
+      def self.new: (content: String | Text::Span | Text::Line, ?style: Style::Style?) -> ListItem
+      def initialize: (content: String | Text::Span | Text::Line, ?style: Style::Style?) -> void
     end
 
     class Overlay < Data
@@ -151,15 +151,15 @@ module RatatuiRuby
     end
 
     class Clear < Data
-      attr_reader block: Block?
+      attr_reader block: Widgets::Block?
 
       include CoerceableWidget
 
       def self.coerce_args: (clear_options first, ?clear_options kwargs) -> Clear
                           | (nil first, clear_options kwargs) -> Clear
 
-      def self.new: (?block: Block?) -> Clear
-      def initialize: (?block: Block?) -> void
+      def self.new: (?block: Widgets::Block?) -> Clear
+      def initialize: (?block: Widgets::Block?) -> void
     end
 
     class RatatuiLogo < Data
@@ -173,15 +173,15 @@ module RatatuiRuby
     end
 
     class RatatuiMascot < Data
-      attr_reader block: Block?
+      attr_reader block: Widgets::Block?
 
       include CoerceableWidget
 
       def self.coerce_args: (ratatui_mascot_options first, ?ratatui_mascot_options kwargs) -> RatatuiMascot
                           | (nil first, ratatui_mascot_options kwargs) -> RatatuiMascot
 
-      def self.new: (?block: Block?) -> RatatuiMascot
-      def initialize: (?block: Block?) -> void
+      def self.new: (?block: Widgets::Block?) -> RatatuiMascot
+      def initialize: (?block: Widgets::Block?) -> void
     end
   end
 end

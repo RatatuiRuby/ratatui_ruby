@@ -12,22 +12,22 @@ module RatatuiRuby
     # Options hash type for Tabs constructor arguments.
     type tabs_options = {
       ?titles: Array[String | _ToS],
-      ?selected_index: Numeric,
-      ?block: Block?,
+      ?selected_index: _ToI,
+      ?block: Widgets::Block?,
       ?divider: String?,
-      ?highlight_style: Style?,
-      ?style: Style?,
-      ?padding_left: Numeric,
-      ?padding_right: Numeric
+      ?highlight_style: Style::Style?,
+      ?style: Style::Style?,
+      ?padding_left: (String | Text::Line | _ToI),
+      ?padding_right: (String | Text::Line | _ToI)
     }
 
     class Tabs < Data
       attr_reader titles: Array[String | _ToS]
       attr_reader selected_index: Integer
-      attr_reader block: Block?
+      attr_reader block: Widgets::Block?
       attr_reader divider: String?
-      attr_reader highlight_style: Style?
-      attr_reader style: Style?
+      attr_reader highlight_style: Style::Style?
+      attr_reader style: Style::Style?
       attr_reader padding_left: Integer
       attr_reader padding_right: Integer
 
@@ -36,8 +36,8 @@ module RatatuiRuby
       def self.coerce_args: (tabs_options first, ?tabs_options kwargs) -> Tabs
                           | (nil first, tabs_options kwargs) -> Tabs
 
-      def self.new: (?titles: Array[String | _ToS], ?selected_index: Numeric, ?block: Block?, ?divider: String?, ?highlight_style: Style?, ?style: Style?, ?padding_left: Numeric, ?padding_right: Numeric) -> Tabs
-      def initialize: (?titles: Array[String | _ToS], ?selected_index: Numeric, ?block: Block?, ?divider: String?, ?highlight_style: Style?, ?style: Style?, ?padding_left: Numeric, ?padding_right: Numeric) -> void
+      def self.new: (?titles: Array[String | _ToS], ?selected_index: _ToI, ?block: Widgets::Block?, ?divider: String?, ?highlight_style: Style::Style?, ?style: Style::Style?, ?padding_left: (String | Text::Line | _ToI), ?padding_right: (String | Text::Line | _ToI)) -> Tabs
+      def initialize: (?titles: Array[String | _ToS], ?selected_index: _ToI, ?block: Widgets::Block?, ?divider: String?, ?highlight_style: Style::Style?, ?style: Style::Style?, ?padding_left: (String | Text::Line | _ToI), ?padding_right: (String | Text::Line | _ToI)) -> void
       def width: () -> Integer
     end
   end

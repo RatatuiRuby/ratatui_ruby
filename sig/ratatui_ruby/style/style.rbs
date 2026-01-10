@@ -8,9 +8,9 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 module RatatuiRuby
-  # Style module at RatatuiRuby::Style (contains Style class)
+  # Style module at RatatuiRuby::Style
   module Style
-    # Style class for RatatuiRuby::Style::Style (style/style.rb version)
+    # Style class for RatatuiRuby::Style::Style
     class Style < Data
       attr_reader fg: (String | Symbol | Integer)?
       attr_reader bg: (String | Symbol | Integer)?
