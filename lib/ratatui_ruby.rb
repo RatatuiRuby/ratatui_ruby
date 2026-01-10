@@ -181,6 +181,13 @@ module RatatuiRuby
       @deferred_warnings.each { |msg| warn msg }
       @deferred_warnings.clear
     end
+
+    private def flush_panic_info
+      return unless Debug.rust_backtrace_enabled?
+      panic_info = _get_last_panic
+      return unless panic_info
+      warn panic_info
+    end
   end
 
   ##
@@ -223,7 +230,7 @@ module RatatuiRuby
   end
 
   # (Native methods implemented in Rust)
-  private_class_method :_init_terminal, :_restore_terminal, :_init_test_terminal, :_enable_rust_backtrace
+  private_class_method :_init_terminal, :_restore_terminal, :_init_test_terminal, :_enable_rust_backtrace, :_get_last_panic
 
   ##
   # Enables full debug mode.

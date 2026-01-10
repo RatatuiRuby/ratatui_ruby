@@ -116,16 +116,41 @@ fn draw(args: &[Value]) -> Result<(), Error> {
     Ok(())
 }
 
+/// Storage for the last panic info, to be retrieved and printed after terminal restore.
+static LAST_PANIC: std::sync::Mutex<Option<String>> = std::sync::Mutex::new(None);
+
 /// Enables Rust backtraces and installs a custom panic hook.
 ///
-/// Call this from Ruby to get meaningful stack traces when Rust panics.
-/// The panic hook prints both the panic info and a full backtrace to stderr.
+/// The panic hook stores the backtrace info instead of printing immediately.
+/// This allows Ruby to retrieve and print it after terminal restoration,
+/// preventing output from being lost on the alternate screen.
 fn enable_rust_backtrace(_ruby: &magnus::Ruby) {
     std::env::set_var("RUST_BACKTRACE", "1");
     std::panic::set_hook(Box::new(|info| {
-        eprintln!("Rust panic: {info:?}");
-        eprintln!("{:?}", std::backtrace::Backtrace::force_capture());
+        let backtrace = std::backtrace::Backtrace::force_capture();
+        let message = format!("Rust panic: {info}\n{backtrace}");
+        if let Ok(mut guard) = LAST_PANIC.lock() {
+            *guard = Some(message);
+        }
     }));
+}
+
+/// Returns the last panic info (if any) and clears it.
+///
+/// Call this after terminal restoration to get deferred panic output.
+fn get_last_panic(_ruby: &magnus::Ruby) -> Option<String> {
+    if let Ok(mut guard) = LAST_PANIC.lock() {
+        guard.take()
+    } else {
+        None
+    }
+}
+
+/// Intentionally panics to test backtrace output.
+///
+/// Only use this for debugging/testing the backtrace feature.
+fn test_panic(_ruby: &magnus::Ruby) {
+    panic!("Test panic triggered by RatatuiRuby._test_panic");
 }
 
 #[magnus::init]
@@ -140,6 +165,8 @@ fn init() -> Result<(), Error> {
         "_enable_rust_backtrace",
         function!(enable_rust_backtrace, 0),
     )?;
+    m.define_module_function("_test_panic", function!(test_panic, 0))?;
+    m.define_module_function("_get_last_panic", function!(get_last_panic, 0))?;
 
     // Register Frame class
     let frame_class = m.define_class("Frame", ruby.class_object())?;

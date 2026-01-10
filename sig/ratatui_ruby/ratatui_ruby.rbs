@@ -69,6 +69,10 @@ module RatatuiRuby
   def self.queue_warning: (String message) -> void
   def self.flush_warnings: () -> void
 
+  # Panic info (private, for deferred backtrace output)
+  def self._get_last_panic: () -> String?
+  def self.flush_panic_info: () -> void
+
   # Draw internal
   def self._draw: (widget) -> void
                | () { (Frame) -> void } -> void

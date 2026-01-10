@@ -21,6 +21,10 @@ module RatatuiRuby
     # Returns whether Rust backtraces are enabled.
     def self.rust_backtrace_enabled?: () -> bool
 
+    # Triggers a Rust panic for backtrace verification.
+    # WARNING: Crashes your process. Use only for debugging.
+    def self.test_panic!: () -> bot
+
     # Temporarily suppresses Ruby-side debug mode checks within the block.
     def self.suppress_debug_mode: [T] () { () -> T } -> T
   end

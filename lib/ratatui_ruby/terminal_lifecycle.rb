@@ -90,7 +90,7 @@ module RatatuiRuby
     ##
     # Restores the terminal to its original state.
     # Leaves alternate screen and disables raw mode.
-    # Also flushes any deferred warnings that were queued during the session.
+    # Also flushes any deferred warnings and panic info that were queued during the session.
     #
     # In headless mode ({headless!}), this method is a silent no-op since
     # no terminal was ever initialized.
@@ -103,6 +103,7 @@ module RatatuiRuby
     ensure
       @tui_session_active = false
       flush_warnings
+      flush_panic_info
     end
 
     ##

@@ -22,6 +22,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - `RR_DEBUG=1` — full debug mode (backtraces + future Ruby-side features)
   - `include RatatuiRuby::TestHelper` — auto-enables debug mode in tests
   - `RatatuiRuby.debug_mode!` — programmatic activation
+- **Debug.test_panic!**: New method that intentionally triggers a Rust panic, allowing developers to verify their backtrace setup is working correctly before encountering a real bug.
+- **Deferred Panic Backtraces**: Rust backtraces during TUI sessions are now stored and printed after terminal restoration, preventing output from being lost on the alternate screen. Previously, panic output in raw terminal mode was invisible.
 - **Debug.suppress_debug_mode**: New block method temporarily suppresses Ruby-side debug checks within its block. Rust backtraces remain enabled. Useful for testing production behavior in debug mode environments.
 - **DWIM Hash Coercion**: All widget factory methods now accept both `tui.table(hash)` and `tui.table(**hash)` calling styles. When a bare Hash is passed as the first positional argument, it is automatically splatted into keyword arguments. Unknown keys are silently ignored in production mode; in debug mode (`RR_DEBUG=1`), they raise `ArgumentError` for early typo detection.
 

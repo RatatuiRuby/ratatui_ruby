@@ -86,6 +86,33 @@ module RatatuiRuby
       end
 
       ##
+      # Triggers a Rust panic for backtrace verification.
+      #
+      # Debugging TUI apps is hard. Rust errors lack context. You want to
+      # confirm <tt>RUST_BACKTRACE=1</tt> actually shows stack traces before
+      # hitting a real bug.
+      #
+      # This method deliberately panics. The panic hook catches it and prints
+      # the Rust backtrace to stderr. If you see stack frames, your setup works.
+      #
+      # <b>WARNING</b>: Crashes your process. Use only for debugging.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   RUST_BACKTRACE=1 ruby -e 'require "ratatui_ruby"; RatatuiRuby::Debug.test_panic!'
+      #--
+      # SPDX-SnippetEnd
+      #++
+      def test_panic!
+        RatatuiRuby.__send__(:_test_panic)
+      end
+
+      ##
       # Temporarily suppresses Ruby-side debug mode checks.
       #
       # Rust backtraces remain enabled if previously activated; only

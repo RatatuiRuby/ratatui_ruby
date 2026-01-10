@@ -25,6 +25,7 @@ module RatatuiRuby
     def _init_test_terminal: (Integer width, Integer height) -> void
     def _restore_terminal: () -> void
     def flush_warnings: () -> void
+    def flush_panic_info: () -> void
   end
 end
 

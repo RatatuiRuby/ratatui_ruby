@@ -214,4 +214,40 @@ class TestDebug < Minitest::Test
 
     assert inside_value, "rust_backtrace_enabled? should remain true inside suppress_debug_mode"
   end
+
+  ##
+  # Verifies that Debug.test_panic! exists for backtrace verification.
+  #
+  # App developers may want to verify their backtrace setup is working.
+  # This method intentionally triggers a Rust panic so they can confirm
+  # RUST_BACKTRACE=1 is showing stack traces.
+  #
+  # Note: We cannot test the full flow with an actual panic because
+  # Rust panics cause fatal errors that are not rescuable in Ruby.
+  # The manual verification test (test_panic! in TUI mode) confirms the
+  # end-to-end behavior.
+  #
+  # == Usage
+  #
+  #   # Verify backtrace setup is working:
+  #   RUST_BACKTRACE=1 ruby -e 'require "ratatui_ruby"; RatatuiRuby::Debug.test_panic!'
+  #
+  def test_test_panic_method_exists
+    assert_respond_to RatatuiRuby::Debug, :test_panic!,
+      "Debug should respond to test_panic! for backtrace verification"
+  end
+
+  ##
+  # Verifies that panic info is retrievable via _get_last_panic.
+  #
+  # The panic hook stores info in Rust, and _get_last_panic retrieves it.
+  # This tests the retrieval mechanism exists and returns nil when no panic occurred.
+  def test_get_last_panic_returns_nil_when_no_panic
+    RatatuiRuby::Debug.enable!
+
+    # After enabling, if no panic has occurred, should return nil
+    result = RatatuiRuby.__send__(:_get_last_panic)
+
+    assert_nil result, "_get_last_panic should return nil when no panic has occurred"
+  end
 end
