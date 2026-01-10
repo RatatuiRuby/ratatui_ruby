@@ -203,6 +203,92 @@ pub fn split_layout(
     Ok(result)
 }
 
+/// Splits an area into multiple rectangles, returning both segments and spacers.
+/// This is the Ratatui `split_with_spacers` equivalent.
+///
+/// # Arguments
+/// * `area` - A Ruby Hash or Rect with :x, :y, :width, :height keys
+/// * `direction` - Symbol :vertical or :horizontal
+/// * `constraints` - Array of Constraint objects
+/// * `flex` - Symbol for flex mode
+///
+/// # Returns
+/// An array containing two arrays: [segments, spacers], each containing Ruby Hashes representing Rect objects
+pub fn split_with_spacers_layout(
+    area: Value,
+    direction: Symbol,
+    constraints: magnus::RArray,
+    flex: Symbol,
+) -> Result<magnus::RArray, Error> {
+    let ruby = magnus::Ruby::get().unwrap();
+
+    // Parse area from Hash or Rect-like object
+    let x: u16 = area.funcall("x", ())?;
+    let y: u16 = area.funcall("y", ())?;
+    let width: u16 = area.funcall("width", ())?;
+    let height: u16 = area.funcall("height", ())?;
+    let rect = Rect::new(x, y, width, height);
+
+    // Parse direction
+    let dir = if direction.to_string() == "vertical" {
+        Direction::Vertical
+    } else {
+        Direction::Horizontal
+    };
+
+    // Parse flex
+    let flex_mode = match flex.to_string().as_str() {
+        "start" => Flex::Start,
+        "center" => Flex::Center,
+        "end" => Flex::End,
+        "space_between" => Flex::SpaceBetween,
+        "space_around" => Flex::SpaceAround,
+        "space_evenly" => Flex::SpaceEvenly,
+        _ => Flex::Legacy,
+    };
+
+    // Parse constraints
+    let mut ratatui_constraints = Vec::new();
+    for i in 0..constraints.len() {
+        let index = isize::try_from(i)
+            .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+        let constraint_obj: Value = constraints.entry(index)?;
+        if let Ok(constraint) = parse_constraint(constraint_obj) {
+            ratatui_constraints.push(constraint);
+        }
+    }
+
+    // Compute layout with spacers
+    let (segments, spacers) = Layout::default()
+        .direction(dir)
+        .flex(flex_mode)
+        .constraints(ratatui_constraints)
+        .split_with_spacers(rect);
+
+    // Helper to convert Rc<[Rect]> to Ruby array
+    let rects_to_ruby_array = |rects: &[Rect]| -> Result<magnus::RArray, Error> {
+        let arr = ruby.ary_new_capa(rects.len());
+        for chunk in rects {
+            let hash = ruby.hash_new();
+            hash.aset(ruby.sym_new("x"), chunk.x)?;
+            hash.aset(ruby.sym_new("y"), chunk.y)?;
+            hash.aset(ruby.sym_new("width"), chunk.width)?;
+            hash.aset(ruby.sym_new("height"), chunk.height)?;
+            arr.push(hash)?;
+        }
+        Ok(arr)
+    };
+
+    let segments_arr = rects_to_ruby_array(&segments)?;
+    let spacers_arr = rects_to_ruby_array(&spacers)?;
+
+    // Return [segments, spacers]
+    let result = ruby.ary_new_capa(2);
+    result.push(segments_arr)?;
+    result.push(spacers_arr)?;
+
+    Ok(result)
+}
 #[cfg(test)]
 mod tests {
     use ratatui::layout::{Constraint, Direction, Flex, Layout, Rect};

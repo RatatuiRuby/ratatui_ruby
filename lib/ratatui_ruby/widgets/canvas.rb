@@ -238,6 +238,60 @@ module RatatuiRuby
           background_color:
         )
       end
+
+      # Converts canvas coordinates to normalized grid coordinates.
+      #
+      # Hit testing and layout decisions need to know where a canvas point
+      # falls within the drawing surface. This method maps from the canvas
+      # coordinate system to normalized [0.0, 1.0] coordinates.
+      #
+      # Use it to determine if a click or touch event lands within the
+      # canvas bounds, and where proportionally.
+      #
+      # [x] X coordinate in canvas coordinate system.
+      # [y] Y coordinate in canvas coordinate system.
+      #
+      # Returns an Array <tt>[normalized_x, normalized_y]</tt> where each
+      # value is between 0.0 and 1.0, or <tt>nil</tt> if the point is
+      # outside the canvas bounds.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   canvas = Canvas.new(x_bounds: [0.0, 100.0], y_bounds: [0.0, 50.0])
+      #   canvas.get_point(50.0, 25.0)  # => [0.5, 0.5] (center)
+      #   canvas.get_point(0.0, 0.0)    # => [0.0, 1.0] (bottom-left)
+      #   canvas.get_point(101.0, 0.0)  # => nil (out of bounds)
+      #--
+      # SPDX-SnippetEnd
+      #++
+      def get_point(x, y)
+        left, right = x_bounds
+        bottom, top = y_bounds
+
+        # Check bounds
+        return nil if x < left || x > right || y < bottom || y > top
+
+        width = right - left
+        height = top - bottom
+
+        # Avoid division by zero
+        return nil if width <= 0.0 || height <= 0.0
+
+        # Normalize to [0.0, 1.0] range
+        normalized_x = (x - left) / width
+        normalized_y = (top - y) / height # Y inverted: top is 0, bottom is 1
+
+        [normalized_x, normalized_y]
+      end
+
+      # Ruby-idiomatic aliases (TIMTOWTDI)
+      alias point get_point
+      alias [] get_point
     end
   end
 end

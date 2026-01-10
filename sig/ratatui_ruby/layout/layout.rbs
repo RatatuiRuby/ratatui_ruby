@@ -27,9 +27,15 @@ module RatatuiRuby
       attr_reader constraints: Array[Constraint]
       attr_reader children: Array[RatatuiRuby::widget]
       attr_reader flex: flex_mode
-      def self.new: (?direction: Symbol, ?constraints: Array[Constraint], ?children: Array[RatatuiRuby::widget], ?flex: flex_mode) -> Layout
-      def initialize: (?direction: Symbol, ?constraints: Array[Constraint], ?children: Array[RatatuiRuby::widget], ?flex: flex_mode) -> void
+      attr_reader margin: (Integer | Hash[Symbol, Integer])
+      attr_reader spacing: Integer
+      def self.new: (?direction: Symbol, ?constraints: Array[Constraint], ?children: Array[RatatuiRuby::widget], ?flex: flex_mode, ?margin: (Integer | Hash[Symbol, Integer]), ?spacing: Integer) -> Layout
+      def initialize: (?direction: Symbol, ?constraints: Array[Constraint], ?children: Array[RatatuiRuby::widget], ?flex: flex_mode, ?margin: (Integer | Hash[Symbol, Integer]), ?spacing: Integer) -> void
       def self.split: ((Rect | Hash[Symbol, Integer]) area, ?direction: Symbol, constraints: Array[Constraint], ?flex: flex_mode) -> Array[Rect]
+
+      # Splits an area into segments and spacers.
+      # Returns [segments, spacers] where each is an Array of Rects.
+      def self.split_with_spacers: ((Rect | Hash[Symbol, Integer]) area, ?direction: Symbol, constraints: Array[Constraint], ?flex: flex_mode) -> [Array[Rect], Array[Rect]]
 
       private
 

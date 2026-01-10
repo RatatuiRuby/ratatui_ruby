@@ -75,6 +75,49 @@ module RatatuiRuby
           bottom_margin: bottom_margin.nil? ? nil : Integer(bottom_margin)
         )
       end
+
+      # Returns a new Row with strikethrough styling enabled.
+      #
+      # Table rows sometimes need strikethrough styling to indicate
+      # deleted, deprecated, or cancelled items. Manually managing
+      # style modifiers is tedious.
+      #
+      # This method adds the <tt>:crossed_out</tt> modifier to the row's
+      # style. If the row has no existing style, a new style is created.
+      #
+      # Use it to visually mark rows as cancelled, completed, or invalid.
+      #
+      # *Terminal Compatibility:* Strikethrough (SGR 9) is not universally
+      # supported. macOS Terminal.app notably lacks support. Modern terminals
+      # like Kitty, iTerm2, Alacritty, and WezTerm render it correctly.
+      # Consider pairing with <tt>:dim</tt> as a fallback for visibility.
+      #
+      # Returns a new Row instance with strikethrough enabled.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   row = Row.new(cells: ["Cancelled Task", "2024-01-15"])
+      #   strikethrough_row = row.enable_strikethrough
+      #   # Row style now includes :crossed_out modifier
+      #--
+      # SPDX-SnippetEnd
+      #++
+      def enable_strikethrough
+        current_style = style || Style::Style.new
+        current_modifiers = current_style.modifiers || []
+        new_modifiers = current_modifiers.include?(:crossed_out) ? current_modifiers : current_modifiers + [:crossed_out]
+
+        new_style = current_style.with(modifiers: new_modifiers)
+        with(style: new_style)
+      end
+
+      # Ruby-idiomatic alias
+      alias strikethrough enable_strikethrough
     end
   end
 end

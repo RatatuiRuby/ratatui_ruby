@@ -63,6 +63,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - `Rect#position` (alias for `as_position`), `Rect#size` (alias for `as_size`)
   - `Buffer[x, y]` (alias for `Buffer.get`)
   - `Constraint#call` (alias for `apply`, enables `constraint.(n)` syntax)
+- **Layout Margin and Spacing**: `Layout` now supports `margin:` and `spacing:` parameters for edge insets and gaps between segments, matching Ratatui's Layout API.
+- **Layout.split_with_spacers**: New class method returns both content segments and spacer Rects, enabling custom rendering of dividers or separators between layout sections.
+- **Canvas#get_point**: Converts canvas coordinates to normalized [0.0, 1.0] grid coordinates for hit testing. Returns `nil` for out-of-bounds coordinates. Also aliased as `point` and `[]` for Ruby-idiomatic access.
+- **Row#enable_strikethrough**: Returns a new Row with `:crossed_out` modifier for indicating cancelled or deleted items. Also aliased as `strikethrough`. Note: Strikethrough (SGR 9) is not supported by all terminals; macOS Terminal.app notably lacks support while Kitty, iTerm2, Alacritty, and WezTerm render it correctly.
 
 ### Changed
 

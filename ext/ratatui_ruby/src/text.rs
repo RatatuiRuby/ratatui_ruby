@@ -118,6 +118,7 @@ pub fn parse_span(value: Value) -> Result<Span<'static>, Error> {
 }
 
 /// Parses a Ruby `Text::Line` object into a ratatui Line.
+/// Also accepts `Text::Span` objects and auto-coerces them to a Line.
 pub fn parse_line(value: Value) -> Result<Line<'static>, Error> {
     let ruby = magnus::Ruby::get().unwrap();
 
@@ -125,10 +126,16 @@ pub fn parse_line(value: Value) -> Result<Line<'static>, Error> {
     let class_obj: Value = value.funcall("class", ())?;
     let class_name: String = class_obj.funcall("name", ())?;
 
+    // Auto-coerce Span to Line: wrap a single Span in a Line
+    if class_name.contains("Span") {
+        let span = parse_span(value)?;
+        return Ok(Line::from(vec![span]));
+    }
+
     if !class_name.contains("Line") {
         return Err(type_error_with_context(
             &ruby,
-            "expected a Text::Line object",
+            "expected a Text::Line or Text::Span object",
             value,
         ));
     }

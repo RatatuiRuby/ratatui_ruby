@@ -653,12 +653,55 @@ class TestTable < Minitest::Test
     refute RatatuiRuby::Widgets::Table.new(rows: [["a"]]).empty?
   end
 
-  # Gap test - verify Row#enable_strikethrough from v1.0.0_blockers.md
-  def test_row_enable_strikethrough
-    skip "v1.0.0 Blocker: Row#enable_strikethrough not implemented. See doc/contributors/v1.0.0_blockers.md"
-    row = RatatuiRuby::Widgets::Row.new(cells: ["Test"])
+  #
+  # Row#enable_strikethrough - Styling Tests
+  #
+  # These tests demonstrate how to apply strikethrough styling to rows,
+  # useful for indicating cancelled, deleted, or completed items.
+  #
+
+  def test_row_enable_strikethrough_adds_modifier
+    row = RatatuiRuby::Widgets::Row.new(cells: ["Cancelled Task"])
     strikethrough_row = row.enable_strikethrough
-    refute_nil strikethrough_row
+
+    # Returns a new Row instance (immutable pattern)
+    refute_same row, strikethrough_row
+
+    # The new row has :crossed_out in its style modifiers
+    assert_includes strikethrough_row.style.modifiers, :crossed_out
+  end
+
+  def test_row_enable_strikethrough_preserves_existing_style
+    # Row with existing bold style
+    bold_style = RatatuiRuby::Style::Style.new(fg: :red, modifiers: [:bold])
+    row = RatatuiRuby::Widgets::Row.new(cells: ["Important"], style: bold_style)
+
+    strikethrough_row = row.enable_strikethrough
+
+    # Original style is preserved
+    assert_equal :red, strikethrough_row.style.fg
+    assert_includes strikethrough_row.style.modifiers, :bold
+    # And strikethrough is added
+    assert_includes strikethrough_row.style.modifiers, :crossed_out
+  end
+
+  def test_row_enable_strikethrough_is_idempotent
+    row = RatatuiRuby::Widgets::Row.new(cells: ["Test"])
+
+    # Calling enable_strikethrough twice shouldn't duplicate the modifier
+    once = row.enable_strikethrough
+    twice = once.enable_strikethrough
+
+    modifier_count = twice.style.modifiers.count(:crossed_out)
+    assert_equal 1, modifier_count
+  end
+
+  def test_row_strikethrough_alias
+    # Ruby-idiomatic: #strikethrough is an alias for #enable_strikethrough
+    row = RatatuiRuby::Widgets::Row.new(cells: ["Test"])
+
+    # Both methods work identically
+    assert_equal row.enable_strikethrough.style, row.strikethrough.style
   end
 
   def test_highlight_spacing_constants

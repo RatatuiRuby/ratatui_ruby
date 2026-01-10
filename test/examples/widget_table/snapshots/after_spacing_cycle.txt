@@ -18,7 +18,7 @@
 └──────────────────────────────────────────────────────────────────────────────┘
 ┌Controls──────────────────────────────────────────────────────────────────────┐
 │↑/↓: Nav Row  ←/→: Nav Col  x: Toggle Row (1)  q: Quit                        │
-│s: Style (Cyan)  p: Spacing (Always)                                          │
+│s: Style (Cyan)  p: Spacing (Always)  t: Tamp Row                             │
 │+/-: Col Space (1)  c: Col Highlight (On)  f: Flex Mode (Legacy (Default))    │
 │z: Cell Highlight (On)  o: Offset Mode (Auto (No Offset))                     │
 └──────────────────────────────────────────────────────────────────────────────┘

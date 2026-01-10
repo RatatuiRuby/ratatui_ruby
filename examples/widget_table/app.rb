@@ -55,6 +55,7 @@ class WidgetTable
     @show_cell_highlight = true
     @offset_mode_index = 0
     @flex_mode_index = 0
+    @strikethrough_pids = Set.new # Track which rows have strikethrough
   end
 
   def run
@@ -78,28 +79,38 @@ class WidgetTable
       { name: "Blue on White", style: @tui.style(fg: :blue, bg: :white) },
       { name: "Magenta", style: @tui.style(fg: :magenta, modifiers: [:bold]) },
     ]
-    @column_highlight_style = @tui.style(fg: :magenta)
+    @column_highlight_style = @tui.style(fg: :red)
     @cell_highlight_style = @tui.style(fg: :white, bg: :red, modifiers: [:bold])
     @hotkey_style = @tui.style(modifiers: [:bold, :underlined])
   end
 
   private def render(frame)
     # v0.7.0: Create table rows using table_row and table_cell for per-cell styling
-    rows = PROCESSES.map do |p|
+    rows = PROCESSES.each_with_index.map do |p, i|
       cpu_style = case p[:cpu]
                   when 0...10 then @tui.style(fg: :green)
                   when 10...30 then @tui.style(fg: :yellow)
                   else @tui.style(fg: :red, modifiers: [:bold])
       end
-      @tui.table_row(
+      row = @tui.table_row(
         cells: [
           p[:pid].to_s,
           p[:name],
           @tui.table_cell(content: "#{p[:cpu]}%", style: cpu_style),
         ],
-        # Apply alternating row backgrounds for readability
-        style: p[:pid].even? ? @tui.style(bg: :dark_gray) : nil
+        # Apply alternating row backgrounds for readability (using basic ANSI colors for compatibility)
+        style: i.even? ? @tui.style(bg: :white, fg: :black) : nil
       )
+
+      # Row#enable_strikethrough: Apply strikethrough to "tamped" (de-emphasized) processes.
+      # Note: Strikethrough (SGR 9) is not supported by all terminals. macOS Terminal.app
+      # notably lacks support, while Kitty, iTerm2, Alacritty, and WezTerm render it.
+      # We add :dim as a fallback so the effect is visible even without strikethrough.
+      if @strikethrough_pids.include?(p[:pid])
+        row.enable_strikethrough.with(style: (row.style || @tui.style).with(modifiers: ((row.style&.modifiers || []) + [:crossed_out, :dim]).uniq))
+      else
+        row
+      end
     end
 
     # Define column widths
@@ -170,6 +181,8 @@ class WidgetTable
               @tui.text_span(content: ": Style (#{current_style_entry[:name]})  "),
               @tui.text_span(content: "p", style: @hotkey_style),
               @tui.text_span(content: ": Spacing (#{current_spacing_entry[:name]})  "),
+              @tui.text_span(content: "t", style: @hotkey_style),
+              @tui.text_span(content: ": Tamp Row"),
             ]),
             # Line 3: More Controls
             @tui.text_line(spans: [
@@ -237,6 +250,16 @@ class WidgetTable
       @highlight_spacing_index = (@highlight_spacing_index + 1) % HIGHLIGHT_SPACINGS.length
     in type: :key, code: "x"
       @selected_index = @selected_index.nil? ? 0 : nil
+    in type: :key, code: "t"
+      # Toggle strikethrough for selected row (demonstrates Row#enable_strikethrough)
+      if @selected_index
+        pid = PROCESSES[@selected_index][:pid]
+        if @strikethrough_pids.include?(pid)
+          @strikethrough_pids.delete(pid)
+        else
+          @strikethrough_pids.add(pid)
+        end
+      end
     in type: :key, code: "c"
       @show_column_highlight = !@show_column_highlight
     in type: :key, code: "z"

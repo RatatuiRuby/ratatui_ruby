@@ -360,13 +360,11 @@ class TestBlock < Minitest::Test
   end
 
   def test_raw_span_as_title_content_renders_content_not_inspect_string
-    skip "v1.0.0 Blocker: Block title Span→Line auto-coercion gap. See doc/contributors/v1.0.0_blockers.md"
-
     # This test verifies that a raw Span object (not wrapped in Line) can be used
     # as title content. This is the Span→Line auto-coercion gap documented in blockers.
     with_test_terminal(30, 3) do
       styled_span = RatatuiRuby::Text::Span.new(
-        content: "SpanTitle",
+        content: "StyledTitle",
         style: RatatuiRuby::Style::Style.new(fg: :magenta)
       )
       b = RatatuiRuby::Widgets::Block.new(
@@ -376,8 +374,8 @@ class TestBlock < Minitest::Test
       RatatuiRuby.draw { |f| f.render_widget(b, f.area) }
       line = buffer_content[0]
 
-      # The styled Span should render as "SpanTitle" not as "#<data RatatuiRuby::Text::Span..."
-      assert_includes line, "SpanTitle", "Styled Span content should appear in output"
+      # The styled Span should render as "StyledTitle" not as "#<data RatatuiRuby::Text::Span..."
+      assert_includes line, "StyledTitle", "Styled Span content should appear in output"
       refute_includes line, "#<data", "Inspect string should not appear in output"
       refute_includes line, "Span", "Class name should not appear in output"
 

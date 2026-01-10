@@ -89,21 +89,24 @@ class WidgetCanvas
         direction: :vertical,
         constraints: [
           @tui.constraint_fill(1),
-          @tui.constraint_length(3),
+          @tui.constraint_length(2),
         ]
       )
 
       frame.render_widget(canvas, layout[0])
 
-      # Controls
+      # Query: Canvas#get_point maps canvas coordinates to normalized [0.0, 1.0] grid
+      normalized = canvas.get_point(@x_offset, @y_offset)
+      norm_str = normalized ? format("[%.2f, %.2f]", normalized[0], normalized[1]) : "nil"
+
+      # Controls showing query method demonstration (single concise line)
       controls = @tui.paragraph(
         text: [
           @tui.text_line(spans: [
-            @tui.text_span(content: "Canvas auto-animates.", style: @tui.style(fg: :yellow)),
-          ]),
-          @tui.text_line(spans: [
             @tui.text_span(content: "q", style: @tui.style(modifiers: [:bold, :underlined])),
-            @tui.text_span(content: ": Quit"),
+            @tui.text_span(content: ": Quit  "),
+            @tui.text_span(content: "get_point → ", style: @tui.style(fg: :dark_gray)),
+            @tui.text_span(content: norm_str, style: @tui.style(fg: :cyan)),
           ]),
         ],
         block: @tui.block(borders: [:top])

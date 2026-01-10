@@ -34,6 +34,10 @@ module RatatuiRuby
 
       def self.new: (cells: Array[cell_content], ?style: Style::Style?, ?height: Integer?, ?top_margin: Integer?, ?bottom_margin: Integer?) -> Row
       def initialize: (cells: Array[cell_content], ?style: Style::Style?, ?height: Integer?, ?top_margin: Integer?, ?bottom_margin: Integer?) -> void
+
+      # Returns a new Row with strikethrough styling enabled.
+      def enable_strikethrough: () -> Row
+      alias strikethrough enable_strikethrough
     end
   end
 end

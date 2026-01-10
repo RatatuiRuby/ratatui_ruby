@@ -34,6 +34,12 @@ module RatatuiRuby
 
       def self.new: (?shapes: Array[Shape::Line | Shape::Rectangle | Shape::Circle | Shape::Map | Shape::Label | Shape::Point], ?x_bounds: Array[_ToF], ?y_bounds: Array[_ToF], ?marker: Symbol, ?block: Widgets::Block?, ?background_color: (String | Symbol)?) -> Canvas
       def initialize: (?shapes: Array[Shape::Line | Shape::Rectangle | Shape::Circle | Shape::Map | Shape::Label | Shape::Point], ?x_bounds: Array[_ToF], ?y_bounds: Array[_ToF], ?marker: Symbol, ?block: Widgets::Block?, ?background_color: (String | Symbol)?) -> void
+
+      # Converts canvas coordinates to normalized grid coordinates.
+      # Returns [normalized_x, normalized_y] or nil if out of bounds.
+      def get_point: (_ToF x, _ToF y) -> Array[Float]?
+      alias point get_point
+      alias [] get_point
     end
 
     module Shape

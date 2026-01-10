@@ -292,9 +292,15 @@ class TestLayout < Minitest::Test
     # Total used: 10 + ~20 + 50 = 80.
   end
 
-  # Gap tests - verify missing parameters from v1.0.0_blockers.md
-  def test_layout_margin
-    skip "v1.0.0 Blocker: Layout margin not implemented. See doc/contributors/v1.0.0_blockers.md"
+  #
+  # Layout margin and spacing - Configuration Tests
+  #
+  # These tests demonstrate how to configure margin (edge insets)
+  # and spacing (gaps between segments) in layouts.
+  #
+
+  def test_layout_margin_uniform
+    # Uniform margin applies to all edges
     l = RatatuiRuby::Layout::Layout.new(
       direction: :vertical,
       margin: 2,
@@ -303,24 +309,89 @@ class TestLayout < Minitest::Test
     assert_equal 2, l.margin
   end
 
-  def test_layout_spacing
-    skip "v1.0.0 Blocker: Layout spacing not implemented. See doc/contributors/v1.0.0_blockers.md"
+  def test_layout_margin_with_hash
+    # Hash form allows different horizontal/vertical margins
+    l = RatatuiRuby::Layout::Layout.new(
+      direction: :vertical,
+      margin: { horizontal: 4, vertical: 2 },
+      constraints: [RatatuiRuby::Layout::Constraint.fill(1)]
+    )
+    assert_equal({ horizontal: 4, vertical: 2 }, l.margin)
+  end
+
+  def test_layout_spacing_between_segments
+    # Spacing adds gaps between segments (not at edges)
     l = RatatuiRuby::Layout::Layout.new(
       direction: :vertical,
       spacing: 1,
-      constraints: [RatatuiRuby::Layout::Constraint.fill(1), RatatuiRuby::Layout::Constraint.fill(1)]
+      constraints: [
+        RatatuiRuby::Layout::Constraint.fill(1),
+        RatatuiRuby::Layout::Constraint.fill(1),
+      ]
     )
     assert_equal 1, l.spacing
   end
 
-  def test_layout_split_with_spacers
-    skip "v1.0.0 Blocker: Layout.split_with_spacers not implemented. See doc/contributors/v1.0.0_blockers.md"
+  #
+  # Layout.split_with_spacers - Advanced Layout Calculation
+  #
+  # These tests demonstrate how to get both content areas and
+  # spacer areas when calculating layouts (useful for rendering dividers).
+  #
+
+  def test_layout_split_with_spacers_returns_segments_and_spacers
     area = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 100, height: 10)
+
     segments, spacers = RatatuiRuby::Layout::Layout.split_with_spacers(
       area,
       direction: :horizontal,
-      constraints: [RatatuiRuby::Layout::Constraint.length(20), RatatuiRuby::Layout::Constraint.length(20)]
+      constraints: [
+        RatatuiRuby::Layout::Constraint.length(20),
+        RatatuiRuby::Layout::Constraint.length(20),
+      ]
     )
+
+    # Returns two arrays
+    assert_kind_of Array, segments
+    assert_kind_of Array, spacers
+
+    # Segments are Rects for content areas
+    assert segments.all? { |s| s.is_a?(RatatuiRuby::Layout::Rect) }
+  end
+
+  def test_layout_split_with_spacers_respects_direction
+    area = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 100, height: 100)
+
+    # Vertical split
+    v_segments, _spacers = RatatuiRuby::Layout::Layout.split_with_spacers(
+      area,
+      direction: :vertical,
+      constraints: [
+        RatatuiRuby::Layout::Constraint.fill(1),
+        RatatuiRuby::Layout::Constraint.fill(1),
+      ]
+    )
+
+    # Vertical segments stack on Y axis
+    assert v_segments.length >= 2
+    assert v_segments[0].y <= v_segments[1].y if v_segments.length >= 2
+  end
+
+  def test_layout_split_with_spacers_with_flex_spacing
+    area = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 100, height: 10)
+
+    # flex: :space_around distributes space around segments
+    segments, spacers = RatatuiRuby::Layout::Layout.split_with_spacers(
+      area,
+      direction: :horizontal,
+      constraints: [
+        RatatuiRuby::Layout::Constraint.length(20),
+        RatatuiRuby::Layout::Constraint.length(20),
+      ],
+      flex: :space_around
+    )
+
+    # With space_around, we should get spacers for gaps
     refute_nil segments
     refute_nil spacers
   end

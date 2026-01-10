@@ -82,11 +82,50 @@ class TestCanvas < Minitest::Test
     assert_equal :half_block, c.marker
   end
 
-  # Gap test - verify Canvas#get_point from v1.0.0_blockers.md
-  def test_canvas_get_point
-    skip "v1.0.0 Blocker: Canvas#get_point not implemented. See doc/contributors/v1.0.0_blockers.md"
+  #
+  # Canvas#get_point - Coordinate Mapping Tests
+  #
+  # These tests demonstrate how get_point maps canvas coordinates
+  # to normalized [0.0, 1.0] grid coordinates for hit testing.
+  #
+
+  def test_canvas_get_point_returns_normalized_coordinates
+    # A canvas with 100x100 coordinate space
     c = RatatuiRuby::Widgets::Canvas.new(x_bounds: [0.0, 100.0], y_bounds: [0.0, 100.0])
+
+    # Center point (50,50) should be at (0.5, 0.5) normalized
     result = c.get_point(50.0, 50.0)
-    refute_nil result
+    assert_equal [0.5, 0.5], result
+  end
+
+  def test_canvas_get_point_corners
+    c = RatatuiRuby::Widgets::Canvas.new(x_bounds: [0.0, 100.0], y_bounds: [0.0, 100.0])
+
+    # Bottom-left corner (0,0) -> (0.0, 1.0) because Y is inverted
+    assert_equal [0.0, 1.0], c.get_point(0.0, 0.0)
+
+    # Top-right corner (100,100) -> (1.0, 0.0)
+    assert_equal [1.0, 0.0], c.get_point(100.0, 100.0)
+  end
+
+  def test_canvas_get_point_out_of_bounds_returns_nil
+    c = RatatuiRuby::Widgets::Canvas.new(x_bounds: [0.0, 100.0], y_bounds: [0.0, 100.0])
+
+    # Points outside bounds return nil
+    assert_nil c.get_point(-1.0, 50.0)   # Left of bounds
+    assert_nil c.get_point(101.0, 50.0)  # Right of bounds
+    assert_nil c.get_point(50.0, -1.0)   # Below bounds
+    assert_nil c.get_point(50.0, 101.0)  # Above bounds
+  end
+
+  def test_canvas_get_point_alias
+    # Ruby-idiomatic: both #get_point and #point work
+    c = RatatuiRuby::Widgets::Canvas.new(x_bounds: [0.0, 100.0], y_bounds: [0.0, 100.0])
+
+    # point is an alias for get_point
+    assert_equal c.get_point(50.0, 50.0), c.point(50.0, 50.0)
+
+    # [] is also an alias
+    assert_equal c.get_point(50.0, 50.0), c[50.0, 50.0]
   end
 end

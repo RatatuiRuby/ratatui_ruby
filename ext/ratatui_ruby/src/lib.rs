@@ -213,6 +213,10 @@ fn init() -> Result<(), Error> {
     let layout_mod = m.const_get::<_, magnus::RModule>("Layout")?;
     let layout_class = layout_mod.const_get::<_, magnus::RClass>("Layout")?;
     layout_class.define_singleton_method("_split", function!(widgets::layout::split_layout, 4))?;
+    layout_class.define_singleton_method(
+        "_split_with_spacers",
+        function!(widgets::layout::split_with_spacers_layout, 4),
+    )?;
 
     // Paragraph metrics
     m.define_module_function(
