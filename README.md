@@ -27,6 +27,23 @@ Mailing List: Announcements](https://img.shields.io/badge/mailing_list-announcem
 
 Please join the **announce** mailing list at https://lists.sr.ht/~kerrick/ratatui_ruby-announce to stay up-to-date on new releases and announcements. See the [`trunk` branch](https://git.sr.ht/~kerrick/ratatui_ruby/tree/trunk) for pre-release updates.
 
+---
+
+## Quick Links
+
+### The Ecosystem
+
+**RatatuiRuby:** [Core engine](https://git.sr.ht/~kerrick/ratatui_ruby) • **Tea:** [MVU architecture](https://git.sr.ht/~kerrick/ratatui_ruby-tea) • **Kit:** [Component architecture](https://git.sr.ht/~kerrick/ratatui_ruby-kit) (Planned) • **DSL:** [Glimmer syntax](https://sr.ht/~kerrick/ratatui_ruby/#chapter-4-the-syntax) (Planned) • **Framework:** [Omakase framework](https://git.sr.ht/~kerrick/ratatui_ruby-framework) (Planned) • **UI:** [Polished widgets](https://git.sr.ht/~kerrick/ratatui_ruby-ui) (Planned) • **UI Pro:** [More polished widgets](https://sr.ht/~kerrick/ratatui_ruby#chapter-6-licensing) (Planned)
+
+### For App Developers
+
+**Get Started:** [Quickstart](https://git.sr.ht/~kerrick/ratatui_ruby/tree/stable/item/doc/getting_started/quickstart.md) • [Examples](https://git.sr.ht/~kerrick/ratatui_ruby/tree/stable/item/examples) ⸺ **Stay Informed:** [Announce List](https://lists.sr.ht/~kerrick/ratatui_ruby-announce) • [FAQ](https://man.sr.ht/~kerrick/ratatui_ruby/troubleshooting.md) ⸺ **Reach Out:** [Discuss List](https://lists.sr.ht/~kerrick/ratatui_ruby-discuss) • [Bug Tracker](https://todo.sr.ht/~kerrick/ratatui_ruby)
+
+### For Contributors
+
+**Get Started:** [Contributing Guide](https://man.sr.ht/~kerrick/ratatui_ruby/contributing.md) • [Code of Conduct](https://man.sr.ht/~kerrick/ratatui_ruby/code_of_conduct.md) ⸺ **Stay Informed:** [Announce List](https://lists.sr.ht/~kerrick/ratatui_ruby-announce) • [Project History](https://man.sr.ht/~kerrick/ratatui_ruby/history/index.md) ⸺ **Reach Out:** [Development List](https://lists.sr.ht/~kerrick/ratatui_ruby-devel) • [Bug Tracker](https://todo.sr.ht/~kerrick/ratatui_ruby)
+
+---
 
 ## Compatibility
 
