@@ -1,16 +1,16 @@
 [0m┌Menu──────────────┐┌Content───────────────────────────────────────────────────┐[0m
-[0m│[0m[30m[107m> Dashboard       [0m││[0mActive View: [0m[32mDashboard                                    │[0m
-[0m│  Analytics       ││[0mRect Attributes [0m[90m(from Layout.split):                      │[0m
+[0m│[0m[1m[30m[107m> Dashboard       [0m││[0m[1mActive View: [0m[32mDashboard                                    │[0m
+[0m│  Analytics       ││[0m[1mRect Attributes [0m[90m(from Layout.split):                      │[0m
 [0m│  Settings        ││  x:20 y:0 width:60 height:19                             │[0m
-[0m│  Logs            ││[0mEdge Accessors:[0m                                           │[0m
+[0m│  Logs            ││[0m[1mEdge Accessors:[0m                                           │[0m
 [0m│  Help            ││  left:20 right:80 top:0 bottom:19                        │[0m
-[0m│                  ││[0mConversion Methods [0m[90m(as_position/as_size):                 │[0m
+[0m│                  ││[0m[1mConversion Methods [0m[90m(as_position/as_size):                 │[0m
 [0m│                  ││  Position: x=20 y=0  Size: 60x19                         │[0m
-[0m│                  ││[0mGeometry Transformations:[0m                                 │[0m
+[0m│                  ││[0m[1mGeometry Transformations:[0m                                 │[0m
 [0m│                  ││  inner(2): x:22 y:2 w:56 h:15                            │[0m
 [0m│                  ││  offset(3,2): x:23 y:2  clamp: x:0 y:0                   │[0m
 [0m│                  ││  union(sidebar): w:80 h:19                               │[0m
-[0m│                  ││[0mHit Testing [0m[90m(Rect#contains?):                             │[0m
+[0m│                  ││[0m[1mHit Testing [0m[90m(Rect#contains?):                             │[0m
 [0m│                  ││  Clicks: 0  |  Click any panel to test Rect#contains?    │[0m
 [0m│                  ││                                                          │[0m
 [0m│                  ││                                                          │[0m
@@ -18,7 +18,7 @@
 [0m│                  ││                                                          │[0m
 [0m└──────────────────┘└──────────────────────────────────────────────────────────┘[0m
 [0m┌Controls──────────────────────────────────────────────────────────────────────┐[0m
-[0m│[0m←[0m/[0m→[0m: Sidebar width  [0m↑[0m/[0m↓[0m: Menu selection  [0mClick[0m: Hit test  [0mq[0m: Quit             │[0m
+[0m│[0m[1;4m←[0m/[0m[1;4m→[0m: Sidebar width  [0m[1;4m↑[0m/[0m[1;4m↓[0m: Menu selection  [0m[1;4mClick[0m: Hit test  [0m[1;4mq[0m: Quit             │[0m
 [0m│                                                                              │[0m
 [0m│                                                                              │[0m
 [0m└──────────────────────────────────────────────────────────────────────────────┘[0m

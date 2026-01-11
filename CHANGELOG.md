@@ -94,6 +94,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **`tui.draw` Argument Validation (Breaking)**: `tui.draw` now validates its arguments. Calling `draw` with neither a tree nor a block raises `ArgumentError`, as does calling it with both. Previously this produced undefined behavior.
 - **`Layout.split` Stricter Type Checking (Breaking)**: `Layout.split` now rejects invalid `area` arguments with a clear `ArgumentError` instead of silently misbehaving. Objects must be a `Rect`, `Hash` with `:x/:y/:width/:height` keys, or respond to all four geometry methods.
 - **Schema Directory Removed (Breaking)**: The legacy `lib/ratatui_ruby/schema/` directory has been removed. All widget classes now live exclusively in their proper namespaces (`Widgets::`, `Layout::`, `Text::`, etc.). Direct usage like `RatatuiRuby::Paragraph` (without `Widgets::`) is no longer supported. Use `RatatuiRuby::Widgets::Paragraph` or the TUI facade (`tui.paragraph`).
+- **Buffer::Cell Modifiers (Breaking)**: `Buffer::Cell#modifiers` and `Cell#modifiers` now return an array of `Symbol`s (e.g., `[:bold, :italic]`) instead of `String`s. This unifies the API, as `Style` modifiers were already symbols. Code expecting strings (e.g. `cell.modifiers.include?("bold")`) must be updated to use symbols. This changes behavior established in v0.9.1.
 
 ### Fixed
 

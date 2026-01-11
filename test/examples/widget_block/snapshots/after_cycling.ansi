@@ -1,4 +1,4 @@
-[0m[36m───────────────────────────────────────────────────────────────────────[0m[35mTop Right[0m
+[0m[36m───────────────────────────────────────────────────────────────────────[0m[1m[35mTop Right[0m
 [0mThis paragraph is rendered inside the Block widget.                             [0m
 [0mYou can see how padding and base style affect this content.                     [0m
 [0m                                                                                [0m
@@ -11,13 +11,13 @@
 [0m                                                                                [0m
 [0m                                                                                [0m
 [0m                                                                                [0m
-[0m[0m[35mBottom Left[0m[36m─────────────────────────────────────────────────────────────────────[0m
+[0m[0m[1m[35mBottom Left[0m[36m─────────────────────────────────────────────────────────────────────[0m
 [0m┌Controls──────────────────────────────────────────────────────────────────────┐[0m
-[0m│[0mt[0m: Title (None)  [0ma[0m: Alignment (Right)  [0ms[0m: Title Style (Magenta Bold)          │[0m
-[0m│[0me[0m: Additional Titles (Top + Bottom)                                           │[0m
-[0m│[0mb[0m: Borders (Top/Bottom)  [0my[0m: Border Type (Rounded)                             │[0m
-[0m│[0mc[0m: Border Style (Cyan)  [0mp[0m: Padding (None (0))                                 │[0m
-[0m│[0mf[0m: Base Style (None)  [0mq[0m: Quit                                                 │[0m
+[0m│[0m[1;4mt[0m: Title (None)  [0m[1;4ma[0m: Alignment (Right)  [0m[1;4ms[0m: Title Style (Magenta Bold)          │[0m
+[0m│[0m[1;4me[0m: Additional Titles (Top + Bottom)                                           │[0m
+[0m│[0m[1;4mb[0m: Borders (Top/Bottom)  [0m[1;4my[0m: Border Type (Rounded)                             │[0m
+[0m│[0m[1;4mc[0m: Border Style (Cyan)  [0m[1;4mp[0m: Padding (None (0))                                 │[0m
+[0m│[0m[1;4mf[0m: Base Style (None)  [0m[1;4mq[0m: Quit                                                 │[0m
 [0m│                                                                              │[0m
 [0m│                                                                              │[0m
 [0m│                                                                              │[0m

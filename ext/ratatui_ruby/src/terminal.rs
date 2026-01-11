@@ -248,31 +248,31 @@ fn modifiers_to_value(modifier: ratatui::style::Modifier) -> Value {
     let ary = ruby.ary_new();
 
     if modifier.contains(ratatui::style::Modifier::BOLD) {
-        let _ = ary.push(ruby.str_new("bold"));
+        let _ = ary.push(ruby.to_symbol("bold"));
     }
     if modifier.contains(ratatui::style::Modifier::ITALIC) {
-        let _ = ary.push(ruby.str_new("italic"));
+        let _ = ary.push(ruby.to_symbol("italic"));
     }
     if modifier.contains(ratatui::style::Modifier::DIM) {
-        let _ = ary.push(ruby.str_new("dim"));
+        let _ = ary.push(ruby.to_symbol("dim"));
     }
     if modifier.contains(ratatui::style::Modifier::UNDERLINED) {
-        let _ = ary.push(ruby.str_new("underlined"));
+        let _ = ary.push(ruby.to_symbol("underlined"));
     }
     if modifier.contains(ratatui::style::Modifier::REVERSED) {
-        let _ = ary.push(ruby.str_new("reversed"));
+        let _ = ary.push(ruby.to_symbol("reversed"));
     }
     if modifier.contains(ratatui::style::Modifier::HIDDEN) {
-        let _ = ary.push(ruby.str_new("hidden"));
+        let _ = ary.push(ruby.to_symbol("hidden"));
     }
     if modifier.contains(ratatui::style::Modifier::CROSSED_OUT) {
-        let _ = ary.push(ruby.str_new("crossed_out"));
+        let _ = ary.push(ruby.to_symbol("crossed_out"));
     }
     if modifier.contains(ratatui::style::Modifier::SLOW_BLINK) {
-        let _ = ary.push(ruby.str_new("slow_blink"));
+        let _ = ary.push(ruby.to_symbol("slow_blink"));
     }
     if modifier.contains(ratatui::style::Modifier::RAPID_BLINK) {
-        let _ = ary.push(ruby.str_new("rapid_blink"));
+        let _ = ary.push(ruby.to_symbol("rapid_blink"));
     }
 
     ary.as_value()

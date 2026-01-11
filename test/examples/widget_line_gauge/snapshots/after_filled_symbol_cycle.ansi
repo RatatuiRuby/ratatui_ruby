@@ -18,7 +18,7 @@
 [0m                                                                                [0m
 [0m                                                                                [0m
 [0m┌Controls──────────────────────────────────────────────────────────────────────┐[0m
-[0m│[0m←/→[0m: Ratio (50%)  [0mb[0m: Base Style (None)  [0mq[0m: Quit                               │[0m
-[0m│[0mf[0m: Filled Symbol (▓ (Dark Shade))  [0mc[0m: Filled Color (Green)                    │[0m
-[0m│[0mu[0m: Unfilled Symbol (░ (Light Shade))  [0mx[0m: Unfilled Color (Dark Gray)           │[0m
+[0m│[0m[1;4m←/→[0m: Ratio (50%)  [0m[1;4mb[0m: Base Style (None)  [0m[1;4mq[0m: Quit                               │[0m
+[0m│[0m[1;4mf[0m: Filled Symbol (▓ (Dark Shade))  [0m[1;4mc[0m: Filled Color (Green)                    │[0m
+[0m│[0m[1;4mu[0m: Unfilled Symbol (░ (Light Shade))  [0m[1;4mx[0m: Unfilled Color (Dark Gray)           │[0m
 [0m└──────────────────────────────────────────────────────────────────────────────┘[0m

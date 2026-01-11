@@ -1,4 +1,4 @@
-[0m[32m┌[0m[33mBox[0m[32m───────────────────────────────────────────────────────────────────────────┐[0m
+[0m[32m┌[0m[1;4m[33mBox[0m[32m───────────────────────────────────────────────────────────────────────────┐[0m
 [0m[32m│                           Arrow Keys: Change Color                           │[0m
 [0m[32m│                                                                              │[0m
 [0m[32m│                             Current Color: Green                             │[0m
@@ -17,8 +17,8 @@
 [0m[32m│                                                                              │[0m
 [0m[32m└──────────────────────────────────────────────────────────────────────────────┘[0m
 [0m┌Controls──────────────────────────────────────────────────────────────────────┐[0m
-[0m│[0m↑↓←→[0m: Color (Green)  [0mq[0m: Quit                                                  │[0m
-[0m│[0mspace[0m: Border Type (Plain)  [0mc[0m: Border Set (None)                              │[0m
-[0m│[0ms[0m: Style (Default)  [0mb[0m: Border Style (Default (no border style))               │[0m
-[0m│[0menter[0m: Align Title (Left)  [0mt[0m: Title Style (Yellow Bold Underlined)            │[0m
+[0m│[0m[1;4m↑↓←→[0m: Color (Green)  [0m[1;4mq[0m: Quit                                                  │[0m
+[0m│[0m[1;4mspace[0m: Border Type (Plain)  [0m[1;4mc[0m: Border Set (None)                              │[0m
+[0m│[0m[1;4ms[0m: Style (Default)  [0m[1;4mb[0m: Border Style (Default (no border style))               │[0m
+[0m│[0m[1;4menter[0m: Align Title (Left)  [0m[1;4mt[0m: Title Style (Yellow Bold Underlined)            │[0m
 [0m└──────────────────────────────────────────────────────────────────────────────┘[0m

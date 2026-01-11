@@ -1,9 +1,9 @@
 [0mList Widget - Interactive Attribute Cycling                                     [0m
 [0m┌Programming (len: 48) | index: nil → none─────────────────────────────────────┐[0m
-[0m│  [0m[31mR[0m[91mu[0m[31mb[0m[91my[0m                                                                        │[0m
-[0m│  [0m[35mRust[0m                                                                        │[0m
+[0m│  [0m[4m[31mR[0m[1m[91mu[0m[3m[31mb[0m[7m[91my[0m                                                                        │[0m
+[0m│  [0m[1;4m[35mRust[0m                                                                        │[0m
 [0m│[100m  [33mPython                                                                      │[0m
-[0m│[44m  [0m[33m[44mJava[0m[93m[44mScript[0m[44m                                                                  │[0m
+[0m│[44m  [0m[1m[33m[44mJava[0m[3m[93m[44mScript[0m[44m                                                                  │[0m
 [0m│  Go                                                                          │[0m
 [0m│  C++                                                                         │[0m
 [0m│  C#                                                                          │[0m
@@ -15,10 +15,10 @@
 [0m│  TypeScript                                                                  │[0m
 [0m└──────────────────────────────────────────────────────────────────────────────┘[0m
 [0m┌Controls──────────────────────────────────────────────────────────────────────┐[0m
-[0m│[0mi[0m: Items  [0m↑/↓[0m: Navigate  [0mx[0m: Select  [0mh[0m: Highlight (Blue on White Bold)         │[0m
-[0m│[0my[0m: Symbol (▶ )  [0md[0m: Direction (Top to Bottom)                                  │[0m
-[0m│[0ms[0m: Spacing (Always)  [0mp[0m: Scroll Padding (1 item)                               │[0m
-[0m│[0mb[0m: Base (None)  [0mr[0m: Repeat (Off)                                               │[0m
-[0m│[0mo[0m: Offset Mode (Auto (No Offset))  [0mq[0m: Quit                                    │[0m
+[0m│[0m[1;4mi[0m: Items  [0m[1;4m↑/↓[0m: Navigate  [0m[1;4mx[0m: Select  [0m[1;4mh[0m: Highlight (Blue on White Bold)         │[0m
+[0m│[0m[1;4my[0m: Symbol (▶ )  [0m[1;4md[0m: Direction (Top to Bottom)                                  │[0m
+[0m│[0m[1;4ms[0m: Spacing (Always)  [0m[1;4mp[0m: Scroll Padding (1 item)                               │[0m
+[0m│[0m[1;4mb[0m: Base (None)  [0m[1;4mr[0m: Repeat (Off)                                               │[0m
+[0m│[0m[1;4mo[0m: Offset Mode (Auto (No Offset))  [0m[1;4mq[0m: Quit                                    │[0m
 [0m│                                                                              │[0m
 [0m└──────────────────────────────────────────────────────────────────────────────┘[0m

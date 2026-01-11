@@ -1,5 +1,5 @@
 [0m┌Tabs──────────────────────────────────────────────────────────────────────────┐[0m
-[0m│  [0m[33mRevenue[0m    |   Traffic    |   Errors    |   Quarterly                       │[0m
+[0m│  [0m[1m[33mRevenue[0m    |   Traffic    |   Errors    |   Quarterly                       │[0m
 [0m└──────────────────────────────────────────────────────────────────────────────┘[0m
 [0m┌Revenue───────────────────────────────────────────────────────────────────────┐[0m
 [0m│Velit est quis. Inventore et nostrum. Possimus vitae esse. Corrupti pariatur  │[0m
@@ -18,7 +18,7 @@
 [0m│                                                                              │[0m
 [0m└──────────────────────────────────────────────────────────────────────────────┘[0m
 [0m┌Controls──────────────────────────────────────────────────────────────────────┐[0m
-[0m│[0m←/→[0m: Select Tab  [0mh/l[0m: Pad Left (2)  [0mj/k[0m: Pad Right (3)  [0mq[0m: Quit               │[0m
-[0m│[0md[0m: Divider ( | )  [0ms[0m: Highlight (Yellow Bold)  [0mb[0m: Base Style (Default)         │[0m
+[0m│[0m[1;4m←/→[0m: Select Tab  [0m[1;4mh/l[0m: Pad Left (2)  [0m[1;4mj/k[0m: Pad Right (3)  [0m[1;4mq[0m: Quit               │[0m
+[0m│[0m[1;4md[0m: Divider ( | )  [0m[1;4ms[0m: Highlight (Yellow Bold)  [0m[1;4mb[0m: Base Style (Default)         │[0m
 [0m│Width: 43                                                                     │[0m
 [0m└──────────────────────────────────────────────────────────────────────────────┘[0m

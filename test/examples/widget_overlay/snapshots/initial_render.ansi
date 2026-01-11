@@ -18,7 +18,7 @@
 [0m│International Space Station Extends Mission Timeline to 2030                  │[0m
 [0m└──────────────────────────────────────────────────────────────────────────────┘[0m
 [0m┌Controls──────────────────────────────────────────────────────────────────────┐[0m
-[0m│         [0m0[0m/[0m1[0m/[0m2[0m: Change number of overlays | [0mspace[0m: Swap overlay order         │[0m
-[0m│                        [0mc[0m: Toggle clear (currently on)                        │[0m
-[0m│                                    [0mq[0m: Quit                                   │[0m
+[0m│         [0m[1;4m0[0m/[0m[1;4m1[0m/[0m[1;4m2[0m: Change number of overlays | [0m[1;4mspace[0m: Swap overlay order         │[0m
+[0m│                        [0m[1;4mc[0m: Toggle clear (currently on)                        │[0m
+[0m│                                    [0m[1;4mq[0m: Quit                                   │[0m
 [0m└──────────────────────────────────────────────────────────────────────────────┘[0m

@@ -20,7 +20,7 @@ module RatatuiRuby
       assert_equal "X", cell.char
       assert_equal :red, cell.fg
       assert_equal :blue, cell.bg
-      assert_equal ["bold", "italic"], cell.modifiers
+      assert_equal [:bold, :italic], cell.modifiers
 
       assert_predicate cell, :bold?
       assert_predicate cell, :italic?
@@ -81,7 +81,7 @@ module RatatuiRuby
 
     def test_inspect
       c1 = Buffer::Cell.new(char: "X", fg: :red, modifiers: ["bold"])
-      assert_equal '#<RatatuiRuby::Buffer::Cell symbol="X" fg=:red modifiers=["bold"]>', c1.inspect
+      assert_equal '#<RatatuiRuby::Buffer::Cell symbol="X" fg=:red modifiers=[:bold]>', c1.inspect
 
       c2 = Buffer::Cell.empty
       assert_equal '#<RatatuiRuby::Buffer::Cell symbol=" ">', c2.inspect
@@ -134,6 +134,49 @@ module RatatuiRuby
     def test_cell_is_ractor_shareable
       cell = Buffer::Cell.new(char: "X", fg: :red, bg: "blue", modifiers: ["bold", "italic"])
       assert Ractor.shareable?(cell), "Cell should be Ractor.shareable? for thread/Ractor safety"
+    end
+
+    # DWIM: modifiers accept strings, symbols, or anything with to_sym/to_s
+    # and normalize to symbols for consistent output
+    def test_modifiers_normalize_strings_to_symbols
+      cell = Buffer::Cell.new(char: "X", modifiers: ["bold", "italic"])
+      assert_equal [:bold, :italic], cell.modifiers
+      assert_predicate cell, :bold?
+      assert_predicate cell, :italic?
+    end
+
+    def test_modifiers_normalize_symbols_to_symbols
+      cell = Buffer::Cell.new(char: "X", modifiers: [:bold, :dim])
+      assert_equal [:bold, :dim], cell.modifiers
+      assert_predicate cell, :bold?
+      assert_predicate cell, :dim?
+    end
+
+    def test_modifiers_normalize_mixed_input
+      cell = Buffer::Cell.new(char: "X", modifiers: ["bold", :italic, "underlined"])
+      assert_equal [:bold, :italic, :underlined], cell.modifiers
+      assert_predicate cell, :bold?
+      assert_predicate cell, :italic?
+      assert_predicate cell, :underlined?
+    end
+
+    def test_modifiers_normalize_custom_to_sym_object
+      # Any object responding to to_sym should work
+      custom = Object.new
+      def custom.to_sym = :reversed
+      cell = Buffer::Cell.new(char: "X", modifiers: [custom])
+      assert_equal [:reversed], cell.modifiers
+      assert_predicate cell, :reversed?
+    end
+
+    def test_modifiers_normalize_custom_to_s_object
+      # Fallback: object without to_sym but with to_s
+      custom = Object.new
+      custom.define_singleton_method(:to_s) { "hidden" }
+      custom.define_singleton_method(:respond_to?) { |m| m == :to_s }
+      cell = Buffer::Cell.new(char: "X", modifiers: [custom])
+      assert_equal [:hidden], cell.modifiers
+      assert_predicate cell, :hidden?
     end
   end
 end

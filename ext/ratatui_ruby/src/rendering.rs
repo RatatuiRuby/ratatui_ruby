@@ -120,7 +120,9 @@ fn process_draw_command(buffer: &mut Buffer, cmd: Value) -> Result<(), Error> {
                 for i in 0..mods_array.len() {
                     let index = isize::try_from(i)
                         .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
-                    let mod_str: String = mods_array.entry::<String>(index)?;
+                    let mod_val: Value = mods_array.entry(index)?;
+                    // Accept both symbols and strings (DWIM)
+                    let mod_str: String = mod_val.funcall("to_s", ())?;
                     if let Some(modifier) = parse_modifier_str(&mod_str) {
                         style = style.add_modifier(modifier);
                     }

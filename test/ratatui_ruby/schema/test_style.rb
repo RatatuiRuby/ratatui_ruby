@@ -189,4 +189,38 @@ class TestStyleRemoveModifiers < Minitest::Test
     assert_equal [:underlined], style.modifiers
     assert_equal [:bold], style.remove_modifiers
   end
+
+  # Rendering test: verify remove_modifiers actually removes a modifier from the cell.
+  # This proves the feature works end-to-end through the Rust FFI layer.
+  #
+  # Strategy: Render a styled span with bold, then another span where bold is removed.
+  # Verify the first cell has :bold and the second does not.
+  def test_style_remove_modifiers_rendering
+    with_test_terminal(10, 1) do
+      bold_span = RatatuiRuby::Text::Span.new(
+        content: "A",
+        style: RatatuiRuby::Style::Style.new(modifiers: [:bold])
+      )
+      # This span explicitly removes bold - even if inherited from a parent style
+      normal_span = RatatuiRuby::Text::Span.new(
+        content: "B",
+        style: RatatuiRuby::Style::Style.new(remove_modifiers: [:bold])
+      )
+      line = RatatuiRuby::Text::Line.new(spans: [bold_span, normal_span])
+      paragraph = RatatuiRuby::Widgets::Paragraph.new(text: [line])
+
+      RatatuiRuby.draw { |f| f.render_widget(paragraph, f.area) }
+
+      # Cell 0: "A" with :bold
+      cell_a = RatatuiRuby.get_cell_at(0, 0)
+      assert_equal "A", cell_a.char
+      assert_includes cell_a.modifiers, :bold, "First span should have :bold modifier"
+
+      # Cell 1: "B" without :bold (removed)
+      cell_b = RatatuiRuby.get_cell_at(1, 0)
+      assert_equal "B", cell_b.char
+      refute_includes cell_b.modifiers, :bold,
+        "Second span with remove_modifiers: [:bold] should NOT have :bold"
+    end
+  end
 end

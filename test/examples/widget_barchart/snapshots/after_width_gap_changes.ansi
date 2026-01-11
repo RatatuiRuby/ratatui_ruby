@@ -17,8 +17,8 @@
 [0m[36m│2024                                           2025                           │[0m
 [0m[36m└──────────────────────────────────────────────────────────────────────────────┘[0m
 [0m┌Controls──────────────────────────────────────────────────────────────────────┐[0m
-[0m│[0md[0m: Data (Groups)  [0mv[0m: Direction (vertical)  [0mq[0m: Quit                            │[0m
-[0m│[0mw[0m: Width (9)  [0ma[0m: Gap (2)  [0mg[0m: Group Gap (3)                                    │[0m
-[0m│[0ms[0m: Style (Cyan)  [0mx[0m: Label (Cyan)  [0mz[0m: Value (Cyan)                             │[0m
-[0m│[0mb[0m: Set (Default)  [0mm[0m: Mode (Full)                                              │[0m
+[0m│[0m[1;4md[0m: Data (Groups)  [0m[1;4mv[0m: Direction (vertical)  [0m[1;4mq[0m: Quit                            │[0m
+[0m│[0m[1;4mw[0m: Width (9)  [0m[1;4ma[0m: Gap (2)  [0m[1;4mg[0m: Group Gap (3)                                    │[0m
+[0m│[0m[1;4ms[0m: Style (Cyan)  [0m[1;4mx[0m: Label (Cyan)  [0m[1;4mz[0m: Value (Cyan)                             │[0m
+[0m│[0m[1;4mb[0m: Set (Default)  [0m[1;4mm[0m: Mode (Full)                                              │[0m
 [0m└──────────────────────────────────────────────────────────────────────────────┘[0m

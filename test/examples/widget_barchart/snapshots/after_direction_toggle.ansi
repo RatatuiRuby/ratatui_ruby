@@ -17,8 +17,8 @@
 [0m[36m│   2025                                                                       │[0m
 [0m[36m└──────────────────────────────────────────────────────────────────────────────┘[0m
 [0m┌Con[36mtrols──────────────────────────────────────────────────────────────────────┐[0m
-[0m│[0md[0m: [36mData (Groups)  [0mv[0m: Direction (horizontal)  [0mq[0m: Quit                          │[0m
-[0m│[0mw[0m: [36mWidth (1)  [0ma[0m: Gap (1)  [0mg[0m: Group Gap (2)                                    │[0m
-[0m│[0ms[0m: [36mStyle (Cyan)  [0mx[0m: Label (Cyan)  [0mz[0m: Value (Cyan)                             │[0m
-[0m│[0mb[0m: [36mSet (Default)  [0mm[0m: Mode (Full)                                              │[0m
+[0m│[0m[1;4md[0m: [36mData (Groups)  [0m[1;4mv[0m: Direction (horizontal)  [0m[1;4mq[0m: Quit                          │[0m
+[0m│[0m[1;4mw[0m: [36mWidth (1)  [0m[1;4ma[0m: Gap (1)  [0m[1;4mg[0m: Group Gap (2)                                    │[0m
+[0m│[0m[1;4ms[0m: [36mStyle (Cyan)  [0m[1;4mx[0m: Label (Cyan)  [0m[1;4mz[0m: Value (Cyan)                             │[0m
+[0m│[0m[1;4mb[0m: [36mSet (Default)  [0m[1;4mm[0m: Mode (Full)                                              │[0m
 [0m└───[36m───────────────────────────────────────────────────────────────────────────┘[0m

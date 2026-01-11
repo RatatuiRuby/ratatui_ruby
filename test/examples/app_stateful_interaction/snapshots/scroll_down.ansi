@@ -1,24 +1,24 @@
-[0m[0m[33m┌ Tables ──────────────▲[0m[90m┌ Orders Data ─────────────────────────────────────────▲[0m
-[0m[0m[33m│[0m  Users               [0m[33m▐[0m[90m│  Order ID         Status               Amount        [90m▐[0m
-[0m[0m[33m│[97m[44m> Orders              [33m▐[0m[90m│[0m[97m[44m> AmazingCode8562  Pending              $180.94       [0m[90m▐[0m
-[0m[0m[33m│[0m  Products            [0m[33m▐[0m[90m│  AmazingPromo2478 Completed            $110.45       [90m▐[0m
-[0m[0m[33m│[0m  Invoices            [0m[33m▐[0m[90m│  CoolDiscount1757 Pending              $415.69       [90m▐[0m
-[0m[0m[33m│[0m  Audit Logs          [0m[33m▐[0m[90m│  GreatPromotion34 Completed            $125.48       [90m▐[0m
-[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  StellarPromotion Pending              $344.66       [90m▐[0m
-[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  PremiumSale8250  Failed               $376.32       [90m║[0m
-[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  AmazingCode1061  Failed               $276.34       [90m║[0m
-[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  PremiumSavings36 Completed            $470.51       [90m║[0m
-[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  KillerDiscount89 Failed               $271.39       [90m║[0m
-[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  KillerDiscount45 Failed               $356.42       [90m║[0m
-[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  SweetSale1351    Pending              $383.6        [90m║[0m
-[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  SweetDeal1553    Completed            $233.93       [90m║[0m
-[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  GoodSavings8431  Pending              $15.97        [90m║[0m
-[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  CoolDiscount4394 Pending              $415.13       [90m║[0m
-[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  StellarSavings65 Pending              $236.38       [90m║[0m
-[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  SweetPrice8180   Pending              $18.87        [90m║[0m
-[0m[0m[33m│[0m                      [0m[33m▐[0m[90m│  SweetPrice4347   Pending              $21.28        [90m║[0m
-[0m[0m[33m│[0m                      [0m[33m║[0m[90m│  StellarCode9527  Pending              $421.81       [90m║[0m
-[0m[0m[33m│[0m                      [0m[33m║[0m[90m│  SweetSale1449    Pending              $421.06       [90m║[0m
-[0m[0m[33m│[0m                      [0m[33m║[0m[90m│  IncredibleSale90 Completed            $121.42       [90m║[0m
-[0m[0m[33m└──────────────────────▼[0m[90m└──────────────────────────────────────────────────────▼[0m
+[0m[0m[1m[33m┌ Tables ──────────────▲[0m[90m┌ Orders Data ─────────────────────────────────────────▲[0m
+[0m[0m[1m[33m│[0m  Users               [0m[1m[33m▐[0m[90m│  Order ID         Status               Amount        [90m▐[0m
+[0m[0m[1m[33m│[97m[44m> Orders              [33m▐[0m[90m│[0m[1m[97m[44m> AmazingCode8562  Pending              $180.94       [0m[90m▐[0m
+[0m[0m[1m[33m│[0m  Products            [0m[1m[33m▐[0m[90m│  AmazingPromo2478 Completed            $110.45       [90m▐[0m
+[0m[0m[1m[33m│[0m  Invoices            [0m[1m[33m▐[0m[90m│  CoolDiscount1757 Pending              $415.69       [90m▐[0m
+[0m[0m[1m[33m│[0m  Audit Logs          [0m[1m[33m▐[0m[90m│  GreatPromotion34 Completed            $125.48       [90m▐[0m
+[0m[0m[1m[33m│[0m                      [0m[1m[33m▐[0m[90m│  StellarPromotion Pending              $344.66       [90m▐[0m
+[0m[0m[1m[33m│[0m                      [0m[1m[33m▐[0m[90m│  PremiumSale8250  Failed               $376.32       [90m║[0m
+[0m[0m[1m[33m│[0m                      [0m[1m[33m▐[0m[90m│  AmazingCode1061  Failed               $276.34       [90m║[0m
+[0m[0m[1m[33m│[0m                      [0m[1m[33m▐[0m[90m│  PremiumSavings36 Completed            $470.51       [90m║[0m
+[0m[0m[1m[33m│[0m                      [0m[1m[33m▐[0m[90m│  KillerDiscount89 Failed               $271.39       [90m║[0m
+[0m[0m[1m[33m│[0m                      [0m[1m[33m▐[0m[90m│  KillerDiscount45 Failed               $356.42       [90m║[0m
+[0m[0m[1m[33m│[0m                      [0m[1m[33m▐[0m[90m│  SweetSale1351    Pending              $383.6        [90m║[0m
+[0m[0m[1m[33m│[0m                      [0m[1m[33m▐[0m[90m│  SweetDeal1553    Completed            $233.93       [90m║[0m
+[0m[0m[1m[33m│[0m                      [0m[1m[33m▐[0m[90m│  GoodSavings8431  Pending              $15.97        [90m║[0m
+[0m[0m[1m[33m│[0m                      [0m[1m[33m▐[0m[90m│  CoolDiscount4394 Pending              $415.13       [90m║[0m
+[0m[0m[1m[33m│[0m                      [0m[1m[33m▐[0m[90m│  StellarSavings65 Pending              $236.38       [90m║[0m
+[0m[0m[1m[33m│[0m                      [0m[1m[33m▐[0m[90m│  SweetPrice8180   Pending              $18.87        [90m║[0m
+[0m[0m[1m[33m│[0m                      [0m[1m[33m▐[0m[90m│  SweetPrice4347   Pending              $21.28        [90m║[0m
+[0m[0m[1m[33m│[0m                      [0m[1m[33m║[0m[90m│  StellarCode9527  Pending              $421.81       [90m║[0m
+[0m[0m[1m[33m│[0m                      [0m[1m[33m║[0m[90m│  SweetSale1449    Pending              $421.06       [90m║[0m
+[0m[0m[1m[33m│[0m                      [0m[1m[33m║[0m[90m│  IncredibleSale90 Completed            $121.42       [90m║[0m
+[0m[0m[1m[33m└──────────────────────▼[0m[90m└──────────────────────────────────────────────────────▼[0m
 [0mq: Quit | Tab/Arrows: Nav | Home/End: Jump | Mouse: Click rows                  [0m

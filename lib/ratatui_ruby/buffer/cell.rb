@@ -121,59 +121,60 @@ module RatatuiRuby
       # [fg] Symbol or String (nullable).
       # [bg] Symbol or String (nullable).
       # [underline_color] Symbol or String (nullable).
-      # [modifiers] Array of Strings.
+      # [modifiers] Array of Strings, Symbols, or any object responding to to_sym or to_s.
+      #             Normalized to Symbols for consistent output.
       def initialize(symbol: nil, char: nil, fg: nil, bg: nil, underline_color: nil, modifiers: [])
         @symbol = (symbol || char || " ").freeze
         @fg = fg&.freeze
         @bg = bg&.freeze
         @underline_color = underline_color&.freeze
-        @modifiers = modifiers.map(&:freeze).freeze
+        @modifiers = modifiers.map { |m| m.respond_to?(:to_sym) ? m.to_sym : m.to_s.to_sym }.freeze
         freeze
       end
 
       # Returns true if the cell has the bold modifier.
       def bold?
-        modifiers.include?("bold")
+        modifiers.include?(:bold)
       end
 
       # Returns true if the cell has the dim modifier.
       def dim?
-        modifiers.include?("dim")
+        modifiers.include?(:dim)
       end
 
       # Returns true if the cell has the italic modifier.
       def italic?
-        modifiers.include?("italic")
+        modifiers.include?(:italic)
       end
 
       # Returns true if the cell has the underlined modifier.
       def underlined?
-        modifiers.include?("underlined")
+        modifiers.include?(:underlined)
       end
 
       # Returns true if the cell has the slow_blink modifier.
       def slow_blink?
-        modifiers.include?("slow_blink")
+        modifiers.include?(:slow_blink)
       end
 
       # Returns true if the cell has the rapid_blink modifier.
       def rapid_blink?
-        modifiers.include?("rapid_blink")
+        modifiers.include?(:rapid_blink)
       end
 
       # Returns true if the cell has the reversed modifier.
       def reversed?
-        modifiers.include?("reversed")
+        modifiers.include?(:reversed)
       end
 
       # Returns true if the cell has the hidden modifier.
       def hidden?
-        modifiers.include?("hidden")
+        modifiers.include?(:hidden)
       end
 
       # Returns true if the cell has the crossed_out modifier.
       def crossed_out?
-        modifiers.include?("crossed_out")
+        modifiers.include?(:crossed_out)
       end
 
       # Checks equality with another Cell.
