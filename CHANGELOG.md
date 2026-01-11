@@ -12,6 +12,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Removed
+
+## [0.10.0] - 2026-01-10
+
+### Added
+
 - **Table Integer Width Shorthand**: `Table` `widths:` parameter now accepts plain integers as shorthand for `Constraint.length(n)`. This enables cleaner table definitions like `widths: [40, 16, 10]` instead of verbose constraint arrays. Constraints and integers can be mixed freely.
 - **Error Message Context**: Type errors from the Rust backend now include the `inspect` string of the value that caused the error, making debugging significantly easier. For example, "expected array for rows" now shows "expected array for rows, got {title: \"Processes\", ...}".
 - **Steep Type Checking**: Integrated Steep static type analyzer with a new `rake steep` task. The Steepfile covers `lib/` with comprehensive RBS type definitions for all widgets, layout primitives, events, and interfaces.
@@ -602,6 +612,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Testing Support**: Included `RatatuiRuby::TestHelper` and RSpec integration to make testing your TUI applications possible.
 
 [Unreleased]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/HEAD
+[0.10.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.10.0
 [0.9.1]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.9.1
 [0.9.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.9.0
 [0.8.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.8.0
