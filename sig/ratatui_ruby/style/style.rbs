@@ -12,14 +12,18 @@ module RatatuiRuby
   module Style
     # Style class for RatatuiRuby::Style::Style
     class Style < Data
-      attr_reader fg: (String | Symbol | Integer)?
-      attr_reader bg: (String | Symbol | Integer)?
-      attr_reader modifiers: Array[Symbol]
+      type color = String | Symbol | Integer
 
-      def self.new: (?fg: (String | Symbol | Integer)?, ?bg: (String | Symbol | Integer)?, ?modifiers: Array[Symbol]) -> Style
-      def initialize: (?fg: (String | Symbol | Integer)?, ?bg: (String | Symbol | Integer)?, ?modifiers: Array[Symbol]) -> void
+      attr_reader fg: color?
+      attr_reader bg: color?
+      attr_reader underline_color: color?
+      attr_reader modifiers: Array[Symbol]
+      attr_reader remove_modifiers: Array[Symbol]
+
+      def self.new: (?fg: color?, ?bg: color?, ?underline_color: color?, ?modifiers: Array[Symbol], ?remove_modifiers: Array[Symbol]) -> Style
+      def initialize: (?fg: color?, ?bg: color?, ?underline_color: color?, ?modifiers: Array[Symbol], ?remove_modifiers: Array[Symbol]) -> void
       def self.default: () -> Style
-      def self.with: (?fg: (String | Symbol | Integer)?, ?bg: (String | Symbol | Integer)?, ?modifiers: Array[Symbol]) -> Style
+      def self.with: (?fg: color?, ?bg: color?, ?underline_color: color?, ?modifiers: Array[Symbol], ?remove_modifiers: Array[Symbol]) -> Style
     end
   end
 end

@@ -14,6 +14,7 @@ require_relative "ratatui_ruby/widgets"  # Widgets::Block, Widgets::Paragraph, e
 require_relative "ratatui_ruby/buffer"   # Buffer::Cell (for inspection)
 require_relative "ratatui_ruby/text"    # Text::Span, Text::Line, Text.width
 require_relative "ratatui_ruby/draw"    # Draw commands
+require_relative "ratatui_ruby/symbols" # Symbols::Shade, etc.
 
 # Event types
 require_relative "ratatui_ruby/event"
@@ -428,6 +429,7 @@ module RatatuiRuby
       char: raw["char"],
       fg: raw["fg"],
       bg: raw["bg"],
+      underline_color: raw["underline_color"],
       modifiers: raw["modifiers"] || []
     )
   end

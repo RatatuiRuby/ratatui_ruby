@@ -66,22 +66,29 @@ pub fn parse_style(style_val: Value) -> Result<Style, Error> {
 
     let mut style = Style::default();
 
-    let (fg, bg, modifiers_val) = if let Some(hash) = magnus::RHash::from_value(style_val) {
-        (
-            hash.lookup(ruby.to_symbol("fg"))
-                .unwrap_or_else(|_| ruby.qnil().as_value()),
-            hash.lookup(ruby.to_symbol("bg"))
-                .unwrap_or_else(|_| ruby.qnil().as_value()),
-            hash.lookup(ruby.to_symbol("modifiers"))
-                .unwrap_or_else(|_| ruby.qnil().as_value()),
-        )
-    } else {
-        (
-            style_val.funcall("fg", ())?,
-            style_val.funcall("bg", ())?,
-            style_val.funcall("modifiers", ())?,
-        )
-    };
+    let (fg, bg, underline_color, modifiers_val, remove_modifiers_val) =
+        if let Some(hash) = magnus::RHash::from_value(style_val) {
+            (
+                hash.lookup(ruby.to_symbol("fg"))
+                    .unwrap_or_else(|_| ruby.qnil().as_value()),
+                hash.lookup(ruby.to_symbol("bg"))
+                    .unwrap_or_else(|_| ruby.qnil().as_value()),
+                hash.lookup(ruby.to_symbol("underline_color"))
+                    .unwrap_or_else(|_| ruby.qnil().as_value()),
+                hash.lookup(ruby.to_symbol("modifiers"))
+                    .unwrap_or_else(|_| ruby.qnil().as_value()),
+                hash.lookup(ruby.to_symbol("remove_modifiers"))
+                    .unwrap_or_else(|_| ruby.qnil().as_value()),
+            )
+        } else {
+            (
+                style_val.funcall("fg", ())?,
+                style_val.funcall("bg", ())?,
+                style_val.funcall("underline_color", ())?,
+                style_val.funcall("modifiers", ())?,
+                style_val.funcall("remove_modifiers", ())?,
+            )
+        };
 
     if !fg.is_nil() {
         if let Ok(fg_str) = fg.funcall::<_, _, String>("to_s", ()) {
@@ -99,6 +106,14 @@ pub fn parse_style(style_val: Value) -> Result<Style, Error> {
         }
     }
 
+    if !underline_color.is_nil() {
+        if let Ok(uc_str) = underline_color.funcall::<_, _, String>("to_s", ()) {
+            if let Some(color) = parse_color(&uc_str) {
+                style = style.underline_color(color);
+            }
+        }
+    }
+
     if !modifiers_val.is_nil() {
         if let Some(modifiers_array) = magnus::RArray::from_value(modifiers_val) {
             for i in 0..modifiers_array.len() {
@@ -107,6 +122,20 @@ pub fn parse_style(style_val: Value) -> Result<Style, Error> {
                 if let Ok(sym) = modifiers_array.entry::<Symbol>(index) {
                     if let Some(m) = parse_modifier_str(&sym.to_string()) {
                         style = style.add_modifier(m);
+                    }
+                }
+            }
+        }
+    }
+
+    if !remove_modifiers_val.is_nil() {
+        if let Some(remove_modifiers_array) = magnus::RArray::from_value(remove_modifiers_val) {
+            for i in 0..remove_modifiers_array.len() {
+                let index = isize::try_from(i)
+                    .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
+                if let Ok(sym) = remove_modifiers_array.entry::<Symbol>(index) {
+                    if let Some(m) = parse_modifier_str(&sym.to_string()) {
+                        style = style.remove_modifier(m);
                     }
                 }
             }

@@ -8,20 +8,23 @@
 module RatatuiRuby
   module Buffer
     class Cell
+      type color = Symbol | String | nil
+
       attr_reader symbol: String
-      attr_reader fg: (Symbol | String | nil)
-      attr_reader bg: (Symbol | String | nil)
+      attr_reader fg: color
+      attr_reader bg: color
+      attr_reader underline_color: color
       attr_reader modifiers: Array[String]
 
       alias char symbol
 
-      def self.new: (?symbol: String?, ?char: String?, ?fg: (Symbol | String | nil), ?bg: (Symbol | String | nil), ?modifiers: Array[String]) -> Cell
+      def self.new: (?symbol: String?, ?char: String?, ?fg: color, ?bg: color, ?underline_color: color, ?modifiers: Array[String]) -> Cell
       def self.empty: () -> Cell
       def self.default: () -> Cell
       def self.symbol: (String symbol) -> Cell
       def self.char: (String char) -> Cell
 
-      def initialize: (?symbol: String?, ?char: String?, ?fg: (Symbol | String | nil), ?bg: (Symbol | String | nil), ?modifiers: Array[String]) -> void
+      def initialize: (?symbol: String?, ?char: String?, ?fg: color, ?bg: color, ?underline_color: color, ?modifiers: Array[String]) -> void
 
       # Modifier predicates
       def bold?: () -> bool
@@ -37,7 +40,7 @@ module RatatuiRuby
       def ==: (untyped other) -> bool
       def inspect: () -> String
       def to_s: () -> String
-      def deconstruct_keys: (Array[Symbol]? keys) -> { symbol: String, char: String, fg: (Symbol | String)?, bg: (Symbol | String)?, modifiers: Array[String] }
+      def deconstruct_keys: (Array[Symbol]? keys) -> { symbol: String, char: String, fg: color, bg: color, underline_color: color, modifiers: Array[String] }
     end
   end
 end

@@ -94,6 +94,40 @@ class TestStyle < Minitest::Test
     # Color.hsluv is an alias for Color.from_hsluv
     assert_equal RatatuiRuby::Style::Color.from_hsluv(12.177, 100, 53.23), RatatuiRuby::Style::Color.hsluv(12.177, 100, 53.23)
   end
+
+  # v1.0.0 alignment: underline_color parameter for Style
+  def test_style_underline_color_creation
+    # Ratatui supports a separate underline_color distinct from fg color
+    # This enables styling like: text in white with red underline
+    style = RatatuiRuby::Style::Style.new(
+      fg: :white,
+      modifiers: [:underlined],
+      underline_color: :red
+    )
+    assert_equal :white, style.fg
+    assert_equal :red, style.underline_color
+    assert_equal [:underlined], style.modifiers
+  end
+
+  def test_style_underline_color_rendering
+    with_test_terminal(10, 1) do
+      paragraph = RatatuiRuby::Widgets::Paragraph.new(
+        text: "X",
+        style: RatatuiRuby::Style::Style.new(
+          fg: :white,
+          modifiers: [:underlined],
+          underline_color: :red
+        )
+      )
+      RatatuiRuby.draw { |f| f.render_widget(paragraph, f.area) }
+
+      cell = RatatuiRuby.get_cell_at(0, 0)
+      assert_equal "X", cell.char
+      assert_equal :white, cell.fg
+      # The cell should have the underline_color property
+      assert_equal :red, cell.underline_color, "Underline color should be preserved in cell"
+    end
+  end
 end
 
 # Tests for Style convenience methods
@@ -118,5 +152,41 @@ class TestStyleConvenience < Minitest::Test
     via_new = RatatuiRuby::Style::Style.new(fg: :green, bg: :black, modifiers: [:italic])
     via_with = RatatuiRuby::Style::Style.with(fg: :green, bg: :black, modifiers: [:italic])
     assert_equal via_new, via_with
+  end
+end
+
+# Tests for remove_modifiers (sub_modifier in Ratatui)
+class TestStyleRemoveModifiers < Minitest::Test
+  include RatatuiRuby::TestHelper
+
+  # v1.0.0 alignment: sub_modifier parameter for Style
+  # Ratatui uses sub_modifier to explicitly remove modifiers when styles are patched.
+  # Ruby API uses remove_modifiers: for clarity.
+
+  def test_style_remove_modifiers_creation
+    # Style with modifiers to remove - these are removed from inherited styles
+    style = RatatuiRuby::Style::Style.new(
+      fg: :white,
+      modifiers: [:bold],
+      remove_modifiers: [:italic, :dim]
+    )
+    assert_equal :white, style.fg
+    assert_equal [:bold], style.modifiers
+    assert_equal [:italic, :dim], style.remove_modifiers
+  end
+
+  def test_style_remove_modifiers_defaults_to_empty
+    style = RatatuiRuby::Style::Style.new(fg: :red)
+    assert_equal [], style.remove_modifiers
+  end
+
+  def test_style_with_remove_modifiers
+    style = RatatuiRuby::Style::Style.with(
+      fg: :blue,
+      modifiers: [:underlined],
+      remove_modifiers: [:bold]
+    )
+    assert_equal [:underlined], style.modifiers
+    assert_equal [:bold], style.remove_modifiers
   end
 end

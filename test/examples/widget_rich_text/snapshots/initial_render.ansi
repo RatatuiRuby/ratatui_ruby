@@ -1,5 +1,5 @@
 [0m┌Simple Rich Text──────────────────────────────────────────────────────────────┐[0m
-[0m│Normal, [0mBold[0m, [0mItalic[0m, [31mRed.                                                    │[0m
+[0m│Normal, [0mBold[0m, [0mItalic[0m, [31mRed, [0m[97mRed Underline[0m.                                     │[0m
 [0m│                                                                              │[0m
 [0m│Integer Color Test: [38;5;0mColor 0 (Use [0m↑ ↓[0m for +/- 1, [0m← →[0m for +/- 10)               │[0m
 [0m│                                                                              │[0m
@@ -15,9 +15,9 @@
 [0m│[0m[33m⚠ [0mWarning[90m - Documentation pending                                             │[0m
 [0m│[0m[31m✗ [0mNot Started[90m - Performance benchmarks                                        │[0m
 [0m│                                                                              │[0m
-[0m│Press [0mQ[0m to quit, [0m↑ ↓[0m to adjust color by 1, [0m← →[0m to adjust color by 10.         │[0m
+[0m│[36mShade:     [90m░░░░[90m▒▒▒▒[97m▓▓▓▓████                                                   │[0m
 [0m│                                                                              │[0m
-[0m│                                                                              │[0m
+[0m│Press [0mQ[0m to quit, [0m↑ ↓[0m: color by 1, [0m← →[0m: color by 10.                           │[0m
 [0m│                                                                              │[0m
 [0m│                                                                              │[0m
 [0m│                                                                              │[0m

@@ -1,0 +1,18 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+module RatatuiRuby
+  module Symbols
+    module Shade
+      EMPTY: String
+      LIGHT: String
+      MEDIUM: String
+      DARK: String
+      FULL: String
+    end
+  end
+end

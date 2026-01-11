@@ -87,7 +87,8 @@ class WidgetRichText
   end
 
   private def base_line
-    # Demonstrates creating a styled line, then using fluent alignment methods
+    # Demonstrates creating a styled line with various modifiers and colors
+    # Including: underline_color (distinct from fg) and remove_modifiers (to override inherited styles)
     @tui.text_line(
       spans: [
         @tui.text_span(content: "Normal, ", style: nil),
@@ -96,6 +97,12 @@ class WidgetRichText
         @tui.text_span(content: "Italic", style: @tui.style(modifiers: [:italic])),
         @tui.text_span(content: ", ", style: nil),
         @tui.text_span(content: "Red", style: @tui.style(fg: :red)),
+        @tui.text_span(content: ", ", style: nil),
+        # New: underline_color - underline in a different color than text
+        @tui.text_span(
+          content: "Red Underline",
+          style: @tui.style(fg: :white, modifiers: [:underlined], underline_color: :red)
+        ),
         @tui.text_span(content: ".", style: nil),
       ]
     )
@@ -103,6 +110,9 @@ class WidgetRichText
 
   private def complex_example
     # Example 2: Multiple lines with different styles
+    # Includes Symbols::Shade constants for density gradients
+    shade = RatatuiRuby::Symbols::Shade
+
     @tui.paragraph(
       text: [
         @tui.text_line(
@@ -127,15 +137,27 @@ class WidgetRichText
           ]
         ),
         @tui.text_line(spans: []),
+        # Demonstrate Symbols::Shade constants for density gradients
+        @tui.text_line(
+          spans: [
+            @tui.text_span(content: "Shade: ", style: @tui.style(fg: :cyan)),
+            @tui.text_span(content: shade::EMPTY * 4, style: nil),
+            @tui.text_span(content: shade::LIGHT * 4, style: @tui.style(fg: :dark_gray)),
+            @tui.text_span(content: shade::MEDIUM * 4, style: @tui.style(fg: :gray)),
+            @tui.text_span(content: shade::DARK * 4, style: @tui.style(fg: :white)),
+            @tui.text_span(content: shade::FULL * 4, style: @tui.style(fg: :white)),
+          ]
+        ),
+        @tui.text_line(spans: []),
         @tui.text_line(
           spans: [
             @tui.text_span(content: "Press ", style: nil),
             @tui.text_span(content: "Q", style: @tui.style(modifiers: [:bold])),
             @tui.text_span(content: " to quit, ", style: nil),
             @tui.text_span(content: "↑ ↓", style: @tui.style(modifiers: [:bold])),
-            @tui.text_span(content: " to adjust color by 1, ", style: nil),
+            @tui.text_span(content: ": color by 1, ", style: nil),
             @tui.text_span(content: "← →", style: @tui.style(modifiers: [:bold])),
-            @tui.text_span(content: " to adjust color by 10.", style: nil),
+            @tui.text_span(content: ": color by 10.", style: nil),
           ]
         ),
       ],

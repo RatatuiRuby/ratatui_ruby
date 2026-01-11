@@ -45,8 +45,12 @@ module RatatuiRuby
     # The background color of the cell (e.g., :black, nil).
     attr_reader :bg
 
+    # The underline color of the cell.
+    #
+    # Distinct from foreground color. Some terminals support colored underlines.
+    attr_reader :underline_color
+
     # The list of active modifiers (e.g., ["bold", "italic"]).
-    attr_reader :modifiers
 
     # Returns an empty cell (space character, no styles).
     #
@@ -63,7 +67,7 @@ module RatatuiRuby
     # SPDX-SnippetEnd
     #++
     def self.empty
-      new(symbol: " ", fg: nil, bg: nil, modifiers: [])
+      new(symbol: " ", fg: nil, bg: nil, underline_color: nil, modifiers: [])
     end
 
     # Returns a default cell (alias for empty).
@@ -101,7 +105,7 @@ module RatatuiRuby
     # SPDX-SnippetEnd
     #++
     def self.symbol(symbol)
-      new(symbol:, fg: nil, bg: nil, modifiers: [])
+      new(symbol:, fg: nil, bg: nil, underline_color: nil, modifiers: [])
     end
 
     # Alias for Rubyists who prefer a shorter name.
@@ -114,11 +118,13 @@ module RatatuiRuby
     # [symbol] String (single character). Aliased as <tt>char:</tt>.
     # [fg] Symbol or String (nullable).
     # [bg] Symbol or String (nullable).
+    # [underline_color] Symbol or String (nullable).
     # [modifiers] Array of Strings.
-    def initialize(symbol: nil, char: nil, fg: nil, bg: nil, modifiers: [])
+    def initialize(symbol: nil, char: nil, fg: nil, bg: nil, underline_color: nil, modifiers: [])
       @symbol = (symbol || char || " ").freeze
       @fg = fg&.freeze
       @bg = bg&.freeze
+      @underline_color = underline_color&.freeze
       @modifiers = modifiers.map(&:freeze).freeze
       freeze
     end
@@ -174,6 +180,7 @@ module RatatuiRuby
         char == other.char &&
         fg == other.fg &&
         bg == other.bg &&
+        underline_color == other.underline_color &&
         modifiers == other.modifiers
     end
 
@@ -182,6 +189,7 @@ module RatatuiRuby
       parts = ["symbol=#{symbol.inspect}"]
       parts << "fg=#{fg.inspect}" if fg
       parts << "bg=#{bg.inspect}" if bg
+      parts << "underline_color=#{underline_color.inspect}" if underline_color
       parts << "modifiers=#{modifiers.inspect}" unless modifiers.empty?
       "#<#{self.class} #{parts.join(' ')}>"
     end
@@ -194,7 +202,7 @@ module RatatuiRuby
     # Support for pattern matching.
     # Supports both <tt>:symbol</tt> and <tt>:char</tt> keys.
     def deconstruct_keys(keys)
-      { symbol:, char: symbol, fg:, bg:, modifiers: }
+      { symbol:, char: symbol, fg:, bg:, underline_color:, modifiers: }
     end
   end
 end

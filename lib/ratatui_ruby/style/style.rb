@@ -60,7 +60,7 @@ module RatatuiRuby
     # ==== String
     # Represents a specific RGB color using a Hex code (<tt>"#RRGGBB"</tt>).
     # Requires a terminal emulator with "True Color" (24-bit color) support.
-    class Style < Data.define(:fg, :bg, :modifiers)
+    class Style < Data.define(:fg, :bg, :underline_color, :modifiers, :remove_modifiers)
       ##
       # :attr_reader: fg
       # Foreground color.
@@ -74,18 +74,35 @@ module RatatuiRuby
       # Symbol (<tt>:black</tt>), Hex String (<tt>"#000000"</tt>), or Integer (0-255).
 
       ##
+      # :attr_reader: underline_color
+      # Color of the underline.
+      #
+      # Symbol (<tt>:red</tt>), Hex String (<tt>"#ff0000"</tt>), or Integer (0-255).
+      # Distinct from foreground color. Terminals supporting this feature render
+      # the underline in this color while text remains in the foreground color.
+
+      ##
       # :attr_reader: modifiers
-      # Text effects.
+      # Text effects to add.
       #
       # Array of symbols: <tt>:bold</tt>, <tt>:dim</tt>, <tt>:italic</tt>, <tt>:underlined</tt>,
       # <tt>:slow_blink</tt>, <tt>:rapid_blink</tt>, <tt>:reversed</tt>, <tt>:hidden</tt>, <tt>:crossed_out</tt>.
+
+      ##
+      # :attr_reader: remove_modifiers
+      # Text effects to remove.
+      #
+      # Array of symbols. When this style is applied, these modifiers are removed
+      # from any inherited/patched styles. Corresponds to Ratatui's sub_modifier.
 
       # Creates a new Style.
       #
       # [fg] Color (Symbol/String/Integer).
       # [bg] Color (Symbol/String/Integer).
-      # [modifiers] Array of Symbols.
-      def initialize(fg: nil, bg: nil, modifiers: [])
+      # [underline_color] Color for underline (Symbol/String/Integer).
+      # [modifiers] Array of Symbols to add.
+      # [remove_modifiers] Array of Symbols to remove (Ratatui: sub_modifier).
+      def initialize(fg: nil, bg: nil, underline_color: nil, modifiers: [], remove_modifiers: [])
         super
       end
 
@@ -114,14 +131,16 @@ module RatatuiRuby
       # SPDX-License-Identifier: MIT-0
       #++
       #   Style.with(fg: :red, bg: :black, modifiers: [:bold])
+      #   Style.with(fg: :white, modifiers: [:underlined], underline_color: :red)
+      #   Style.with(modifiers: [:bold], remove_modifiers: [:italic])  # Add bold, remove italic
       #   paragraph = Paragraph.new(text: "Alert!", style: Style.with(fg: :red))
       #--
       # SPDX-SnippetEnd
       #++
       #
       # @return [Style]
-      def self.with(fg: nil, bg: nil, modifiers: [])
-        new(fg:, bg:, modifiers:)
+      def self.with(fg: nil, bg: nil, underline_color: nil, modifiers: [], remove_modifiers: [])
+        new(fg:, bg:, underline_color:, modifiers:, remove_modifiers:)
       end
     end
   end

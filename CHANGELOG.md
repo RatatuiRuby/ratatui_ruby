@@ -80,6 +80,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **TUI `item` Alias**: `tui.item(...)` is now an alias for `tui.list_item(...)`, providing a terser API when building lists.
 - **Gauge and LineGauge `percent`**: Both widgets now have a `percent` reader that returns the ratio as an integer percentage (0-100). `LineGauge` also now accepts a `percent:` constructor parameter matching `Gauge`.
 - **List#selected_item**: Returns the item at the selected index (or nil if nothing is selected).
+- **Style `underline_color`**: New optional parameter for `Style` that sets a distinct underline color independent of the foreground color. Useful for styling like "white text with red underline". Terminals must support the underline color extension (SGR 58).
+- **Style `remove_modifiers`**: New optional parameter for `Style` that explicitly removes modifiers when styles are patched/inherited. Corresponds to Ratatui's `sub_modifier` field. Use it to prevent inherited bold, italic, or other modifiers from propagating.
+- **Symbols::Shade Constants**: New `RatatuiRuby::Symbols::Shade` module exposes Ratatui's shade block characters as named constants: `EMPTY` (" "), `LIGHT` ("░"), `MEDIUM` ("▒"), `DARK` ("▓"), `FULL` ("█"). Use them for gradients, density fills, or custom progress indicators.
+- **Cell `underline_color`**: `Buffer::Cell` and top-level `Cell` now expose `underline_color` attribute for introspecting styled underline colors during testing.
 
 ### Changed
 

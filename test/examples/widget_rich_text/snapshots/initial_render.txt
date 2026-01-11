@@ -1,5 +1,5 @@
 ┌Simple Rich Text──────────────────────────────────────────────────────────────┐
-│Normal, Bold, Italic, Red.                                                    │
+│Normal, Bold, Italic, Red, Red Underline.                                     │
 │                                                                              │
 │Integer Color Test: Color 0 (Use ↑ ↓ for +/- 1, ← → for +/- 10)               │
 │                                                                              │
@@ -15,9 +15,9 @@
 │⚠ Warning - Documentation pending                                             │
 │✗ Not Started - Performance benchmarks                                        │
 │                                                                              │
-│Press Q to quit, ↑ ↓ to adjust color by 1, ← → to adjust color by 10.         │
+│Shade:     ░░░░▒▒▒▒▓▓▓▓████                                                   │
 │                                                                              │
-│                                                                              │
+│Press Q to quit, ↑ ↓: color by 1, ← →: color by 10.                           │
 │                                                                              │
 │                                                                              │
 │                                                                              │

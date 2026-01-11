@@ -193,6 +193,7 @@ pub fn get_cell_at(x: u16, y: u16) -> Result<magnus::RHash, Error> {
             hash.aset("char", cell.symbol())?;
             hash.aset("fg", color_to_value(cell.fg))?;
             hash.aset("bg", color_to_value(cell.bg))?;
+            hash.aset("underline_color", color_to_value(cell.underline_color))?;
             hash.aset("modifiers", modifiers_to_value(cell.modifier))?;
             Ok(hash)
         } else {
