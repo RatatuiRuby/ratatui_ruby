@@ -17,7 +17,7 @@ module RatatuiRuby
       # @param area [Layout::Rect] The area to render into
       def render_widget(widget, area)
         if Labs.enabled?(:a11y)
-          widgets = (@a11y_widgets ||= []) #: Array[[widget, Layout::Rect]]
+          widgets = (@a11y_widgets ||= []) #: Array[[(_CustomWidget | widget), Layout::Rect]]
           widgets << [widget, area]
         end
         super
@@ -29,7 +29,7 @@ module RatatuiRuby
       # @param state [Object] The widget state
       def render_stateful_widget(widget, area, state)
         if Labs.enabled?(:a11y)
-          widgets = (@a11y_widgets ||= []) #: Array[[widget, Layout::Rect]]
+          widgets = (@a11y_widgets ||= []) #: Array[[(_CustomWidget | widget), Layout::Rect]]
           widgets << [widget, area]
         end
         super

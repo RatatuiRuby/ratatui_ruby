@@ -58,14 +58,14 @@ module RatatuiRuby
     module A11y
       OUTPUT_PATH: String
 
-      def self.dump_widget_tree: (widget widget, ?Layout::Rect? area) -> void
-      def self.dump_widgets: (Array[[widget, Layout::Rect]] widgets_with_areas) -> void
+      def self.dump_widget_tree: ((_CustomWidget | widget) widget, ?Layout::Rect? area) -> void
+      def self.dump_widgets: (Array[[(_CustomWidget | widget), Layout::Rect]] widgets_with_areas) -> void
       def self.startup_message: () -> String
 
       # Private class methods (called via class << self)
       # Duck-typed serialization accepts any widget/value that may have to_h/members
       def self.write_document: (REXML::Document doc) -> void
-      def self.build_element_with_area: (widget widget, Layout::Rect area) -> REXML::Element
+      def self.build_element_with_area: ((_CustomWidget | widget) widget, Layout::Rect area) -> REXML::Element
       def self.build_element: (untyped node) -> REXML::Element
       def self.add_members: (REXML::Element element, untyped node, ?parent_id: String?) -> void
       def self.scalar?: (untyped value) -> bool
@@ -77,9 +77,9 @@ module RatatuiRuby
     prepend A11yCapture
 
     module A11yCapture
-      @a11y_widgets: Array[[widget, Layout::Rect]]?
+      @a11y_widgets: Array[[(_CustomWidget | widget), Layout::Rect]]?
 
-      def render_widget: (widget widget, Layout::Rect area) -> void
+      def render_widget: ((_CustomWidget | widget) widget, Layout::Rect area) -> void
       def render_stateful_widget: (widget widget, Layout::Rect area, Object state) -> void
       def flush_a11y_capture: () -> void
     end
