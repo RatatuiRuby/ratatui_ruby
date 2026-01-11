@@ -14,5 +14,128 @@ module RatatuiRuby
       DARK: String
       FULL: String
     end
+
+    # Type alias for line set hashes
+    type line_set = {
+      vertical: String,
+      horizontal: String,
+      top_right: String,
+      top_left: String,
+      bottom_right: String,
+      bottom_left: String,
+      vertical_left: String,
+      vertical_right: String,
+      horizontal_down: String,
+      horizontal_up: String,
+      cross: String
+    }
+
+    module Line
+      # Individual character constants
+      VERTICAL: String
+      DOUBLE_VERTICAL: String
+      THICK_VERTICAL: String
+      HORIZONTAL: String
+      DOUBLE_HORIZONTAL: String
+      THICK_HORIZONTAL: String
+      TOP_RIGHT: String
+      ROUNDED_TOP_RIGHT: String
+      DOUBLE_TOP_RIGHT: String
+      THICK_TOP_RIGHT: String
+      TOP_LEFT: String
+      ROUNDED_TOP_LEFT: String
+      DOUBLE_TOP_LEFT: String
+      THICK_TOP_LEFT: String
+      BOTTOM_RIGHT: String
+      ROUNDED_BOTTOM_RIGHT: String
+      DOUBLE_BOTTOM_RIGHT: String
+      THICK_BOTTOM_RIGHT: String
+      BOTTOM_LEFT: String
+      ROUNDED_BOTTOM_LEFT: String
+      DOUBLE_BOTTOM_LEFT: String
+      THICK_BOTTOM_LEFT: String
+      VERTICAL_LEFT: String
+      DOUBLE_VERTICAL_LEFT: String
+      THICK_VERTICAL_LEFT: String
+      VERTICAL_RIGHT: String
+      DOUBLE_VERTICAL_RIGHT: String
+      THICK_VERTICAL_RIGHT: String
+      HORIZONTAL_DOWN: String
+      DOUBLE_HORIZONTAL_DOWN: String
+      THICK_HORIZONTAL_DOWN: String
+      HORIZONTAL_UP: String
+      DOUBLE_HORIZONTAL_UP: String
+      THICK_HORIZONTAL_UP: String
+      CROSS: String
+      DOUBLE_CROSS: String
+      THICK_CROSS: String
+
+      # Predefined sets
+      NORMAL: line_set
+      ROUNDED: line_set
+      DOUBLE: line_set
+      THICK: line_set
+    end
+
+    # Type alias for bar set hashes
+    type bar_set = {
+      full: String,
+      seven_eighths: String,
+      three_quarters: String,
+      five_eighths: String,
+      half: String,
+      three_eighths: String,
+      one_quarter: String,
+      one_eighth: String,
+      empty: String
+    }
+
+    module Bar
+      # Individual character constants
+      FULL: String
+      SEVEN_EIGHTHS: String
+      THREE_QUARTERS: String
+      FIVE_EIGHTHS: String
+      HALF: String
+      THREE_EIGHTHS: String
+      ONE_QUARTER: String
+      ONE_EIGHTH: String
+
+      # Predefined sets
+      NINE_LEVELS: bar_set
+      THREE_LEVELS: bar_set
+    end
+
+    module Block
+      # Individual character constants
+      FULL: String
+      SEVEN_EIGHTHS: String
+      THREE_QUARTERS: String
+      FIVE_EIGHTHS: String
+      HALF: String
+      THREE_EIGHTHS: String
+      ONE_QUARTER: String
+      ONE_EIGHTH: String
+
+      # Predefined sets (same structure as bar_set)
+      NINE_LEVELS: bar_set
+      THREE_LEVELS: bar_set
+    end
+
+    # Type alias for scrollbar set hashes
+    type scrollbar_set = {
+      track: String,
+      thumb: String,
+      begin_char: String,
+      end_char: String
+    }
+
+    module Scrollbar
+      # Predefined sets
+      DOUBLE_VERTICAL: scrollbar_set
+      DOUBLE_HORIZONTAL: scrollbar_set
+      VERTICAL: scrollbar_set
+      HORIZONTAL: scrollbar_set
+    end
   end
 end
