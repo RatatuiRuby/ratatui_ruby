@@ -47,7 +47,7 @@ module RatatuiRuby
                | () { (Frame) -> void } -> void
   # untyped: FFI boundary - Rust returns dynamic event hash with varying keys per event type
   def self._poll_event: (Float?) -> Hash[Symbol, untyped]?
-  def self.poll_event: (?timeout: Float?) -> Event?
+  def self.poll_event: (?timeout: Float?) -> Event
   def self.inject_test_event: ("key", { code: String, ?modifiers: Array[String], ?kind: Event::key_kind }) -> void
                             | ("mouse", { kind: String, x: Integer, y: Integer, ?button: String, ?modifiers: Array[String] }) -> void
                             | ("resize", { width: Integer, height: Integer }) -> void

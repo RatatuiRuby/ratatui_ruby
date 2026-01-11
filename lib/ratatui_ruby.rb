@@ -387,8 +387,8 @@ module RatatuiRuby
     when :focus_lost
       Event::FocusLost.new.freeze
     else
-      # Fallback for unknown events, though ideally we cover them all
-      nil
+      # Return None for unknown event types
+      Event::None.new.freeze
     end
   end
 
