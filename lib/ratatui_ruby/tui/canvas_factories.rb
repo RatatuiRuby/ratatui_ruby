@@ -94,6 +94,56 @@ module RatatuiRuby
       # Creates a label shape (bidirectional alias).
       # @return [Widgets::Shape::Label]
       alias label_shape label
+
+      # =====================================
+      # Shape Dispatcher (TIMTOWTDI)
+      # =====================================
+
+      # Creates a shape by type symbol.
+      #
+      # Hard-coding method names limits flexibility. Programmatic shape creation
+      # from user input or config files requires tedious case statements.
+      #
+      # This dispatcher routes shape creation through a single entry point.
+      # Pass the type as a symbol and the remaining parameters as kwargs.
+      #
+      # Use it for dynamic shape generation, config-driven UIs, or when you
+      # prefer explicit type specification over method names.
+      #
+      # Also available as: <tt>tui.circle</tt>, <tt>tui.shape_circle</tt>
+      #
+      # === Examples
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   # Direct dispatch
+      #   tui.shape(:circle, x: 5.0, y: 5.0, radius: 2.5, color: :red)
+      #
+      #   # Dynamic shape creation from config
+      #   config = { type: :rectangle, x: 0.0, y: 0.0, width: 10.0, height: 10.0 }
+      #   tui.shape(config[:type], **config.except(:type))
+      #--
+      # SPDX-SnippetEnd
+      #++
+      #
+      # @param type [Symbol] Shape type: :circle, :line, :point, :rectangle, :map, :label
+      # @return [Widgets::Shape::*]
+      def shape(type, **)
+        case type
+        when :circle then shape_circle(**)
+        when :line then shape_line(**)
+        when :point then shape_point(**)
+        when :rectangle then shape_rectangle(**)
+        when :map then shape_map(**)
+        when :label then label(**)
+        else
+          raise ArgumentError, "Unknown shape type: #{type.inspect}. " \
+            "Valid types: :circle, :line, :point, :rectangle, :map, :label"
+        end
+      end
     end
   end
 end

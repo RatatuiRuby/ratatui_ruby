@@ -208,3 +208,46 @@ class TestGaugePredicates < Minitest::Test
     assert RatatuiRuby::Widgets::Gauge.new(ratio: 1.5).complete?
   end
 end
+
+# Tests for percent validation (DWIM: clear error messages on invalid input)
+class TestGaugePercentValidation < Minitest::Test
+  def test_gauge_rejects_percent_over_100
+    error = assert_raises(ArgumentError) do
+      RatatuiRuby::Widgets::Gauge.new(percent: 150)
+    end
+    assert_match(/percent must be between 0 and 100/, error.message)
+    assert_match(/150/, error.message)
+  end
+
+  def test_gauge_rejects_percent_under_0
+    error = assert_raises(ArgumentError) do
+      RatatuiRuby::Widgets::Gauge.new(percent: -10)
+    end
+    assert_match(/percent must be between 0 and 100/, error.message)
+  end
+
+  def test_gauge_accepts_boundary_values
+    # 0 and 100 should be valid
+    assert_equal 0.0, RatatuiRuby::Widgets::Gauge.new(percent: 0).ratio
+    assert_equal 1.0, RatatuiRuby::Widgets::Gauge.new(percent: 100).ratio
+  end
+
+  def test_line_gauge_rejects_percent_over_100
+    error = assert_raises(ArgumentError) do
+      RatatuiRuby::Widgets::LineGauge.new(percent: 200)
+    end
+    assert_match(/percent must be between 0 and 100/, error.message)
+  end
+
+  def test_line_gauge_rejects_percent_under_0
+    error = assert_raises(ArgumentError) do
+      RatatuiRuby::Widgets::LineGauge.new(percent: -5)
+    end
+    assert_match(/percent must be between 0 and 100/, error.message)
+  end
+
+  def test_line_gauge_accepts_boundary_values
+    assert_equal 0.0, RatatuiRuby::Widgets::LineGauge.new(percent: 0).ratio
+    assert_equal 1.0, RatatuiRuby::Widgets::LineGauge.new(percent: 100).ratio
+  end
+end

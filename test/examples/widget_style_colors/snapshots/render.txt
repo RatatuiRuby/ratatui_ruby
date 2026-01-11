@@ -1,4 +1,4 @@
-╭Color.hsl + hex Gradient (Press 'q' to exit)──────────────────────────────────╮
+╭HSL (top) vs HSLuv (bottom) - Style.with demo (Press 'q' to exit)─────────────╮
 │                                                                              │
 │                                                                              │
 │                                                                              │

@@ -100,5 +100,10 @@ module RatatuiRuby
 
   # Terminal area accessor (internal, returns Hash with String keys from Rust FFI)
   def self._get_terminal_area: () -> Hash[String, Integer]
+
+  # Color conversion (internal, Rust FFI)
+  def self._color_from_u32: (Integer) -> String
+  def self._color_from_hsl: (Float, Float, Float) -> String
+  def self._color_from_hsluv: (Float, Float, Float) -> String
 end
 

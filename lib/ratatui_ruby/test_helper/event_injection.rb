@@ -209,6 +209,11 @@ module RatatuiRuby
       # pending async operations to complete before processing the next event.
       # This enables deterministic testing of async behavior.
       #
+      # *Important*: Sync waits for commands to _complete_. Do not use it
+      # with long-running commands that wait indefinitely (e.g., for
+      # cancellation). Those commands will block forever, causing a timeout.
+      # For cancellation tests, dispatch the cancel command without Sync.
+      #
       # === Example
       #
       #--

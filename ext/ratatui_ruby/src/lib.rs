@@ -10,6 +10,7 @@
 #![allow(clippy::missing_panics_doc)]
 #![allow(clippy::module_name_repetitions)]
 
+mod color;
 mod errors;
 mod events;
 mod frame;
@@ -233,6 +234,9 @@ fn init() -> Result<(), Error> {
 
     // Text measurement
     m.define_module_function("_text_width", function!(string_width::text_width, 1))?;
+
+    // Color conversion
+    color::register(&ruby, m)?;
 
     Ok(())
 }

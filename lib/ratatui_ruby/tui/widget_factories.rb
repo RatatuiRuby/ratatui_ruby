@@ -202,6 +202,71 @@ module RatatuiRuby
       def shape_label(first = nil, **kwargs)
         Widgets::Shape::Label.coerce_args(first, kwargs)
       end
+
+      # =====================================
+      # Widget Dispatcher (TIMTOWTDI)
+      # =====================================
+
+      # Creates a widget by type symbol.
+      #
+      # Plugin systems and config-driven UIs need to instantiate widgets by name.
+      # Without a dispatcher, you need tedious case statements or reflection.
+      #
+      # This method routes widget creation through a single entry point.
+      # Pass the type as a symbol and the remaining parameters as kwargs.
+      #
+      # Use it for dynamic UI generation, dashboard builders, or plugin architectures.
+      #
+      # Also available as: <tt>tui.paragraph</tt>, <tt>tui.list</tt>, etc.
+      #
+      # === Examples
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   tui.widget(:paragraph, text: "Hello World")
+      #   tui.widget(:list, items: %w[One Two Three])
+      #
+      #   # Config-driven widget creation
+      #   widgets_config.each do |cfg|
+      #     frame.render_widget(tui.widget(cfg[:type], **cfg[:options]), area)
+      #   end
+      #--
+      # SPDX-SnippetEnd
+      #++
+      #
+      # @param type [Symbol] Widget type (see error message for full list)
+      # @return [Widgets::*]
+      def widget(type, first = nil, **)
+        case type
+        when :block then block(first, **)
+        when :paragraph then paragraph(first, **)
+        when :list then list(first, **)
+        when :table then table(first, **)
+        when :tabs then tabs(first, **)
+        when :gauge then gauge(first, **)
+        when :line_gauge then line_gauge(first, **)
+        when :sparkline then sparkline(first, **)
+        when :bar_chart then bar_chart(first, **)
+        when :chart then chart(first, **)
+        when :scrollbar then scrollbar(first, **)
+        when :calendar then calendar(first, **)
+        when :canvas then canvas(first, **)
+        when :clear then clear(first, **)
+        when :cursor then cursor(first, **)
+        when :overlay then overlay(first, **)
+        when :center then center(first, **)
+        when :ratatui_logo then ratatui_logo(first, **)
+        when :ratatui_mascot then ratatui_mascot(first, **)
+        else
+          raise ArgumentError, "Unknown widget type: #{type.inspect}. " \
+            "Valid types: :block, :paragraph, :list, :table, :tabs, :gauge, :line_gauge, " \
+            ":sparkline, :bar_chart, :chart, :scrollbar, :calendar, :canvas, :clear, " \
+            ":cursor, :overlay, :center, :ratatui_logo, :ratatui_mascot"
+        end
+      end
     end
   end
 end

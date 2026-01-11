@@ -15,6 +15,9 @@ module RatatuiRuby
       def text_line: (?spans: Array[Text::Span], ?alignment: Symbol?, ?style: Style::Style?) -> Text::Line
       def line: (?spans: Array[Text::Span], ?alignment: Symbol?, ?style: Style::Style?) -> Text::Line
       def text_width: (String string) -> Integer
+
+      # Text dispatcher (TIMTOWTDI pattern)
+      def text: (Symbol, **untyped) -> (Text::Span | Text::Line)
     end
   end
 end

@@ -30,6 +30,9 @@ module RatatuiRuby
       def list_item: (Widgets::list_item_options) -> Widgets::ListItem
                    | (content: String | Text::Span | Text::Line, ?style: Style::Style?) -> Widgets::ListItem
 
+      # DWIM alias for list_item (terse form for use in list context)
+      alias item list_item
+
       # Widgets::Table
       def table: (Widgets::table_options) -> Widgets::Table
               | (?header: Array[String | Widgets::Paragraph]?, ?rows: Array[Array[String | Widgets::Paragraph | Style | _ToS]], ?widths: Array[Layout::Constraint | Integer], ?row_highlight_style: Style::Style?, ?highlight_symbol: String?, ?highlight_spacing: Symbol, ?column_highlight_style: Style::Style?, ?cell_highlight_style: Style::Style?, ?selected_row: _ToI?, ?selected_column: _ToI?, ?offset: _ToI?, ?block: Widgets::Block?, ?footer: Array[String | Widgets::Paragraph]?, ?flex: Symbol, ?style: style_input?, ?column_spacing: _ToI) -> Widgets::Table
@@ -127,6 +130,9 @@ module RatatuiRuby
       # Widgets::Shape::Label
       def shape_label: (Widgets::Shape::label_options) -> Widgets::Shape::Label
                      | (x: _ToF, y: _ToF, text: String | Text::Line, ?style: Style::Style?) -> Widgets::Shape::Label
+
+      # Widget dispatcher (TIMTOWTDI pattern)
+      def widget: (Symbol, ?untyped, **untyped) -> untyped
     end
   end
 end

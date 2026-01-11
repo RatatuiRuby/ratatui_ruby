@@ -15,6 +15,8 @@ module RatatuiRuby
     #
     # Use it for everything from simple labels to complex, multi-paragraph documents.
     #
+    # See also: <tt>examples/widget_scroll_text/app.rb</tt> for scrollable paragraphs.
+    #
     # === Examples
     #
     #--

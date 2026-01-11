@@ -30,6 +30,9 @@ module RatatuiRuby
       alias rectangle_shape shape_rectangle
       alias map_shape shape_map
       alias label_shape label
+
+      # Shape dispatcher (TIMTOWTDI pattern)
+      def shape: (Symbol, **untyped) -> untyped
     end
   end
 end

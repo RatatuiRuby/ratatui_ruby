@@ -64,11 +64,16 @@ module RatatuiRuby
       # [gauge_style] Style object for the filled bar (optional).
       # [block] Block widget (optional).
       # [use_unicode] Boolean (default: true).
+      #
+      # Raises ArgumentError if percent is not 0..100.
       def initialize(ratio: nil, percent: nil, label: nil, style: nil, gauge_style: nil, block: nil, use_unicode: true)
         if percent
+          float_percent = Float(percent)
+          unless float_percent.between?(0, 100)
+            raise ArgumentError, "percent must be between 0 and 100 (got #{percent.inspect})"
+          end
           # Float(Numeric) incorrectly returns Float? -- https://github.com/ruby/rbs/issues/2793
-          float_percent = Float(percent) #: Float
-          ratio = float_percent / 100.0
+          ratio = float_percent / 100.0 #: Float
         end
         ratio = Float(ratio || 0.0)
         super(ratio:, label:, style:, gauge_style:, block:, use_unicode:)

@@ -63,10 +63,7 @@ module RatatuiRuby
         #
         # Returns a hex string like <tt>"#rrggbb"</tt>.
         def from_u32(value)
-          r = (value >> 16) & 0xFF
-          g = (value >> 8) & 0xFF
-          b = value & 0xFF
-          format("#%02x%02x%02x", r, g, b)
+          RatatuiRuby._color_from_u32(value)
         end
 
         # Creates a color from HSL (Hue, Saturation, Lightness) values.
@@ -74,7 +71,8 @@ module RatatuiRuby
         # Color pickers often use HSL because it matches human perception
         # better than RGB. Converting HSL to RGB manually requires math.
         #
-        # This method handles the conversion.
+        # This method handles the conversion by delegating to Ratatui's
+        # palette integration.
         #
         # Note: This implementation uses degrees (0-360) for hue and
         # percentages (0-100) for saturation and lightness, matching
@@ -101,35 +99,50 @@ module RatatuiRuby
         #
         # Returns a hex string like <tt>"#rrggbb"</tt>.
         def from_hsl(h, s, l)
-          # Normalize to 0-1 range
-          h = h.to_f % 360
-          s = s.to_f / 100.0
-          l = l.to_f / 100.0
-
-          # HSL to RGB conversion
-          c = (1 - ((2 * l) - 1).abs) * s
-          x = c * (1 - (((h / 60.0) % 2) - 1).abs)
-          m = l - (c / 2.0)
-
-          r1, g1, b1 = case h
-                       when 0...60 then [c, x, 0]
-                       when 60...120 then [x, c, 0]
-                       when 120...180 then [0, c, x]
-                       when 180...240 then [0, x, c]
-                       when 240...300 then [x, 0, c]
-                       else [c, 0, x]
-          end
-
-          r = ((r1 + m) * 255).round
-          g = ((g1 + m) * 255).round
-          b = ((b1 + m) * 255).round
-
-          format("#%02x%02x%02x", r, g, b)
+          RatatuiRuby._color_from_hsl(h.to_f, s.to_f, l.to_f)
         end
 
         # Ruby-idiomatic aliases (TIMTOWTDI)
         alias hex from_u32
         alias hsl from_hsl
+
+        # Creates a color from HSLuv (Human-friendly Hue, Saturation, Lightness) values.
+        #
+        # HSLuv is a perceptually uniform color space. Unlike standard HSL,
+        # colors at the same lightness appear equally bright regardless of hue.
+        # This makes it ideal for generating color palettes with consistent
+        # perceived brightness.
+        #
+        # This method delegates to Ratatui's palette integration for the
+        # complex HSLuv to RGB conversion.
+        #
+        # Note: Ratatui uses the range [-180, 180] for hue and [0, 100] for
+        # saturation and lightness. This implementation matches those conventions.
+        #
+        # === Example
+        #
+        #--
+        # SPDX-SnippetBegin
+        # SPDX-FileCopyrightText: 2026 Kerrick Long
+        # SPDX-License-Identifier: MIT-0
+        #++
+        #   Color.from_hsluv(12.18, 100, 53.2)   # => "#ff0000" (bright red)
+        #   Color.from_hsluv(-94.13, 100, 32.3) # => "#0000ff" (bright blue)
+        #   Color.from_hsluv(0, 0, 50)          # => gray
+        #--
+        # SPDX-SnippetEnd
+        #++
+        #
+        # [h] Hue in degrees (-180 to 360). Values wrap automatically.
+        # [s] Saturation as percentage (0-100). Values are clamped.
+        # [l] Lightness as percentage (0-100). Values are clamped.
+        #
+        # Returns a hex string like <tt>"#rrggbb"</tt>.
+        def from_hsluv(h, s, l)
+          RatatuiRuby._color_from_hsluv(h.to_f, s.to_f, l.to_f)
+        end
+
+        alias hsluv from_hsluv
       end
     end
   end

@@ -11,7 +11,16 @@ module RatatuiRuby
   class TUI
     module LayoutFactories
       def rect: (?x: Integer, ?y: Integer, ?width: Integer, ?height: Integer) -> Layout::Rect
-      def constraint: (type: Symbol, value: (Integer | Array[Integer])) -> Layout::Constraint
+
+      # Constraint dispatcher (TIMTOWTDI pattern)
+      def constraint: (?type: Symbol, ?value: (Integer | Array[Integer])) -> Layout::Constraint
+                   | (:length | :fixed, Integer) -> Layout::Constraint
+                   | (:percentage | :percent, Integer) -> Layout::Constraint
+                   | (:min, Integer) -> Layout::Constraint
+                   | (:max, Integer) -> Layout::Constraint
+                   | (:fill | :flex | :fr, ?Integer) -> Layout::Constraint
+                   | (:ratio | :aspect, Integer, Integer) -> Layout::Constraint
+
       def constraint_length: (Integer n) -> Layout::Constraint
       def constraint_percentage: (Integer n) -> Layout::Constraint
       def constraint_min: (Integer n) -> Layout::Constraint

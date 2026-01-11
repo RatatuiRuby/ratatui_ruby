@@ -12,7 +12,12 @@ module RatatuiRuby
     module StateFactories
       def list_state: (?Integer? selected) -> ListState
       def table_state: (?Integer? selected) -> TableState
-      def scrollbar_state: (Integer content_length) -> ScrollbarState
+      def scrollbar_state: (?Integer content_length) -> ScrollbarState
+
+      # State dispatcher (TIMTOWTDI pattern)
+      def state: (:list, ?Integer? arg) -> ListState
+              | (:table, ?Integer? arg) -> TableState
+              | (:scrollbar, ?Integer arg) -> ScrollbarState
     end
   end
 end

@@ -68,9 +68,14 @@ module RatatuiRuby
       # [block] Block.
       # [filled_symbol] String (default: <tt>"█"</tt>).
       # [unfilled_symbol] String (default: <tt>"░"</tt>).
+      #
+      # Raises ArgumentError if percent is not 0..100.
       def initialize(ratio: nil, percent: nil, label: nil, style: nil, filled_style: nil, unfilled_style: nil, block: nil, filled_symbol: "█", unfilled_symbol: "░")
         if percent
           float_percent = Float(percent)
+          unless float_percent.between?(0, 100)
+            raise ArgumentError, "percent must be between 0 and 100 (got #{percent.inspect})"
+          end
           ratio = float_percent / 100.0
         end
         ratio = Float(ratio || 0.0)

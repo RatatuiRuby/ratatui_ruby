@@ -351,3 +351,201 @@ class SessionCachingApp
     @tui.draw(@tui.paragraph(text: "Cached!"))
   end
 end
+
+# Tests for TIMTOWTDI dispatcher methods (shape, text, widget, state, constraint)
+class TestTUIDispatchers < Minitest::Test
+  include RatatuiRuby::TestHelper
+
+  def setup
+    @tui = RatatuiRuby::TUI.new
+  end
+
+  # ==========================================
+  # shape(type, ...) dispatcher
+  # ==========================================
+
+  def test_shape_dispatcher_circle
+    circle = @tui.shape(:circle, x: 5.0, y: 5.0, radius: 2.5, color: :red)
+    assert_instance_of RatatuiRuby::Widgets::Shape::Circle, circle
+    assert_equal 5.0, circle.x
+    assert_equal 2.5, circle.radius
+  end
+
+  def test_shape_dispatcher_line
+    line = @tui.shape(:line, x1: 0.0, y1: 0.0, x2: 10.0, y2: 10.0, color: :blue)
+    assert_instance_of RatatuiRuby::Widgets::Shape::Line, line
+    assert_equal 10.0, line.x2
+  end
+
+  def test_shape_dispatcher_point
+    point = @tui.shape(:point, x: 1.0, y: 2.0)
+    assert_instance_of RatatuiRuby::Widgets::Shape::Point, point
+    # Verify values flow through dispatcher (mutation resistance)
+    assert_equal 1.0, point.x
+    assert_equal 2.0, point.y
+  end
+
+  def test_shape_dispatcher_rectangle
+    rect = @tui.shape(:rectangle, x: 0.0, y: 0.0, width: 5.0, height: 5.0, color: :green)
+    assert_instance_of RatatuiRuby::Widgets::Shape::Rectangle, rect
+    # Verify dimensions flow through dispatcher (mutation resistance)
+    assert_equal 5.0, rect.width
+    assert_equal 5.0, rect.height
+    assert_equal :green, rect.color
+  end
+
+  def test_shape_dispatcher_map
+    map = @tui.shape(:map, color: :yellow, resolution: :high)
+    assert_instance_of RatatuiRuby::Widgets::Shape::Map, map
+    # Verify options flow through dispatcher (mutation resistance)
+    assert_equal :yellow, map.color
+    assert_equal :high, map.resolution
+  end
+
+  def test_shape_dispatcher_label
+    label = @tui.shape(:label, x: 0.0, y: 0.0, text: "Test")
+    assert_instance_of RatatuiRuby::Widgets::Shape::Label, label
+    # Verify text flows through dispatcher (mutation resistance)
+    assert_equal "Test", label.text
+    assert_equal 0.0, label.x
+  end
+
+  def test_shape_dispatcher_unknown_type_raises
+    error = assert_raises(ArgumentError) { @tui.shape(:unknown) }
+    assert_match(/Unknown shape type.*:unknown/, error.message)
+    assert_match(/Valid types/, error.message)
+  end
+
+  # ==========================================
+  # text(type, ...) dispatcher
+  # ==========================================
+
+  def test_text_dispatcher_span
+    span = @tui.text(:span, content: "hello")
+    assert_instance_of RatatuiRuby::Text::Span, span
+    assert_equal "hello", span.content
+  end
+
+  def test_text_dispatcher_line
+    span1 = @tui.text(:span, content: "first")
+    line = @tui.text(:line, spans: [span1])
+    assert_instance_of RatatuiRuby::Text::Line, line
+    # Verify spans array flows through dispatcher (mutation resistance)
+    assert_equal 1, line.spans.length
+    assert_equal "first", line.spans.first.content
+  end
+
+  def test_text_dispatcher_unknown_type_raises
+    error = assert_raises(ArgumentError) { @tui.text(:unknown) }
+    assert_match(/Unknown text type.*:unknown/, error.message)
+  end
+
+  # ==========================================
+  # widget(type, ...) dispatcher
+  # ==========================================
+
+  def test_widget_dispatcher_paragraph
+    p = @tui.widget(:paragraph, text: "Hello")
+    assert_instance_of RatatuiRuby::Widgets::Paragraph, p
+    assert_equal "Hello", p.text
+  end
+
+  def test_widget_dispatcher_list
+    list = @tui.widget(:list, items: %w[a b c])
+    assert_instance_of RatatuiRuby::Widgets::List, list
+    assert_equal 3, list.len
+  end
+
+  def test_widget_dispatcher_gauge
+    gauge = @tui.widget(:gauge, percent: 75)
+    assert_instance_of RatatuiRuby::Widgets::Gauge, gauge
+  end
+
+  def test_widget_dispatcher_unknown_type_raises
+    error = assert_raises(ArgumentError) { @tui.widget(:unknown) }
+    assert_match(/Unknown widget type.*:unknown/, error.message)
+  end
+
+  # ==========================================
+  # state(type, ...) dispatcher
+  # ==========================================
+
+  def test_state_dispatcher_list
+    # Pass initial selection to verify arg flows through (mutation resistance)
+    state = @tui.state(:list, 5)
+    assert_instance_of RatatuiRuby::ListState, state
+    assert_equal 5, state.selected
+  end
+
+  def test_state_dispatcher_table
+    # Pass initial selection to verify arg flows through (mutation resistance)
+    state = @tui.state(:table, 3)
+    assert_instance_of RatatuiRuby::TableState, state
+    assert_equal 3, state.selected
+  end
+
+  def test_state_dispatcher_scrollbar
+    state = @tui.state(:scrollbar, 100)
+    assert_instance_of RatatuiRuby::ScrollbarState, state
+    # Verify content_length flows through (mutation resistance)
+    assert_equal 100, state.content_length
+  end
+
+  def test_state_dispatcher_unknown_type_raises
+    error = assert_raises(ArgumentError) { @tui.state(:unknown) }
+    assert_match(/Unknown state type.*:unknown/, error.message)
+  end
+
+  # ==========================================
+  # constraint(type, ...) dispatcher
+  # ==========================================
+
+  def test_constraint_dispatcher_length
+    c = @tui.constraint(:length, 10)
+    assert_instance_of RatatuiRuby::Layout::Constraint, c
+    assert_equal :length, c.type
+    assert_equal 10, c.value
+  end
+
+  def test_constraint_dispatcher_percentage
+    c = @tui.constraint(:percentage, 50)
+    assert_equal :percentage, c.type
+    assert_equal 50, c.value
+  end
+
+  def test_constraint_dispatcher_min
+    c = @tui.constraint(:min, 5)
+    assert_equal :min, c.type
+  end
+
+  def test_constraint_dispatcher_max
+    c = @tui.constraint(:max, 15)
+    assert_equal :max, c.type
+  end
+
+  def test_constraint_dispatcher_fill
+    c = @tui.constraint(:fill, 2)
+    assert_equal :fill, c.type
+    assert_equal 2, c.value
+  end
+
+  def test_constraint_dispatcher_ratio
+    c = @tui.constraint(:ratio, 1, 3)
+    assert_equal :ratio, c.type
+    assert_equal [1, 3], c.value
+  end
+
+  def test_constraint_dispatcher_css_aliases
+    # CSS-friendly aliases should work
+    assert_equal :length, @tui.constraint(:fixed, 10).type
+    assert_equal :percentage, @tui.constraint(:percent, 50).type
+    assert_equal :fill, @tui.constraint(:flex, 1).type
+    assert_equal :fill, @tui.constraint(:fr, 1).type
+    assert_equal :ratio, @tui.constraint(:aspect, 16, 9).type
+  end
+
+  def test_constraint_dispatcher_unknown_type_raises
+    error = assert_raises(ArgumentError) { @tui.constraint(:unknown, 10) }
+    assert_match(/Unknown constraint type.*:unknown/, error.message)
+  end
+end

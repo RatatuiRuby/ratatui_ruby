@@ -29,6 +29,10 @@ class WidgetGauge
     @ratios = [0.0, 0.25, 0.5, 0.65, 0.8, 0.95, 1.0]
     @ratio_index = 3
 
+    # Demonstrates both ratio (0.0-1.0) and percent (0-100) input modes
+    @input_modes = [:ratio, :percent]
+    @input_mode_index = 0
+
     @gauge_colors = [
       { name: "Green", color: :green },
       { name: "Yellow", color: :yellow },
@@ -116,13 +120,20 @@ class WidgetGauge
       frame.render_widget(title, title_area)
 
       # Gauge 1: Main interactive gauge
+      # Demonstrates both ratio (0.0-1.0) and percent (0-100) input modes
+      input_mode = @input_modes[@input_mode_index]
+      gauge_opts = if input_mode == :percent
+        { percent: (@ratio * 100).to_i } # percent: accepts 0-100
+      else
+        { ratio: @ratio } # ratio: accepts 0.0-1.0
+      end
       gauge1 = @tui.gauge(
-        ratio: @ratio,
+        **gauge_opts,
         label:,
         style: bg_style,
         gauge_style:,
         use_unicode:,
-        block: @tui.block(title: "Interactive Gauge")
+        block: @tui.block(title: "Interactive Gauge (#{input_mode}:)")
       )
       frame.render_widget(gauge1, gauge1_area)
 
@@ -178,7 +189,9 @@ class WidgetGauge
                 @tui.text_span(content: "u", style: @hotkey_style),
                 @tui.text_span(content: ": Unicode (#{use_unicode ? 'On' : 'Off'})  "),
                 @tui.text_span(content: "l", style: @hotkey_style),
-                @tui.text_span(content: ": Label (#{@label_modes[@label_mode_index][:name]})"),
+                @tui.text_span(content: ": Label (#{@label_modes[@label_mode_index][:name]})  "),
+                @tui.text_span(content: "i", style: @hotkey_style),
+                @tui.text_span(content: ": Input (#{@input_modes[@input_mode_index]}:)"),
               ]),
             ]
           ),
@@ -204,6 +217,8 @@ class WidgetGauge
       @use_unicode_index = (@use_unicode_index + 1) % @use_unicode_options.length
     in type: :key, code: "l"
       @label_mode_index = (@label_mode_index + 1) % @label_modes.length
+    in type: :key, code: "i"
+      @input_mode_index = (@input_mode_index + 1) % @input_modes.length
     else
       # Ignore other events
       nil

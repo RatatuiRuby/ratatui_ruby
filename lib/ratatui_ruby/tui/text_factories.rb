@@ -41,6 +41,46 @@ module RatatuiRuby
       def text_width(string)
         Text.width(string)
       end
+
+      # =====================================
+      # Text Dispatcher (TIMTOWTDI)
+      # =====================================
+
+      # Creates a text element by type symbol.
+      #
+      # Building text programmatically requires knowing which method to call.
+      # When the text type comes from config or user input, you need a dispatcher.
+      #
+      # This method routes text creation through a single entry point.
+      # Pass the type as a symbol and the remaining parameters as kwargs.
+      #
+      # Use it for dynamic text generation or config-driven rendering.
+      #
+      # Also available as: <tt>tui.span</tt>, <tt>tui.text_span</tt>
+      #
+      # === Examples
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   tui.text(:span, content: "Hello", style: Style.with(fg: :blue))
+      #   tui.text(:line, spans: [tui.span(content: "World")])
+      #--
+      # SPDX-SnippetEnd
+      #++
+      #
+      # @param type [Symbol] Text type: :span, :line
+      # @return [Text::Span, Text::Line]
+      def text(type, **)
+        case type
+        when :span then text_span(**)
+        when :line then text_line(**)
+        else
+          raise ArgumentError, "Unknown text type: #{type.inspect}. Valid types: :span, :line"
+        end
+      end
     end
   end
 end

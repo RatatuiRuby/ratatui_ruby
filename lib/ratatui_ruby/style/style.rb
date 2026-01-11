@@ -95,6 +95,34 @@ module RatatuiRuby
       def self.default
         new
       end
+
+      # Creates a new Style (convenience alias for {#initialize}).
+      #
+      # Constructor keyword arguments require typing out the full <tt>Style.new</tt> form.
+      # This gets verbose in tight layout code or one-liners.
+      #
+      # <tt>Style.with</tt> reads more naturally and enables method chaining.
+      # It shows intent: "use this style with these properties."
+      #
+      # Use it for inline styling where conciseness matters.
+      #
+      # === Examples
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   Style.with(fg: :red, bg: :black, modifiers: [:bold])
+      #   paragraph = Paragraph.new(text: "Alert!", style: Style.with(fg: :red))
+      #--
+      # SPDX-SnippetEnd
+      #++
+      #
+      # @return [Style]
+      def self.with(fg: nil, bg: nil, modifiers: [])
+        new(fg:, bg:, modifiers:)
+      end
     end
   end
 end

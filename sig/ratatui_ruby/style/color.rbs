@@ -10,10 +10,13 @@ module RatatuiRuby
     module Color
       def self.from_u32: (Integer) -> String
       def self.from_hsl: (_ToF, _ToF, _ToF) -> String
+      def self.from_hsluv: (_ToF, _ToF, _ToF) -> String
 
       # Ruby-idiomatic aliases
       alias self.hex self.from_u32
       alias self.hsl self.from_hsl
+      alias self.hsluv self.from_hsluv
     end
   end
 end
+

@@ -44,12 +44,19 @@ class WidgetStyleColors
         hue = (col.to_f / @width) * 360.0
         lightness = 50.0 - ((row.to_f / @height) * 50.0)
 
-        # Use Color.hsl to convert HSL to hex RGB
-        hex = RatatuiRuby::Style::Color.hsl(hue, 100.0, lightness)
+        # Use Color.hsl for top half, Color.hsluv for bottom half
+        # HSLuv provides perceptually uniform colors (same visual brightness)
+        hex = if row < @height / 2
+          RatatuiRuby::Style::Color.hsl(hue, 100.0, lightness)
+        else
+          # HSLuv: perceptually uniform - all colors appear equal brightness
+          RatatuiRuby::Style::Color.hsluv(hue, 100.0, lightness)
+        end
 
+        # Demonstrate Style.with for concise inline styling
         span = tui.text_span(
           content: " ",
-          style: tui.style(bg: hex)
+          style: RatatuiRuby::Style::Style.with(bg: hex)
         )
         spans << span
       end
@@ -63,10 +70,11 @@ class WidgetStyleColors
     tui.paragraph(
       text: lines,
       block: tui.block(
-        title: "Color.hsl + hex Gradient (Press 'q' to exit)",
+        title: "HSL (top) vs HSLuv (bottom) - Style.with demo (Press 'q' to exit)",
         borders: [:all],
         border_type: :rounded,
-        border_style: tui.style(fg: border_color)
+        # Using Style.with for concise border styling
+        border_style: RatatuiRuby::Style::Style.with(fg: border_color)
       )
     )
   end
