@@ -46,6 +46,9 @@ end
 # Loaded after native extension so _enable_rust_backtrace is defined
 require_relative "ratatui_ruby/debug"
 
+# Experimental lab features (RR_LABS env var)
+require_relative "ratatui_ruby/labs"
+
 # Main entry point for the library.
 #
 # Terminal UIs require low-level control using C/Rust and high-level abstraction in Ruby.
@@ -312,7 +315,15 @@ module RatatuiRuby
     if tree
       _draw(tree)
     elsif block
-      _draw(&block)
+      # Wrap user block to flush A11Y capture after user code
+      if Labs.enabled?(:a11y)
+        _draw do |frame|
+          block.call(frame)
+          frame.flush_a11y_capture
+        end
+      else
+        _draw(&block)
+      end
     end
   end
 

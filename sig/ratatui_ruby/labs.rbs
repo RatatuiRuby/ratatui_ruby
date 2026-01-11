@@ -1,0 +1,87 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#++
+
+# RBS type definitions for RatatuiRuby::Labs module
+
+# Dir.tmpdir is from stdlib tmpdir extension
+class Dir
+  def self.tmpdir: () -> String
+end
+
+# Interface for Data.define objects (widgets/nodes with to_h/members)
+interface _DataLike
+  def to_h: () -> Hash[Symbol, Object]
+  def members: () -> Array[Symbol]
+end
+
+# Minimal REXML stubs (no official RBS types available)
+module REXML
+  class Document
+    def self.new: (?untyped?) -> Document
+    def add: (untyped) -> void
+  end
+
+  class Element
+    def self.new: (String) -> Element
+    def add: (untyped) -> void
+    def add_attribute: (String, String) -> void
+    attr_accessor text: String?
+  end
+
+  class XMLDecl
+    def self.new: (String, String) -> XMLDecl
+  end
+
+  module Formatters
+    class Pretty
+      def self.new: (Integer) -> Pretty
+      attr_accessor compact: bool
+      def write: (untyped, untyped) -> void
+    end
+  end
+end
+
+module RatatuiRuby
+  module Labs
+    @enabled_lab: Symbol?
+    @warned: bool
+
+    def self.enabled?: (Symbol lab) -> bool
+    def self.enable!: (Symbol | String lab) -> void
+    def self.reset!: () -> void
+    def self.warn_once!: (String feature_name) -> void
+
+    module A11y
+      OUTPUT_PATH: String
+
+      def self.dump_widget_tree: (widget widget, ?Layout::Rect? area) -> void
+      def self.dump_widgets: (Array[[widget, Layout::Rect]] widgets_with_areas) -> void
+      def self.startup_message: () -> String
+
+      # Private class methods (called via class << self)
+      # Duck-typed serialization accepts any widget/value that may have to_h/members
+      def self.write_document: (REXML::Document doc) -> void
+      def self.build_element_with_area: (widget widget, Layout::Rect area) -> REXML::Element
+      def self.build_element: (untyped node) -> REXML::Element
+      def self.add_members: (REXML::Element element, untyped node, ?parent_id: String?) -> void
+      def self.scalar?: (untyped value) -> bool
+      def self.build_child_element: (Symbol key, untyped value, ?is_wrapper: bool, ?parent_id: String?) -> REXML::Element
+    end
+  end
+
+  class Frame
+    prepend A11yCapture
+
+    module A11yCapture
+      @a11y_widgets: Array[[widget, Layout::Rect]]?
+
+      def render_widget: (widget widget, Layout::Rect area) -> void
+      def render_stateful_widget: (widget widget, Layout::Rect area, Object state) -> void
+      def flush_a11y_capture: () -> void
+    end
+  end
+end

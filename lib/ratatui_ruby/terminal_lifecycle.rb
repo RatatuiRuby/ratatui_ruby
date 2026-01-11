@@ -64,6 +64,13 @@ module RatatuiRuby
       if @tui_session_active
         raise Error::Invariant, "Cannot initialize terminal: TUI session already active"
       end
+
+      # Show A11Y lab prompt before launching TUI (stdout visible now, not after)
+      if Labs.enabled?(:a11y)
+        puts Labs::A11y.startup_message
+        $stdin.gets
+      end
+
       @tui_session_active = true
       _init_terminal(focus_events, bracketed_paste)
     end
