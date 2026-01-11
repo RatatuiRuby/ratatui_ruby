@@ -8,7 +8,7 @@ Welcome to **ratatui_ruby**! This guide will help you get up and running with yo
 
 ## Installation
 
-See [Installation in the README](../README.md#installation) for setup instructions.
+See [Installation in the README](../../README.md#installation) for setup instructions.
 
 
 ## Tutorials

@@ -25,13 +25,8 @@
 
 ### Troubleshooting
 
-- [Debugging](./troubleshooting/debugging.md): Debugging techniques and tools
+- [Debugging](./concepts/debugging.md): Debugging techniques and tools
 - [Terminal Limitations](./troubleshooting/terminal_limitations.md): Platform quirks and workarounds
-
-### Migration
-
-- [Migrating to v0.7.0](./migration/v0_7_0.md): Namespace changes and upgrade guide
-
 
 ## Documentation for Contributors
 

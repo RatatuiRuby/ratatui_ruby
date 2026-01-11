@@ -62,14 +62,14 @@ Architecture:
 - Every public Ruby class/method must be documented for humans in RDoc (preferred)--**not** YARD--or markdown files (fallback), and must have `*.rbs` types defined.
 - Every significant architectural and design decision must be documented for contributors in markdown files. Mermaid is allowed.
 - **Rust-backed methods:** For methods implemented in Rust (magnus bindings), use RDoc directives instead of empty method bodies. Use `##` followed by `:method:`, `:call-seq:`, and prose. End with `(Native method implemented in Rust)`. See `lib/ratatui_ruby.rb` for examples.
-- Refer to [docs/contributors/design/ruby_frontend.md](docs/contributors/design/ruby_frontend.md) for detailed design philosophy regarding the Immediate Mode paradigm including Data-Driven UI and Frames.
+- Refer to [doc/contributors/design/ruby_frontend.md](doc/contributors/design/ruby_frontend.md) for detailed design philosophy regarding the Immediate Mode paradigm including Data-Driven UI and Frames.
 
 ### Rust Standards
 
 - **Crate Type:** `cdylib`.
 - **Bindings:** Use [magnus](https://github.com/matsadler/magnus).
 - **Platform:** Support macOS (Apple Silicon), Linux, and Windows.
-- Refer to [docs/contributors/design/rust_backend.md](docs/contributors/design/rust_backend.md) for detailed implementation guidelines, module structure, and rendering logic.
+- Refer to [doc/contributors/design/rust_backend.md](doc/contributors/design/rust_backend.md) for detailed implementation guidelines, module structure, and rendering logic.
 
 ## 2. Directory Structure Convention
 
