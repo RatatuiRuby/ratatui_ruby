@@ -25,7 +25,7 @@ class TestGuardIO < Minitest::Test
         end
       end
 
-      assert_kind_of RatatuiRuby::NullIO, captured_stdout, "Should be NullIO inside guard_io"
+      assert_kind_of RatatuiRuby::OutputGuard::NullIO, captured_stdout, "Should be NullIO inside guard_io"
       refute_includes stderr, "hidden"
     end
   end
@@ -40,7 +40,7 @@ class TestGuardIO < Minitest::Test
         stdout_inside_block = $stdout
       end
       assert_same Object::STDOUT, stdout_before_call, "$stdout should be original before guard_io call"
-      assert_kind_of RatatuiRuby::NullIO, stdout_inside_block, "$stdout should be NullIO inside block"
+      assert_kind_of RatatuiRuby::OutputGuard::NullIO, stdout_inside_block, "$stdout should be NullIO inside block"
     end
   end
 

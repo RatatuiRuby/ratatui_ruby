@@ -159,9 +159,6 @@ module RatatuiRuby
   extend OutputGuard
   extend TerminalLifecycle
 
-  # Re-export NullIO at module root for backward compatibility
-  NullIO = OutputGuard::NullIO
-
   @experimental_warnings = true
   @tui_session_active = false
   @headless_mode = false

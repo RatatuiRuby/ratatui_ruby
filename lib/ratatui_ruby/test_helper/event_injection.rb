@@ -64,7 +64,7 @@ module RatatuiRuby
       # [event] A <tt>RatatuiRuby::Event</tt> object.
       def inject_event(event)
         unless @_ratatui_test_terminal_active
-          raise "Events must be injected inside a `with_test_terminal` block. " \
+          raise RatatuiRuby::Error::Invariant, "Events must be injected inside a `with_test_terminal` block. " \
             "Calling this method outside the block causes a race condition where the event " \
             "is flushed before the application starts."
         end

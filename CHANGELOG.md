@@ -102,6 +102,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Removed
 
+- **NullIO Re-export (Breaking)**: Removed `RatatuiRuby::NullIO` constant. Use `RatatuiRuby::OutputGuard::NullIO` if you were relying on this internal class.
+- **Legacy Media Keys (Breaking)**: Removed support for legacy unprefixed media keys (e.g. `play`, `stop`) in event parsing. You must now use the canonical `media_`-prefixed keys (e.g. `media_play`, `media_stop`). The `play?`/`stop?` predicates still work for both, checking the correct canonical codes.
+
 ## [0.9.1] - 2026-01-08
 
 ### Added

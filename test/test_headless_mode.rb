@@ -82,7 +82,7 @@ class TestHeadlessMode < Minitest::Test
       end
     end
 
-    refute_kind_of RatatuiRuby::NullIO, stdout_inside
+    refute_kind_of RatatuiRuby::OutputGuard::NullIO, stdout_inside
     assert_includes stdout, "visible output"
   end
 

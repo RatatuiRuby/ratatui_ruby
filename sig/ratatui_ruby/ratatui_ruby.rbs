@@ -35,13 +35,7 @@ module RatatuiRuby
   end
 
   # NullIO for headless mode
-  class NullIO
-    def write: (untyped) -> Integer
-    def <<: (untyped) -> void
-    def flush: () -> void
-    def puts: (*untyped) -> void
-    def print: (*untyped) -> void
-  end
+
 
   # Core module methods
   def self.init_terminal: (?focus_events: bool, ?bracketed_paste: bool) -> void

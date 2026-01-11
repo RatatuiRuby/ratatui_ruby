@@ -30,25 +30,26 @@ pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), 
 
 /// Parses a `snake_case` string to `MediaKeyCode`.
 ///
-/// Accepts both the new `media_`-prefixed codes (canonical) and the legacy
-/// unprefixed codes for backward compatibility with existing tests.
+/// Parses a `snake_case` string to `MediaKeyCode`.
+///
+/// Only accepts the `media_`-prefixed codes (canonical). Legacy unprefixed codes are no longer supported.
 fn parse_media_key(s: &str) -> Option<ratatui::crossterm::event::MediaKeyCode> {
     use ratatui::crossterm::event::MediaKeyCode;
     match s {
         // New canonical codes (media_ prefix)
-        "media_play" | "play" => Some(MediaKeyCode::Play),
+        "media_play" => Some(MediaKeyCode::Play),
         "media_pause" => Some(MediaKeyCode::Pause),
-        "media_play_pause" | "play_pause" => Some(MediaKeyCode::PlayPause),
-        "media_reverse" | "reverse" => Some(MediaKeyCode::Reverse),
-        "media_stop" | "stop" => Some(MediaKeyCode::Stop),
-        "media_fast_forward" | "fast_forward" => Some(MediaKeyCode::FastForward),
-        "media_rewind" | "rewind" => Some(MediaKeyCode::Rewind),
-        "media_track_next" | "track_next" => Some(MediaKeyCode::TrackNext),
-        "media_track_previous" | "track_previous" => Some(MediaKeyCode::TrackPrevious),
-        "media_record" | "record" => Some(MediaKeyCode::Record),
-        "media_lower_volume" | "lower_volume" => Some(MediaKeyCode::LowerVolume),
-        "media_raise_volume" | "raise_volume" => Some(MediaKeyCode::RaiseVolume),
-        "media_mute_volume" | "mute_volume" => Some(MediaKeyCode::MuteVolume),
+        "media_play_pause" => Some(MediaKeyCode::PlayPause),
+        "media_reverse" => Some(MediaKeyCode::Reverse),
+        "media_stop" => Some(MediaKeyCode::Stop),
+        "media_fast_forward" => Some(MediaKeyCode::FastForward),
+        "media_rewind" => Some(MediaKeyCode::Rewind),
+        "media_track_next" => Some(MediaKeyCode::TrackNext),
+        "media_track_previous" => Some(MediaKeyCode::TrackPrevious),
+        "media_record" => Some(MediaKeyCode::Record),
+        "media_lower_volume" => Some(MediaKeyCode::LowerVolume),
+        "media_raise_volume" => Some(MediaKeyCode::RaiseVolume),
+        "media_mute_volume" => Some(MediaKeyCode::MuteVolume),
         _ => None,
     }
 }

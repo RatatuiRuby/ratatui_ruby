@@ -138,7 +138,7 @@ class TestTestHelperModule < Minitest::Test
   end
 
   def test_raises_when_injecting_outside_context
-    error = assert_raises(RuntimeError) do
+    error = assert_raises(RatatuiRuby::Error::Invariant) do
       inject_key("q")
     end
     assert_match(/Events must be injected/, error.message)
