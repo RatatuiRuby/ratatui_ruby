@@ -76,7 +76,7 @@ end
 ```
 <!-- SPDX-SnippetEnd -->
 
-For the full API list, including `buffer_content` and `cursor_position`, see [RatatuiRuby::TestHelper::Terminal](../lib/ratatui_ruby/test_helper/terminal.rb).
+For the full API list, including `buffer_content` and `cursor_position`, see [RatatuiRuby::TestHelper::Terminal](../../lib/ratatui_ruby/test_helper/terminal.rb).
 
 ## Verifying Styles
 
@@ -99,7 +99,7 @@ assert_area_style({ x: 0, y: 0, w: 10, h: 1 }, bg: :blue)
 ```
 <!-- SPDX-SnippetEnd -->
 
-See [RatatuiRuby::TestHelper::StyleAssertions](../lib/ratatui_ruby/test_helper/style_assertions.rb) for the comprehensive list of style helpers.
+See [RatatuiRuby::TestHelper::StyleAssertions](../../lib/ratatui_ruby/test_helper/style_assertions.rb) for the comprehensive list of style helpers.
 
 ## Simulating Input
 
@@ -127,7 +127,7 @@ end
 ```
 <!-- SPDX-SnippetEnd -->
 
-See [RatatuiRuby::TestHelper::EventInjection](../lib/ratatui_ruby/test_helper/event_injection.rb) for helper methods like `inject_keys` and `inject_click`.
+See [RatatuiRuby::TestHelper::EventInjection](../../lib/ratatui_ruby/test_helper/event_injection.rb) for helper methods like `inject_keys` and `inject_click`.
 
 ## Snapshot Testing
 
@@ -158,7 +158,7 @@ To prevent this:
 1.  **Seed Randomness:** Use a fixed seed for any RNG.
 2.  **Stub Time:** Force the application to use a static time.
 
-For detailed strategies and code examples, see [RatatuiRuby::TestHelper::Snapshot](../lib/ratatui_ruby/test_helper/snapshot.rb).
+For detailed strategies and code examples, see [RatatuiRuby::TestHelper::Snapshot](../../lib/ratatui_ruby/test_helper/snapshot.rb).
 
 ## Isolated View Testing
 
@@ -186,8 +186,8 @@ end
 ```
 <!-- SPDX-SnippetEnd -->
 
-See [RatatuiRuby::TestHelper::TestDoubles](../lib/ratatui_ruby/test_helper/test_doubles.rb).
+See [RatatuiRuby::TestHelper::TestDoubles](../../lib/ratatui_ruby/test_helper/test_doubles.rb).
 
 ## Example
 
-Check out the [examples directory](../examples/) for fully tested applications showcasing these patterns.
+Check out the [examples directory](../../examples/) for fully tested applications showcasing these patterns.

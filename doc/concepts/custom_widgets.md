@@ -242,6 +242,6 @@ The interface uses structural typing. Any class with a matching `render` signatu
 
 ## Related Resources
 
-- [Custom Render Example](../examples/widget_render/README.md) — Full working example
-- [Cell Example](../examples/widget_cell/README.md) — Low-level cell drawing
+- [Custom Render Example](../../examples/widget_render/README.md) — Full working example
+- [Cell Example](../../examples/widget_cell/README.md) — Low-level cell drawing
 - [Application Testing](./application_testing.md) — Test helper reference

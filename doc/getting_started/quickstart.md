@@ -8,7 +8,7 @@ Welcome to **ratatui_ruby**! This guide will help you get up and running with yo
 
 ## Installation
 
-See [Installation in the README](../README.md#installation) for setup instructions.
+See [Installation in the README](../../README.md#installation) for setup instructions.
 
 
 ## Tutorials
@@ -214,7 +214,7 @@ end
 
 ## Examples
 
-These examples showcase the full power of **ratatui_ruby**. You can find their source code in the [examples directory](../examples).
+These examples showcase the full power of **ratatui_ruby**. You can find their source code in the [examples directory](../../examples).
 
 ### Widget Demos
 
@@ -222,33 +222,33 @@ Focused examples for individual widgets. Each demonstrates a single widget and i
 
 | Widget | What it demonstrates |
 |--------|---------------------|
-| [Bar Chart](../examples/widget_barchart/app.rb) | Grouped bars, data visualization, custom bar styling |
-| [Block](../examples/widget_block/app.rb) | Borders, titles, padding, nested widgets |
-| [Box](../examples/widget_box/app.rb) | Block + Paragraph composition, text wrapping |
-| [Calendar](../examples/widget_calendar/app.rb) | Date highlighting, month display, event markers |
-| [Chart](../examples/widget_chart/app.rb) | Line/scatter plots, axes, legends, datasets |
-| [Gauge](../examples/widget_gauge/app.rb) | Progress bars, percentage display, unicode blocks |
-| [Layout Split](../examples/widget_layout_split/app.rb) | Constraint types, flex modes, responsive layouts |
-| [Line Gauge](../examples/widget_line_gauge/app.rb) | Horizontal progress, labels, thin-style gauges |
-| [List](../examples/widget_list/app.rb) | Selection, scrolling, highlight styles, rich text items |
-| [Map](../examples/widget_map/app.rb) | Canvas widget, world map rendering, coordinates |
-| [Popup](../examples/widget_popup/app.rb) | Clear widget, modal dialogs, overlay composition |
-| [Ratatui Logo](../examples/widget_ratatui_logo/app.rb) | Decorative branding widget |
-| [Ratatui Mascot](../examples/widget_ratatui_mascot/app.rb) | ASCII art Ferris mascot |
-| [Rect](../examples/widget_rect/app.rb) | Geometry helpers, area calculations, contains/intersection |
-| [Rich Text](../examples/widget_rich_text/app.rb) | Spans, lines, inline styling, mixed colors |
-| [Scrollbar](../examples/widget_scrollbar/app.rb) | Orientations, thumb/track styling, scroll state |
-| [Scroll Text](../examples/widget_scroll_text/app.rb) | Paragraph scrolling, viewport control, long content |
-| [Sparkline](../examples/widget_sparkline/app.rb) | Mini charts, time series, bar sets |
-| [Style Colors](../examples/widget_style_colors/app.rb) | Named colors, RGB, indexed 256-color palette |
-| [Table](../examples/widget_table/app.rb) | Row selection, column widths, per-cell styling |
-| [Tabs](../examples/widget_tabs/app.rb) | Tab navigation, highlighting, dividers |
-| [Text Width](../examples/widget_text_width/app.rb) | Unicode-aware width measurement, CJK support |
-| [Canvas](../examples/widget_canvas/app.rb) | Drawing shapes, markers, custom graphics |
-| [Cell](../examples/widget_cell/app.rb) | Buffer cell inspection, styling attributes |
-| [Center](../examples/widget_center/app.rb) | Centering content, horizontal/vertical alignment |
-| [Overlay](../examples/widget_overlay/app.rb) | Layering widgets, modal backgrounds |
-| [Custom Render](../examples/widget_render/app.rb) | Low-level Draw API, escape hatch for custom widgets |
+| [Bar Chart](../../examples/widget_barchart/app.rb) | Grouped bars, data visualization, custom bar styling |
+| [Block](../../examples/widget_block/app.rb) | Borders, titles, padding, nested widgets |
+| [Box](../../examples/widget_box/app.rb) | Block + Paragraph composition, text wrapping |
+| [Calendar](../../examples/widget_calendar/app.rb) | Date highlighting, month display, event markers |
+| [Chart](../../examples/widget_chart/app.rb) | Line/scatter plots, axes, legends, datasets |
+| [Gauge](../../examples/widget_gauge/app.rb) | Progress bars, percentage display, unicode blocks |
+| [Layout Split](../../examples/widget_layout_split/app.rb) | Constraint types, flex modes, responsive layouts |
+| [Line Gauge](../../examples/widget_line_gauge/app.rb) | Horizontal progress, labels, thin-style gauges |
+| [List](../../examples/widget_list/app.rb) | Selection, scrolling, highlight styles, rich text items |
+| [Map](../../examples/widget_map/app.rb) | Canvas widget, world map rendering, coordinates |
+| [Popup](../../examples/widget_popup/app.rb) | Clear widget, modal dialogs, overlay composition |
+| [Ratatui Logo](../../examples/widget_ratatui_logo/app.rb) | Decorative branding widget |
+| [Ratatui Mascot](../../examples/widget_ratatui_mascot/app.rb) | ASCII art Ferris mascot |
+| [Rect](../../examples/widget_rect/app.rb) | Geometry helpers, area calculations, contains/intersection |
+| [Rich Text](../../examples/widget_rich_text/app.rb) | Spans, lines, inline styling, mixed colors |
+| [Scrollbar](../../examples/widget_scrollbar/app.rb) | Orientations, thumb/track styling, scroll state |
+| [Scroll Text](../../examples/widget_scroll_text/app.rb) | Paragraph scrolling, viewport control, long content |
+| [Sparkline](../../examples/widget_sparkline/app.rb) | Mini charts, time series, bar sets |
+| [Style Colors](../../examples/widget_style_colors/app.rb) | Named colors, RGB, indexed 256-color palette |
+| [Table](../../examples/widget_table/app.rb) | Row selection, column widths, per-cell styling |
+| [Tabs](../../examples/widget_tabs/app.rb) | Tab navigation, highlighting, dividers |
+| [Text Width](../../examples/widget_text_width/app.rb) | Unicode-aware width measurement, CJK support |
+| [Canvas](../../examples/widget_canvas/app.rb) | Drawing shapes, markers, custom graphics |
+| [Cell](../../examples/widget_cell/app.rb) | Buffer cell inspection, styling attributes |
+| [Center](../../examples/widget_center/app.rb) | Centering content, horizontal/vertical alignment |
+| [Overlay](../../examples/widget_overlay/app.rb) | Layering widgets, modal backgrounds |
+| [Custom Render](../../examples/widget_render/app.rb) | Low-level Draw API, escape hatch for custom widgets |
 
 ### Sample Applications
 
@@ -256,27 +256,27 @@ These larger examples combine widgets into complete applications, demonstrating 
 
 | Application | Architecture | What you'll learn |
 |-------------|--------------|-------------------|
-| [All Events](../examples/app_all_events/app.rb) | Model-View-Update | Event handling, unidirectional data flow, scalable structure |
-| [Color Picker](../examples/app_color_picker/app.rb) | Component-Based | Hit testing, modal dialogs, encapsulated state |
-| [Debugging Showcase](../examples/app_debugging_showcase/app.rb) | Simple Loop | Remote debugging, Rust backtraces, improved error messages |
-| [Login Form](../examples/app_login_form/app.rb) | Overlay + Center | Modal forms, cursor positioning, text input |
-| [Stateful Interaction](../examples/app_stateful_interaction/app.rb) | State Objects | ListState/TableState, offset read-back, mouse click-to-row |
+| [All Events](../../examples/app_all_events/app.rb) | Model-View-Update | Event handling, unidirectional data flow, scalable structure |
+| [Color Picker](../../examples/app_color_picker/app.rb) | Component-Based | Hit testing, modal dialogs, encapsulated state |
+| [Debugging Showcase](../../examples/app_debugging_showcase/app.rb) | Simple Loop | Remote debugging, Rust backtraces, improved error messages |
+| [Login Form](../../examples/app_login_form/app.rb) | Overlay + Center | Modal forms, cursor positioning, text input |
+| [Stateful Interaction](../../examples/app_stateful_interaction/app.rb) | State Objects | ListState/TableState, offset read-back, mouse click-to-row |
 
 #### All Events
 
-[![all_events](../images/app_all_events.png)](../examples/app_all_events/README.md)
+[![all_events](../images/app_all_events.png)](../../examples/app_all_events/README.md)
 
 #### Color Picker
 
-[![color_picker](../images/app_color_picker.png)](../examples/app_color_picker/README.md)
+[![color_picker](../images/app_color_picker.png)](../../examples/app_color_picker/README.md)
 
 #### Debugging Showcase
 
-[![debugging_showcase](../images/app_debugging_showcase.gif)](../examples/app_debugging_showcase/README.md)
+[![debugging_showcase](../images/app_debugging_showcase.gif)](../../examples/app_debugging_showcase/README.md)
 
 #### Login Form
 
-[![login_form](../images/app_login_form.png)](../examples/app_login_form/README.md)
+[![login_form](../images/app_login_form.png)](../../examples/app_login_form/README.md)
 
 
 ## Next Steps

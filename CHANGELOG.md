@@ -289,7 +289,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [0.7.0] - 2026-01-03
 
 > [!WARNING]
-> v0.7.0 contains significant breaking changes. See the [Migration Guide](doc/v0.7.0_migration.md) for upgrade instructions.
+> v0.7.0 contains significant breaking changes. See the namespace changes below for upgrade instructions.
 
 ### Added
 
@@ -301,7 +301,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
-- **Namespace Restructure (Breaking)**: Classes reorganized to match Ratatui's module hierarchy. See [Migration Guide](doc/v0.7.0_migration.md) for details:
+- **Namespace Restructure (Breaking)**: Classes reorganized to match Ratatui's module hierarchy:
   - `RatatuiRuby::Rect` → `RatatuiRuby::Layout::Rect`
   - `RatatuiRuby::Constraint` → `RatatuiRuby::Layout::Constraint`
   - `RatatuiRuby::Layout` → `RatatuiRuby::Layout::Layout`
