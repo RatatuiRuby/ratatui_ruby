@@ -297,7 +297,7 @@ We provide these reference architectures to inspire you:
 
 ### Model-View-Update
 
-**Source:** [examples/app_all_events](../examples/app_all_events/README.md)
+**Source:** [examples/app_all_events](../../examples/app_all_events/README.md)
 
 This pattern implements unidirectional data flow inspired by The Elm Architecture:
 *   **Model:** A single immutable `Data.define` object holding all application state.
@@ -309,7 +309,7 @@ Use this when you want predictable state management and easy-to-test logic.
 
 ### Component-Based
 
-**Source:** [examples/app_color_picker](../examples/app_color_picker/README.md)
+**Source:** [examples/app_color_picker](../../examples/app_color_picker/README.md)
 
 This pattern addresses the difficulty of mouse interaction and complex UI orchestration:
 *   **Component Contract:** Every UI element implements `render(tui, frame, area)` and `handle_event(event)`.

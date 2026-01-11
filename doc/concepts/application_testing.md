@@ -190,4 +190,4 @@ See [RatatuiRuby::TestHelper::TestDoubles](../lib/ratatui_ruby/test_helper/test_
 
 ## Example
 
-Check out the [examples directory](../examples/) for fully tested applications showcasing these patterns.
+Check out the [examples directory](../../examples/) for fully tested applications showcasing these patterns.
