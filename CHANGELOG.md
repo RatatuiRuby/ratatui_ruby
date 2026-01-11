@@ -16,6 +16,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+### Removed
+
+## [0.10.1] - 2026-01-11
+
+### Added
+
+### Changed
+
+### Fixed
+
 - **poll_event Return Type**: Fixed `poll_event` incorrectly returning `nil` for unknown event types. The method now correctly returns `Event::None` as per its contract.
 
 ### Removed
@@ -614,6 +624,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Testing Support**: Included `RatatuiRuby::TestHelper` and RSpec integration to make testing your TUI applications possible.
 
 [Unreleased]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/HEAD
+[0.10.1]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.10.1
 [0.10.1]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.10.1
 [0.10.1]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.10.1
 [0.10.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.10.0
