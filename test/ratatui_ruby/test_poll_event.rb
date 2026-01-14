@@ -9,12 +9,16 @@ require "test_helper"
 
 class TestPollEvent < Minitest::Test
   def setup
+    # Reset session state before each test for proper isolation
+    RatatuiRuby.instance_variable_set(:@tui_session_active, false)
     RatatuiRuby.init_test_terminal(80, 24)
     RatatuiRuby.clear_events
   end
 
   def teardown
     RatatuiRuby.restore_terminal
+    # Reset session state after each test for proper isolation
+    RatatuiRuby.instance_variable_set(:@tui_session_active, false)
   end
 
   def test_poll_event_returns_none_when_no_events

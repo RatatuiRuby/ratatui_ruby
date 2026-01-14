@@ -4,16 +4,16 @@
 
 use magnus::Value;
 use ratatui::{
+    buffer::Buffer,
     layout::Rect,
-    widgets::{RatatuiLogo, RatatuiLogoSize},
-    Frame,
+    widgets::{RatatuiLogo, RatatuiLogoSize, Widget},
 };
 
-pub fn render(frame: &mut Frame, area: Rect, _node: Value) {
+pub fn render(buffer: &mut Buffer, area: Rect, _node: Value) {
     // RatatuiLogo does not support custom styling (it has fixed colors).
     // It requires a size argument.
     let widget = RatatuiLogo::new(RatatuiLogoSize::Small);
-    frame.render_widget(widget, area);
+    widget.render(area, buffer);
 }
 
 #[cfg(test)]

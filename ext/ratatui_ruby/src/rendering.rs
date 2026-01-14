@@ -4,9 +4,9 @@
 use crate::style::{parse_color_value, parse_modifier_str, parse_style};
 use crate::widgets;
 use magnus::{prelude::*, Error, RArray, Value};
-use ratatui::{buffer::Buffer, layout::Rect, style::Style, Frame};
+use ratatui::{buffer::Buffer, layout::Rect, style::Style, widgets::Widget};
 
-pub fn render_node(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+pub fn render_node(buffer: &mut Buffer, area: Rect, node: Value) -> Result<(), Error> {
     if node.respond_to("render", true)? {
         let ruby = magnus::Ruby::get().unwrap();
         let ruby_area = {
@@ -26,7 +26,7 @@ pub fn render_node(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Err
                 let index = isize::try_from(i)
                     .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
                 let cmd: Value = arr.entry(index)?;
-                process_draw_command(frame.buffer_mut(), cmd)?;
+                process_draw_command(buffer, cmd)?;
             }
         }
         return Ok(());
@@ -35,43 +35,56 @@ pub fn render_node(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Err
     // SAFETY: Immediate conversion to owned string avoids GC-unsafe borrowed reference.
     let class_name = unsafe { node.class().name() }.into_owned();
 
+    // Special case: Cursor widget requires Frame, not just Buffer
+    // For now, we skip it in buffer-only contexts (like insert_before)
+    // Frame-based callers should check for Cursor and handle it specially
+    if class_name.as_str() == "RatatuiRuby::Widgets::Cursor" {
+        // No-op for buffer-only rendering
+        // Frame-based rendering should use Frame.set_cursor_position directly
+        return Ok(());
+    }
+
     match class_name.as_str() {
-        "RatatuiRuby::Widgets::Paragraph" => widgets::paragraph::render(frame, area, node)?,
-        "RatatuiRuby::Widgets::Clear" => widgets::clear::render(frame, area, node)?,
-        "RatatuiRuby::Widgets::Cursor" => widgets::cursor::render(frame, area, node)?,
-        "RatatuiRuby::Widgets::Overlay" => widgets::overlay::render(frame, area, node)?,
-        "RatatuiRuby::Widgets::Center" => widgets::center::render(frame, area, node)?,
-        "RatatuiRuby::Layout::Layout" => widgets::layout::render(frame, area, node)?,
-        "RatatuiRuby::Widgets::List" => widgets::list::render(frame, area, node)?,
-        "RatatuiRuby::Widgets::Gauge" => widgets::gauge::render(frame, area, node)?,
-        "RatatuiRuby::Widgets::LineGauge" => widgets::line_gauge::render(frame, area, node)?,
-        "RatatuiRuby::Widgets::Table" => widgets::table::render(frame, area, node)?,
-        "RatatuiRuby::Widgets::Block" => widgets::block::render(frame, area, node)?,
-        "RatatuiRuby::Widgets::Tabs" => widgets::tabs::render(frame, area, node)?,
-        "RatatuiRuby::Widgets::Scrollbar" => widgets::scrollbar::render(frame, area, node)?,
-        "RatatuiRuby::Widgets::BarChart" => widgets::barchart::render(frame, area, node)?,
-        "RatatuiRuby::Widgets::Canvas" => widgets::canvas::render(frame, area, node)?,
-        "RatatuiRuby::Widgets::Calendar" => widgets::calendar::render(frame, area, node)?,
-        "RatatuiRuby::Widgets::Sparkline" => widgets::sparkline::render(frame, area, node)?,
+        "RatatuiRuby::Widgets::Paragraph" => widgets::paragraph::render(buffer, area, node)?,
+        "RatatuiRuby::Widgets::Clear" => widgets::clear::render(buffer, area, node)?,
+        "RatatuiRuby::Widgets::Overlay" => widgets::overlay::render(buffer, area, node)?,
+        "RatatuiRuby::Widgets::Center" => widgets::center::render(buffer, area, node)?,
+        "RatatuiRuby::Layout::Layout" => widgets::layout::render(buffer, area, node)?,
+        "RatatuiRuby::Widgets::List" => widgets::list::render(buffer, area, node)?,
+        "RatatuiRuby::Widgets::Gauge" => widgets::gauge::render(buffer, area, node)?,
+        "RatatuiRuby::Widgets::LineGauge" => widgets::line_gauge::render(buffer, area, node)?,
+        "RatatuiRuby::Widgets::Table" => widgets::table::render(buffer, area, node)?,
+        "RatatuiRuby::Widgets::Block" => widgets::block::render(buffer, area, node)?,
+        "RatatuiRuby::Widgets::Tabs" => widgets::tabs::render(buffer, area, node)?,
+        "RatatuiRuby::Widgets::Scrollbar" => widgets::scrollbar::render(buffer, area, node)?,
+        "RatatuiRuby::Widgets::BarChart" => widgets::barchart::render(buffer, area, node)?,
+        "RatatuiRuby::Widgets::Canvas" => widgets::canvas::render(buffer, area, node)?,
+        "RatatuiRuby::Widgets::Calendar" => widgets::calendar::render(buffer, area, node)?,
+        "RatatuiRuby::Widgets::Sparkline" => widgets::sparkline::render(buffer, area, node)?,
         "RatatuiRuby::Widgets::Chart" => {
-            widgets::chart::render(frame, area, node)?;
+            widgets::chart::render(buffer, area, node)?;
         }
-        "RatatuiRuby::Widgets::RatatuiLogo" => widgets::ratatui_logo::render(frame, area, node),
+        "RatatuiRuby::Widgets::RatatuiLogo" => widgets::ratatui_logo::render(buffer, area, node),
         "RatatuiRuby::Widgets::RatatuiMascot" => {
-            widgets::ratatui_mascot::render_ratatui_mascot(frame, area, node)?;
+            widgets::ratatui_mascot::render_ratatui_mascot(buffer, area, node)?;
         }
         // Text primitives can also be rendered directly as widgets
         "RatatuiRuby::Text::Line" => {
             let line = crate::text::parse_line(node)?;
-            frame.render_widget(line, area);
+            line.render(area, buffer);
         }
         "RatatuiRuby::Text::Span" => {
             let span = crate::text::parse_span(node)?;
-            frame.render_widget(span, area);
+            span.render(area, buffer);
         }
         _ => {}
     }
     Ok(())
+}
+
+pub fn render_widget_to_buffer(buffer: &mut Buffer, area: Rect, node: Value) -> Result<(), Error> {
+    // Just delegate to render_node since it now works with Buffer
+    render_node(buffer, area, node)
 }
 
 fn process_draw_command(buffer: &mut Buffer, cmd: Value) -> Result<(), Error> {

@@ -15,6 +15,7 @@ require_relative "ratatui_ruby/buffer"   # Buffer::Cell (for inspection)
 require_relative "ratatui_ruby/text"    # Text::Span, Text::Line, Text.width
 require_relative "ratatui_ruby/draw"    # Draw commands
 require_relative "ratatui_ruby/symbols" # Symbols::Shade, etc.
+require_relative "ratatui_ruby/terminal/viewport" # Terminal::Viewport
 
 # Event types
 require_relative "ratatui_ruby/event"
@@ -156,6 +157,15 @@ module RatatuiRuby
     # SPDX-SnippetEnd
     #++
     class Invariant < Error; end
+
+    # Framework bug.
+    #
+    # This error indicates a bug within the RatatuiRuby framework itself.
+    # If you encounter this, the framework is broken — please report it.
+    #
+    # Normal application errors use standard exceptions like ArgumentError.
+    # This exception class distinguishes "our bug" from "your bug".
+    class Internal < Error; end
   end
 
   # Mix in terminal lifecycle and output protection methods
@@ -442,8 +452,66 @@ module RatatuiRuby
     )
   end
 
-  # (Native method _get_cell_at implemented in Rust)
-  private_class_method :_get_cell_at
+  ##
+  # Returns the current terminal viewport area.
+  #
+  # In inline viewports, this returns the viewport dimensions.
+  # In fullscreen mode, this returns the full terminal size.
+  #
+  # @return [Layout::Rect] The rendering viewport area
+  def self.get_viewport_area
+    raw = _get_terminal_area
+    Layout::Rect.new(
+      x: raw["x"],
+      y: raw["y"],
+      width: raw["width"],
+      height: raw["height"]
+    )
+  end
+
+  ##
+  # Returns the full terminal backend size.
+  #
+  # This is always the full terminal dimensions, regardless of viewport mode.
+  #
+  # === Example
+  #
+  #--
+  # SPDX-SnippetBegin
+  # SPDX-FileCopyrightText: 2026 Kerrick Long
+  # SPDX-License-Identifier: MIT-0
+  #++
+  #   size = RatatuiRuby.get_terminal_size
+  #   puts "Terminal: #{size.width}x#{size.height}"
+  #
+  #--
+  # SPDX-SnippetEnd
+  #++
+  # @return [Layout::Rect] The full terminal size
+  def self.get_terminal_size
+    raw = _get_terminal_size
+    Layout::Rect.new(
+      x: raw["x"],
+      y: raw["y"],
+      width: raw["width"],
+      height: raw["height"]
+    )
+  end
+
+  # Ruby-idiomatic aliases (TIMTOWTDI)
+  class << self
+    # Aliases for get_terminal_size (full backend size)
+    alias get_terminal_area get_terminal_size
+    alias terminal_area get_terminal_size
+    alias terminal_size get_terminal_size
+    # Aliases for get_viewport_area (viewport rendering area)
+    alias get_viewport_size get_viewport_area
+    alias viewport_area get_viewport_area
+    alias viewport_size get_viewport_area
+  end
+
+  # (Native methods _get_cell_at and _get_terminal_size implemented in Rust)
+  private_class_method :_get_cell_at, :_get_terminal_size
 
   # Hide native Layout._split helper
   Layout::Layout.singleton_class.__send__(:private, :_split)

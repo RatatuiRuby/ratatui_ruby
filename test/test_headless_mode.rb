@@ -10,9 +10,16 @@ require "test_helper"
 class TestHeadlessMode < Minitest::Test
   include RatatuiRuby::TestHelper
 
-  def teardown
-    # Reset headless mode after each test
+  def setup
+    # Reset headless mode and session state before each test
     RatatuiRuby.instance_variable_set(:@headless_mode, false)
+    RatatuiRuby.instance_variable_set(:@tui_session_active, false)
+  end
+
+  def teardown
+    # Reset headless mode and session state after each test
+    RatatuiRuby.instance_variable_set(:@headless_mode, false)
+    RatatuiRuby.instance_variable_set(:@tui_session_active, false)
   end
 
   # --- headless! and is_headless? ---

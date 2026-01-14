@@ -11,7 +11,29 @@ class TestError < Minitest::Test
   def test_inheritance
     assert_operator RatatuiRuby::Error::Terminal, :<, RatatuiRuby::Error
     assert_operator RatatuiRuby::Error::Safety, :<, RatatuiRuby::Error
+    assert_operator RatatuiRuby::Error::Invariant, :<, RatatuiRuby::Error
+    assert_operator RatatuiRuby::Error::Internal, :<, RatatuiRuby::Error
     assert_operator RatatuiRuby::Error, :<, StandardError
+  end
+
+  def test_rescue_internal_error
+    error = RatatuiRuby::Error::Internal.new("framework bug")
+
+    rescued = false
+    begin
+      raise error
+    rescue RatatuiRuby::Error::Internal
+      rescued = true
+    end
+    assert rescued, "Should distinguish Error::Internal"
+
+    rescued = false
+    begin
+      raise error
+    rescue RatatuiRuby::Error
+      rescued = true
+    end
+    assert rescued, "Error::Internal should be caught by Error"
   end
 
   def test_rescue_terminal_error

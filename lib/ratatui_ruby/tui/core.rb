@@ -46,6 +46,22 @@ module RatatuiRuby
       def draw_cell(x, y, cell)
         Draw.cell(x, y, cell)
       end
+
+      # Inserts content above an inline viewport.
+      # @see RatatuiRuby.insert_before
+      def insert_before(height, widget = nil, &)
+        RatatuiRuby.insert_before(height, widget, &)
+      end
+
+      # Gets the Rect of the entire terminal, regardless of viewport
+      def terminal_area
+        RatatuiRuby.terminal_area
+      end
+
+      # Gets the Rect of the viewport
+      def viewport_area
+        RatatuiRuby.viewport_area
+      end
     end
   end
 end

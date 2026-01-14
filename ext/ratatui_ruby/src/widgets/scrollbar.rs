@@ -6,12 +6,12 @@ use crate::widgets::scrollbar_state::RubyScrollbarState;
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, Symbol, TryConvert, Value};
 use ratatui::{
+    buffer::Buffer,
     layout::Rect,
-    widgets::{Scrollbar, ScrollbarOrientation, ScrollbarState},
-    Frame,
+    widgets::{Scrollbar, ScrollbarOrientation, ScrollbarState, StatefulWidget, Widget},
 };
 
-pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+pub fn render(buffer: &mut Buffer, area: Rect, node: Value) -> Result<(), Error> {
     let content_length: usize = node.funcall("content_length", ())?;
     let position: usize = node.funcall("position", ())?;
     let orientation_sym: Symbol = node.funcall("orientation", ())?;
@@ -79,13 +79,13 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
     }
 
     if block_val.is_nil() {
-        frame.render_stateful_widget(scrollbar, area, &mut state);
+        StatefulWidget::render(scrollbar, area, buffer, &mut state);
     } else {
         let bump = Bump::new();
         let block = parse_block(block_val, &bump)?;
         let inner_area = block.inner(area);
-        frame.render_widget(block, area);
-        frame.render_stateful_widget(scrollbar, inner_area, &mut state);
+        block.render(area, buffer);
+        StatefulWidget::render(scrollbar, inner_area, buffer, &mut state);
     }
     Ok(())
 }
@@ -95,7 +95,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 /// The State object is the single source of truth for position and `content_length`.
 /// Widget properties (`position`, `content_length`) are ignored.
 pub fn render_stateful(
-    frame: &mut Frame,
+    buffer: &mut Buffer,
     area: Rect,
     node: Value,
     state_wrapper: Value,
@@ -168,13 +168,13 @@ pub fn render_stateful(
     {
         let mut inner_state = state.borrow_mut();
         if block_val.is_nil() {
-            frame.render_stateful_widget(scrollbar, area, &mut inner_state);
+            StatefulWidget::render(scrollbar, area, buffer, &mut inner_state);
         } else {
             let bump = Bump::new();
             let block = parse_block(block_val, &bump)?;
             let inner_area = block.inner(area);
-            frame.render_widget(block, area);
-            frame.render_stateful_widget(scrollbar, inner_area, &mut inner_state);
+            block.render(area, buffer);
+            StatefulWidget::render(scrollbar, inner_area, buffer, &mut inner_state);
         }
     }
 

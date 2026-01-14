@@ -5,15 +5,15 @@ use crate::rendering::render_node;
 use crate::style::parse_block;
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, Value};
-use ratatui::{layout::Rect, widgets::Widget, Frame};
+use ratatui::{buffer::Buffer, layout::Rect, widgets::Widget};
 
-pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+pub fn render(buffer: &mut Buffer, area: Rect, node: Value) -> Result<(), Error> {
     let bump = Bump::new();
     let block = parse_block(node, &bump)?;
     let block_clone = block.clone();
 
     // Render the block itself (borders, styling)
-    block_clone.render(area, frame.buffer_mut());
+    block_clone.render(area, buffer);
 
     // Get children and render them within the block's inner area
     let children_val: Value = node.funcall("children", ())?;
@@ -30,7 +30,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
                 let index = isize::try_from(i)
                     .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
                 let child: Value = arr.entry(index)?;
-                if let Err(e) = render_node(frame, inner, child) {
+                if let Err(e) = render_node(buffer, inner, child) {
                     eprintln!("Error rendering block child {i}: {e:?}");
                 }
             }

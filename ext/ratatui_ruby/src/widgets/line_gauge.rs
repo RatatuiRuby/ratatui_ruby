@@ -5,9 +5,10 @@ use crate::style::{parse_block, parse_style};
 use crate::text::parse_span;
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, Value};
-use ratatui::{layout::Rect, widgets::LineGauge, Frame};
+use ratatui::buffer::Buffer;
+use ratatui::{layout::Rect, widgets::LineGauge, widgets::Widget};
 
-pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+pub fn render(buffer: &mut Buffer, area: Rect, node: Value) -> Result<(), Error> {
     let bump = Bump::new();
     let ratio: f64 = node.funcall("ratio", ())?;
     let label_val: Value = node.funcall("label", ())?;
@@ -52,7 +53,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         gauge = gauge.block(parse_block(block_val, &bump)?);
     }
 
-    frame.render_widget(gauge, area);
+    gauge.render(area, buffer);
     Ok(())
 }
 

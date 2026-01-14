@@ -5,14 +5,17 @@ use crate::style::{parse_block, parse_color, parse_style};
 use crate::text::parse_text;
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, RArray, Symbol, Value};
+use ratatui::buffer::Buffer;
 use ratatui::{
     symbols::Marker,
-    widgets::canvas::{Canvas, Circle, Line, Map, MapResolution, Rectangle},
-    Frame,
+    widgets::{
+        canvas::{Canvas, Circle, Line, Map, MapResolution, Rectangle},
+        Widget,
+    },
 };
 
 #[allow(clippy::too_many_lines)]
-pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Result<(), Error> {
+pub fn render(buffer: &mut Buffer, area: ratatui::layout::Rect, node: Value) -> Result<(), Error> {
     let bump = Bump::new();
     let shapes_val: RArray = node.funcall("shapes", ())?;
     let x_bounds_val: RArray = node.funcall("x_bounds", ())?;
@@ -139,7 +142,7 @@ pub fn render(frame: &mut Frame, area: ratatui::layout::Rect, node: Value) -> Re
         }
     });
 
-    frame.render_widget(canvas, area);
+    Widget::render(canvas, area, buffer);
     Ok(())
 }
 

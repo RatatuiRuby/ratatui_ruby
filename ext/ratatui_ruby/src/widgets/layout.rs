@@ -5,11 +5,11 @@ use crate::errors::type_error_with_context;
 use crate::rendering::render_node;
 use magnus::{prelude::*, Error, Symbol, Value};
 use ratatui::{
+    buffer::Buffer,
     layout::{Constraint, Direction, Flex, Layout, Rect},
-    Frame,
 };
 
-pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+pub fn render(buffer: &mut Buffer, area: Rect, node: Value) -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let direction_sym: Symbol = node.funcall("direction", ())?;
     let children_val: Value = node.funcall("children", ())?;
@@ -72,7 +72,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
             let index = isize::try_from(i)
                 .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
             let child: Value = children_array.entry(index)?;
-            if let Err(e) = render_node(frame, chunks[i], child) {
+            if let Err(e) = render_node(buffer, chunks[i], child) {
                 eprintln!("Error rendering child {i}: {e:?}");
             }
         }

@@ -7,14 +7,14 @@ use crate::text::{parse_line, parse_span};
 use crate::widgets::list_state::RubyListState;
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, Symbol, TryConvert, Value};
+use ratatui::buffer::Buffer;
 use ratatui::{
     layout::Rect,
     text::Line,
-    widgets::{HighlightSpacing, List, ListItem, ListState},
-    Frame,
+    widgets::{HighlightSpacing, List, ListItem, ListState, StatefulWidget},
 };
 
-pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+pub fn render(buffer: &mut Buffer, area: Rect, node: Value) -> Result<(), Error> {
     let bump = Bump::new();
     let ruby = magnus::Ruby::get().unwrap();
     let items_val: Value = node.funcall("items", ())?;
@@ -107,7 +107,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         list = list.block(parse_block(block_val, &bump)?);
     }
 
-    frame.render_stateful_widget(list, area, &mut state);
+    StatefulWidget::render(list, area, buffer, &mut state);
     Ok(())
 }
 
@@ -116,7 +116,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 /// This function ignores `selected_index` and `offset` from the widget.
 /// The State object is the single source of truth for selection and scroll position.
 pub fn render_stateful(
-    frame: &mut Frame,
+    buffer: &mut Buffer,
     area: Rect,
     node: Value,
     state_wrapper: Value,
@@ -210,7 +210,7 @@ pub fn render_stateful(
     // Borrow the inner ListState, render, and release the borrow immediately
     {
         let mut inner_state = state.borrow_mut();
-        frame.render_stateful_widget(list, area, &mut inner_state);
+        StatefulWidget::render(list, area, buffer, &mut inner_state);
     }
     // Borrow is now released
 
@@ -299,7 +299,6 @@ mod tests {
         state.select(Some(1));
 
         let mut buf = Buffer::empty(Rect::new(0, 0, 10, 2));
-        use ratatui::widgets::StatefulWidget;
         StatefulWidget::render(list, Rect::new(0, 0, 10, 2), &mut buf, &mut state);
 
         let content = buf.content().iter().map(|c| c.symbol()).collect::<String>();
@@ -328,7 +327,6 @@ mod tests {
         state.select(Some(0));
 
         let mut buf1 = Buffer::empty(Rect::new(0, 0, 10, 2));
-        use ratatui::widgets::StatefulWidget;
         StatefulWidget::render(
             list_without_repeat,
             Rect::new(0, 0, 10, 2),
@@ -370,7 +368,6 @@ mod tests {
         state.select(Some(1));
 
         let mut buf = Buffer::empty(Rect::new(0, 0, 15, 4));
-        use ratatui::widgets::StatefulWidget;
         StatefulWidget::render(list, Rect::new(0, 0, 15, 4), &mut buf, &mut state);
 
         let content = buf.content().iter().map(|c| c.symbol()).collect::<String>();

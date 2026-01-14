@@ -3,17 +3,17 @@
 
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, Value};
-use ratatui::{layout::Rect, widgets::Widget, Frame};
+use ratatui::{buffer::Buffer, layout::Rect, widgets::Widget};
 
-pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
-    frame.render_widget(ratatui::widgets::Clear, area);
+pub fn render(buffer: &mut Buffer, area: Rect, node: Value) -> Result<(), Error> {
+    ratatui::widgets::Clear.render(area, buffer);
 
     // If a block is provided, render it on top of the cleared area
     if let Ok(block_val) = node.funcall::<_, _, Value>("block", ()) {
         if !block_val.is_nil() {
             let bump = Bump::new();
             let block = crate::style::parse_block(block_val, &bump)?;
-            block.render(area, frame.buffer_mut());
+            block.render(area, buffer);
         }
     }
 
@@ -22,7 +22,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
 #[cfg(test)]
 mod tests {
-    use ratatui::{backend::TestBackend, layout::Rect, Terminal};
+    use ratatui::{backend::TestBackend, layout::Rect, widgets::Widget, Terminal};
 
     #[test]
     fn test_clear_renders_without_error() {
@@ -32,7 +32,7 @@ mod tests {
         terminal
             .draw(|frame| {
                 let area = Rect::new(0, 0, 10, 5);
-                frame.render_widget(ratatui::widgets::Clear, area);
+                ratatui::widgets::Clear.render(area, frame.buffer_mut());
             })
             .unwrap();
     }

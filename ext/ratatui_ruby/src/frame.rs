@@ -151,8 +151,18 @@ impl RubyFrame {
         // 4. ensure_active() above guarantees we're still in the callback
         let frame = unsafe { (*self.inner.get()).as_mut() };
 
+        // Special case: Cursor widget requires Frame.set_cursor_position
+        // SAFETY: Immediate conversion to owned string avoids GC-unsafe borrowed reference.
+        let widget_class = unsafe { widget.class().name() }.into_owned();
+        if widget_class == "RatatuiRuby::Widgets::Cursor" {
+            let cursor_x: u16 = widget.funcall("x", ())?;
+            let cursor_y: u16 = widget.funcall("y", ())?;
+            frame.set_cursor_position((rect.x + cursor_x, rect.y + cursor_y));
+            return Ok(());
+        }
+
         // Delegate to the existing render_node function
-        rendering::render_node(frame, rect, widget)
+        rendering::render_node(frame.buffer_mut(), rect, widget)
     }
 
     /// Renders a stateful widget at the specified area.
@@ -192,13 +202,16 @@ impl RubyFrame {
 
         match (widget_class.as_str(), state_class.as_str()) {
             ("RatatuiRuby::Widgets::List", "RatatuiRuby::ListState") => {
-                widgets::list::render_stateful(frame, rect, widget, state)
+                let buffer = frame.buffer_mut();
+                widgets::list::render_stateful(buffer, rect, widget, state)
             }
             ("RatatuiRuby::Widgets::Table", "RatatuiRuby::TableState") => {
-                widgets::table::render_stateful(frame, rect, widget, state)
+                let buffer = frame.buffer_mut();
+                widgets::table::render_stateful(buffer, rect, widget, state)
             }
             ("RatatuiRuby::Widgets::Scrollbar", "RatatuiRuby::ScrollbarState") => {
-                widgets::scrollbar::render_stateful(frame, rect, widget, state)
+                let buffer = frame.buffer_mut();
+                widgets::scrollbar::render_stateful(buffer, rect, widget, state)
             }
             _ => Err(Error::new(
                 ruby.exception_arg_error(),

@@ -5,15 +5,16 @@ use crate::style::{parse_bar_set, parse_block, parse_style};
 use crate::text::{parse_line, parse_span};
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, RArray, Symbol, Value};
+use ratatui::buffer::Buffer;
 use ratatui::{
     layout::{Direction, Rect},
     text::Line,
+    widgets::Widget,
     widgets::{Bar, BarChart, BarGroup},
-    Frame,
 };
 
 #[allow(clippy::too_many_lines)]
-pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+pub fn render(buffer: &mut Buffer, area: Rect, node: Value) -> Result<(), Error> {
     let bump = Bump::new();
     let data_val: Value = node.funcall("data", ())?;
     let bar_width: u16 = node.funcall("bar_width", ())?;
@@ -144,7 +145,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         bar_chart = bar_chart.bar_set(parse_bar_set(bar_set_val, &bump)?);
     }
 
-    frame.render_widget(bar_chart, area);
+    bar_chart.render(area, buffer);
     Ok(())
 }
 

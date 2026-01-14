@@ -5,9 +5,13 @@
 use crate::style::parse_block;
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, Value};
-use ratatui::{layout::Rect, widgets::RatatuiMascot, Frame};
+use ratatui::{
+    buffer::Buffer,
+    layout::Rect,
+    widgets::{RatatuiMascot, Widget},
+};
 
-pub fn render_ratatui_mascot(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+pub fn render_ratatui_mascot(buffer: &mut Buffer, area: Rect, node: Value) -> Result<(), Error> {
     let block_val: Value = node.funcall("block", ())?;
 
     let mut inner_area = area;
@@ -16,11 +20,11 @@ pub fn render_ratatui_mascot(frame: &mut Frame, area: Rect, node: Value) -> Resu
         let bump = Bump::new();
         let block = parse_block(block_val, &bump)?;
         inner_area = block.inner(area);
-        frame.render_widget(block, area);
+        block.render(area, buffer);
     }
 
     let widget = RatatuiMascot::new();
-    frame.render_widget(widget, inner_area);
+    widget.render(inner_area, buffer);
     Ok(())
 }
 

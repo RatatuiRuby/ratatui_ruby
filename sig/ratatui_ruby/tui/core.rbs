@@ -15,6 +15,9 @@ module RatatuiRuby
       def poll_event: (?timeout: Float) -> Event
       def get_cell_at: (Integer x, Integer y) -> Buffer::Cell
       def draw_cell: (Integer x, Integer y, Buffer::Cell cell) -> Draw::CellCmd
+      def insert_before: (Integer height, ?widget? widget) ?{ () -> widget } -> void
+      def terminal_area: () -> RatatuiRuby::Layout::Rect
+      def viewport_area: () -> RatatuiRuby::Layout::Rect
     end
   end
 end

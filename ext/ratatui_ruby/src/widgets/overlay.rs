@@ -4,9 +4,9 @@
 use crate::errors::type_error_with_context;
 use crate::rendering::render_node;
 use magnus::{prelude::*, Error, Value};
-use ratatui::{layout::Rect, Frame};
+use ratatui::{buffer::Buffer, layout::Rect};
 
-pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+pub fn render(buffer: &mut Buffer, area: Rect, node: Value) -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let layers_val: Value = node.funcall("layers", ())?;
     let layers_array = magnus::RArray::from_value(layers_val)
@@ -16,7 +16,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         let index = isize::try_from(i)
             .map_err(|e| Error::new(ruby.exception_range_error(), e.to_string()))?;
         let layer: Value = layers_array.entry(index)?;
-        if let Err(e) = render_node(frame, area, layer) {
+        if let Err(e) = render_node(buffer, area, layer) {
             eprintln!("Error rendering overlay layer {i}: {e:?}");
         }
     }

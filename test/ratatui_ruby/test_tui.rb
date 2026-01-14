@@ -548,4 +548,23 @@ class TestTUIDispatchers < Minitest::Test
     error = assert_raises(ArgumentError) { @tui.constraint(:unknown, 10) }
     assert_match(/Unknown constraint type.*:unknown/, error.message)
   end
+
+  def test_terminal_area
+    with_test_terminal(80, 24) do
+      rect = @tui.terminal_area
+      assert_equal rect.x, 0
+      assert_equal rect.y, 0
+      assert_equal rect.width, 80
+      assert_equal rect.height, 24
+    end
+  end
+
+  def test_viewport_area
+    viewport = RatatuiRuby::Terminal::Viewport.inline(5)
+    with_test_terminal(80, 24, viewport:) do
+      rect = @tui.viewport_area
+      assert_equal rect.width, 80
+      assert_equal rect.height, 5
+    end
+  end
 end

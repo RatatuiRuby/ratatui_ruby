@@ -50,6 +50,32 @@ module RatatuiRuby
       def initialize(x: 0, y: 0)
         super(x: Integer(x), y: Integer(y))
       end
+
+      # Enables array destructuring for convenient coordinate extraction.
+      #
+      # Returns:: Array of [x, y] coordinates.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   pos = Position.new(x: 10, y: 5)
+      #   x, y = pos  # Uses deconstruct
+      #   puts "Column: #{x}, Row: #{y}"
+      #--
+      # SPDX-SnippetEnd
+      #++
+      def deconstruct
+        [x, y]
+      end
+
+      # Alias for implicit array conversion.
+      #
+      # Enables `x, y = position` syntax by making Position respond to +to_ary+.
+      alias to_ary deconstruct
     end
   end
 end

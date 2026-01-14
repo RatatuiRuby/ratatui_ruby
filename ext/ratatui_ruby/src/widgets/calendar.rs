@@ -5,14 +5,15 @@ use crate::style::{parse_block, parse_style};
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, Value};
 use ratatui::{
+    buffer::Buffer,
     layout::Rect,
     widgets::calendar::{CalendarEventStore, Monthly},
-    Frame,
+    widgets::Widget,
 };
 use std::convert::TryFrom;
 use time::{Date, Month};
 
-pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+pub fn render(buffer: &mut Buffer, area: Rect, node: Value) -> Result<(), Error> {
     let bump = Bump::new();
     let ruby = magnus::Ruby::get().unwrap();
     let year: i32 = node.funcall("year", ())?;
@@ -78,6 +79,6 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         calendar = calendar.block(parse_block(block_val, &bump)?);
     }
 
-    frame.render_widget(calendar, area);
+    calendar.render(area, buffer);
     Ok(())
 }

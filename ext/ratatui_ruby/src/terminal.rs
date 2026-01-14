@@ -5,7 +5,7 @@ use magnus::value::ReprValue;
 use magnus::{Error, Module};
 use ratatui::{
     backend::{CrosstermBackend, TestBackend},
-    Terminal,
+    Terminal, TerminalOptions, Viewport,
 };
 use std::io;
 use std::sync::Mutex;
@@ -16,8 +16,16 @@ pub enum TerminalWrapper {
 }
 
 pub static TERMINAL: Mutex<Option<TerminalWrapper>> = Mutex::new(None);
+// Track whether we're using fullscreen viewport (for restore_terminal)
+static IS_FULLSCREEN: Mutex<bool> = Mutex::new(false);
 
-pub fn init_terminal(focus_events: bool, bracketed_paste: bool) -> Result<(), Error> {
+#[allow(clippy::needless_pass_by_value)] // Magnus FFI requires owned String, not &str
+pub fn init_terminal(
+    focus_events: bool,
+    bracketed_paste: bool,
+    viewport_type: String,
+    viewport_height: Option<u16>,
+) -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let mut term_lock = TERMINAL.lock().unwrap();
     if term_lock.is_none() {
@@ -25,15 +33,30 @@ pub fn init_terminal(focus_events: bool, bracketed_paste: bool) -> Result<(), Er
         let error_base = module.const_get::<_, magnus::RClass>("Error")?;
         let error_class = error_base.const_get("Terminal")?;
 
+        // Parse viewport type
+        let viewport = match viewport_type.as_ref() {
+            "inline" => {
+                let height = viewport_height.unwrap_or(8);
+                Viewport::Inline(height)
+            }
+            _ => Viewport::Fullscreen,
+        };
+
         ratatui::crossterm::terminal::enable_raw_mode()
             .map_err(|e| Error::new(error_class, e.to_string()))?;
         let mut stdout = io::stdout();
-        ratatui::crossterm::execute!(
-            stdout,
-            ratatui::crossterm::terminal::EnterAlternateScreen,
-            ratatui::crossterm::event::EnableMouseCapture
-        )
-        .map_err(|e| Error::new(error_class, e.to_string()))?;
+
+        // Only enter alternate screen for fullscreen viewports
+        if matches!(viewport, Viewport::Fullscreen) {
+            ratatui::crossterm::execute!(
+                stdout,
+                ratatui::crossterm::terminal::EnterAlternateScreen
+            )
+            .map_err(|e| Error::new(error_class, e.to_string()))?;
+        }
+
+        ratatui::crossterm::execute!(stdout, ratatui::crossterm::event::EnableMouseCapture)
+            .map_err(|e| Error::new(error_class, e.to_string()))?;
 
         if focus_events {
             ratatui::crossterm::execute!(stdout, ratatui::crossterm::event::EnableFocusChange)
@@ -45,21 +68,47 @@ pub fn init_terminal(focus_events: bool, bracketed_paste: bool) -> Result<(), Er
         }
 
         let backend = CrosstermBackend::new(stdout);
-        let terminal =
-            Terminal::new(backend).map_err(|e| Error::new(error_class, e.to_string()))?;
+
+        // Store whether we're using fullscreen for restore_terminal (before moving viewport)
+        let is_fullscreen = matches!(viewport, Viewport::Fullscreen);
+        *IS_FULLSCREEN.lock().unwrap() = is_fullscreen;
+
+        let options = TerminalOptions { viewport };
+        let terminal = Terminal::with_options(backend, options)
+            .map_err(|e| Error::new(error_class, e.to_string()))?;
+
         *term_lock = Some(TerminalWrapper::Crossterm(terminal));
     }
     Ok(())
 }
 
-pub fn init_test_terminal(width: u16, height: u16) -> Result<(), Error> {
+#[allow(clippy::needless_pass_by_value)] // Magnus FFI requires owned String, not &str
+pub fn init_test_terminal(
+    width: u16,
+    height: u16,
+    viewport_type: String,
+    viewport_height: Option<u16>,
+) -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let mut term_lock = TERMINAL.lock().unwrap();
     let backend = TestBackend::new(width, height);
     let module = ruby.define_module("RatatuiRuby")?;
     let error_base = module.const_get::<_, magnus::RClass>("Error")?;
     let error_class = error_base.const_get("Terminal")?;
-    let terminal = Terminal::new(backend).map_err(|e| Error::new(error_class, e.to_string()))?;
+
+    // Parse viewport type (same as init_terminal)
+    let viewport = match viewport_type.as_ref() {
+        "inline" => {
+            let vp_height = viewport_height.unwrap_or(height);
+            Viewport::Inline(vp_height)
+        }
+        _ => Viewport::Fullscreen,
+    };
+
+    let options = TerminalOptions { viewport };
+    let terminal = Terminal::with_options(backend, options)
+        .map_err(|e| Error::new(error_class, e.to_string()))?;
+
     *term_lock = Some(TerminalWrapper::Test(terminal));
     Ok(())
 }
@@ -70,13 +119,25 @@ pub fn restore_terminal() {
         match wrapper {
             TerminalWrapper::Crossterm(mut t) => {
                 let _ = ratatui::crossterm::terminal::disable_raw_mode();
-                let _ = ratatui::crossterm::execute!(
-                    t.backend_mut(),
-                    ratatui::crossterm::terminal::LeaveAlternateScreen,
-                    ratatui::crossterm::event::DisableMouseCapture,
-                    ratatui::crossterm::event::DisableFocusChange,
-                    ratatui::crossterm::event::DisableBracketedPaste
-                );
+
+                // Only leave alternate screen if we were in fullscreen mode
+                let is_fullscreen = *IS_FULLSCREEN.lock().unwrap();
+                if is_fullscreen {
+                    let _ = ratatui::crossterm::execute!(
+                        t.backend_mut(),
+                        ratatui::crossterm::terminal::LeaveAlternateScreen,
+                        ratatui::crossterm::event::DisableMouseCapture,
+                        ratatui::crossterm::event::DisableFocusChange,
+                        ratatui::crossterm::event::DisableBracketedPaste
+                    );
+                } else {
+                    let _ = ratatui::crossterm::execute!(
+                        t.backend_mut(),
+                        ratatui::crossterm::event::DisableMouseCapture,
+                        ratatui::crossterm::event::DisableFocusChange,
+                        ratatui::crossterm::event::DisableBracketedPaste
+                    );
+                }
             }
             TerminalWrapper::Test(_) => {}
         }
@@ -109,33 +170,156 @@ pub fn get_buffer_content() -> Result<String, Error> {
     }
 }
 
-pub fn get_terminal_area() -> Result<magnus::RHash, Error> {
+pub fn insert_before(height: u16, widget: magnus::Value) -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
-    let term_lock = TERMINAL.lock().unwrap();
-    if let Some(wrapper) = term_lock.as_ref() {
-        let hash = ruby.hash_new();
+    let mut term_lock = TERMINAL.lock().unwrap();
+
+    if let Some(wrapper) = term_lock.as_mut() {
+        let module = ruby.define_module("RatatuiRuby")?;
+        let error_base = module.const_get::<_, magnus::RClass>("Error")?;
+        let error_class = error_base.const_get("Terminal")?;
+
         match wrapper {
             TerminalWrapper::Crossterm(term) => {
-                let size = term.size().unwrap_or_default();
-                hash.aset("x", 0u16)?;
-                hash.aset("y", 0u16)?;
-                hash.aset("width", size.width)?;
-                hash.aset("height", size.height)?;
+                // Capture rendering error since closure can't return Result
+                let mut render_error: Option<String> = None;
+
+                let result = term.insert_before(height, |buf| {
+                    let area = buf.area();
+                    let area_copy = *area; // Copy rect before closure capture
+
+                    // Render widget to buffer using centralized dispatch
+                    let render_result =
+                        crate::rendering::render_widget_to_buffer(buf, area_copy, widget);
+
+                    if let Err(e) = render_result {
+                        render_error = Some(e.to_string());
+                    }
+                });
+
+                // Handle insert_before error
+                result.map_err(|e| Error::new(error_class, e.to_string()))?;
+
+                // Handle rendering error
+                if let Some(err_msg) = render_error {
+                    return Err(Error::new(error_class, err_msg));
+                }
             }
             TerminalWrapper::Test(term) => {
-                let area = term.backend().buffer().area;
-                hash.aset("x", area.x)?;
-                hash.aset("y", area.y)?;
-                hash.aset("width", area.width)?;
-                hash.aset("height", area.height)?;
+                // Capture rendering error since closure can't return Result
+                let mut render_error: Option<String> = None;
+
+                let result = term.insert_before(height, |buf| {
+                    let area = buf.area();
+                    let area_copy = *area; // Copy rect before closure capture
+
+                    // Render widget to buffer using centralized dispatch
+                    let render_result =
+                        crate::rendering::render_widget_to_buffer(buf, area_copy, widget);
+
+                    if let Err(e) = render_result {
+                        render_error = Some(e.to_string());
+                    }
+                });
+
+                // Handle insert_before error
+                result.map_err(|e| Error::new(error_class, e.to_string()))?;
+
+                // Handle rendering error
+                if let Some(err_msg) = render_error {
+                    return Err(Error::new(error_class, err_msg));
+                }
             }
         }
+        Ok(())
+    } else {
+        let module = ruby.define_module("RatatuiRuby")?;
+        let error_base = module.const_get::<_, magnus::RClass>("Error")?;
+        let error_class = error_base.const_get("Terminal")?;
+        Err(Error::new(error_class, "Terminal not initialized"))
+    }
+}
+
+pub fn get_terminal_area() -> Result<magnus::RHash, Error> {
+    let ruby = magnus::Ruby::get().unwrap();
+    let mut term_lock = TERMINAL.lock().unwrap();
+
+    if let Some(wrapper) = term_lock.as_mut() {
+        // Get viewport area directly from the terminal
+        let area = match wrapper {
+            TerminalWrapper::Crossterm(term) => term.get_frame().area(),
+            TerminalWrapper::Test(term) => term.get_frame().area(),
+        };
+
+        let hash = ruby.hash_new();
+        hash.aset("x", area.x)?;
+        hash.aset("y", area.y)?;
+        hash.aset("width", area.width)?;
+        hash.aset("height", area.height)?;
         Ok(hash)
     } else {
         let module = ruby.define_module("RatatuiRuby")?;
         let error_base = module.const_get::<_, magnus::RClass>("Error")?;
         let error_class = error_base.const_get("Terminal")?;
         Err(Error::new(error_class, "Terminal is not initialized"))
+    }
+}
+
+/// Returns the full terminal backend size (not the viewport)
+pub fn get_terminal_size() -> Result<magnus::RHash, Error> {
+    let ruby = magnus::Ruby::get().unwrap();
+    let term_lock = TERMINAL.lock().unwrap();
+
+    if let Some(wrapper) = term_lock.as_ref() {
+        let size = match wrapper {
+            TerminalWrapper::Crossterm(term) => term.size().map_err(|e| {
+                let module = ruby.define_module("RatatuiRuby").unwrap();
+                let error_base = module.const_get::<_, magnus::RClass>("Error").unwrap();
+                let error_class = error_base.const_get("Terminal").unwrap();
+                Error::new(error_class, e.to_string())
+            })?,
+            TerminalWrapper::Test(term) => term.size().unwrap_or_default(),
+        };
+
+        let hash = ruby.hash_new();
+        hash.aset("x", 0)?;
+        hash.aset("y", 0)?;
+        hash.aset("width", size.width)?;
+        hash.aset("height", size.height)?;
+        Ok(hash)
+    } else {
+        let module = ruby.define_module("RatatuiRuby")?;
+        let error_base = module.const_get::<_, magnus::RClass>("Error")?;
+        let error_class = error_base.const_get("Terminal")?;
+        Err(Error::new(error_class, "Terminal is not initialized"))
+    }
+}
+
+pub fn get_viewport_type() -> Result<String, Error> {
+    let ruby = magnus::Ruby::get().unwrap();
+    let mut term_lock = TERMINAL.lock().unwrap();
+
+    if let Some(wrapper) = term_lock.as_mut() {
+        // Get viewport area directly from the terminal
+        let vp_area = match wrapper {
+            TerminalWrapper::Crossterm(term) => term.get_frame().area(),
+            TerminalWrapper::Test(term) => term.get_frame().area(),
+        };
+        let backend_size = match wrapper {
+            TerminalWrapper::Crossterm(term) => term.size().unwrap_or_default(),
+            TerminalWrapper::Test(term) => term.size().unwrap_or_default(),
+        };
+
+        if vp_area.height < backend_size.height {
+            Ok("inline".to_string())
+        } else {
+            Ok("fullscreen".to_string())
+        }
+    } else {
+        let module = ruby.define_module("RatatuiRuby")?;
+        let error_base = module.const_get::<_, magnus::RClass>("Error")?;
+        let error_class = error_base.const_get("Terminal")?;
+        Err(Error::new(error_class, "Terminal not initialized"))
     }
 }
 
@@ -158,6 +342,34 @@ pub fn get_cursor_position() -> Result<Option<(u16, u16)>, Error> {
             error_class,
             "Terminal is not initialized as TestBackend",
         ))
+    }
+}
+
+pub fn set_cursor_position(x: u16, y: u16) -> Result<(), Error> {
+    let ruby = magnus::Ruby::get().unwrap();
+    let mut term_lock = TERMINAL.lock().unwrap();
+
+    if let Some(wrapper) = term_lock.as_mut() {
+        let module = ruby.define_module("RatatuiRuby")?;
+        let error_base = module.const_get::<_, magnus::RClass>("Error")?;
+        let error_class = error_base.const_get("Terminal")?;
+
+        match wrapper {
+            TerminalWrapper::Crossterm(term) => {
+                term.set_cursor_position((x, y))
+                    .map_err(|e| Error::new(error_class, e.to_string()))?;
+            }
+            TerminalWrapper::Test(term) => {
+                term.set_cursor_position((x, y))
+                    .map_err(|e| Error::new(error_class, e.to_string()))?;
+            }
+        }
+        Ok(())
+    } else {
+        let module = ruby.define_module("RatatuiRuby")?;
+        let error_base = module.const_get::<_, magnus::RClass>("Error")?;
+        let error_class = error_base.const_get("Terminal")?;
+        Err(Error::new(error_class, "Terminal is not initialized"))
     }
 }
 

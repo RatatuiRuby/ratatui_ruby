@@ -4,15 +4,15 @@
 use crate::style::{parse_block, parse_style};
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, Symbol, Value};
+use ratatui::buffer::Buffer;
 use ratatui::{
     layout::{HorizontalAlignment, Rect},
-    widgets::{Paragraph, Wrap},
-    Frame,
+    widgets::{Paragraph, Widget, Wrap},
 };
 
 use crate::text::parse_text;
 
-fn create_paragraph(node: Value, bump: &Bump) -> Result<Paragraph<'_>, Error> {
+pub fn create_paragraph(node: Value, bump: &Bump) -> Result<Paragraph<'_>, Error> {
     let text_val: Value = node.funcall("text", ())?;
     let style_val: Value = node.funcall("style", ())?;
     let block_val: Value = node.funcall("block", ())?;
@@ -50,10 +50,10 @@ fn create_paragraph(node: Value, bump: &Bump) -> Result<Paragraph<'_>, Error> {
     Ok(paragraph)
 }
 
-pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+pub fn render(buffer: &mut Buffer, area: Rect, node: Value) -> Result<(), Error> {
     let bump = Bump::new();
     let paragraph = create_paragraph(node, &bump)?;
-    frame.render_widget(paragraph, area);
+    Widget::render(paragraph, area, buffer);
     Ok(())
 }
 
@@ -78,7 +78,6 @@ mod tests {
     fn test_paragraph_rendering() {
         let p = Paragraph::new("test content").alignment(HorizontalAlignment::Center);
         let mut buf = Buffer::empty(Rect::new(0, 0, 20, 1));
-        use ratatui::widgets::Widget;
         p.render(Rect::new(0, 0, 20, 1), &mut buf);
         let content = buf.content().iter().map(|c| c.symbol()).collect::<String>();
         assert!(content.contains("test content"));

@@ -4,11 +4,11 @@
 use crate::rendering::render_node;
 use magnus::{prelude::*, Error, Value};
 use ratatui::{
+    buffer::Buffer,
     layout::{Constraint, Direction, Layout, Rect},
-    Frame,
 };
 
-pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+pub fn render(buffer: &mut Buffer, area: Rect, node: Value) -> Result<(), Error> {
     let child: Value = node.funcall("child", ())?;
     let width_percent: u16 = node.funcall("width_percent", ())?;
     let height_percent: u16 = node.funcall("height_percent", ())?;
@@ -35,7 +35,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 
     let center_area = popup_layout_horizontal[1];
 
-    render_node(frame, center_area, child)?;
+    render_node(buffer, center_area, child)?;
     Ok(())
 }
 

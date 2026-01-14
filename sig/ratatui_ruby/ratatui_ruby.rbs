@@ -32,17 +32,19 @@ module RatatuiRuby
     end
     class Invariant < Error
     end
+    class Internal < Error
+    end
   end
 
   # NullIO for headless mode
 
 
   # Core module methods
-  def self.init_terminal: (?focus_events: bool, ?bracketed_paste: bool) -> void
-  def self.init_test_terminal: (Integer width, Integer height) -> void
+  def self.init_terminal: (?focus_events: bool, ?bracketed_paste: bool, ?viewport: (Terminal::Viewport | :fullscreen | :inline)?, ?height: Integer?) -> void
+  def self.init_test_terminal: (Integer width, Integer height, ?String viewport_type, ?Integer? viewport_height) -> void
   def self.restore_terminal: () -> void
   def self.terminal_active?: () -> bool
-  def self.run: (?focus_events: bool, ?bracketed_paste: bool) { (TUI) -> void } -> void
+  def self.run: (?focus_events: bool, ?bracketed_paste: bool, ?viewport: (Terminal::Viewport | :fullscreen | :inline)?, ?height: Integer?) { (TUI) -> void } -> void
   def self.draw: (?widget? tree) -> void
                | () { (Frame) -> void } -> void
   # untyped: FFI boundary - Rust returns dynamic event hash with varying keys per event type
@@ -92,8 +94,14 @@ module RatatuiRuby
   def self.headless!: () -> void
   def self.headless?: () -> bool
 
-  # Terminal area accessor (internal, returns Hash with String keys from Rust FFI)
   def self._get_terminal_area: () -> Hash[String, Integer]
+  def self.get_viewport_area: () -> RatatuiRuby::Layout::Rect
+  def self.terminal_area: () -> RatatuiRuby::Layout::Rect
+  def self.viewport_area: () -> RatatuiRuby::Layout::Rect
+  def self.get_terminal_size: () -> RatatuiRuby::Layout::Rect
+  def self._get_terminal_size: () -> Hash[String, Integer]
+  def self._get_viewport_type: () -> String
+  def self.insert_before: (Integer height, ?widget? widget) ?{ () -> widget } -> void
 
   # Color conversion (internal, Rust FFI)
   def self._color_from_u32: (Integer) -> String

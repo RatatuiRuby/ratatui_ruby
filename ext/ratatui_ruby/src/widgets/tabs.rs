@@ -6,12 +6,13 @@ use crate::style::parse_block;
 use crate::text::{parse_line, parse_span};
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, Value};
-use ratatui::{layout::Rect, text::Line, widgets::Tabs, Frame};
+use ratatui::buffer::Buffer;
+use ratatui::{layout::Rect, text::Line, widgets::Tabs, widgets::Widget};
 
-pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+pub fn render(buffer: &mut Buffer, area: Rect, node: Value) -> Result<(), Error> {
     let bump = Bump::new();
     let tabs = create_tabs(node, &bump)?;
-    frame.render_widget(tabs, area);
+    tabs.render(area, buffer);
     Ok(())
 }
 

@@ -8,12 +8,12 @@ use crate::widgets::table_state::RubyTableState;
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, Symbol, TryConvert, Value};
 use ratatui::{
+    buffer::Buffer,
     layout::{Constraint, Flex, Rect},
-    widgets::{Cell, HighlightSpacing, Row, Table, TableState},
-    Frame,
+    widgets::{Cell, HighlightSpacing, Row, StatefulWidget, Table, TableState},
 };
 
-pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+pub fn render(buffer: &mut Buffer, area: Rect, node: Value) -> Result<(), Error> {
     let bump = Bump::new();
     let ruby = magnus::Ruby::get().unwrap();
     let header_val: Value = node.funcall("header", ())?;
@@ -123,7 +123,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         *state.offset_mut() = offset;
     }
 
-    frame.render_stateful_widget(table, area, &mut state);
+    StatefulWidget::render(table, area, buffer, &mut state);
     Ok(())
 }
 
@@ -132,7 +132,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
 /// This function ignores `selected_row`, `selected_column`, and `offset` from the widget.
 /// The State object is the single source of truth for selection and scroll position.
 pub fn render_stateful(
-    frame: &mut Frame,
+    buffer: &mut Buffer,
     area: Rect,
     node: Value,
     state_wrapper: Value,
@@ -230,7 +230,7 @@ pub fn render_stateful(
     // Borrow the inner TableState, render, and release the borrow immediately
     {
         let mut inner_state = state.borrow_mut();
-        frame.render_stateful_widget(table, area, &mut inner_state);
+        StatefulWidget::render(table, area, buffer, &mut inner_state);
     }
 
     Ok(())

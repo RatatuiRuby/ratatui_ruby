@@ -67,7 +67,14 @@ module RatatuiRuby
         # Defensive cleanup: reset any stale session state from previous test failures
         RatatuiRuby.instance_variable_set(:@tui_session_active, false)
 
-        RatatuiRuby.init_test_terminal(width, height)
+        # Extract and resolve viewport
+        viewport_param = opts[:viewport]
+        viewport = case viewport_param
+        when nil then RatatuiRuby::Terminal::Viewport.fullscreen
+        when RatatuiRuby::Terminal::Viewport then viewport_param
+        end
+
+        RatatuiRuby.init_test_terminal(width, height, viewport.type.to_s, viewport.height)
         # Flush any lingering events from previous tests
         while (event = RatatuiRuby.poll_event) && !event.none?; end
 

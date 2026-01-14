@@ -6,15 +6,15 @@ use crate::style::{parse_block, parse_style};
 use crate::text::parse_line;
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, Symbol, Value};
+use ratatui::buffer::Buffer;
 use ratatui::{
     layout::Rect,
     symbols,
-    widgets::{Axis, Chart, Dataset, GraphType, LegendPosition},
-    Frame,
+    widgets::{Axis, Chart, Dataset, GraphType, LegendPosition, Widget},
 };
 
 #[allow(clippy::too_many_lines)]
-pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+pub fn render(buffer: &mut Buffer, area: Rect, node: Value) -> Result<(), Error> {
     let bump = Bump::new();
     let ruby = magnus::Ruby::get().unwrap();
 
@@ -133,7 +133,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         }
     }
 
-    frame.render_widget(chart, area);
+    Widget::render(chart, area, buffer);
     Ok(())
 }
 

@@ -4,9 +4,10 @@
 use crate::style::{parse_bar_set, parse_block, parse_style};
 use bumpalo::Bump;
 use magnus::{prelude::*, Error, RString, Value};
-use ratatui::{layout::Rect, widgets::RenderDirection, widgets::Sparkline, Frame};
+use ratatui::buffer::Buffer;
+use ratatui::{layout::Rect, widgets::RenderDirection, widgets::Sparkline, widgets::Widget};
 
-pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
+pub fn render(buffer: &mut Buffer, area: Rect, node: Value) -> Result<(), Error> {
     let bump = Bump::new();
     let ruby = magnus::Ruby::get().unwrap();
     let data_val: magnus::RArray = node.funcall("data", ())?;
@@ -72,7 +73,7 @@ pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
         sparkline = sparkline.bar_set(parse_bar_set(bar_set_val, &bump)?);
     }
 
-    frame.render_widget(sparkline, area);
+    sparkline.render(area, buffer);
     Ok(())
 }
 

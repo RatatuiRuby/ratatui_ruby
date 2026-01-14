@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
+module RatatuiRuby
+  module Terminal
+    class Viewport < Data
+      attr_reader type: Symbol
+      attr_reader height: Integer?
+
+      def self.fullscreen: () -> Viewport
+      def self.inline: (Integer height) -> Viewport
+
+      def initialize: (type: Symbol, ?height: Integer?) -> void
+
+      def fullscreen?: () -> bool
+      def inline?: () -> bool
+    end
+  end
+end

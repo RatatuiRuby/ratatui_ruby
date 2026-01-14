@@ -83,7 +83,8 @@ fn draw(args: &[Value]) -> Result<(), Error> {
             active.store(false, std::sync::atomic::Ordering::Relaxed);
         } else if let Some(tree_value) = tree {
             // Legacy API: render tree to full area
-            if let Err(e) = rendering::render_node(f, f.area(), tree_value) {
+            let area = f.area();
+            if let Err(e) = rendering::render_node(f.buffer_mut(), area, tree_value) {
                 render_error = Some(e);
             }
         }
@@ -159,7 +160,7 @@ fn init() -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let m = ruby.define_module("RatatuiRuby")?;
 
-    m.define_module_function("_init_terminal", function!(init_terminal, 2))?;
+    m.define_module_function("_init_terminal", function!(init_terminal, 4))?;
     m.define_module_function("_restore_terminal", function!(restore_terminal, 0))?;
     m.define_module_function("_draw", function!(draw, -1))?;
     m.define_module_function(
@@ -193,7 +194,7 @@ fn init() -> Result<(), Error> {
     // Test backend helpers
     m.define_module_function(
         "_init_test_terminal",
-        function!(terminal::init_test_terminal, 2),
+        function!(terminal::init_test_terminal, 4),
     )?;
     m.define_module_function(
         "get_buffer_content",
@@ -203,11 +204,24 @@ fn init() -> Result<(), Error> {
         "get_cursor_position",
         function!(terminal::get_cursor_position, 0),
     )?;
+    m.define_module_function(
+        "set_cursor_position",
+        function!(terminal::set_cursor_position, 2),
+    )?;
     m.define_module_function("_get_cell_at", function!(terminal::get_cell_at, 2))?;
     m.define_module_function("resize_terminal", function!(terminal::resize_terminal, 2))?;
     m.define_module_function(
         "_get_terminal_area",
         function!(terminal::get_terminal_area, 0),
+    )?;
+    m.define_module_function(
+        "_get_terminal_size",
+        function!(terminal::get_terminal_size, 0),
+    )?;
+    m.define_module_function("_insert_before", function!(terminal::insert_before, 2))?;
+    m.define_module_function(
+        "_get_viewport_type",
+        function!(terminal::get_viewport_type, 0),
     )?;
 
     // Register Layout.split on the Layout::Layout class (inside the Layout module)

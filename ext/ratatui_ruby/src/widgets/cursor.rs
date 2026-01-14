@@ -1,19 +1,22 @@
 // SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use magnus::{prelude::*, Error, Value};
-use ratatui::{layout::Rect, Frame};
+use magnus::{Error, Value};
+use ratatui::{buffer::Buffer, layout::Rect};
 
-pub fn render(frame: &mut Frame, area: Rect, node: Value) -> Result<(), Error> {
-    let x: u16 = node.funcall("x", ())?;
-    let y: u16 = node.funcall("y", ())?;
-    frame.set_cursor_position((area.x + x, area.y + y));
+/// Cursor widget requires Frame for `set_cursor_position` - cannot be rendered to buffer alone
+/// This is a no-op when rendering to buffer directly (e.g., in `insert_before`)
+/// For Frame-based rendering, use `frame.set_cursor_position()` directly
+#[allow(dead_code, clippy::unnecessary_wraps)]
+pub fn render(_buffer: &mut Buffer, _area: Rect, _node: Value) -> Result<(), Error> {
+    // Cursor positioning requires Frame.set_cursor_position(), not Buffer
+    // This is intentionally a no-op for buffer-only rendering
+    // The Frame wrapper in frame.rs should handle Cursor widgets specially
     Ok(())
 }
 
 #[cfg(test)]
 mod tests {
-
     use ratatui::layout::Rect;
 
     #[test]
