@@ -12,6 +12,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Removed
+
+## [0.10.2] - 2026-01-14
+
+### Added
+
 - **Experimental Labs System**: New `RatatuiRuby::Labs` module for opt-in experimental features via `RR_LABS` environment variable. Check with `Labs.enabled?(:a11y)` or enable programmatically with `Labs.enable!(:a11y)`. _Labs are subject to change even between patch releases._
 - **A11Y Widget Tree Export (Lab)**: When `RR_LABS=A11Y` is set, the widget tree is serialized to XML and written to `Dir.tmpdir/ratatui_a11y.xml` every frame. This exports semantic structure (`<Paragraph>`, `<List>`, etc.) for accessibility tooling integration. Access is through `RatatuiRuby::Labs::A11y.dump_widget_tree(widget)` or automatic via `RatatuiRuby.draw`.
 - **Inline Viewport**: New `viewport:` parameter for `init_terminal` and `run` accepts `:inline` or `:fullscreen` (default). Inline viewports occupy a fixed number of lines at the terminal bottom, preserving scrollback history above. Pass `height:` to specify inline viewport height (default: 8 lines). Fullscreen viewports use the alternate screen as before.
@@ -637,6 +647,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Testing Support**: Included `RatatuiRuby::TestHelper` and RSpec integration to make testing your TUI applications possible.
 
 [Unreleased]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/HEAD
+[0.10.2]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.10.2
 [0.10.1]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.10.1
 [0.10.1]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.10.1
 [0.10.1]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.10.1
