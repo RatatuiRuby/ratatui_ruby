@@ -82,3 +82,26 @@ def with_env(key, value)
 ensure
   original ? ENV[key] = original : ENV.delete(key)
 end
+
+##
+# Temporarily sets ARGV within a block.
+#
+# Safely saves the original ARGV, sets the new value, yields, and then
+# restores the original.
+#
+# === Example
+#
+#   with_argv(["--verbose", "input.txt"]) do
+#     # ARGV == ["--verbose", "input.txt"] here
+#   end
+#   # Original ARGV restored
+#
+def with_argv(argv)
+  original = ARGV.dup
+  ARGV.clear
+  ARGV.concat(argv)
+  yield
+ensure
+  ARGV.clear
+  ARGV.concat(original)
+end

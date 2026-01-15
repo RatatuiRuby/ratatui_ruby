@@ -6,7 +6,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Ratatui Features Audit - Complete Comprehensive Catalog
 
-This document catalogs EVERY public feature, method, function, enum variant, and constructor in the Ratatui Rust library with precise file/line references.
+These documents catalog EVERY public feature, method, function, enum variant, and constructor in the Ratatui Rust library with precise file/line references. This has the finished items; [the other has the unfinished items](./api_completeness_audit-unfinished.md).
 
 ## Terminal & Initialization Features
 
@@ -14,24 +14,11 @@ This document catalogs EVERY public feature, method, function, enum variant, and
 |--------------|-----------|--------|
 | run | ratatui/src/init.rs:251 | ✅ |
 | init | ratatui/src/init.rs:298 | ✅ |
-| try_init | ratatui/src/init.rs:330 | ❌ |
 | init_with_options | ratatui/src/init.rs:382 | ✅ |
-| try_init_with_options | ratatui/src/init.rs:425 | ❌ |
 | restore | ratatui/src/init.rs:457 | ✅ |
-| try_restore | ratatui/src/init.rs:487 | ❌ |
 | Viewport::Fullscreen | ratatui-core/src/terminal/viewport.rs:22 | ✅ |
 | Viewport::Inline(u16) | ratatui-core/src/terminal/viewport.rs:28 | ✅ |
-| Viewport::Fixed(Rect) | ratatui-core/src/terminal/viewport.rs:30 | ❌ |
-| Terminal struct | ratatui-core/src/terminal/terminal.rs:76 | ⚠️ |
 | Terminal::draw | ratatui-core/src/terminal/terminal.rs:373 | ✅ |
-| Terminal::hide_cursor | ratatui-core/src/terminal/terminal.rs:495 | ❌ |
-| Terminal::show_cursor | ratatui-core/src/terminal/terminal.rs:502 | ❌ |
-| Terminal::get_cursor | ratatui-core/src/terminal/terminal.rs:513 | ❌ |
-| Terminal::set_cursor | ratatui-core/src/terminal/terminal.rs:520 | ❌ |
-| Terminal::get_cursor_position | ratatui-core/src/terminal/terminal.rs:527 | ⚠️ |
-| Terminal::set_cursor_position | ratatui-core/src/terminal/terminal.rs:532 | ⚠️ |
-| Terminal::clear | ratatui-core/src/terminal/terminal.rs:540 | ❌ |
-| Terminal::swap_buffers | ratatui-core/src/terminal/terminal.rs:562 | ❌ |
 | Terminal::size | ratatui-core/src/terminal/terminal.rs:568 | ✅ |
 | Terminal::insert_before | ratatui-core/src/terminal/terminal.rs:648 | ✅ |
 | TerminalOptions struct | ratatui-core/src/terminal/terminal.rs:104 | ✅ |
@@ -39,11 +26,7 @@ This document catalogs EVERY public feature, method, function, enum variant, and
 | Frame::render_widget | ratatui-core/src/terminal/frame.rs:93 | ✅ |
 | Frame::render_stateful_widget | ratatui-core/src/terminal/frame.rs:124 | ✅ |
 | Frame::set_cursor_position | ratatui-core/src/terminal/frame.rs:141 | ✅ |
-| CompletedFrame struct | ratatui-core/src/terminal/frame.rs:40 | ❌ |
 
-**Notes:**
-- **Terminal struct**: No direct Terminal object; abstracted behind `RatatuiRuby` module methods
-- **Terminal::get_cursor_position/set_cursor_position**: Only available via [Frame](file:///Users/kerrick/Developer/ratatui_ruby/lib/ratatui_ruby/frame.rb#72-257) during draw, not on Terminal
 
 ## Layout Features
 
@@ -56,7 +39,6 @@ This document catalogs EVERY public feature, method, function, enum variant, and
 | Layout::spacing | ratatui-core/src/layout/layout.rs:521 | ✅ |
 | Layout::split | ratatui-core/src/layout/layout.rs:663 | ✅ |
 | Layout::split_with_spacers | ratatui-core/src/layout/layout.rs:713 | ✅ |
-| Spacing enum | ratatui-core/src/layout/layout.rs:80 | ❌ |
 | Constraint::Min(u16) | ratatui-core/src/layout/constraint.rs:94 | ✅ |
 | Constraint::Max(u16) | ratatui-core/src/layout/constraint.rs:117 | ✅ |
 | Constraint::Length(u16) | ratatui-core/src/layout/constraint.rs:140 | ✅ |
@@ -78,16 +60,8 @@ This document catalogs EVERY public feature, method, function, enum variant, and
 | Flex::SpaceAround | ratatui-core/src/layout/flex.rs:209 | ✅ |
 | Direction::Horizontal | ratatui-core/src/layout/direction.rs:16 | ✅ |
 | Direction::Vertical | ratatui-core/src/layout/direction.rs:20 | ✅ |
-| HorizontalAlignment::Left | ratatui-core/src/layout/alignment.rs:25 | ❌ |
-| HorizontalAlignment::Center | ratatui-core/src/layout/alignment.rs:26 | ❌ |
-| HorizontalAlignment::Right | ratatui-core/src/layout/alignment.rs:27 | ❌ |
-| VerticalAlignment::Top | ratatui-core/src/layout/alignment.rs:40 | ❌ |
-| VerticalAlignment::Center | ratatui-core/src/layout/alignment.rs:41 | ❌ |
-| VerticalAlignment::Bottom | ratatui-core/src/layout/alignment.rs:42 | ❌ |
 | Position struct | ratatui-core/src/layout/position.rs:57 | ✅ |
-| Offset struct | ratatui-core/src/layout/offset.rs:10 | ❌ |
 | Size struct | ratatui-core/src/layout/size.rs:46 | ✅ |
-| Margin struct | ratatui-core/src/layout/margin.rs:38 | ❌ |
 | Rect struct | ratatui-core/src/layout/rect.rs:134 | ✅ |
 | Rect::new | ratatui-core/src/layout/rect.rs:166 | ✅ |
 | Rect::area | ratatui-core/src/layout/rect.rs:190 | ✅ |
@@ -148,21 +122,14 @@ This document catalogs EVERY public feature, method, function, enum variant, and
 | Modifier::REVERSED | ratatui-core/src/style.rs:111 | ✅ |
 | Modifier::HIDDEN | ratatui-core/src/style.rs:112 | ✅ |
 | Modifier::CROSSED_OUT | ratatui-core/src/style.rs:113 | ✅ |
-| Styled trait | ratatui-core/src/style/stylize.rs:15 | ❌ |
-| Stylize trait | ratatui-core/src/style/stylize.rs:* | ❌ |
 
 ## Text Features
 
 | Feature Name | File/Line | Status |
 |--------------|-----------| -------|
-| Masked struct | ratatui-core/src/text/masked.rs:26 | ❌ |
 | Text struct | ratatui-core/src/text/text.rs:196 | ✅ |
-| ToText trait | ratatui-core/src/text/text.rs:721 | ❌ |
 | Span struct | ratatui-core/src/text/span.rs:99 | ✅ |
-| ToSpan trait | ratatui-core/src/text/span.rs:481 | ❌ |
-| StyledGrapheme struct | ratatui-core/src/text/grapheme.rs:12 | ❌ |
 | Line struct | ratatui-core/src/text/line.rs:183 | ✅ |
-| ToLine trait | ratatui-core/src/text/line.rs:810 | ❌ |
 
 ## Symbol Sets
 
@@ -237,12 +204,6 @@ This document catalogs EVERY public feature, method, function, enum variant, and
 | BorderType::Rounded | ratatui-widgets/src/borders.rs:66 | ✅ |
 | BorderType::Double | ratatui-widgets/src/borders.rs:71 | ✅ |
 | BorderType::Thick | ratatui-widgets/src/borders.rs:81 | ✅ |
-| BorderType::LightDoubleDashed | ratatui-widgets/src/borders.rs:89 | ❌ |
-| BorderType::HeavyDoubleDashed | ratatui-widgets/src/borders.rs:97 | ❌ |
-| BorderType::LightTripleDashed | ratatui-widgets/src/borders.rs:105 | ❌ |
-| BorderType::HeavyTripleDashed | ratatui-widgets/src/borders.rs:113 | ❌ |
-| BorderType::LightQuadrupleDashed | ratatui-widgets/src/borders.rs:121 | ❌ |
-| BorderType::HeavyQuadrupleDashed | ratatui-widgets/src/borders.rs:129 | ❌ |
 | BorderType::QuadrantInside | ratatui-widgets/src/borders.rs:139 | ✅ |
 | BorderType::QuadrantOutside | ratatui-widgets/src/borders.rs:144 | ✅ |
 | TitlePosition::Top | ratatui-widgets/src/block.rs:49 | ✅ |
@@ -264,33 +225,12 @@ This document catalogs EVERY public feature, method, function, enum variant, and
 |  Table::highlight_symbol | ratatui-widgets/src/table.rs:265 | ✅ |
 | Table::highlight_spacing | ratatui-widgets/src/table.rs:268 | ✅ |
 | Table::flex | ratatui-widgets/src/table.rs:271 | ✅ |
-| TableState struct | ratatui-widgets/src/table/state.rs:55 | ⚠️ |
-| TableState::new | ratatui-widgets/src/table/state.rs:62 | ⚠️ |
-| TableState::with_offset | ratatui-widgets/src/table/state.rs:79 | ❌ |
-| TableState::with_selected | ratatui-widgets/src/table/state.rs:96 | ❌ |
-| TableState::with_selected_column | ratatui-widgets/src/table/state.rs:116 | ❌ |
-| TableState::with_selected_cell | ratatui-widgets/src/table/state.rs:135 | ❌ |
-| TableState::offset | ratatui-widgets/src/table/state.rs:161 | ⚠️ |
-| TableState::offset_mut | ratatui-widgets/src/table/state.rs:175 | ❌ |
-| TableState::selected | ratatui-widgets/src/table/state.rs:189 | ⚠️ |
-|  TableState::selected_column | ratatui-widgets/src/table/state.rs:205 | ⚠️ |
-| TableState::selected_cell | ratatui-widgets/src/table/state.rs:220 | ❌ |
-| TableState::selected_mut | ratatui-widgets/src/table/state.rs:238 | ❌ |
-| TableState::select | ratatui-widgets/src/table/state.rs:269 | ⚠️ |
-| TableState::select_next | ratatui-widgets/src/table/state.rs:336 | ❌ |
-| TableState::select_previous | ratatui-widgets/src/table/state.rs:371 | ❌ |
-| TableState::select_next_column | ratatui-widgets/src/table/state.rs:353 | ❌ |
-| TableState::select_previous_column | ratatui-widgets/src/table/state.rs:388 | ❌ |
-| TableState::scroll_down_by | ratatui-widgets/src/table/state.rs:475 | ❌ |
-| TableState::scroll_up_by | ratatui-widgets/src/table/state.rs:494 | ❌ |
 | Row struct | ratatui-widgets/src/table/row.rs:75 | ✅ |
 | Cell struct | ratatui-widgets/src/table/cell.rs:51 | ✅ |
 | HighlightSpacing::Always | ratatui-widgets/src/table/highlight_spacing.rs:10 | ✅ |
 | HighlightSpacing::WhenSelected | ratatui-widgets/src/table/highlight_spacing.rs:14 | ✅ |
 | HighlightSpacing::Never | ratatui-widgets/src/table/highlight_spacing.rs:18 | ✅ |
 
-**Notes:**
-- **TableState**: Implemented as Data.define attributes on Table widget itself (selected_row, selected_column, offset) instead of separate state object
 
 ### List Widget
 
@@ -307,23 +247,7 @@ This document catalogs EVERY public feature, method, function, enum variant, and
 | ListDirection::TopToBottom | ratatui-widgets/src/list.rs:140 | ✅ |
 | ListDirection::BottomToTop | ratatui-widgets/src/list.rs:142 | ✅ |
 | ListItem struct | ratatui-widgets/src/list/item.rs:73 | ✅ |
-| ListState struct | ratatui-widgets/src/list/state.rs:45 | ⚠️ |
-| ListState::with_offset | ratatui-widgets/src/list/state.rs:51 | ❌ |
-| ListState::with_selected | ratatui-widgets/src/list/state.rs:68 | ❌ |
-| ListState::offset | ratatui-widgets/src/list/state.rs:85 | ⚠️ |
-| ListState::offset_mut | ratatui-widgets/src/list/state.rs:99 | ❌ |
-| ListState::selected | ratatui-widgets/src/list/state.rs:113 | ⚠️ |
-| ListState::selected_mut | ratatui-widgets/src/list/state.rs:129 | ❌ |
-| ListState::select | ratatui-widgets/src/list/state.rs:145 | ⚠️ |
-| ListState::select_next | ratatui-widgets/src/list/state.rs:177 | ❌ |
-| ListState::select_previous | ratatui-widgets/src/list/state.rs:195 | ❌ |
-| ListState::select_first | ratatui-widgets/src/list/state.rs:200 | ❌ |
-| ListState::select_last | ratatui-widgets/src/list/state.rs:217 | ❌ |
 
-**Notes:**
-- **ListState**: Implemented as Data.define attributes on List widget itself (selected_index, offset) instead of separate state object
-| ListState::scroll_down_by | ratatui-widgets/src/list/state.rs:248 | ❌ |
-| ListState::scroll_up_by | ratatui-widgets/src/list/state.rs:267 | ❌ |
 
 ### BarChart Widget
 
@@ -385,7 +309,6 @@ This document catalogs EVERY public feature, method, function, enum variant, and
 | Sparkline struct | ratatui-widgets/src/sparkline.rs:66 | ✅ |
 | RenderDirection::LeftToRight | ratatui-widgets/src/sparkline.rs:93 | ✅ |
 | RenderDirection::RightToLeft | ratatui-widgets/src/sparkline.rs:96 | ✅ |
-| SparklineBar struct | ratatui-widgets/src/sparkline.rs:253 | ❌ |
 
 ### Scrollbar Widget
 
@@ -396,32 +319,22 @@ This document catalogs EVERY public feature, method, function, enum variant, and
 | ScrollbarOrientation::VerticalLeft | ratatui-widgets/src/scrollbar.rs:115 | ✅ |
 | ScrollbarOrientation::HorizontalBottom | ratatui-widgets/src/scrollbar.rs:118 | ✅ |
 | ScrollbarOrientation::HorizontalTop | ratatui-widgets/src/scrollbar.rs:121 | ✅ |
-| ScrollbarState struct | ratatui-widgets/src/scrollbar.rs:149 | ⚠️ |
-| ScrollDirection::Forward | ratatui-widgets/src/scrollbar.rs:169 | ❌ |
-| ScrollDirection::Backward | ratatui-widgets/src/scrollbar.rs:172 | ❌ |
 
-**Notes:**
-- **ScrollbarState**: Implemented as Data.define attributes on Scrollbar widget itself (content_length, position) instead of separate state object
 
 ### Calendar Widget
 
 | Feature Name | File/Line | Status |
 |--------------|-----------|--------|
 | Monthly struct | ratatui-widgets/src/calendar.rs:26 | ✅ |
-| CalendarEventStore struct | ratatui-widgets/src/calendar.rs:258 | ❌ |
 
 ### Canvas Widget
 
 | Feature Name | File/Line | Status |
 |--------------|-----------|--------|
 | Canvas struct | ratatui-widgets/src/canvas.rs:721 | ✅ |
-| Context struct | ratatui-widgets/src/canvas.rs:515 | ❌ |
-| Painter struct | ratatui-widgets/src/canvas.rs:403 | ❌ |
-| Label struct | ratatui-widgets/src/canvas.rs:61 | ❌ |
 | Line shape | ratatui-widgets/src/canvas/line.rs:8 | ✅ |
 | Circle shape | ratatui-widgets/src/canvas/circle.rs:9 | ✅ |
 | Rectangle shape | ratatui-widgets/src/canvas/rectangle.rs:10 | ✅ |
-| Points shape | ratatui-widgets/src/canvas/points.rs:7 | ❌ |
 | Map struct | ratatui-widgets/src/canvas/map.rs:38 | ✅ |
 | MapResolution::Low | ratatui-widgets/src/canvas/map.rs:13 | ✅ |
 | MapResolution::High | ratatui-widgets/src/canvas/map.rs:16 | ✅ |
@@ -448,52 +361,15 @@ This document catalogs EVERY public feature, method, function, enum variant, and
 | Feature Name | File/Line | Status |
 |--------------|-----------|--------|
 | Buffer struct | ratatui-core/src/buffer/buffer.rs:66 | ✅ |
-| Buffer::empty | ratatui-core/src/buffer/buffer.rs:77 | ❌ |
-| Buffer::filled | ratatui-core/src/buffer/buffer.rs:83 | ❌ |
-| Buffer::with_lines | ratatui-core/src/buffer/buffer.rs:91 | ❌ |
 | Buffer::content | ratatui-core/src/buffer/buffer.rs:107 | ✅ |
 | Buffer::get | ratatui-core/src/buffer/buffer.rs:130 | ✅ |
-| Buffer::get_mut | ratatui-core/src/buffer/buffer.rs:150 | ❌ |
-| Buffer::index_of | ratatui-core/src/buffer/buffer.rs:248 | ❌ |
-| Buffer::set_string | ratatui-core/src/buffer/buffer.rs:323 | ❌ |
-| Buffer::set_stringn | ratatui-core/src/buffer/buffer.rs:335 | ❌ |
-| Buffer::set_line | ratatui-core/src/buffer/buffer.rs:372 | ❌ |
-| Buffer::set_span | ratatui-core/src/buffer/buffer.rs:394 | ❌ |
-| Buffer::set_style | ratatui-core/src/buffer/buffer.rs:404 | ❌ |
-| Buffer::reset | ratatui-core/src/buffer/buffer.rs:427 | ❌ |
 | Cell struct | ratatui-core/src/buffer/cell.rs:9 | ✅ |
-| Cell::set_style | ratatui-core/src/buffer/cell.rs:153 | ❌ |
-| Cell::reset | ratatui-core/src/buffer/cell.rs:193 | ❌ |
 
-**Notes:**
-- **Buffer**: Read-only access implemented via `RatatuiRuby.get_cell_at`. Direct mutation methods not exposed in Ruby API
 
-## Widget Traits
-
-| Feature Name | File/Line | Status |
-|--------------|-----------|--------|
-| Widget trait | ratatui-core/src/widgets/widget.rs:70 | ⚠️ |
-| StatefulWidget trait | ratatui-core/src/widgets/stateful_widget.rs:124 | ⚠️ |
-
-**Notes:**
-- **Widget/StatefulWidget traits**: Not exposed as Ruby traits. Widgets implement `CoerceableWidget` mixin and rendering handled via FFI
 
 ## Backend Features
 
 | Feature Name | File/Line | Status |
 |--------------|-----------|--------|
-| Backend trait | ratatui-core/src/backend.rs:148 | ⚠️ |
-| ClearType::All | ratatui-core/src/backend.rs:117 | ❌ |
-| ClearType::AfterCursor | ratatui-core/src/backend.rs:119 | ❌ |
-| ClearType::BeforeCursor | ratatui-core/src/backend.rs:121 | ❌ |
-| ClearType::CurrentLine | ratatui-core/src/backend.rs:123 | ❌ |
-| ClearType::UntilNewLine | ratatui-core/src/backend.rs:125 | ❌ |
-| WindowSize struct | ratatui-core/src/backend.rs:130 | ❌ |
 | TestBackend | ratatui-core/src/backend/test.rs:* | ✅ |
 | CrosstermBackend | ratatui-crossterm/src/lib.rs:* | ✅ |
-| TermionBackend | ratatui-termion/src/lib.rs:* | ❌ |
-| TermwizBackend | ratatui-termwiz/src/lib.rs:* | ❌ |
-
-**Notes:**
-- **Backend trait**: Abstracted away. Terminal uses Crossterm backend internally, not exposed to Ruby API
-- **ClearType**: Not exposed. Clearing handled via `Clear` widget
