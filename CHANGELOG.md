@@ -22,7 +22,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
-### Removed
+- **Dependency Problems**: Removed the unused `ostruct` dependency from the gemspec. Added `rexml` as an explicit dependency.
+- **Lazy REXML Loading**: `RatatuiRuby::Labs::A11y` now requires `rexml` lazily, preventing it from slowing down startup for users not using accessibility features.
 
 ## [0.10.2] - 2026-01-14
 

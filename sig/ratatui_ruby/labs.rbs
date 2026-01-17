@@ -58,6 +58,8 @@ module RatatuiRuby
     module A11y
       OUTPUT_PATH: String
 
+      @rexml_loaded: bool?
+
       def self.dump_widget_tree: ((_CustomWidget | widget) widget, ?Layout::Rect? area) -> void
       def self.dump_widgets: (Array[[(_CustomWidget | widget), Layout::Rect]] widgets_with_areas) -> void
       def self.startup_message: () -> String
@@ -70,6 +72,7 @@ module RatatuiRuby
       def self.add_members: (REXML::Element element, untyped node, ?parent_id: String?) -> void
       def self.scalar?: (untyped value) -> bool
       def self.build_child_element: (Symbol key, untyped value, ?is_wrapper: bool, ?parent_id: String?) -> REXML::Element
+      def self.ensure_rexml_loaded: () -> void
     end
   end
 

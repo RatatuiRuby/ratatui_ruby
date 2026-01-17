@@ -2,8 +2,8 @@ PATH
   remote: .
   specs:
     ratatui_ruby (0.10.2)
-      ostruct (~> 0.6)
       rb_sys (~> 0.9)
+      rexml (~> 3.4)
 
 GEM
   remote: https://rubygems.org/
@@ -269,6 +269,7 @@ DEPENDENCIES
   irb
   minitest (~> 5.16)
   nokogiri
+  ostruct (~> 0.6.3)
   rake (~> 13.0)
   rake-compiler (~> 1.2)
   ratatui_ruby!

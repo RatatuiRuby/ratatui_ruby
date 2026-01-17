@@ -6,7 +6,6 @@
 #++
 
 require "tmpdir"
-require "rexml/document"
 
 module RatatuiRuby
   module Labs
@@ -21,6 +20,7 @@ module RatatuiRuby
       class << self
         # Dumps the widget tree to XML (single widget for tree mode).
         def dump_widget_tree(widget, _area = nil)
+          ensure_rexml_loaded
           doc = REXML::Document.new
           doc.add(REXML::XMLDecl.new("1.0", "UTF-8"))
           doc.add(build_element(widget))
@@ -42,6 +42,7 @@ module RatatuiRuby
 
         # Dumps multiple widgets captured from Frame API mode.
         def dump_widgets(widgets_with_areas)
+          ensure_rexml_loaded
           Labs.warn_once!("Labs::A11y (RR_LABS=A11Y)")
 
           # Reset counter each frame for stable IDs
@@ -166,6 +167,14 @@ module RatatuiRuby
           end
 
           element
+        end
+
+        # Lazily loads REXML when first needed.
+        private def ensure_rexml_loaded
+          return if defined?(@rexml_loaded) && @rexml_loaded
+
+          require "rexml/document"
+          @rexml_loaded = true
         end
       end
     end
