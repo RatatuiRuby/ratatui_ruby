@@ -12,6 +12,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **Terminal Capability Detection**: New class methods on `RatatuiRuby::Terminal` for environment-based capability detection before initializing TUI mode:
+  - `Terminal.tty?` — checks if stdout is connected to a terminal
+  - `Terminal.dumb?` — checks if TERM is "dumb" or unset
+  - `Terminal.no_color?` — checks if NO_COLOR environment variable is set (respects the [NO_COLOR standard](https://no-color.org/))
+  - `Terminal.force_color?` — checks if FORCE_COLOR environment variable is set
+  - `Terminal.interactive?` — returns true only when tty? and not dumb?
+
 ### Changed
 
 ### Fixed

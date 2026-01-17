@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #++
 
+require_relative "terminal/capabilities"
+
 module RatatuiRuby
   # Terminal object for managing terminal lifecycle and rendering.
   #

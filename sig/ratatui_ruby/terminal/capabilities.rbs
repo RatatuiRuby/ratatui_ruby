@@ -1,0 +1,22 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+module RatatuiRuby
+  class Terminal
+    # Environment-based terminal capability detection.
+    # Provides class methods for detecting terminal capabilities.
+    module Capabilities
+      def tty?: () -> bool
+      def dumb?: () -> bool
+      def no_color?: () -> bool
+      def force_color?: () -> bool
+      def interactive?: () -> bool
+    end
+
+    extend Capabilities
+  end
+end
