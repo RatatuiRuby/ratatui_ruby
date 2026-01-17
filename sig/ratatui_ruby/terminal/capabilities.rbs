@@ -15,6 +15,14 @@ module RatatuiRuby
       def no_color?: () -> bool
       def force_color?: () -> bool
       def interactive?: () -> bool
+      def available_color_count: () -> Integer
+      def color_support: () -> (:none | :basic | :ansi256 | :truecolor)
+      def supports_keyboard_enhancement?: () -> bool
+
+      private
+
+      def _available_color_count: () -> Integer
+      def _supports_keyboard_enhancement: () -> bool
     end
 
     extend Capabilities

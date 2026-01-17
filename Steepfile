@@ -46,4 +46,5 @@ target :lib do
   library "fileutils"
   library "minitest"
   library "date"
+  library "timeout"
 end

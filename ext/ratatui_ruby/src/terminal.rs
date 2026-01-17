@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use magnus::value::ReprValue;
-use magnus::{Error, Module};
+use magnus::{Error, Module, Ruby};
 use ratatui::{
     backend::{CrosstermBackend, TestBackend},
     Terminal, TerminalOptions, Viewport,
@@ -576,4 +576,31 @@ fn modifiers_to_value(modifier: ratatui::style::Modifier) -> Value {
     }
 
     ary.as_value()
+}
+
+// --- Terminal Capability Detection (Phase 2) ---
+//
+// Direct crossterm calls. For testing, control env vars:
+// - COLORTERM: "truecolor" -> 65535, "24bit" -> 65535
+// - TERM: "xterm-256color" -> 256, "xterm-truecolor" -> 65535
+// - Neither set: 8 (default)
+// See crossterm::style::available_color_count() source for details.
+
+/// Returns color support level (8, 256, or `u16::MAX` for truecolor)
+///
+/// Wraps `crossterm::style::available_color_count()` which checks COLORTERM and TERM env vars.
+pub fn available_color_count() -> u16 {
+    ratatui::crossterm::style::available_color_count()
+}
+
+/// Query if terminal supports Kitty keyboard protocol
+///
+/// Note: This requires raw mode and may return errors in some environments.
+pub fn supports_keyboard_enhancement() -> Result<bool, Error> {
+    ratatui::crossterm::terminal::supports_keyboard_enhancement().map_err(|e| {
+        Error::new(
+            Ruby::get().unwrap().exception_runtime_error(),
+            e.to_string(),
+        )
+    })
 }

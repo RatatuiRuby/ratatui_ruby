@@ -517,6 +517,10 @@ module RatatuiRuby
   # Hide native Layout._split helper
   Layout::Layout.singleton_class.__send__(:private, :_split)
 
+  # Raw Terminal bindings - use public wrappers (they have timeout guards)
+  Terminal.singleton_class.__send__(:private, :_available_color_count)
+  Terminal.singleton_class.__send__(:private, :_supports_keyboard_enhancement)
+
   # --- Terminal Safety Hooks ---
   # These ensure the terminal is restored even on unexpected exits.
 

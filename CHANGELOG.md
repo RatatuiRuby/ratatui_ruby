@@ -14,16 +14,20 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - **Terminal Capability Detection**: New class methods on `RatatuiRuby::Terminal` for environment-based capability detection before initializing TUI mode:
   - `Terminal.tty?` — checks if stdout is connected to a terminal
-  - `Terminal.dumb?` — checks if TERM is "dumb" or unset
+  - `Terminal.dumb?` — checks if TERM is explicitly set to "dumb"
   - `Terminal.no_color?` — checks if NO_COLOR environment variable is set (respects the [NO_COLOR standard](https://no-color.org/))
   - `Terminal.force_color?` — checks if FORCE_COLOR environment variable is set
   - `Terminal.interactive?` — returns true only when tty? and not dumb?
+  - `Terminal.available_color_count` — returns color support level (8, 256, or 65535) via crossterm detection
+  - `Terminal.color_support` — convenience method returning `:none`, `:basic`, `:ansi256`, or `:truecolor`
+  - `Terminal.supports_keyboard_enhancement?` — checks for Kitty keyboard protocol support
 
 ### Changed
 
 ### Fixed
 
 ### Removed
+
 
 ## [0.10.3] - 2026-01-16
 

@@ -235,6 +235,14 @@ fn init() -> Result<(), Error> {
         "_get_terminal_size_instance",
         function!(terminal::get_terminal_size_instance, 1),
     )?;
+    terminal_class.define_singleton_method(
+        "_available_color_count",
+        function!(terminal::available_color_count, 0),
+    )?;
+    terminal_class.define_singleton_method(
+        "_supports_keyboard_enhancement",
+        function!(terminal::supports_keyboard_enhancement, 0),
+    )?;
 
     // Register Layout.split on the Layout::Layout class (inside the Layout module)
     let layout_mod = m.const_get::<_, magnus::RModule>("Layout")?;
