@@ -326,4 +326,19 @@ class TestRect < Minitest::Test
     assert_equal 40, result.width
     assert_equal 20, result.height
   end
+
+  # Rect#to_ary enables array destructuring
+  def test_rect_supports_array_destructuring
+    rect = RatatuiRuby::Layout::Rect.new(x: 10, y: 5, width: 80, height: 24)
+    x, y, width, height = rect
+    assert_equal 10, x
+    assert_equal 5, y
+    assert_equal 80, width
+    assert_equal 24, height
+  end
+
+  def test_rect_to_ary_returns_array
+    rect = RatatuiRuby::Layout::Rect.new(x: 10, y: 5, width: 80, height: 24)
+    assert_equal [10, 5, 80, 24], rect.to_ary
+  end
 end

@@ -12,6 +12,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **Rect Destructuring**: `Rect` objects now support array destructuring (implementation of `to_ary`), allowing intuitive assignment like `x, y, w, h = rect`.
+- **Global State Test Helpers**: New `RatatuiRuby::TestHelper::GlobalState` module (automatically included in `TestHelper`) provides `with_argv` and `with_env` methods for safely testing code that reads `ARGV` or `ENV`.
+
 ### Changed
 
 - **New Website**: RatatuiRuby now has a home on the world wide web at [www.ratatui-ruby.dev](https://www.ratatui-ruby.dev).

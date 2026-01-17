@@ -701,6 +701,30 @@ module RatatuiRuby
         centered_horizontally(horizontal_constraint).centered_vertically(vertical_constraint)
       end
 
+      # Enables array destructuring of the rectangle.
+      #
+      # Inline viewports and layout code often need position and size together.
+      # Accessing x, y, width, height individually is verbose.
+      #
+      # This method allows convenient array destructuring.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   area = tui.viewport_area
+      #   x, y, width, height = area
+      #   # Now you can use x, y, width, height directly
+      #--
+      # SPDX-SnippetEnd
+      #++
+      def to_ary
+        [x, y, width, height]
+      end
+
       # Ruby-idiomatic aliases (TIMTOWTDI)
       alias position as_position
       alias size as_size
