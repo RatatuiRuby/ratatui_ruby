@@ -17,7 +17,7 @@ module RatatuiRuby
   # This module handles the choice. It defines viewport modes and their parameters.
   #
   # @see Terminal::Viewport
-  module Terminal
+  class Terminal
     ##
     # Viewport configuration for terminal initialization.
     #

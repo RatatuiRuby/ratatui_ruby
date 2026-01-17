@@ -7,17 +7,29 @@ use ratatui::{
     backend::{CrosstermBackend, TestBackend},
     Terminal, TerminalOptions, Viewport,
 };
+use std::collections::HashMap;
 use std::io;
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Mutex;
+
+use lazy_static::lazy_static;
 
 pub enum TerminalWrapper {
     Crossterm(Terminal<CrosstermBackend<io::Stdout>>),
     Test(Terminal<TestBackend>),
 }
 
+// Legacy global singleton (for backward compat with module-level methods)
 pub static TERMINAL: Mutex<Option<TerminalWrapper>> = Mutex::new(None);
 // Track whether we're using fullscreen viewport (for restore_terminal)
 static IS_FULLSCREEN: Mutex<bool> = Mutex::new(false);
+
+// Instance-based terminal tracking (Proposal 1 from terminal.md)
+lazy_static! {
+    static ref TERMINAL_INSTANCES: Mutex<HashMap<u64, TerminalWrapper>> =
+        Mutex::new(HashMap::new());
+}
+static NEXT_TERMINAL_ID: AtomicU64 = AtomicU64::new(1);
 
 #[allow(clippy::needless_pass_by_value)] // Magnus FFI requires owned String, not &str
 pub fn init_terminal(
@@ -111,6 +123,42 @@ pub fn init_test_terminal(
 
     *term_lock = Some(TerminalWrapper::Test(terminal));
     Ok(())
+}
+
+// Instance-based terminal initialization (Proposal 1 from terminal.md)
+// Returns terminal ID for Ruby to store
+#[allow(clippy::needless_pass_by_value)]
+pub fn init_test_terminal_instance(
+    width: u16,
+    height: u16,
+    viewport_type: String,
+    viewport_height: Option<u16>,
+) -> Result<u64, Error> {
+    let ruby = magnus::Ruby::get().unwrap();
+    let backend = TestBackend::new(width, height);
+    let module = ruby.define_module("RatatuiRuby")?;
+    let error_base = module.const_get::<_, magnus::RClass>("Error")?;
+    let error_class = error_base.const_get("Terminal")?;
+
+    // Parse viewport type
+    let viewport = match viewport_type.as_ref() {
+        "inline" => {
+            let vp_height = viewport_height.unwrap_or(height);
+            Viewport::Inline(vp_height)
+        }
+        _ => Viewport::Fullscreen,
+    };
+
+    let options = TerminalOptions { viewport };
+    let terminal = Terminal::with_options(backend, options)
+        .map_err(|e| Error::new(error_class, e.to_string()))?;
+
+    // Generate unique ID and store instance
+    let id = NEXT_TERMINAL_ID.fetch_add(1, Ordering::SeqCst);
+    let mut instances = TERMINAL_INSTANCES.lock().unwrap();
+    instances.insert(id, TerminalWrapper::Test(terminal));
+
+    Ok(id)
 }
 
 pub fn restore_terminal() {
@@ -292,6 +340,46 @@ pub fn get_terminal_size() -> Result<magnus::RHash, Error> {
         let error_base = module.const_get::<_, magnus::RClass>("Error")?;
         let error_class = error_base.const_get("Terminal")?;
         Err(Error::new(error_class, "Terminal is not initialized"))
+    }
+}
+
+// Instance-based terminal size query (Returns Layout::Rect object, not hash!)
+pub fn get_terminal_size_instance(terminal_id: u64) -> Result<magnus::Value, Error> {
+    let ruby = magnus::Ruby::get().unwrap();
+    let instances = TERMINAL_INSTANCES.lock().unwrap();
+
+    if let Some(wrapper) = instances.get(&terminal_id) {
+        let size = match wrapper {
+            TerminalWrapper::Crossterm(term) => term.size().map_err(|e| {
+                let module = ruby.define_module("RatatuiRuby").unwrap();
+                let error_base = module.const_get::<_, magnus::RClass>("Error").unwrap();
+                let error_class = error_base.const_get("Terminal").unwrap();
+                Error::new(error_class, e.to_string())
+            })?,
+            TerminalWrapper::Test(term) => term.size().unwrap_or_default(),
+        };
+
+        // Construct Layout::Rect object in Rust (NOT a hash!)
+        let module = ruby.define_module("RatatuiRuby")?;
+        let layout_mod = module.const_get::<_, magnus::RModule>("Layout")?;
+        let rect_class = layout_mod.const_get::<_, magnus::RClass>("Rect")?;
+
+        // Create hash with keyword args for Rect.new
+        let args = ruby.hash_new();
+        args.aset(ruby.to_symbol("x"), 0)?;
+        args.aset(ruby.to_symbol("y"), 0)?;
+        args.aset(ruby.to_symbol("width"), size.width)?;
+        args.aset(ruby.to_symbol("height"), size.height)?;
+
+        rect_class.funcall_public("new", (0, 0, size.width, size.height))
+    } else {
+        let module = ruby.define_module("RatatuiRuby")?;
+        let error_base = module.const_get::<_, magnus::RClass>("Error")?;
+        let error_class = error_base.const_get("Terminal")?;
+        Err(Error::new(
+            error_class,
+            format!("Terminal instance {terminal_id} not found"),
+        ))
     }
 }
 

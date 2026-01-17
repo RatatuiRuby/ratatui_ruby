@@ -2,7 +2,21 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 
 module RatatuiRuby
-  module Terminal
+  class Terminal
+    @viewport: Terminal::Viewport
+    @terminal_id: Integer
+
+    attr_reader terminal_id: Integer
+
+    def initialize: (?viewport: (Terminal::Viewport | :fullscreen | :inline)?, ?height: Integer?) -> void
+    def size: () -> Layout::Rect
+
+    # Private native methods (defined in Rust)
+    def self._init_test_terminal_instance: (Integer width, Integer height, String viewport_type, Integer? viewport_height) -> Integer
+    def self._get_terminal_size_instance: (Integer terminal_id) -> Layout::Rect
+
+    private def resolve_viewport: ((Terminal::Viewport | :fullscreen | :inline)? viewport, Integer? height) -> Terminal::Viewport
+
     class Viewport < Data
       attr_reader type: Symbol
       attr_reader height: Integer?

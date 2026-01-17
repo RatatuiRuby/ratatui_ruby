@@ -11,6 +11,7 @@ require_relative "test_helper/snapshot"
 require_relative "test_helper/event_injection"
 require_relative "test_helper/style_assertions"
 require_relative "test_helper/test_doubles"
+require_relative "test_helper/global_state"
 
 module RatatuiRuby
   ##
@@ -30,6 +31,7 @@ module RatatuiRuby
   # [EventInjection] Simulates keypresses, mouse clicks, and resize events.
   # [StyleAssertions] Checks foreground color, background color, and text modifiers.
   # [TestDoubles] Provides mocks and stubs for testing views in isolation.
+  # [GlobalState] Provides with_argv and with_env helpers for testing global state access.
   #
   # == Example
   #
@@ -106,5 +108,6 @@ module RatatuiRuby
     include EventInjection
     include StyleAssertions
     include TestDoubles
+    include GlobalState
   end
 end

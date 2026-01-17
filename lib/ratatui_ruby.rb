@@ -16,6 +16,7 @@ require_relative "ratatui_ruby/text"    # Text::Span, Text::Line, Text.width
 require_relative "ratatui_ruby/draw"    # Draw commands
 require_relative "ratatui_ruby/symbols" # Symbols::Shade, etc.
 require_relative "ratatui_ruby/terminal/viewport" # Terminal::Viewport
+require_relative "ratatui_ruby/terminal" # Terminal class
 
 # Event types
 require_relative "ratatui_ruby/event"
@@ -138,8 +139,8 @@ module RatatuiRuby
     # Breaking these rules raises this error.
     #
     # Common causes:
-    # - Calling methods in the wrong order (e.g., \`init_terminal\` twice)
-    # - Callable return type mismatch (e.g., view returns \`nil\` instead of a widget)
+    # - Calling methods in the wrong order (e.g., <tt>init_terminal</tt> twice)
+    # - Callable return type mismatch (e.g., view returns <tt>nil</tt> instead of a widget)
     #
     # To resolve, check the method's documented contract. Ensure
     # state preconditions are met and return types are correct.

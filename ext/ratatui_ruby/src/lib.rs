@@ -9,6 +9,7 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::missing_panics_doc)]
 #![allow(clippy::module_name_repetitions)]
+#![allow(clippy::non_std_lazy_statics)]
 
 mod color;
 mod errors;
@@ -222,6 +223,17 @@ fn init() -> Result<(), Error> {
     m.define_module_function(
         "_get_viewport_type",
         function!(terminal::get_viewport_type, 0),
+    )?;
+
+    // Register Terminal class with instance-specific FFI methods
+    let terminal_class = m.define_class("Terminal", ruby.class_object())?;
+    terminal_class.define_singleton_method(
+        "_init_test_terminal_instance",
+        function!(terminal::init_test_terminal_instance, 4),
+    )?;
+    terminal_class.define_singleton_method(
+        "_get_terminal_size_instance",
+        function!(terminal::get_terminal_size_instance, 1),
     )?;
 
     // Register Layout.split on the Layout::Layout class (inside the Layout module)

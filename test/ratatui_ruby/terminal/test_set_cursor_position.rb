@@ -9,7 +9,7 @@
 require "test_helper"
 
 module RatatuiRuby
-  module Terminal
+  class Terminal
     class TestSetCursorPosition < Minitest::Test
       include TestHelper::Terminal
 
