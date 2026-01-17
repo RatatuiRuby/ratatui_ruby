@@ -14,6 +14,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- **New Website**: RatatuiRuby now has a home on the world wide web at [www.ratatui-ruby.dev](https://www.ratatui-ruby.dev).
+- **A New Way to Browse Examples**: You can now browse the source code of the example applications in our documentation site. See [AppAllEvents](https://www.ratatui-ruby.dev/docs/v0.10/examples/app_all_events/app_rb.html) for an example.
+- **API Documentation on the Web**: RatatuiRuby's [extensive RDoc documentation is now available on the web](https://www.ratatui-ruby.dev/docs/v0.10/RatatuiRuby.html).
+- **Guides on the Web**: RatatuiRuby's [in-depth guides are now available on the web](https://www.ratatui-ruby.dev/docs/v0.10/doc/index_md.html).
+- **Versioned Examples, API Documentanion, and Guides**: API reference, guides, and examples are available on our website for current and past versions of ratatui_ruby, including the trunk version. Visit [www.ratatui-ruby.dev/docs](https://www.ratatui-ruby.dev/docs) to browse.
+
 ### Fixed
 
 ### Removed

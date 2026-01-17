@@ -11,7 +11,7 @@ require "tmpdir"
 require_relative "rdoc_config"
 
 namespace :website do
-  desc "Build documentation for main (current dir) and all git tags"
+  desc "Build documentation for trunk (current dir) and all git tags"
   task :build do
     require_relative "website/website"
 

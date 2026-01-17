@@ -29,7 +29,7 @@ class VersionedDocumentation
 
       Dir.chdir(source_path) do
         title = "#{project_name} #{@version.name}"
-        title = "#{project_name} (main)" if @version.edge?
+        title = "#{project_name} (trunk)" if @version.edge?
 
         # Use rake rerdoc to ensure copy_examples runs
         # Set environment variables to override rdoc settings

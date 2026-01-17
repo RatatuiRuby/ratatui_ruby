@@ -52,11 +52,11 @@ end
 
 class Edge < Version
   def slug
-    "main"
+    "trunk"
   end
 
   def name
-    "main"
+    "trunk"
   end
 
   def type

@@ -5,40 +5,137 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title><%= project_name %> documentation</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    :root { color-scheme: light dark; }
-    body { font-family: system-ui, sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem; line-height: 1.5; color: light-dark(#111, #eee); background: light-dark(#fff, #111); }
-    h1 { border-bottom: 2px solid light-dark(#eee, #333); padding-bottom: 0.5rem; }
-    ul { list-style: none; padding: 0; }
-    li { margin: 0.5rem 0; border: 1px solid light-dark(#ddd, #444); border-radius: 4px; }
-    a { display: block; padding: 1rem; text-decoration: none; color: light-dark(#0055aa, #44aaff); font-weight: bold; }
-    a:hover { background: light-dark(#f5f5f5, #222); }
-    .meta { font-weight: normal; color: light-dark(#666, #aaa); font-size: 0.9em; float: right; }
-  </style>
+  <meta name="description" content="API documentation and guides for <%= project_name %>, organized by version.">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Source+Sans+3:ital,wght@0,300..900;1,300..900&display=swap"
+    rel="stylesheet">
 </head>
 <body>
-  <h1><%= project_name %> documentation</h1>
-  <ul>
-    <% versions.each do |version| %>
-      <li>
-        <a href='<%= version.slug %>/index.html'>
-          <%= version.name %>
-          <span class='meta'>
-            <% if version.latest? %>
-              Latest
-            <% elsif version.edge? %>
-              Edge
-            <% else %>
-              Historical
-            <% end %>
-          </span>
-        </a>
-      </li>
-    <% end %>
-  </ul>
+  <header class="header">
+    <div class="header__inner">
+      <a href="/" class="header__brand">
+        <img src="../logo-small.png" alt="RatatuiRuby Logo" class="header__logo" width="48" height="48">
+        <span class="header__wordmark">RatatuiRuby</span>
+      </a>
+      <nav class="header__nav" aria-label="Primary">
+        <a href="/#rich-moments">Better <abbr title="Command Line Interfaces">CLIs</abbr></a>
+        <a href="/#build">Full <abbr title="Terminal User Interfaces">TUIs</abbr></a>
+        <a href="/#frameworks">Frameworks</a>
+        <a href="/docs/v0.10/" class="header__nav-external">API →</a>
+        <a href="/docs/v0.10/doc/index_md.html" class="header__nav-external">Guides →</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="section__inner">
+        <header class="section__header">
+          <span class="section__eyebrow">Reference</span>
+          <h1 class="section__title">Documentation</h1>
+          <p class="section__intro">API reference, guides, and examples for current and past versions of <%= project_name %>.</p>
+        </header>
+
+        <ul class="version-list">
+          <% versions.each do |version| %>
+            <li class="version-list__item<%= ' version-list__item--latest' if version.latest? %>">
+              <a href="<%= version.slug %>/index.html" class="version-list__link">
+                <span class="version-list__name"><%= version.name %></span>
+                <span class="version-list__meta">
+                  <% if version.latest? %>
+                    Latest release via RubyGems
+                  <% elsif version.edge? %>
+                    Pre-release via git
+                  <% else %>
+                    Historical
+                  <% end %>
+                </span>
+              </a>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <!-- Megafooter columns -->
+      <div class="footer__columns">
+        <div class="footer__column">
+          <h3 class="footer__heading">Get Started</h3>
+          <ul class="footer__list">
+            <li><a href="/docs/v0.10/doc/getting_started/quickstart_md.html">Quickstart <span
+                  class="footer__tag">Alpha</span></a>
+            </li>
+            <li><a href="/docs/v0.10/examples/app_cli_rich_moments/README_md.html">Examples</a></li>
+            <li><a href="/docs/v0.10/"><abbr title="Application Programming Interface">API</abbr> Reference</a></li>
+            <li><a href="/docs/v0.10/doc/index_md.html">Guides</a></li>
+          </ul>
+        </div>
+
+        <div class="footer__column">
+          <h3 class="footer__heading">Ecosystem</h3>
+          <ul class="footer__list">
+            <li><a href="https://git.sr.ht/~kerrick/ratatui_ruby-tea">Tea <span
+                  class="footer__tag">Alpha</span></a></li>
+            <li><a href="https://sr.ht/~kerrick/ratatui_ruby/#chapter-3-the-object-path--kit">Kit <span
+                  class="footer__tag footer__tag--muted">Planned</span></a></li>
+            <li><a href="https://sr.ht/~kerrick/ratatui_ruby/#chapter-5-the-framework">Framework <span
+                  class="footer__tag footer__tag--muted">Planned</span></a></li>
+            <li><a href="https://sr.ht/~kerrick/ratatui_ruby/#chapter-6-licensing"><abbr
+                  title="User Interface">UI</abbr> Widgets
+                <span class="footer__tag footer__tag--muted">Planned</span></a></li>
+          </ul>
+        </div>
+
+        <div class="footer__column">
+          <h3 class="footer__heading">Community</h3>
+          <ul class="footer__list">
+            <li><a href="https://lists.sr.ht/~kerrick/ratatui_ruby-discuss">Discuss and Chat</a></li>
+            <li><a href="https://lists.sr.ht/~kerrick/ratatui_ruby-announce">Announcements</a></li>
+            <li><a href="https://lists.sr.ht/~kerrick/ratatui_ruby-devel">Development</a></li>
+            <li><a href="https://todo.sr.ht/~kerrick/ratatui_ruby">Bug Tracker</a></li>
+          </ul>
+        </div>
+
+        <div class="footer__column">
+          <h3 class="footer__heading">Contribute</h3>
+          <ul class="footer__list">
+            <li><a href="https://man.sr.ht/~kerrick/ratatui_ruby/contributing.md">Contributing Guide</a></li>
+            <li><a href="https://man.sr.ht/~kerrick/ratatui_ruby/code_of_conduct.md">Code of Conduct</a></li>
+            <li><a href="https://man.sr.ht/~kerrick/ratatui_ruby/history/index.md">Project History</a></li>
+            <li><a href="https://lists.sr.ht/~kerrick/ratatui_ruby-devel/patches">Pull Requests</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="footer__bottom">
+        <div class="footer__brand">
+          <img src="../logo-small.png" alt="" class="footer__logo" width="32" height="32" aria-hidden="true">
+          <span class="footer__wordmark">RatatuiRuby</span>
+        </div>
+        <nav class="footer__meta" aria-label="Meta links">
+          <a href="https://git.sr.ht/~kerrick/ratatui_ruby">Source</a>
+          <a href="https://rubygems.org/gems/ratatui_ruby">RubyGems</a>
+          <a href="https://ratatui.rs">Ratatui</a>
+          <a href="https://builds.sr.ht/~kerrick/ratatui_ruby?">Build Status</a>
+        </nav>
+        <p class="footer__copy">© 2026&nbsp;Kerrick&nbsp;Long · Library:&nbsp;<a
+            href="https://spdx.org/licenses/LGPL-3.0-or-later.html">LGPL-3.0-or-later</a> · Website:&nbsp;<a
+            href="https://spdx.org/licenses/CC-BY-NC-ND-4.0.html">CC-BY-NC-ND-4.0</a> · Snippets:&nbsp;<a
+            href="https://spdx.org/licenses/MIT-0.html">MIT-0</a></p>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
