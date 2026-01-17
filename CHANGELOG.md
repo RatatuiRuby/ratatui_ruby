@@ -12,6 +12,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Removed
+
+## [0.10.3] - 2026-01-16
+
+### Added
+
 - **Rect Destructuring**: `Rect` objects now support array destructuring (implementation of `to_ary`), allowing intuitive assignment like `x, y, w, h = rect`.
 - **Global State Test Helpers**: New `RatatuiRuby::TestHelper::GlobalState` module (automatically included in `TestHelper`) provides `with_argv` and `with_env` methods for safely testing code that reads `ARGV` or `ENV`.
 
@@ -657,6 +667,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Testing Support**: Included `RatatuiRuby::TestHelper` and RSpec integration to make testing your TUI applications possible.
 
 [Unreleased]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/HEAD
+[0.10.3]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.10.3
 [0.10.2]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.10.2
 [0.10.1]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.10.1
 [0.10.1]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.10.1
