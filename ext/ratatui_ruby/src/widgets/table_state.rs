@@ -95,6 +95,26 @@ impl RubyTableState {
         self.inner.borrow_mut().select_last_column();
     }
 
+    /// Selects the next row or the first one if no row is selected.
+    pub fn select_next(&self) {
+        self.inner.borrow_mut().select_next();
+    }
+
+    /// Selects the previous row or the last one if no row is selected.
+    pub fn select_previous(&self) {
+        self.inner.borrow_mut().select_previous();
+    }
+
+    /// Selects the first row.
+    pub fn select_first(&self) {
+        self.inner.borrow_mut().select_first();
+    }
+
+    /// Selects the last row.
+    pub fn select_last(&self) {
+        self.inner.borrow_mut().select_last();
+    }
+
     /// Creates a new `RubyTableState` with a selected cell (row, column).
     pub fn with_selected_cell(cell: Option<(usize, usize)>) -> Self {
         let state = TableState::default().with_selected_cell(cell);
@@ -144,6 +164,13 @@ pub fn register(ruby: &Ruby, module: magnus::RModule) -> Result<(), Error> {
     class.define_method("offset", method!(RubyTableState::offset, 0))?;
     class.define_method("scroll_down_by", method!(RubyTableState::scroll_down_by, 1))?;
     class.define_method("scroll_up_by", method!(RubyTableState::scroll_up_by, 1))?;
+    class.define_method("select_next", method!(RubyTableState::select_next, 0))?;
+    class.define_method(
+        "select_previous",
+        method!(RubyTableState::select_previous, 0),
+    )?;
+    class.define_method("select_first", method!(RubyTableState::select_first, 0))?;
+    class.define_method("select_last", method!(RubyTableState::select_last, 0))?;
     Ok(())
 }
 
