@@ -21,6 +21,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - `Terminal.available_color_count` — returns color support level (8, 256, or 65535) via crossterm detection
   - `Terminal.color_support` — convenience method returning `:none`, `:basic`, `:ansi256`, or `:truecolor`
   - `Terminal.supports_keyboard_enhancement?` — checks for Kitty keyboard protocol support
+  - `Backend.window_size` — returns terminal dimensions as `Backend::WindowSize` with both character grid (`columns_rows`) and pixel (`pixels`) sizes as `Layout::Size` instances; mirrors upstream Ratatui's `backend::WindowSize` struct
+  - `Terminal.force_color_output(enable)` — globally overrides NO_COLOR detection for `--color=always` flags
 
 ### Changed
 

@@ -7,13 +7,20 @@
 
 module RatatuiRuby
   module Layout
-    # Terminal dimensions as width and height.
+    # Generic dimensions as width and height.
     #
     # Layout calculations need sizes. Passing width and height
     # as separate arguments is verbose and easy to swap by mistake.
     #
     # This class bundles dimensions into a single immutable object.
     # Extract it from a Rect or create it directly for sizing operations.
+    #
+    # Following upstream Ratatui's design, the same Size type represents
+    # both character-grid dimensions (columns × rows) and pixel dimensions.
+    # The semantic meaning depends on the source:
+    #
+    # - From <tt>Terminal.size</tt> or <tt>WindowSize#columns_rows</tt>: columns and rows
+    # - From <tt>WindowSize#pixels</tt>: pixel width and height
     #
     # Use it for terminal dimensions, widget sizing constraints,
     # or anywhere you need width/height without position.
@@ -37,11 +44,11 @@ module RatatuiRuby
     class Size < Data.define(:width, :height)
       ##
       # :attr_reader: width
-      # Width in terminal columns.
+      # Width dimension (columns for character grids, pixels for pixel sizes).
 
       ##
       # :attr_reader: height
-      # Height in terminal rows.
+      # Height dimension (rows for character grids, pixels for pixel sizes).
 
       # Creates a new Size.
       #

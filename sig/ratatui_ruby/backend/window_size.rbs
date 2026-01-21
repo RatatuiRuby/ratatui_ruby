@@ -1,0 +1,17 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+module RatatuiRuby
+  module Backend
+    class WindowSize < Data
+      attr_reader columns_rows: Layout::Size
+      attr_reader pixels: Layout::Size
+
+      def self.new: (columns_rows: Layout::Size, pixels: Layout::Size) -> instance
+    end
+  end
+end

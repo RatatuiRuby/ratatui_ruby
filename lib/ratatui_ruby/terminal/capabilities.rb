@@ -281,6 +281,34 @@ module RatatuiRuby
       rescue
         false
       end
+
+      # Globally override NO_COLOR detection.
+      #
+      # The NO_COLOR environment variable tells applications to disable color.
+      # Sometimes users want colors anyway, like in CI pipelines that log to
+      # files but display logs with color. Passing +true+ forces color output
+      # regardless of NO_COLOR.
+      #
+      # This method calls crossterm's global override. The effect is immediate
+      # and affects all subsequent color detection queries. Pass +false+ to
+      # restore normal NO_COLOR behavior.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   if options[:color] == :always
+      #     RatatuiRuby::Terminal.force_color_output(true)
+      #   end
+      #--
+      # SPDX-SnippetEnd
+      #++
+      def force_color_output(enable)
+        _force_color_output(enable)
+      end
     end
 
     extend Capabilities

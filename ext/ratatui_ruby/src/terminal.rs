@@ -604,3 +604,24 @@ pub fn supports_keyboard_enhancement() -> Result<bool, Error> {
         )
     })
 }
+
+/// Query terminal window size in characters and pixels
+///
+/// Wraps `crossterm::terminal::window_size()`. Returns
+/// Some((columns, rows, `pixel_width`, `pixel_height`)) or None if query fails.
+/// Note: Pixel dimensions may be 0 on some systems (marked as "unused" by Unix drivers,
+/// not implemented on Windows).
+pub fn terminal_window_size() -> Option<(u16, u16, u16, u16)> {
+    match ratatui::crossterm::terminal::window_size() {
+        Ok(size) => Some((size.columns, size.rows, size.width, size.height)),
+        Err(_) => None,
+    }
+}
+
+/// Globally override `NO_COLOR` detection
+///
+/// Wraps `crossterm::style::force_color_output()`. When enabled, color output will
+/// be forced even if `NO_COLOR` is set. Useful for `--color=always` flags.
+pub fn force_color_output(enable: bool) {
+    ratatui::crossterm::style::force_color_output(enable);
+}

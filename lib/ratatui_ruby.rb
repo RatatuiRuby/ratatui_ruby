@@ -15,6 +15,7 @@ require_relative "ratatui_ruby/buffer"   # Buffer::Cell (for inspection)
 require_relative "ratatui_ruby/text"    # Text::Span, Text::Line, Text.width
 require_relative "ratatui_ruby/draw"    # Draw commands
 require_relative "ratatui_ruby/symbols" # Symbols::Shade, etc.
+require_relative "ratatui_ruby/backend" # Backend::WindowSize
 require_relative "ratatui_ruby/terminal/viewport" # Terminal::Viewport
 require_relative "ratatui_ruby/terminal" # Terminal class
 

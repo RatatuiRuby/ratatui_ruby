@@ -241,6 +241,60 @@ class TestTerminalCapabilities < Minitest::Test
     end
   end
 
+  # --- window_size (Phase 2: character + pixel dimensions) ---
+  # Mirrors upstream ratatui::backend::WindowSize
+
+  def test_window_size_returns_nil_or_backend_window_size
+    result = RatatuiRuby::Backend.window_size
+    if result
+      assert_kind_of RatatuiRuby::Backend::WindowSize, result
+    else
+      assert_nil result
+    end
+  end
+
+  def test_window_size_columns_rows_is_layout_size
+    # Mock the FFI to return known values: [columns, rows, px_width, px_height]
+    RatatuiRuby::Terminal.stub(:_terminal_window_size, [80, 24, 1920, 1080]) do
+      ws = RatatuiRuby::Backend.window_size
+
+      assert_kind_of RatatuiRuby::Layout::Size, ws.columns_rows
+      assert_equal 80, ws.columns_rows.width
+      assert_equal 24, ws.columns_rows.height
+    end
+  end
+
+  def test_window_size_pixels_is_layout_size
+    # Mock the FFI to return known values: [columns, rows, px_width, px_height]
+    RatatuiRuby::Terminal.stub(:_terminal_window_size, [80, 24, 1920, 1080]) do
+      ws = RatatuiRuby::Backend.window_size
+
+      assert_kind_of RatatuiRuby::Layout::Size, ws.pixels
+      assert_equal 1920, ws.pixels.width
+      assert_equal 1080, ws.pixels.height
+    end
+  end
+
+  def test_window_size_rescues_errors_to_nil
+    RatatuiRuby::Terminal.stub(:_terminal_window_size, -> { raise "io error" }) do
+      assert_nil RatatuiRuby::Backend.window_size
+    end
+  end
+
+  def test_window_size_returns_nil_when_ffi_returns_nil
+    RatatuiRuby::Terminal.stub(:_terminal_window_size, nil) do
+      assert_nil RatatuiRuby::Backend.window_size
+    end
+  end
+
+  # --- force_color_output (Phase 2: globally override NO_COLOR) ---
+
+  def test_force_color_output_accepts_boolean
+    # Calling should not raise; the method sets global state in crossterm
+    RatatuiRuby::Terminal.force_color_output(true)
+    RatatuiRuby::Terminal.force_color_output(false)
+  end
+
   private def prevent_hanging(supports: false)
     RatatuiRuby::Terminal.stub(:tty?, false) do
       RatatuiRuby::Terminal.stub(:_supports_keyboard_enhancement, supports) do

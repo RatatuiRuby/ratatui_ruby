@@ -166,10 +166,19 @@ Defines the Ruby module hierarchy using `magnus` and exports public functions (`
 
 Manages the global `TERMINAL` singleton (mutex-wrapped `CrosstermBackend<Stdout>`).
 
-Key functions:
+**Lifecycle Functions:**
 - `init()` — Enter raw mode, enable mouse capture, switch to alternate screen
 - `restore()` — Disable raw mode, restore main screen
 - `get_cell_at(x, y)` — Return buffer cell as Ruby `Buffer::Cell` object
+
+**Crossterm Capability Queries:**
+
+These functions expose crossterm's terminal capability detection to Ruby. In the three-tier architecture, they'll be surfaced via the `Crossterm::` namespace:
+
+- `terminal_window_size()` — Returns `(columns, rows, pixel_width, pixel_height)` via `crossterm::terminal::window_size()`
+- `available_color_count()` — Returns color depth (8/256/65535) via crossterm's `COLORTERM`/`TERM` detection
+- `supports_keyboard_enhancement()` — Queries Kitty keyboard protocol support
+- `force_color_output(enable)` — Overrides `NO_COLOR` detection via `crossterm::style::force_color_output()`
 
 **Safety Note:** The terminal is a global mutable resource. All access goes through a mutex. Holding the lock across Ruby calls risks deadlock—release the lock before calling back into Ruby.
 
@@ -229,6 +238,9 @@ pub fn render_widget(frame: &mut Frame, area: Rect, node: Value) -> Result<(), E
 <!-- SPDX-SnippetEnd -->
 
 **Namespace Pattern:** All built-in widgets use the `RatatuiRuby::Widgets::*` namespace. The dispatcher matches on full class names, not prefixes.
+
+> [!NOTE]
+> The dispatcher will be updated to also match `Ratatui::Widgets::*` class names when the three-tier namespace architecture rolls out. This is additive—existing `RatatuiRuby::` names will continue to work. See [Ruby Frontend Design](./ruby_frontend.md) for details.
 
 ### `widgets/*.rs` — Widget Renderers
 

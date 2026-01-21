@@ -18,13 +18,21 @@ module RatatuiRuby
       def available_color_count: () -> Integer
       def color_support: () -> (:none | :basic | :ansi256 | :truecolor)
       def supports_keyboard_enhancement?: () -> bool
+      def force_color_output: (bool enable) -> void
 
       private
 
+      # FFI methods (defined in Rust, exposed on Terminal singleton)
       def _available_color_count: () -> Integer
       def _supports_keyboard_enhancement: () -> bool
+      def _force_color_output: (bool enable) -> void
     end
 
     extend Capabilities
+
+    private
+
+    # FFI singleton method for Backend.window_size
+    def self._terminal_window_size: () -> [Integer, Integer, Integer, Integer]?
   end
 end

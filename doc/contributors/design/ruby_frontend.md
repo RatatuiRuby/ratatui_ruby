@@ -9,25 +9,53 @@ This document describes the architectural design and guiding principles of the R
 
 ## Guiding Design Principles
 
-### 1. Ratatui Alignment
+### 1. Three-Tier Namespace Architecture
 
-The Ruby namespace structure mirrors Ratatui's Rust module hierarchy exactly. This is a deliberate architectural choice with specific benefits:
+The gem provides three distinct namespaces, each with a specific purpose:
 
-- **Documentation Mapping**: A contributor reading Ratatui's docs for `ratatui::widgets::Table` immediately knows to look at `RatatuiRuby::Widgets::Table`.
-- **Predictability**: No mental translation required between Rust and Ruby codebases.
-- **Scalability**: As Ratatui adds new types, the Ruby placement is deterministic.
+**Tier 1: `Ratatui::` — Upstream Alignment**
 
-**Module Mapping:**
+Pure upstream Ratatui types with 1:1 API correspondence. If it exists in Rust Ratatui, it has the same name and location here.
 
 | Rust Module | Ruby Module | Purpose |
 |-------------|-------------|---------|
-| `ratatui::layout` | `RatatuiRuby::Layout` | Rect, Constraint, Layout |
-| `ratatui::widgets` | `RatatuiRuby::Widgets` | All widgets (Table, List, Paragraph, Block, etc.) |
-| `ratatui::style` | `RatatuiRuby::Style` | Style, Color |
-| `ratatui::text` | `RatatuiRuby::Text` | Span, Line |
-| `ratatui::buffer` | `RatatuiRuby::Buffer` | Cell (for buffer inspection) |
+| `ratatui::layout` | `Ratatui::Layout` | Rect, Constraint, Layout, Position, Size |
+| `ratatui::widgets` | `Ratatui::Widgets` | All widgets (Table, List, Paragraph, Block, etc.) |
+| `ratatui::style` | `Ratatui::Style` | Style, Color |
+| `ratatui::text` | `Ratatui::Text` | Span, Line |
+| `ratatui::buffer` | `Ratatui::Buffer` | Cell (for buffer inspection) |
+| `ratatui::backend` | `Ratatui::Backend` | WindowSize |
+| `ratatui::Terminal` | `Ratatui::Terminal` | Terminal lifecycle (draw, size, cursor) |
+| `ratatui::Frame` | `Ratatui::Frame` | Frame object for render callbacks |
 
-This structure resolves name collisions that would otherwise require arbitrary prefixes. For example, `Buffer::Cell` (terminal cell inspection) vs `Widgets::Cell` (table cell construction) are clearly distinct.
+**Tier 2: `Crossterm::` — Backend Alignment**
+
+Direct exposure of crossterm functionality. These are terminal I/O primitives that Ratatui builds upon.
+
+| Rust Module | Ruby Module | Purpose |
+|-------------|-------------|---------|
+| `crossterm::terminal` | `Crossterm::Terminal` | `supports_keyboard_enhancement?`, `window_size` |
+| `crossterm::style` | `Crossterm::Style` | `available_color_count`, `force_color_output` |
+
+**Tier 3: `RatatuiRuby::` — Ruby Convenience Layer**
+
+Ruby-specific conveniences, the main entry point, and the TUI DSL facade. This is where Ruby idioms live.
+
+- `RatatuiRuby.run { |tui| ... }` — Main entry point with setup/teardown
+- `RatatuiRuby.tty?`, `RatatuiRuby.dumb?`, `RatatuiRuby.interactive?` — Environment detection (Ruby-specific)
+- `RatatuiRuby::TUI` — DSL facade with shorthand factory methods
+- `RatatuiRuby::TestHelper` — Testing utilities
+- `RatatuiRuby::Error` — Exception hierarchy
+
+**Why Three Tiers?**
+
+1. **Upstream Purity**: Users who want exact Ratatui API parity use `Ratatui::` and `Crossterm::` namespaces.
+2. **Ruby Idioms**: Users who want convenience use `RatatuiRuby.run`, the TUI facade, and helper methods.
+3. **Documentation Mapping**: A contributor reading Ratatui's Rust docs immediately knows where to find the Ruby equivalent.
+4. **Predictability**: As upstream adds types, their Ruby placement is deterministic.
+
+> [!NOTE]
+> This three-tier architecture will be rolled out incrementally as 1.x releases. The `Ratatui::` and `Crossterm::` namespaces are additive—`RatatuiRuby::` will continue to work by delegating to them. No breaking changes required.
 
 ### 2. Two-Layer Architecture
 

@@ -156,6 +156,36 @@ fn test_panic(_ruby: &magnus::Ruby) {
     panic!("Test panic triggered by RatatuiRuby._test_panic");
 }
 
+/// Register the Terminal class with FFI methods.
+fn register_terminal_class(ruby: &Ruby, m: magnus::RModule) -> Result<(), Error> {
+    let terminal_class = m.define_class("Terminal", ruby.class_object())?;
+    terminal_class.define_singleton_method(
+        "_init_test_terminal_instance",
+        function!(terminal::init_test_terminal_instance, 4),
+    )?;
+    terminal_class.define_singleton_method(
+        "_get_terminal_size_instance",
+        function!(terminal::get_terminal_size_instance, 1),
+    )?;
+    terminal_class.define_singleton_method(
+        "_available_color_count",
+        function!(terminal::available_color_count, 0),
+    )?;
+    terminal_class.define_singleton_method(
+        "_supports_keyboard_enhancement",
+        function!(terminal::supports_keyboard_enhancement, 0),
+    )?;
+    terminal_class.define_singleton_method(
+        "_terminal_window_size",
+        function!(terminal::terminal_window_size, 0),
+    )?;
+    terminal_class.define_singleton_method(
+        "_force_color_output",
+        function!(terminal::force_color_output, 1),
+    )?;
+    Ok(())
+}
+
 #[magnus::init]
 fn init() -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
@@ -226,23 +256,7 @@ fn init() -> Result<(), Error> {
     )?;
 
     // Register Terminal class with instance-specific FFI methods
-    let terminal_class = m.define_class("Terminal", ruby.class_object())?;
-    terminal_class.define_singleton_method(
-        "_init_test_terminal_instance",
-        function!(terminal::init_test_terminal_instance, 4),
-    )?;
-    terminal_class.define_singleton_method(
-        "_get_terminal_size_instance",
-        function!(terminal::get_terminal_size_instance, 1),
-    )?;
-    terminal_class.define_singleton_method(
-        "_available_color_count",
-        function!(terminal::available_color_count, 0),
-    )?;
-    terminal_class.define_singleton_method(
-        "_supports_keyboard_enhancement",
-        function!(terminal::supports_keyboard_enhancement, 0),
-    )?;
+    register_terminal_class(&ruby, m)?;
 
     // Register Layout.split on the Layout::Layout class (inside the Layout module)
     let layout_mod = m.const_get::<_, magnus::RModule>("Layout")?;
