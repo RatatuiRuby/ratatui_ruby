@@ -16,6 +16,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+### Removed
+
+## [1.0.0-beta.2] - 2026-01-20
+
+### Added
+
+### Changed
+
+### Fixed
+
 - **TableState Row Navigation Methods**: Added missing row navigation methods (`select_next`, `select_previous`, `select_first`, `select_last`) that should have been included alongside the column navigation methods added in v0.10.0. These methods match `ListState`'s navigation API and are used in the `app_stateful_interaction` example.
 
 ### Removed
@@ -672,6 +682,7 @@ This release is functionally equivalent to v0.10.3. The version bump signals the
 - **Testing Support**: Included `RatatuiRuby::TestHelper` and RSpec integration to make testing your TUI applications possible.
 
 [Unreleased]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/HEAD
+[1.0.0-beta.2]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v1.0.0-beta.2
 [1.0.0-beta.1]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v1.0.0-beta.1
 [0.10.3]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.10.3
 [0.10.2]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.10.2

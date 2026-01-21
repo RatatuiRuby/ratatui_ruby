@@ -16,7 +16,7 @@ packages:
   - clang
   - git
 artifacts:
-  - ratatui_ruby/pkg/ratatui_ruby-1.0.0.pre.beta.1.gem
+  - ratatui_ruby/pkg/ratatui_ruby-1.0.0.pre.beta.2.gem
 sources:
   - https://git.sr.ht/~kerrick/ratatui_ruby
 tasks:
