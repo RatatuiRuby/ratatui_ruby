@@ -1,0 +1,26 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+module RatatuiRuby
+  module Layout
+    module HorizontalAlignment
+      LEFT: :left
+      CENTER: :center
+      RIGHT: :right
+      ALL: Array[:left | :center | :right]
+    end
+
+    module VerticalAlignment
+      TOP: :top
+      CENTER: :center
+      BOTTOM: :bottom
+      ALL: Array[:top | :center | :bottom]
+    end
+
+    Alignment: singleton(HorizontalAlignment)
+  end
+end

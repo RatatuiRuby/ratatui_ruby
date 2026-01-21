@@ -62,6 +62,12 @@ These documents catalog EVERY public feature, method, function, enum variant, an
 | Direction::Vertical | ratatui-core/src/layout/direction.rs:20 | ✅ |
 | Position struct | ratatui-core/src/layout/position.rs:57 | ✅ |
 | Size struct | ratatui-core/src/layout/size.rs:46 | ✅ |
+| HorizontalAlignment::Left | ratatui-core/src/layout/alignment.rs:25 | ✅ |
+| HorizontalAlignment::Center | ratatui-core/src/layout/alignment.rs:26 | ✅ |
+| HorizontalAlignment::Right | ratatui-core/src/layout/alignment.rs:27 | ✅ |
+| VerticalAlignment::Top | ratatui-core/src/layout/alignment.rs:40 | ✅ |
+| VerticalAlignment::Center | ratatui-core/src/layout/alignment.rs:41 | ✅ |
+| VerticalAlignment::Bottom | ratatui-core/src/layout/alignment.rs:42 | ✅ |
 | Rect struct | ratatui-core/src/layout/rect.rs:134 | ✅ |
 | Rect::new | ratatui-core/src/layout/rect.rs:166 | ✅ |
 | Rect::area | ratatui-core/src/layout/rect.rs:190 | ✅ |

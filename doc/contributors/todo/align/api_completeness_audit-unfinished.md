@@ -36,12 +36,6 @@ These documents catalog EVERY public feature, method, function, enum variant, an
 | Feature Name | File/Line | Status |
 |--------------|-----------|--------|
 | Spacing enum | ratatui-core/src/layout/layout.rs:80 | ❌ |
-| HorizontalAlignment::Left | ratatui-core/src/layout/alignment.rs:25 | ❌ |
-| HorizontalAlignment::Center | ratatui-core/src/layout/alignment.rs:26 | ❌ |
-| HorizontalAlignment::Right | ratatui-core/src/layout/alignment.rs:27 | ❌ |
-| VerticalAlignment::Top | ratatui-core/src/layout/alignment.rs:40 | ❌ |
-| VerticalAlignment::Center | ratatui-core/src/layout/alignment.rs:41 | ❌ |
-| VerticalAlignment::Bottom | ratatui-core/src/layout/alignment.rs:42 | ❌ |
 | Offset struct | ratatui-core/src/layout/offset.rs:10 | ❌ |
 | Margin struct | ratatui-core/src/layout/margin.rs:38 | ❌ |
 

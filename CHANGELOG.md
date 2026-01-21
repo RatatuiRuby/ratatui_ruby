@@ -23,6 +23,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - `Terminal.supports_keyboard_enhancement?` — checks for Kitty keyboard protocol support
   - `Backend.window_size` — returns terminal dimensions as `Backend::WindowSize` with both character grid (`columns_rows`) and pixel (`pixels`) sizes as `Layout::Size` instances; mirrors upstream Ratatui's `backend::WindowSize` struct
   - `Terminal.force_color_output(enable)` — globally overrides NO_COLOR detection for `--color=always` flags
+- **Alignment Constants**: New `RatatuiRuby::Layout::HorizontalAlignment` and `RatatuiRuby::Layout::VerticalAlignment` modules with discoverable constants (`LEFT`, `CENTER`, `RIGHT`, `TOP`, `BOTTOM`). `Layout::Alignment` is an alias for `HorizontalAlignment`. Use the constants for IDE discoverability, or continue passing symbols (`:left`, `:center`, etc.) directly—both work.
 
 ### Changed
 

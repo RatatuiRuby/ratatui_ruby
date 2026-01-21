@@ -14,10 +14,14 @@ module RatatuiRuby
   # - {Size} — Terminal dimensions
   # - {Constraint} — Sizing rules
   # - {Layout} — Space distribution
+  # - {HorizontalAlignment} — Horizontal alignment constants
+  # - {VerticalAlignment} — Vertical alignment constants
+  # - {Alignment} — Alias for HorizontalAlignment
   module Layout
   end
 end
 
+require_relative "layout/alignment"
 require_relative "layout/rect"
 require_relative "layout/position"
 require_relative "layout/size"
