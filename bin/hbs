@@ -65,20 +65,26 @@ Commit = Data.define(:short_sha) do
     new(short_sha: sha)
   end
 
+  def self.upstream_ref
+    # Get the upstream tracking branch for the current branch (e.g., origin/release/1.0)
+    ref = `git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null`.strip
+    ref.empty? ? "origin/trunk" : ref # Fall back to origin/trunk if no upstream
+  end
+
   def self.origin_head
-    sha = `git rev-parse --short origin/trunk 2>/dev/null`.strip
+    sha = `git rev-parse --short #{upstream_ref} 2>/dev/null`.strip
     return nil if sha.empty?
 
     new(short_sha: sha)
   end
 
   def pushed?
-    system("git", "merge-base", "--is-ancestor", short_sha, "origin/trunk",
+    system("git", "merge-base", "--is-ancestor", short_sha, self.class.upstream_ref,
       out: File::NULL, err: File::NULL)
   end
 
   def commits_ahead
-    `git rev-list --count origin/trunk..HEAD 2>/dev/null`.strip.to_i
+    `git rev-list --count #{self.class.upstream_ref}..HEAD 2>/dev/null`.strip.to_i
   end
 end
 
