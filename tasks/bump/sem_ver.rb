@@ -11,12 +11,15 @@ class SemVer
 
   def self.parse(string)
     require "rubygems"
-    segments = Gem::Version.new(string).segments.fill(0, 3).first(3)
-    new(segments)
+    # Extract prerelease suffix (e.g., "-beta.1", "-alpha.2", "-rc.1")
+    base, prerelease = string.split("-", 2)
+    segments = Gem::Version.new(base).segments.fill(0, 3).first(3)
+    new(segments, prerelease:)
   end
 
-  def initialize(segments)
+  def initialize(segments, prerelease: nil)
     @segments = segments
+    @prerelease = prerelease
   end
 
   def next(segment)
@@ -31,6 +34,7 @@ class SemVer
   end
 
   def to_s
-    @segments.join(".")
+    base = @segments.join(".")
+    @prerelease ? "#{base}-#{@prerelease}" : base
   end
 end

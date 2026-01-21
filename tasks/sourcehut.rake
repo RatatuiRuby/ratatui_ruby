@@ -25,7 +25,11 @@ namespace :sourcehut do
       version_content = File.read("lib/ratatui_ruby/version.rb")
       version = version_content.match(/VERSION = "(.+?)"/)[1]
 
-      gem_filename = "#{spec.name}-#{version}.gem"
+      # Normalize version using Gem::Version - RubyGems converts hyphens
+      # (e.g., "1.0.0-beta.1" -> "1.0.0.pre.beta.1")
+      normalized_version = Gem::Version.new(version).to_s
+
+      gem_filename = "#{spec.name}-#{normalized_version}.gem"
 
       rubies = YAML.load_file("tasks/resources/rubies.yml")
 
