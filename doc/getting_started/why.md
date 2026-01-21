@@ -24,7 +24,7 @@ RatatuiRuby gives you Rust's layout engine, rendering speed, and battle-tested w
 
 ## RatatuiRuby vs. CharmRuby
 
-[CharmRuby](https://github.com/marcoroth/charm_ruby) is an excellent project by Marco Roth. It provides Ruby bindings to Charm's Go libraries (Bubble Tea, Lipgloss). The Ruby ecosystem is better because both projects exist.
+[CharmRuby](https://charm-ruby.dev) is an excellent project by Marco Roth. It provides Ruby bindings to Charm's Go libraries (Bubble Tea, Lipgloss). The Ruby ecosystem is better because both projects exist.
 
 So which one should you choose?
 
@@ -65,8 +65,8 @@ With RatatuiRuby, there's only Ruby. Rust compiles to plain machine code with no
 
 - **[ActiveRecord](https://guides.rubyonrails.org/active_record_basics.html)** — Query your database with elegant, chainable methods
 - **[RSpec](https://rspec.info/)** — Write expressive, readable tests with `describe`, `it`, and `expect`
-- **[Blocks](https://ruby-doc.org/docs/ruby-doc-bundle/UsersGuide/rg/blocks.html)** — Pass behavior to methods with `do...end`, the heart of Ruby's expressiveness
-- **[Metaprogramming](https://ruby-doc.org/docs/ruby-doc-bundle/UsersGuide/rg/objinitialization.html)** — Define methods dynamically, build DSLs, and write code that writes code
+- **[Blocks](https://docs.ruby-lang.org/en/4.0/syntax/calling_methods_rdoc.html#label-Block+Argument)** — Pass behavior to methods with `do...end`, the heart of Ruby's expressiveness
+- **[Metaprogramming](https://docs.ruby-lang.org/en/4.0/Module.html#method-i-class_eval)** — Define methods dynamically, build DSLs, and write code that writes code
 - **[Bundler](https://bundler.io/)** — Access 180,000+ gems with a single `bundle add`
 
 Build a dashboard for your Rails app. Monitor your Sidekiq jobs. Create developer tools in the same language as the code they inspect.

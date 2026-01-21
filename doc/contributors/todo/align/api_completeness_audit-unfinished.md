@@ -29,7 +29,7 @@ These documents catalog EVERY public feature, method, function, enum variant, an
 
 **Notes:**
 - **Terminal struct**: No direct Terminal object; abstracted behind `RatatuiRuby` module methods
-- **Terminal::get_cursor_position/set_cursor_position**: Only available via [Frame](file:///Users/kerrick/Developer/ratatui_ruby/lib/ratatui_ruby/frame.rb#72-257) during draw, not on Terminal
+- **Terminal::get_cursor_position/set_cursor_position**: Only available via [Frame](../../../../lib/ratatui_ruby/frame.rb#72-257) during draw, not on Terminal
 
 ## Layout Features
 

@@ -16,13 +16,13 @@ module RatatuiRuby
     #
     # Use it to display database records, logs, or file lists.
     #
-    # {rdoc-image:/doc/images/widget_table_flex.png}[link:/examples/widget_table_flex/app_rb.html]
+    # {rdoc-image:/doc/images/widget_table.png}[link:/examples/widget_table/app_rb.html]
     #
     # === Example
     #
     # Run the interactive demo from the terminal:
     #
-    #   ruby examples/widget_table_flex/app.rb
+    #   ruby examples/widget_table/app.rb
     class Table < Data.define(:header, :rows, :widths, :row_highlight_style, :highlight_symbol, :highlight_spacing, :column_highlight_style, :cell_highlight_style, :selected_row, :selected_column, :offset, :block, :footer, :flex, :style, :column_spacing)
       include CoerceableWidget
 

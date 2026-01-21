@@ -27,7 +27,7 @@ For simple key events, `RatatuiRuby::Event::Key` objects can be compared directl
 > [!NOTE]
 > On macOS, the **Option** key is mapped to `alt`. The **Command** key is typically intercepted by the terminal emulator and may not be sent to the application, or it may be mapped to Meta/Alt depending on your terminal settings.
 
-For a complete list of supported keys, modifiers, and event types, please refer to the [API Documentation for RatatuiRuby::Event](file:///Users/kerrick/Developer/ratatui_ruby/lib/ratatui_ruby/event.rb).
+For a complete list of supported keys, modifiers, and event types, please refer to the [API Documentation for RatatuiRuby::Event](../../lib/ratatui_ruby/event.rb).
 
 <!-- SPDX-SnippetBegin -->
 <!--
