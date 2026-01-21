@@ -107,4 +107,14 @@ class TestWidgetTableDemo < Minitest::Test
       assert_rich_snapshot("after_offset_mode_cycle")
     end
   end
+
+  def test_header_toggle
+    with_test_terminal do
+      inject_keys(:d, :q)
+      @app.run
+
+      assert_snapshots("after_header_toggle")
+      assert_rich_snapshot("after_header_toggle")
+    end
+  end
 end

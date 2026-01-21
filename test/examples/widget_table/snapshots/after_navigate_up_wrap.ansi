@@ -20,5 +20,5 @@
 [0m│[0m[1;4m↑/↓[0m: Nav Row  [0m[1;4m←/→[0m: Nav Col  [0m[1;4mx[0m: Toggle Row (6)  [0m[1;4mq[0m: Quit                        │[0m
 [0m│[0m[1;4ms[0m: Style (Cyan)  [0m[1;4mp[0m: Spacing (When Selected)  [0m[1;4mt[0m: Tamp Row                      │[0m
 [0m│[0m[1;4m+/-[0m: Col Space (1)  [0m[1;4mc[0m: Col Highlight (On)  [0m[1;4mf[0m: Flex Mode (Legacy (Default))    │[0m
-[0m│[0m[1;4mz[0m: Cell Highlight (On)  [0m[1;4mo[0m: Offset Mode (Auto (No Offset))                     │[0m
+[0m│[0m[1;4mz[0m: Cell Highlight (On)  [0m[1;4mo[0m: Offset Mode (Auto (No Offset))  [0m[1;4md[0m: Header (On)     │[0m
 [0m└──────────────────────────────────────────────────────────────────────────────┘[0m

@@ -53,6 +53,7 @@ class WidgetTable
     @highlight_spacing_index = 0
     @show_column_highlight = true
     @show_cell_highlight = true
+    @show_header = true
     @offset_mode_index = 0
     @flex_mode_index = 0
     @strikethrough_pids = Set.new # Track which rows have strikethrough
@@ -135,8 +136,9 @@ class WidgetTable
     offset_label = effective_offset.nil? ? "auto" : effective_offset.to_s
 
     # Main table
+    header_label = @show_header ? "On" : "Off"
     table = @tui.table(
-      header: ["PID", "Name", "CPU"],
+      header: @show_header ? ["PID", "Name", "CPU"] : nil,
       rows:,
       widths:,
       selected_row: effective_selection,
@@ -198,7 +200,9 @@ class WidgetTable
               @tui.text_span(content: "z", style: @hotkey_style),
               @tui.text_span(content: ": Cell Highlight (#{@show_cell_highlight ? 'On' : 'Off'})  "),
               @tui.text_span(content: "o", style: @hotkey_style),
-              @tui.text_span(content: ": Offset Mode (#{offset_mode_entry[:name]})"),
+              @tui.text_span(content: ": Offset Mode (#{offset_mode_entry[:name]})  "),
+              @tui.text_span(content: "d", style: @hotkey_style),
+              @tui.text_span(content: ": Header (#{header_label})"),
             ]),
           ]
         ),
@@ -268,6 +272,8 @@ class WidgetTable
       @offset_mode_index = (@offset_mode_index + 1) % OFFSET_MODES.length
     in type: :key, code: "f"
       @flex_mode_index = (@flex_mode_index + 1) % FLEX_MODES.length
+    in type: :key, code: "d"
+      @show_header = !@show_header
     else
       nil
     end

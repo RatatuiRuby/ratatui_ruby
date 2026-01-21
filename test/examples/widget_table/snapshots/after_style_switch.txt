@@ -20,5 +20,5 @@
 │↑/↓: Nav Row  ←/→: Nav Col  x: Toggle Row (1)  q: Quit                        │
 │s: Style (Red)  p: Spacing (When Selected)  t: Tamp Row                       │
 │+/-: Col Space (1)  c: Col Highlight (On)  f: Flex Mode (Legacy (Default))    │
-│z: Cell Highlight (On)  o: Offset Mode (Auto (No Offset))                     │
+│z: Cell Highlight (On)  o: Offset Mode (Auto (No Offset))  d: Header (On)     │
 └──────────────────────────────────────────────────────────────────────────────┘
