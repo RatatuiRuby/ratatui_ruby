@@ -21,7 +21,7 @@ Mailing List: Announcements](https://img.shields.io/badge/mailing_list-announcem
 **ratatui_ruby** is a community wrapper that is not affiliated with [the Ratatui team](https://github.com/orgs/ratatui/people).
 
 > [!WARNING]
-> **ratatui_ruby** is currently in **ALPHA**. The API may change between minor versions.
+> **ratatui_ruby** is currently in **BETA**. Please report any bugs you find!
 
 **[Why RatatuiRuby?](./doc/getting_started/why.md)** — Native Rust performance, zero runtime overhead, and Ruby's expressiveness. [See how we compare](./doc/getting_started/why.md) to CharmRuby, raw Rust, and Go.
 
@@ -91,7 +91,7 @@ Or install it yourself with:
   SPDX-License-Identifier: MIT-0
 -->
 ```bash
-gem install ratatui_ruby
+gem install ratatui_ruby --pre
 ```
 <!-- SPDX-SnippetEnd -->
 
