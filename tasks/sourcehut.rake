@@ -84,6 +84,27 @@ end
 
 if Rake::Task.task_defined?("release")
   Rake::Task["release"].enhance do
+    # Replace Bundler's normalized tag with semver-style for prerelease versions.
+    # Bundler creates tags using normalized Gem::Version (e.g., v1.0.0.pre.beta.1).
+    # Semver uses hyphens (e.g., v1.0.0-beta.1). We want only the semver tag.
+    version_content = File.read("lib/ratatui_ruby/version.rb")
+    version = version_content.match(/VERSION = "(.+?)"/)[1]
+
+    if version.include?("-")
+      normalized_tag = "v#{Gem::Version.new(version)}"
+      semver_tag = "v#{version}"
+
+      if normalized_tag != semver_tag
+        puts "Replacing normalized tag #{normalized_tag} with semver tag #{semver_tag}..."
+        # Delete the normalized tag locally and remotely
+        sh "git tag -d #{normalized_tag}"
+        sh "git push origin :refs/tags/#{normalized_tag}"
+        # Create the semver tag pointing to the same commit
+        sh "git tag #{semver_tag} HEAD"
+        sh "git push origin #{semver_tag}"
+      end
+    end
+
     Rake::Task["sourcehut:update_stable"].invoke
   end
 end
