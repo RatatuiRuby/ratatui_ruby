@@ -85,8 +85,10 @@ namespace :reuse do
   desc "Normalize Ruby files: frozen_string_literal at top, SPDX in #--/#++ block"
   task :normalize_ruby do
     ruby_extensions = %w[rb rake gemspec].freeze
+    # Exclude intentionally-formatted files
+    excluded_files = %w[examples/verify_website_menu/app.rb].freeze
     ruby_files = Dir.glob("**/*.{#{ruby_extensions.join(',')}}")
-      .reject { |f| f.start_with?("vendor/", "tmp/", ".") }
+      .reject { |f| f.start_with?("vendor/", "tmp/", ".") || excluded_files.include?(f) }
 
     fixed_count = 0
     ruby_files.each do |file|

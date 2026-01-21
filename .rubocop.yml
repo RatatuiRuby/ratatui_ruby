@@ -6,3 +6,5 @@ inherit_from:
 
 AllCops:
   TargetRubyVersion: "3.3"
+  Exclude:
+    - 'examples/verify_website_menu/app.rb'
