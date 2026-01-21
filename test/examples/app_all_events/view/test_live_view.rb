@@ -110,7 +110,7 @@ class TestLiveView < Minitest::Test
     assert_includes event_types_found, "Focus"
   end
 
-  def test_lit_row_uses_highlighted_style
+  def test_lit_row_uses_reversed_style
     model = build_model
     model = record_event(model, RatatuiRuby::Event::Key.new(code: "a"))
 
@@ -120,9 +120,9 @@ class TestLiveView < Minitest::Test
     key_row = widget.text[1]
     first_span_style = key_row.spans.first.style
 
-    # When lit, should have bg: :green
-    assert_equal :green, first_span_style.bg
-    assert_equal :black, first_span_style.fg
+    # When lit, should be inverted green
+    assert_equal :green, first_span_style.fg
+    assert_includes first_span_style.modifiers, :reversed
   end
 
   def test_unlit_row_uses_cyan_for_type

@@ -1,7 +1,7 @@
 [0m[32m┌Event Counts──────┐ [32m┌Live Display─────────────────────────────────────────────┐[0m
 [0m[32m│[0m[1m[32mKey: 3[0m            [32m│ [32m│[0m[1m[90mType     Time      Description[0m                           [32m│[0m
-[0m[32m│[90m  Standard: 3     [32m│ [32m│[30m[42mKey      XX:XX:XX  #<RatatuiRuby::Event::Key code="c" mod[32m│[0m
-[0m[32m│[90m  Function: 0     [32m│ [32m│[30m[42mMouse    XX:XX:XX  #<RatatuiRuby::Event::Mouse:0xXXXXXX[32m│[0m
+[0m[32m│[90m  Standard: 3     [32m│ [32m│[0m[7m[32mKey      XX:XX:XX  #<RatatuiRuby::Event::Key code="c" mod[0m[32m│[0m
+[0m[32m│[90m  Function: 0     [32m│ [32m│[0m[7m[32mMouse    XX:XX:XX  #<RatatuiRuby::Event::Mouse:0xXXXXXX[0m[32m│[0m
 [0m[32m│[90m  Media: 0        [32m│ [32m│[36mResize   [97m—         —                                     [32m│[0m
 [0m[32m│[90m  System: 0       [32m│ [32m│[36mPaste    [97m—         —                                     [32m│[0m
 [0m[32m│[90m  Modifier: 0     [32m│ [32m│[36mFocus    [97m—         —                                     [32m│[0m
