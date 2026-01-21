@@ -139,6 +139,106 @@ module RatatuiRuby
     # (Native method implemented in Rust)
 
     ##
+    # :method: select_next
+    # :call-seq: select_next() -> nil
+    #
+    # Moves selection to the next row. Selects first row if nothing selected.
+    #
+    # === Optimistic Indexing
+    #
+    # Increments the index immediately, even past table bounds. The renderer
+    # clamps to valid range on draw. Reading <tt>selected</tt> between this
+    # call and render may return an out-of-bounds value.
+    #
+    # To detect actual selection changes, check bounds first:
+    #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
+    #   max_index = rows.size - 1
+    #   return if (state.selected || 0) >= max_index
+    #   state.select_next
+    #
+    #--
+    # SPDX-SnippetEnd
+    #++
+    # (Native method implemented in Rust)
+
+    ##
+    # :method: select_previous
+    # :call-seq: select_previous() -> nil
+    #
+    # Moves selection to the previous row. Selects last row if nothing selected.
+    #
+    # === Optimistic Indexing
+    #
+    # At index 0, does nothing. With no selection, sets index to maximum value;
+    # the renderer clamps to actual last row on draw.
+    #
+    # To detect actual selection changes, check bounds first:
+    #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
+    #   return if (state.selected || 0) <= 0
+    #   state.select_previous
+    #
+    #--
+    # SPDX-SnippetEnd
+    #++
+    # (Native method implemented in Rust)
+
+    ##
+    # :method: select_first
+    # :call-seq: select_first() -> nil
+    #
+    # Jumps selection to the first row (index 0).
+    #
+    # To detect actual selection changes:
+    #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
+    #   return if (state.selected || 0) == 0
+    #   state.select_first
+    #
+    #--
+    # SPDX-SnippetEnd
+    #++
+    # (Native method implemented in Rust)
+
+    ##
+    # :method: select_last
+    # :call-seq: select_last() -> nil
+    #
+    # Jumps selection to the last row.
+    #
+    # === Optimistic Indexing
+    #
+    # Sets index to maximum possible value. The renderer clamps to actual last
+    # row on draw. To get or check the real last index, track row count:
+    #
+    #--
+    # SPDX-SnippetBegin
+    # SPDX-FileCopyrightText: 2026 Kerrick Long
+    # SPDX-License-Identifier: MIT-0
+    #++
+    #   max_index = rows.size - 1
+    #   return if (state.selected || 0) == max_index
+    #   state.select(max_index)
+    #
+    #--
+    # SPDX-SnippetEnd
+    #++
+    # (Native method implemented in Rust)
+
+    ##
     # :singleton-method: with_selected_cell
     # :call-seq: with_selected_cell(cell) -> TableState
     #

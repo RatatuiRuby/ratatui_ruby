@@ -16,6 +16,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+- **TableState Row Navigation Methods**: Added missing row navigation methods (`select_next`, `select_previous`, `select_first`, `select_last`) that should have been included alongside the column navigation methods added in v0.10.0. These methods match `ListState`'s navigation API and are used in the `app_stateful_interaction` example.
+
 ### Removed
 
 ## [1.0.0-beta.1] - 2026-01-20

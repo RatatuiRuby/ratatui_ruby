@@ -105,4 +105,57 @@ class TestTableState < Minitest::Test
     assert_nil state.selected_column
     assert_nil state.selected_cell
   end
+
+  def test_table_state_select_next
+    state = RatatuiRuby::TableState.new(nil)
+    state.select(0)
+    state.select_next
+    assert_equal 1, state.selected
+  end
+
+  def test_table_state_select_previous
+    state = RatatuiRuby::TableState.new(nil)
+    state.select(5)
+    state.select_previous
+    assert_equal 4, state.selected
+  end
+
+  def test_table_state_select_first
+    state = RatatuiRuby::TableState.new(nil)
+    state.select(5)
+    state.select_first
+    assert_equal 0, state.selected
+  end
+
+  def test_table_state_select_last_sets_index_to_max_before_render
+    state = RatatuiRuby::TableState.new(nil)
+    state.select(0)
+    state.select_last
+    # Before render: huge value (usize::MAX)
+    assert state.selected > 1_000_000_000
+  end
+
+  def test_table_state_select_last_clamps_to_actual_last_index_after_render
+    with_test_terminal do
+      state = RatatuiRuby::TableState.new(nil)
+      state.select_last
+      # Before render: huge value
+      assert state.selected > 1_000_000_000
+
+      table = RatatuiRuby::Widgets::Table.new(
+        rows: [%w[A B C], %w[D E F], %w[G H I]],
+        widths: [
+          RatatuiRuby::Layout::Constraint.percentage(33),
+          RatatuiRuby::Layout::Constraint.percentage(33),
+          RatatuiRuby::Layout::Constraint.percentage(34),
+        ]
+      )
+      RatatuiRuby.draw do |frame|
+        frame.render_stateful_widget(table, frame.area, state)
+      end
+
+      # After render: clamped to actual last (index 2)
+      assert_equal 2, state.selected
+    end
+  end
 end
