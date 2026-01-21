@@ -21,13 +21,14 @@ class Spinner
     end
   end
 
-  def ending(tui, message, color) = tui.draw do |frame|
-    frame.render_widget(tui.paragraph(text: message, fg: color), frame.area)
+  def ending(tui, text, fg) = tui.draw do |frame|
+    frame.render_widget(tui.paragraph(text:, fg:), frame.area)
+    puts # Prepare a new line for the shell prompt
   end
 
-  def initialize = (@frame, @finish = 0, Time.now + 1)
+  def initialize = (@frame, @finish = 0, Time.now + 2)
   def connected? = Time.now >= @finish # Simulate work
   def spin = SPINNER[(@frame += 1) % SPINNER.length]
   SPINNER = %w[⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏]
 end
-Spinner.new.main; puts
+Spinner.new.main

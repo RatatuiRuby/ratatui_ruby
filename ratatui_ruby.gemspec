@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.email = ["me@kerricklong.com"]
 
   spec.summary = "💎 Unofficial Ruby wrapper for the Ratatui 👨‍🍳🐀."
-  spec.description = "ratatui_ruby is a wrapper for the Ratatui Rust crate <https://ratatui.rs>. It allows you to cook up Terminal User Interfaces in Ruby."
+  spec.description = File.read(File.expand_path("README.rdoc", __dir__))
   spec.homepage = "https://sr.ht/~kerrick/ratatui_ruby/"
   spec.license = "LGPL-3.0-or-later"
   spec.required_ruby_version = [">= 3.2.9", "< 5"]

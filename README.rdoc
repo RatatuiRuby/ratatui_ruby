@@ -1,0 +1,302 @@
+
+== Terminal UIs, the Ruby Way
+
+RatatuiRuby[https://rubygems.org/gems/ratatui_ruby] is a RubyGem built on
+Ratatui[https://ratatui.rs], a leading TUI library written in
+Rust[https://rust-lang.org]. You get native performance with the joy of Ruby.
+
+  gem install ratatui_ruby
+
+{rdoc-image:https://ratatui-ruby.dev/hero.gif}[https://www.ratatui-ruby.dev/docs/v0.10/examples/app_cli_rich_moments/README_md.html]
+
+=== Rich Moments
+
+Add a spinner, a progress bar, or an inline menu to your CLI script. No
+full-screen takeover. Your terminal history stays intact.
+
+==== Inline Viewports
+
+Standard TUIs erase themselves on exit. Your carefully formatted CLI output
+disappears. Users lose their scrollback.
+
+<b>Inline viewports</b> solve this. They occupy a fixed number of lines, render
+rich UI, then leave the output in place when done.
+
+Perfect for spinners, menus, progress indicators—any brief moment of richness.
+
+  require "ratatui_ruby"
+
+  RatatuiRuby.run(viewport: :inline, height: 1) do |tui|
+    until connected?
+      status = tui.paragraph(text: "\#{spin} Connecting...")
+      tui.draw { |frame| frame.render_widget(status, frame.area) }
+    end
+  end
+
+=== Build Something Real
+
+Full-screen applications with {keyboard and mouse input}[https://www.ratatui-ruby.dev/docs/v0.10/examples/app_all_events/README_md.html]. The managed loop
+sets up the terminal and restores it on exit, even after crashes.
+
+  RatatuiRuby.run do |tui|
+    loop do
+      tui.draw do |frame|
+        frame.render_widget(
+          tui.paragraph(text: "Hello, RatatuiRuby!", alignment: :center),
+          frame.area
+        )
+      end
+
+      case tui.poll_event
+      in { type: :key, code: "q" } then break
+      else nil
+      end
+    end
+  end
+
+==== Widgets included:
+
+[Layout]
+  {Block}[https://www.ratatui-ruby.dev/docs/v0.10/examples/widget_block/README_md.html],
+  {Center}[https://www.ratatui-ruby.dev/docs/v0.10/examples/widget_center/README_md.html],
+  {Clear (Popup, Modal)}[https://www.ratatui-ruby.dev/docs/v0.10/examples/widget_popup/README_md.html],
+  {Layout (Split, Grid)}[https://www.ratatui-ruby.dev/docs/v0.10/examples/widget_layout_split/README_md.html],
+  {Overlay}[https://www.ratatui-ruby.dev/docs/v0.10/examples/widget_overlay/README_md.html]
+[Data]
+  {Bar Chart}[https://www.ratatui-ruby.dev/docs/v0.10/examples/widget_barchart/README_md.html],
+  {Chart}[https://www.ratatui-ruby.dev/docs/v0.10/examples/widget_chart/README_md.html],
+  {Gauge}[https://www.ratatui-ruby.dev/docs/v0.10/examples/widget_gauge/README_md.html],
+  {Line Gauge}[https://www.ratatui-ruby.dev/docs/v0.10/examples/widget_line_gauge/README_md.html],
+  {Sparkline}[https://www.ratatui-ruby.dev/docs/v0.10/examples/widget_sparkline/README_md.html],
+  {Table}[https://www.ratatui-ruby.dev/docs/v0.10/examples/widget_table/README_md.html]
+[Text]
+  {Cell}[https://www.ratatui-ruby.dev/docs/v0.10/examples/widget_cell/README_md.html],
+  {List}[https://www.ratatui-ruby.dev/docs/v0.10/examples/widget_list/README_md.html],
+  {Rich Text (Line, Span)}[https://www.ratatui-ruby.dev/docs/v0.10/examples/widget_rich_text/README_md.html],
+  {Scrollbar (Scroll)}[https://www.ratatui-ruby.dev/docs/v0.10/examples/widget_scrollbar/README_md.html],
+  {Tabs}[https://www.ratatui-ruby.dev/docs/v0.10/examples/widget_tabs/README_md.html]
+[Graphics]
+  {Calendar}[https://www.ratatui-ruby.dev/docs/v0.10/examples/widget_calendar/README_md.html],
+  {Canvas}[https://www.ratatui-ruby.dev/docs/v0.10/examples/widget_canvas/README_md.html],
+  {Map (World Map)}[https://www.ratatui-ruby.dev/docs/v0.10/examples/widget_map/README_md.html]
+
+Need something else? {Build custom widgets}[https://www.ratatui-ruby.dev/docs/v0.10/doc/concepts/custom_widgets_md.html] in Ruby!
+
+
+---
+
+=== Testing Built In
+
+TUI testing is tedious. You need a headless terminal, event injection,
+snapshot comparisons, and style assertions. RatatuiRuby bundles all of it.
+
+  require "ratatui_ruby/test_helper"
+
+  class TestColorPicker < Minitest::Test
+    include RatatuiRuby::TestHelper
+
+    def test_swatch_widget
+      with_test_terminal(10, 3) do
+        RatatuiRuby.draw do |frame|
+          frame.render_widget(Swatch.new(:red), frame.area)
+        end
+        assert_cell_style 2, 1, char: "█", bg: :red
+      end
+    end
+  end
+
+==== What's inside:
+
+- <b>Headless terminal</b> — No real TTY needed
+- <b>Snapshots</b> — Plain text and rich (ANSI colors)
+- <b>Event injection</b> — Keys, mouse, paste, resize
+- <b>Style assertions</b> — Color, bold, underline at any cell
+- <b>Test doubles</b> — Mock frames and stub rects
+- <b>UPDATE_SNAPSHOTS=1</b> — Regenerate baselines in one command
+
+
+---
+
+==== Inline Menu Example
+
+  require "ratatui_ruby"
+
+  # This example renders an inline menu. Arrow keys select, enter confirms.
+  # The menu appears in-place, preserving scrollback. When the user chooses,
+  # the TUI closes and the script continues with the selected value.
+  class RadioMenu
+    CHOICES = ["Production", "Staging", "Development"]         # ASCII strings are universally supported.
+    PREFIXES = { active: "●", inactive: "○" }                  # Some terminals may not support Unicode.
+    CONTROLS = "↑/↓: Select | Enter: Choose | Ctrl+C: Cancel"  # Let users know what keys you handle.
+    TITLES = ["Select Environment",                            # The default title position is top left.
+              { content: CONTROLS,                             # Multiple titles can save space.
+                position: :bottom,                             # Titles go on the top or bottom,
+                alignment: :right }]                           # aligned left, right, or center
+
+    def call                                                   # This method blocks until a choice is made.
+      RatatuiRuby.run(viewport: :inline, height: 5) do |tui|   # RatauiRuby.run manages the terminal.
+        @tui = tui                                             # The TUI instance is safe to store.
+        show_menu until chosen?                                # You can use any loop keyword you like.
+      end                                                      # `run` won't return until your block does,
+      RadioMenu::CHOICES[@choice]                              # so you can use it synchronously.
+    end
+                                                               # Classes like RadioMenu are convenient for
+    private                                                    # CLI authors to offer "rich moments."
+
+    def show_menu = @tui.draw do |frame|                       # RatatuiRuby gives you low-level access.
+      widget = @tui.paragraph(                                 # But the TUI facade makes it easy to use.
+        text: menu_items,                                      # Text can be spans, lines, or paragraphs.
+        block: @tui.block(borders: :all, titles: TITLES)       # Blocks give you boxes and titles, and hold
+      )                                                        # one or more widgets. We only use one here,
+      frame.render_widget(widget, frame.area)                  # but "area" lets you compose sub-views.
+    end
+
+    def chosen?                                                # You are responsible for handling input.
+      interaction = @tui.poll_event                            # Every frame, you receive an event object:
+      return choose if interaction.enter?                      # Key, Mouse, Resize, Paste, FocusGained,
+                                                               # FocusLost, or None objects. They come with
+      move_by(-1) if interaction.up?                           # predicates, support pattern matching, and
+      move_by(1) if interaction.down?                          # can be inspected for properties directly.
+      quit! if interaction.ctrl_c?                             # Your application must handle every input,
+      false                                                    # even interrupts and other exit patterns.
+    end
+
+    def choose                                                 # Here, the loop is about to exit, and the
+      prepare_next_line                                        # block will return. The inline viewport
+      @choice                                                  # will be torn down and the terminal will
+    end                                                        # be restored, but you are responsible for
+                                                               # positioning the cursor.
+    def prepare_next_line                                      # To ensure the next output is on a new
+      area = @tui.viewport_area                                # line, query the viewport area and move
+      RatatuiRuby.cursor_position = [0, area.y + area.height]  # the cursor to the start of the last line.
+      puts                                                     # Then print a newline.
+    end
+
+    def quit!                                                  # All of your familiar Ruby control flow
+      prepare_next_line                                        # keywords work as expected, so we can
+      exit 0                                                   # use them to leave the TUI.
+    end
+
+    def move_by(line_count)                                    # You are in full control of your UX, so
+      @choice = (@choice + line_count) % CHOICES.size          # you can implement any logic you need:
+    end                                                        # Would you "wrap around" here, or not?
+                                                               #
+    def menu_items = CHOICES.map.with_index do |choice, i|     # Notably, RatatuiRuby has no concept of
+      "\#{prefix_for(i)} \#{choice}"                             # "menus" or "radio buttons". You are in
+    end                                                        # full control, but it also means you must
+    def prefix_for(choice_index)                               # implement the logic yourself. For larger
+      return PREFIXES[:active] if choice_index == @choice      # applications, consider using Rooibos,
+      PREFIXES[:inactive]                                      # an MVU framework built with RatatuiRuby.
+    end                                                        # Or, use the upcoming ratatui-ruby-kit,
+                                                               # our object-oriented component library.
+    def initialize = @choice = 0                               # However, those are both optional, and
+  end                                                          # designed for full-screen Terminal UIs.
+                                                               # RatatuiRuby will always give you the most
+  choice = RadioMenu.new.call                                  # control, and is enough for "rich CLI
+  puts "You chose \#{choice}!"                                  # moments" like this one.
+
+---
+
+=== Full App Solutions
+
+RatatuiRuby renders. For complex applications, add a framework that manages
+state and composition.
+
+==== Rooibos[https://git.sr.ht/~kerrick/rooibos] (Framework)
+
+Model-View-Update architecture. Inspired by Elm, Bubble Tea, and React +
+Redux. Your UI is a pure function of state.
+
+- Functional programming with MVU
+- Commands work off the main thread
+- Messages, not callbacks, drive updates
+
+==== {Kit}[https://sr.ht/~kerrick/ratatui_ruby/#chapter-3-the-object-path--kit] (Coming Soon)
+
+Component-based architecture. Encapsulate state, input handling, and
+rendering in reusable pieces.
+
+- OOP with stateful components
+- Separate UI state from domain logic
+- Built-in focus management & click handling
+
+Both use the same widget library and rendering engine. Pick the paradigm
+that fits your brain.
+
+
+---
+
+=== Why RatatuiRuby?
+
+Ruby deserves world-class terminal user interfaces. TUI developers deserve
+a world-class language.
+
+RatatuiRuby wraps Rust's Ratatui via native extension. The Rust library
+handles rendering. Your Ruby code handles design.
+
+>>>
+  "Text UIs are seeing a renaissance with many new TUI libraries popping up.
+  The Ratatui bindings have proven to be full featured and stable."
+
+  — {Mike Perham}[https://www.mikeperham.com/], creator of
+  Sidekiq[https://sidekiq.org/] and Faktory[https://contribsys.com/faktory/]
+
+==== Why Rust? Why Ruby?
+
+Rust excels at low-level rendering. Ruby excels at expressing domain logic
+and UI. RatatuiRuby puts each language where it performs best.
+
+==== Versus CharmRuby
+
+CharmRuby[https://charm-ruby.dev/] wraps Charm's Go libraries. Both projects
+give Ruby developers TUI options.
+
+[Integration]
+  CharmRuby: Two runtimes, one process.
+  RatatuiRuby: Native extension in Rust.
+[Runtime]
+  CharmRuby: Go + Ruby (competing).
+  RatatuiRuby: Ruby (Rust has no runtime).
+[Memory]
+  CharmRuby: Two uncoordinated GCs.
+  RatatuiRuby: One Garbage Collector.
+[Style]
+  CharmRuby: The Elm Architecture (TEA).
+  RatatuiRuby: TEA, OOP, or Imperative.
+
+
+---
+
+=== Links
+
+[Get Started]
+  {Quickstart}[https://www.ratatui-ruby.dev/docs/v0.10/doc/getting_started/quickstart_md.html],
+  {Examples}[https://www.ratatui-ruby.dev/docs/v0.10/examples/app_cli_rich_moments/README_md.html],
+  {API Reference}[https://www.ratatui-ruby.dev/docs/v0.10/],
+  {Guides}[https://www.ratatui-ruby.dev/docs/v0.10/doc/index_md.html]
+[Ecosystem]
+  Rooibos[https://git.sr.ht/~kerrick/rooibos],
+  {Kit}[https://sr.ht/~kerrick/ratatui_ruby/#chapter-3-the-object-path--kit] (Planned),
+  {Framework}[https://sr.ht/~kerrick/ratatui_ruby/#chapter-5-the-framework] (Planned),
+  {UI Widgets}[https://sr.ht/~kerrick/ratatui_ruby/#chapter-6-licensing] (Planned)
+[Community]
+  {Discuss and Chat}[https://lists.sr.ht/~kerrick/ratatui_ruby-discuss],
+  {Announcements}[https://lists.sr.ht/~kerrick/ratatui_ruby-announce],
+  {Development}[https://lists.sr.ht/~kerrick/ratatui_ruby-devel],
+  {Bug Tracker}[https://todo.sr.ht/~kerrick/ratatui_ruby]
+[Contribute]
+  {Contributing Guide}[https://man.sr.ht/~kerrick/ratatui_ruby/contributing.md],
+  {Code of Conduct}[https://man.sr.ht/~kerrick/ratatui_ruby/code_of_conduct.md],
+  {Project History}[https://man.sr.ht/~kerrick/ratatui_ruby/history/index.md],
+  {Pull Requests}[https://lists.sr.ht/~kerrick/ratatui_ruby-devel/patches]
+
+
+---
+
+[Website] https://www.ratatui-ruby.dev
+[Source] https://git.sr.ht/~kerrick/ratatui_ruby
+[RubyGems] https://rubygems.org/gems/ratatui_ruby
+[Upstream] https://ratatui.rs
+[Build Status] https://builds.sr.ht/~kerrick/ratatui_ruby
+
+© 2026 Kerrick Long · Library: LGPL-3.0-or-later · Website: CC-BY-NC-ND-4.0 · Snippets: MIT-0
