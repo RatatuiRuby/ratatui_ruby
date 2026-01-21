@@ -49,7 +49,7 @@ class View::Live
       desc_str = event_data ? event_data[:description] : "—"
 
       is_lit = model.lit?(type)
-      row_style = is_lit ? tui.style(fg: :black, bg: :green) : nil
+      row_style = is_lit ? tui.style(fg: :green, modifiers: [:reversed]) : nil
 
       rows << tui.text_line(spans: [
         tui.text_span(content: class_str.ljust(9), style: row_style || tui.style(fg: :cyan)),
