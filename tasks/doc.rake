@@ -885,3 +885,21 @@ def build_guides_nav(parent_ul, tree, doc, prefix, current_file_rel, current_tre
     parent_ul.add_child(li)
   end
 end
+
+namespace :doc do
+  desc "Check for broken links in RDoc and Markdown files"
+  task :check_links do
+    require_relative "doc/link_audit"
+
+    root = File.expand_path("..", __dir__)
+
+    print "Verify HTTP/HTTPS URLs (slow)? [Y/n] "
+    $stdout.flush
+    verify_web = $stdin.gets&.strip&.downcase != "n"
+
+    audit = LinkAudit.new(root, verify_web:)
+    puts audit
+
+    exit 1 unless audit.success?
+  end
+end
