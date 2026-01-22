@@ -49,8 +49,7 @@ module RatatuiRuby
       #
       # One of <tt>:legacy</tt>, <tt>:start</tt>, <tt>:center</tt>, <tt>:end</tt>, <tt>:space_between</tt>, <tt>:space_around</tt>.
 
-      # :nodoc:
-      FLEX_MODES = %i[legacy start center end space_between space_around space_evenly].freeze
+      FLEX_MODES = %i[legacy start center end space_between space_around space_evenly].freeze # :nodoc:
 
       ##
       # Direction: split vertically (top to bottom).

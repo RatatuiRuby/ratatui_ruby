@@ -1,0 +1,24 @@
+┌README.md (11-29/77)──────────────────────────────────────────────────────────▲
+│seamlessly re-entering—like editing a commit message in lazygit or tig.       ║
+│                                                                              ║
+│Most applications use `RatatuiRuby.run { }` which handles terminal setup and  █
+│teardown automatically. But some workflows require **repeatedly leaving and   █
+│re-entering raw mode** during a single session. This example shows the        █
+│low-level lifecycle API that makes this possible.                             █
+│                                                                              █
+│## Features Demonstrated                                                      ║
+│                                                                              ║
+│- **Full Lifecycle Control**: Using `init_terminal` and `restore_terminal`    ║
+│directly instead of the `run` block.                                          ║
+│- **External Process Invocation**: Safely restoring the terminal before       ║
+│spawning an interactive subprocess.                                           ║
+│- **Session Re-entry**: Returning to the TUI after the external process exits,║
+│with state preserved.                                                         ║
+│- **Split-Pane Layout**: Dynamically splitting the display when scratch       ║
+│content exists.                                                               ║
+│- **Focus-Aware Scrolling**: Keyboard scrolling affects the focused pane;     ║
+│mouse scroll affects the hovered pane.                                        ║
+└──────────────────────────────────────────────────────────────────────────────▼
+┌Controls──────────────────────────────────────────────────────────────────────┐
+│             ↑/↓: Scroll  e: Edit README  s: Edit Scratch  q: Quit            │
+└──────────────────────────────────────────────────────────────────────────────┘

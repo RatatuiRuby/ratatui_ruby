@@ -215,8 +215,7 @@ class WidgetList
     end
   end
 
-  # :nodoc:
-  private def render
+  private def render # :nodoc:
     items = @item_sets[@item_set_index][:items]
     direction_config = @direction_configs[@direction_index]
     spacing_config = @highlight_spacing_configs[@highlight_spacing_index]
@@ -342,8 +341,7 @@ class WidgetList
     end
   end
 
-  # :nodoc:
-  private def handle_input
+  private def handle_input # :nodoc:
     case @tui.poll_event
     in { type: :key, code: "q" } | { type: :key, code: "c", modifiers: ["ctrl"] }
       :quit

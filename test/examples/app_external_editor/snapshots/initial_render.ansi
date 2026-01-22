@@ -1,0 +1,24 @@
+[0m[36m┌README.md (11-29/77)──────────────────────────────────────────────────────────▲[0m
+[0m[36m│seamlessly re-entering—like editing a commit message in lazygit or tig.       [36m║[0m
+[0m[36m│                                                                              [36m║[0m
+[0m[36m│Most applications use `RatatuiRuby.run { }` which handles terminal setup and  [36m█[0m
+[0m[36m│teardown automatically. But some workflows require **repeatedly leaving and   [36m█[0m
+[0m[36m│re-entering raw mode** during a single session. This example shows the        [36m█[0m
+[0m[36m│low-level lifecycle API that makes this possible.                             [36m█[0m
+[0m[36m│                                                                              [36m█[0m
+[0m[36m│## Features Demonstrated                                                      [36m║[0m
+[0m[36m│                                                                              [36m║[0m
+[0m[36m│- **Full Lifecycle Control**: Using `init_terminal` and `restore_terminal`    [36m║[0m
+[0m[36m│directly instead of the `run` block.                                          [36m║[0m
+[0m[36m│- **External Process Invocation**: Safely restoring the terminal before       [36m║[0m
+[0m[36m│spawning an interactive subprocess.                                           [36m║[0m
+[0m[36m│- **Session Re-entry**: Returning to the TUI after the external process exits,[36m║[0m
+[0m[36m│with state preserved.                                                         [36m║[0m
+[0m[36m│- **Split-Pane Layout**: Dynamically splitting the display when scratch       [36m║[0m
+[0m[36m│content exists.                                                               [36m║[0m
+[0m[36m│- **Focus-Aware Scrolling**: Keyboard scrolling affects the focused pane;     [36m║[0m
+[0m[36m│mouse scroll affects the hovered pane.                                        [36m║[0m
+[0m[36m└──────────────────────────────────────────────────────────────────────────────▼[0m
+[0m┌Controls──────────────────────────────────────────────────────────────────────┐[0m
+[0m│             [0m[1;4m↑/↓[0m: Scroll  [0m[1;4me[0m: Edit README  [0m[1;4ms[0m: Edit Scratch  [0m[1;4mq[0m: Quit            │[0m
+[0m└──────────────────────────────────────────────────────────────────────────────┘[0m

@@ -1,0 +1,12 @@
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: MIT-0
+#++
+
+class AppExternalEditor
+  # @public
+  def self.new: () -> AppExternalEditor
+
+  # @public
+  def run: () -> void
+end

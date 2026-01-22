@@ -1,0 +1,31 @@
+# frozen_string_literal: true
+
+#--
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#++
+
+$LOAD_PATH.unshift File.expand_path("../../lib", __dir__)
+require "ratatui_ruby"
+require "ratatui_ruby/test_helper"
+require "minitest/autorun"
+require_relative "../../../examples/app_external_editor/app"
+
+class TestAppExternalEditor < Minitest::Test
+  include RatatuiRuby::TestHelper
+
+  def setup
+    @app = AppExternalEditor.new
+  end
+
+  def test_initial_render
+    with_test_terminal do
+      # Scroll down past the SPDX header to avoid confusing `reuse lint`
+      10.times { inject_key(:j) }
+      inject_key(:q)
+      @app.run
+
+      assert_snapshots("initial_render")
+    end
+  end
+end
