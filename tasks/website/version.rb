@@ -37,8 +37,22 @@ class Version
     raise NotImplementedError
   end
 
-  def checkout(globs:, &block)
+  def ref
     raise NotImplementedError
+  end
+
+  def checkout(globs:, &block)
+    Dir.mktmpdir do |path|
+      # Use git archive to export the version at the specified ref
+      # Pipe to tar to extract into the temporary directory
+      system("git archive #{ref} | tar -x -C #{path}")
+
+      # Remove the native extension directory as we don't need it for builds
+      # and it can cause issues if not meant to be compiled in this context
+      FileUtils.rm_rf("#{path}/ext")
+
+      yield path
+    end
   end
 
   def latest?
@@ -63,26 +77,12 @@ class Edge < Version
     :edge
   end
 
-  def edge?
-    true
+  def ref
+    "trunk"
   end
 
-  def checkout(globs:, &block)
-    Dir.mktmpdir do |path|
-      # Use git ls-files for accurate source list
-      files = `git ls-files`.split("\n").select do |f|
-        globs.any? { |glob| File.fnmatch(glob, f, File::FNM_PATHNAME) }
-      end
-
-      files.each do |file|
-        dest = File.join(path, file)
-        next unless File.exist?(file) # Skip files that are in the index but deleted in the working tree
-        FileUtils.mkdir_p(File.dirname(dest))
-        FileUtils.cp(file, dest)
-      end
-
-      yield path
-    end
+  def edge?
+    true
   end
 end
 
@@ -106,6 +106,10 @@ class Tagged < Version
     :version
   end
 
+  def ref
+    @tag
+  end
+
   def semver
     Gem::Version.new(@tag.sub(/^v/, ""))
   end
@@ -114,14 +118,5 @@ class Tagged < Version
 
   def latest?
     @is_latest
-  end
-
-  def checkout(globs:, &block)
-    Dir.mktmpdir do |path|
-      system("git archive #{@tag} | tar -x -C #{path}")
-      # We could enforce globs here too, but git archive is usually sufficient.
-      FileUtils.rm_rf("#{path}/ext")
-      yield path
-    end
   end
 end
