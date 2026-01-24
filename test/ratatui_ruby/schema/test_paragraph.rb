@@ -38,6 +38,7 @@ class TestParagraph < Minitest::Test
     # Temporarily enable warnings for this test
     RatatuiRuby.experimental_warnings = true
     RatatuiRuby.instance_variable_set(:@warned_features, {})
+    RatatuiRuby.instance_variable_set(:@tui_session_active, false)
 
     p = RatatuiRuby::Widgets::Paragraph.new(text: "Hello")
     assert_output(nil, /WARNING: Paragraph#line_count is an experimental feature/) do

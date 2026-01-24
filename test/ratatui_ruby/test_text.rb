@@ -187,6 +187,47 @@ module RatatuiRuby
       assert_nil reset.style
     end
 
+    # Custom widget test proving hyperlinks ARE possible via Draw::CellCmd.
+    # This documents the correct pattern for ratatui_ruby-ui's Hyperlink widget.
+    def test_custom_widget_can_render_osc8_hyperlinks
+      with_test_terminal(10, 1) do
+        url = "https://example.com"
+
+        # OSC 8 format: \e]8;;URL\e\\ TEXT \e]8;;\e\\
+        # Each character gets wrapped individually (per Ratatui upstream pattern)
+        first_char = "\e]8;;#{url}\e\\L\e]8;;\e\\"
+        last_char = "\e]8;;#{url}\e\\k\e]8;;\e\\"
+
+        custom_widget = Object.new
+        custom_widget.define_singleton_method(:render) do |area|
+          [
+            RatatuiRuby::Draw.cell(area.x, area.y, RatatuiRuby::Buffer::Cell.char(first_char)),
+            RatatuiRuby::Draw.cell(area.x + 3, area.y, RatatuiRuby::Buffer::Cell.char(last_char)),
+          ]
+        end
+
+        RatatuiRuby.draw { |f| f.render_widget(custom_widget, f.area) }
+
+        # Test FIRST character has OSC 8 hyperlink
+        first_cell = RatatuiRuby.get_cell_at(0, 0)
+        assert_includes first_cell.char, "\e]8;;#{url}",
+          "First character should have OSC 8 hyperlink opening sequence"
+        assert_includes first_cell.char, "L",
+          "First character should contain visible 'L'"
+        assert_includes first_cell.char, "\e]8;;\e\\",
+          "First character should have OSC 8 hyperlink closing sequence"
+
+        # Test LAST character also has OSC 8 hyperlink
+        last_cell = RatatuiRuby.get_cell_at(3, 0)
+        assert_includes last_cell.char, "\e]8;;#{url}",
+          "Last character should have OSC 8 hyperlink opening sequence"
+        assert_includes last_cell.char, "k",
+          "Last character should contain visible 'k'"
+        assert_includes last_cell.char, "\e]8;;\e\\",
+          "Last character should have OSC 8 hyperlink closing sequence"
+      end
+    end
+
     # Line methods
     def test_line_left_aligned
       line = RatatuiRuby::Text::Line.new(spans: [RatatuiRuby::Text::Span.new(content: "Hello")])
