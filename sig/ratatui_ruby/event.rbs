@@ -111,6 +111,9 @@ module RatatuiRuby
       def drag?: () -> bool
       def scroll_up?: () -> bool
       def scroll_down?: () -> bool
+      def left?: () -> bool
+      def right?: () -> bool
+      def middle?: () -> bool
       def deconstruct_keys: (Array[Symbol]?) -> { type: :mouse, kind: String, x: Integer, y: Integer, button: String, modifiers: Array[String] }
     end
 

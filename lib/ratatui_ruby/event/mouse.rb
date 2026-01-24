@@ -110,6 +110,9 @@ module RatatuiRuby
         @kind == "up"
       end
 
+      alias mouse_down? down?
+      alias mouse_up? up?
+
       # Returns true if mouse is being dragged.
       def drag?
         @kind == "drag"
@@ -136,6 +139,25 @@ module RatatuiRuby
       def scroll_down?
         @kind == "scroll_down"
       end
+
+      # Returns true if event involves the left mouse button.
+      def left?
+        @button == "left"
+      end
+
+      # Returns true if event involves the right mouse button.
+      def right?
+        @button == "right"
+      end
+
+      # Returns true if event involves the middle mouse button.
+      def middle?
+        @button == "middle"
+      end
+
+      alias left_button? left?
+      alias right_button? right?
+      alias middle_button? middle?
 
       # Deconstructs the event for pattern matching.
       #

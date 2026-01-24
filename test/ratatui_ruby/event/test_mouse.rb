@@ -34,6 +34,39 @@ module RatatuiRuby
       refute_predicate Event::Mouse.new(kind: "up", x: 0, y: 0, button: "left"), :down?
     end
 
+    def test_mouse_down_and_mouse_up_aliases
+      down_event = Event::Mouse.new(kind: "down", x: 0, y: 0, button: "left")
+      up_event = Event::Mouse.new(kind: "up", x: 0, y: 0, button: "left")
+
+      assert_predicate down_event, :mouse_down?
+      refute_predicate down_event, :mouse_up?
+
+      assert_predicate up_event, :mouse_up?
+      refute_predicate up_event, :mouse_down?
+    end
+
+    def test_button_predicates
+      left_event = Event::Mouse.new(kind: "down", x: 0, y: 0, button: "left")
+      right_event = Event::Mouse.new(kind: "down", x: 0, y: 0, button: "right")
+      middle_event = Event::Mouse.new(kind: "down", x: 0, y: 0, button: "middle")
+
+      # Short form: left?, right?, middle?
+      assert_predicate left_event, :left?
+      refute_predicate left_event, :right?
+      refute_predicate left_event, :middle?
+
+      assert_predicate right_event, :right?
+      refute_predicate right_event, :left?
+
+      assert_predicate middle_event, :middle?
+      refute_predicate middle_event, :left?
+
+      # Long form: left_button?, right_button?, middle_button?
+      assert_predicate left_event, :left_button?
+      assert_predicate right_event, :right_button?
+      assert_predicate middle_event, :middle_button?
+    end
+
     def test_equality
       e1 = Event::Mouse.new(kind: "down", x: 1, y: 1, button: "left")
       e2 = Event::Mouse.new(kind: "down", x: 1, y: 1, button: "left")
