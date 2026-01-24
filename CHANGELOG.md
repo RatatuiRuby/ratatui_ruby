@@ -29,6 +29,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+- **Terminal Queries During Draw (Deadlock)**: Calling `viewport_area`, `terminal_size`, `get_cell_at`, `poll_event`, `get_cursor_position`, or `get_viewport_type` from inside a `draw()` block previously caused the application to freeze forever. The thread blocked on a Mutex. Ruby's `Timeout` could not interrupt it. The only recovery was `kill -9`. These reads now work via a snapshot captured before rendering.
+- **Terminal Mutations During Draw (Deadlock)**: Calling `insert_before`, `set_cursor_position`, or `resize_terminal` from inside a `draw()` block previously caused the same silent freeze. These writes now raise `Error::Invariant` with a clear message.
+- **Nested Draw Calls (Deadlock)**: Calling `draw()` from inside another `draw()` block previously froze the application. Nested draws now raise `Error::Invariant`.
+- **Event Injection During Draw (Deadlock)**: Calling `inject_test_event` from inside a `draw()` block previously froze the application. Event injection now works correctly during draw.
 - **TableState Row Navigation Methods**: Added missing row navigation methods (`select_next`, `select_previous`, `select_first`, `select_last`) that should have been included alongside the column navigation methods added in v0.10.0. These methods match `ListState`'s navigation API and are used in the `app_stateful_interaction` example.
 
 ### Removed

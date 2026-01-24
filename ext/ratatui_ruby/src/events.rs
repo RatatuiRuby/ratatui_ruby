@@ -2,9 +2,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use magnus::{Error, IntoValue, TryConvert, Value};
-use std::sync::Mutex;
+use std::cell::RefCell;
 
-static EVENT_QUEUE: Mutex<Vec<ratatui::crossterm::event::Event>> = Mutex::new(Vec::new());
+thread_local! {
+    static EVENT_QUEUE: RefCell<Vec<ratatui::crossterm::event::Event>> = const { RefCell::new(Vec::new()) };
+}
 
 #[allow(clippy::needless_pass_by_value)]
 pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), Error> {
@@ -24,7 +26,7 @@ pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), 
         }
     };
 
-    EVENT_QUEUE.lock().unwrap().push(event);
+    EVENT_QUEUE.with(|q| q.borrow_mut().push(event));
     Ok(())
 }
 
@@ -271,30 +273,24 @@ fn parse_paste_event(
 }
 
 pub fn clear_events() {
-    EVENT_QUEUE.lock().unwrap().clear();
+    EVENT_QUEUE.with(|q| q.borrow_mut().clear());
 }
 
 pub fn poll_event(ruby: &magnus::Ruby, timeout_val: Option<f64>) -> Result<Value, Error> {
-    let event = {
-        let mut queue = EVENT_QUEUE.lock().unwrap();
+    let event = EVENT_QUEUE.with(|q| {
+        let mut queue = q.borrow_mut();
         if queue.is_empty() {
             None
         } else {
             Some(queue.remove(0))
         }
-    };
+    });
 
     if let Some(e) = event {
         return handle_event(e);
     }
 
-    let is_test_mode = {
-        let term_lock = crate::terminal::TERMINAL.lock().unwrap();
-        matches!(
-            term_lock.as_ref(),
-            Some(crate::terminal::TerminalWrapper::Test(_))
-        )
-    };
+    let is_test_mode = crate::terminal::with_query(|q| q.is_test_mode()).unwrap_or(false);
 
     if is_test_mode {
         return Ok(ruby.qnil().into_value_with(ruby));
