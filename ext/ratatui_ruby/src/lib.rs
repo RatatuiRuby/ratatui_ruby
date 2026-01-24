@@ -17,13 +17,13 @@ mod frame;
 mod rendering;
 mod string_width;
 mod style;
-mod terminal;
+mod terminal; // New module with TerminalQuery trait
 mod text;
 mod widgets;
 
 use frame::RubyFrame;
 use magnus::{function, method, Error, Module, Object, Ruby, Value};
-use terminal::{init_terminal, restore_terminal, TERMINAL};
+use terminal::{init_terminal, restore_terminal};
 
 /// Draw to the terminal.
 ///
@@ -63,63 +63,78 @@ fn draw(args: &[Value]) -> Result<(), Error> {
         ));
     }
 
-    let mut term_lock = TERMINAL.lock().unwrap();
-    let mut render_error: Option<Error> = None;
+    // Nested draw() calls are not allowed - would deadlock
+    if terminal::is_in_draw_mode() {
+        let module = ruby.define_module("RatatuiRuby")?;
+        let error_base = module.const_get::<_, magnus::RClass>("Error")?;
+        let error_class = error_base.const_get("Invariant")?;
+        return Err(Error::new(
+            error_class,
+            "draw cannot be called during another draw (nested draws not allowed)",
+        ));
+    }
 
-    // Helper closure to execute the draw callback logic for either terminal type
-    let mut draw_callback = |f: &mut ratatui::Frame<'_>| {
-        if block_given {
-            // New API: yield RubyFrame to block
-            // Create validity flag — set to true while the block is executing
-            let active = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(true));
+    // Use lend_for_draw which handles snapshot capture/cleanup automatically
+    let result = terminal::lend_for_draw(|wrapper| {
+        let ruby = magnus::Ruby::get().expect("Ruby must be initialized");
+        let mut render_error: Option<Error> = None;
 
-            let ruby_frame = RubyFrame::new(f, active.clone());
-            if let Err(e) = ruby.yield_value::<_, Value>(ruby_frame) {
-                render_error = Some(e);
+        // Helper closure to execute the draw callback logic for either terminal type
+        let mut draw_callback = |f: &mut ratatui::Frame<'_>| {
+            if block_given {
+                // New API: yield RubyFrame to block
+                let active = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(true));
+
+                let ruby_frame = RubyFrame::new(f, active.clone());
+                if let Err(e) = ruby.yield_value::<_, Value>(ruby_frame) {
+                    render_error = Some(e);
+                }
+
+                // Invalidate frame immediately after block returns
+                active.store(false, std::sync::atomic::Ordering::Relaxed);
+            } else if let Some(tree_value) = tree {
+                // Legacy API: render tree to full area
+                let area = f.area();
+                if let Err(e) = rendering::render_node(f.buffer_mut(), area, tree_value) {
+                    render_error = Some(e);
+                }
             }
+        };
 
-            // Invalidate frame immediately after block returns
-            // This prevents use-after-free if user stored the frame object
-            active.store(false, std::sync::atomic::Ordering::Relaxed);
-        } else if let Some(tree_value) = tree {
-            // Legacy API: render tree to full area
-            let area = f.area();
-            if let Err(e) = rendering::render_node(f.buffer_mut(), area, tree_value) {
-                render_error = Some(e);
-            }
-        }
-    };
-
-    if let Some(wrapper) = term_lock.as_mut() {
         match wrapper {
             terminal::TerminalWrapper::Crossterm(term) => {
-                let module = ruby.define_module("RatatuiRuby")?;
-                let error_base = module.const_get::<_, magnus::RClass>("Error")?;
-                let error_class = error_base.const_get("Terminal")?;
+                let module = ruby.define_module("RatatuiRuby").unwrap();
+                let error_base = module.const_get::<_, magnus::RClass>("Error").unwrap();
+                let error_class = error_base.const_get("Terminal").unwrap();
                 term.draw(&mut draw_callback)
                     .map_err(|e| Error::new(error_class, e.to_string()))?;
             }
             terminal::TerminalWrapper::Test(term) => {
-                let module = ruby.define_module("RatatuiRuby")?;
-                let error_base = module.const_get::<_, magnus::RClass>("Error")?;
-                let error_class = error_base.const_get("Terminal")?;
+                let module = ruby.define_module("RatatuiRuby").unwrap();
+                let error_base = module.const_get::<_, magnus::RClass>("Error").unwrap();
+                let error_class = error_base.const_get("Terminal").unwrap();
                 term.draw(&mut draw_callback)
                     .map_err(|e| Error::new(error_class, e.to_string()))?;
             }
         }
-    } else {
+
+        if let Some(e) = render_error {
+            return Err(e);
+        }
+
+        Ok(())
+    });
+
+    result.unwrap_or_else(|| {
         eprintln!("Terminal is None!");
-    }
-
-    if let Some(e) = render_error {
-        return Err(e);
-    }
-
-    Ok(())
+        Ok(())
+    })
 }
 
-/// Storage for the last panic info, to be retrieved and printed after terminal restore.
-static LAST_PANIC: std::sync::Mutex<Option<String>> = std::sync::Mutex::new(None);
+// Storage for the last panic info, to be retrieved and printed after terminal restore.
+thread_local! {
+    static LAST_PANIC: std::cell::RefCell<Option<String>> = const { std::cell::RefCell::new(None) };
+}
 
 /// Enables Rust backtraces and installs a custom panic hook.
 ///
@@ -131,9 +146,9 @@ fn enable_rust_backtrace(_ruby: &magnus::Ruby) {
     std::panic::set_hook(Box::new(|info| {
         let backtrace = std::backtrace::Backtrace::force_capture();
         let message = format!("Rust panic: {info}\n{backtrace}");
-        if let Ok(mut guard) = LAST_PANIC.lock() {
-            *guard = Some(message);
-        }
+        LAST_PANIC.with(|p| {
+            *p.borrow_mut() = Some(message);
+        });
     }));
 }
 
@@ -141,11 +156,7 @@ fn enable_rust_backtrace(_ruby: &magnus::Ruby) {
 ///
 /// Call this after terminal restoration to get deferred panic output.
 fn get_last_panic(_ruby: &magnus::Ruby) -> Option<String> {
-    if let Ok(mut guard) = LAST_PANIC.lock() {
-        guard.take()
-    } else {
-        None
-    }
+    LAST_PANIC.with(|p| p.borrow_mut().take())
 }
 
 /// Intentionally panics to test backtrace output.
