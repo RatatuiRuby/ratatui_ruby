@@ -102,6 +102,8 @@ module RatatuiRuby
   def self._get_terminal_size: () -> Hash[String, Integer]
   def self._get_viewport_type: () -> String
   def self.insert_before: (Integer height, ?widget? widget) ?{ () -> widget } -> void
+  def self._frame_count: () -> Integer
+  def self.frame_count: () -> Integer
 
   # Color conversion (internal, Rust FFI)
   def self._color_from_u32: (Integer) -> String

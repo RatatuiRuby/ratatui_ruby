@@ -120,6 +120,25 @@ class TestInvariants < Minitest::Test
     end
   end
 
+  def test_frame_count_inside_draw_works
+    with_test_terminal(80, 24) do
+      # Draw once to set frame_count to 1
+      RatatuiRuby.draw(RatatuiRuby::Widgets::Paragraph.new(text: "first"))
+
+      count_during_draw = nil
+      RatatuiRuby.run do |tui|
+        tui.draw do |_frame|
+          # During this draw (which will become frame 2),
+          # we should see the pre-draw count (1)
+          count_during_draw = RatatuiRuby.frame_count
+        end
+        break
+      end
+      # Snapshot captured BEFORE draw, so count is 1 (not 2)
+      assert_equal 1, count_during_draw
+    end
+  end
+
   # === WRITE OPERATIONS (should raise Error::Invariant during draw) ===
 
   def test_insert_before_inside_draw_raises_invariant

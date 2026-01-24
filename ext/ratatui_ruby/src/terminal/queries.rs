@@ -214,3 +214,18 @@ fn modifiers_to_value(modifier: ratatui::style::Modifier) -> Value {
 
     ary.as_value()
 }
+
+/// Returns the number of frames that have been drawn
+pub fn frame_count() -> Result<usize, Error> {
+    let ruby = magnus::Ruby::get().unwrap();
+
+    crate::terminal::with_query(|q| Ok(q.frame_count())).unwrap_or_else(|| {
+        let module = ruby.define_module("RatatuiRuby").unwrap();
+        let error_base = module.const_get::<_, magnus::RClass>("Error").unwrap();
+        let error_class = error_base.const_get("Invariant").unwrap();
+        Err(Error::new(
+            error_class,
+            "Cannot query frame_count: terminal not initialized. Use RatatuiRuby.run or call init_terminal first.",
+        ))
+    })
+}

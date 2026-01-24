@@ -19,6 +19,7 @@ pub trait TerminalQuery {
     fn is_test_mode(&self) -> bool;
     fn cursor_position(&self) -> Option<(u16, u16)>;
     fn cell_at(&self, x: u16, y: u16) -> Option<Cell>;
+    fn frame_count(&self) -> usize;
 }
 
 /// Snapshot of terminal state captured before draw.
@@ -30,6 +31,7 @@ pub struct DrawSnapshot {
     pub is_test_mode: bool,
     pub cursor_position: Option<(u16, u16)>,
     pub buffer: Option<ratatui::buffer::Buffer>,
+    pub frame_count: usize,
 }
 
 impl DrawSnapshot {
@@ -38,18 +40,23 @@ impl DrawSnapshot {
         match wrapper {
             super::wrapper::TerminalWrapper::Crossterm(t) => {
                 let size = t.size().unwrap_or_default();
-                let viewport = t.get_frame().area();
+                let frame = t.get_frame();
+                let viewport = frame.area();
+                let count = frame.count();
                 Self {
                     size: Rect::new(0, 0, size.width, size.height),
                     viewport_area: viewport,
                     is_test_mode: false,
                     cursor_position: None,
                     buffer: None,
+                    frame_count: count,
                 }
             }
             super::wrapper::TerminalWrapper::Test(t) => {
                 let size = t.size().unwrap_or_default();
-                let viewport = t.get_frame().area();
+                let frame = t.get_frame();
+                let viewport = frame.area();
+                let count = frame.count();
                 let cursor = t.get_cursor_position().ok().map(Into::into);
                 let buffer = t.backend().buffer().clone();
                 Self {
@@ -58,6 +65,7 @@ impl DrawSnapshot {
                     is_test_mode: true,
                     cursor_position: cursor,
                     buffer: Some(buffer),
+                    frame_count: count,
                 }
             }
         }
@@ -79,6 +87,9 @@ impl TerminalQuery for DrawSnapshot {
     }
     fn cell_at(&self, x: u16, y: u16) -> Option<Cell> {
         self.buffer.as_ref()?.cell((x, y)).cloned()
+    }
+    fn frame_count(&self) -> usize {
+        self.frame_count
     }
 }
 
@@ -129,6 +140,12 @@ impl TerminalQuery for LiveTerminal<'_> {
             super::wrapper::TerminalWrapper::Crossterm(_) => None,
         }
     }
+    fn frame_count(&self) -> usize {
+        match *self.0.borrow_mut() {
+            super::wrapper::TerminalWrapper::Crossterm(ref mut t) => t.get_frame().count(),
+            super::wrapper::TerminalWrapper::Test(ref mut t) => t.get_frame().count(),
+        }
+    }
 }
 
 #[cfg(test)]
@@ -156,6 +173,9 @@ mod tests {
         fn cell_at(&self, _x: u16, _y: u16) -> Option<Cell> {
             None
         }
+        fn frame_count(&self) -> usize {
+            0
+        }
     }
 
     #[test]
@@ -174,6 +194,7 @@ mod tests {
             is_test_mode: false,
             cursor_position: None,
             buffer: None,
+            frame_count: 0,
         };
         assert_eq!(snapshot.size(), Rect::new(0, 0, 120, 40));
     }
@@ -186,6 +207,7 @@ mod tests {
             is_test_mode: false,
             cursor_position: None,
             buffer: None,
+            frame_count: 0,
         };
         // This should return the stored viewport_area, not Rect::default()
         assert_eq!(snapshot.viewport_area(), Rect::new(5, 10, 80, 20));
@@ -199,6 +221,7 @@ mod tests {
             is_test_mode: true, // TRUE!
             cursor_position: None,
             buffer: None,
+            frame_count: 0,
         };
         assert!(snapshot.is_test_mode());
     }
@@ -211,6 +234,7 @@ mod tests {
             is_test_mode: false,
             cursor_position: Some((15, 20)), // Not None!
             buffer: None,
+            frame_count: 0,
         };
         assert_eq!(snapshot.cursor_position(), Some((15, 20)));
     }
@@ -229,6 +253,7 @@ mod tests {
             is_test_mode: true,
             cursor_position: None,
             buffer: Some(buffer),
+            frame_count: 0,
         };
 
         let cell = snapshot.cell_at(5, 5);
@@ -334,5 +359,42 @@ mod tests {
         // But viewport is only 5 lines high (inline mode)
         assert_eq!(viewport.width, 80);
         assert_eq!(viewport.height, 5);
+    }
+
+    #[test]
+    fn test_live_terminal_frame_count_increases_after_draw() {
+        use crate::terminal::TerminalWrapper;
+        use ratatui::{backend::TestBackend, Terminal};
+
+        let backend = TestBackend::new(80, 24);
+        let mut terminal = Terminal::new(backend).unwrap();
+
+        // Draw once to increment the counter
+        terminal.draw(|_frame| {}).unwrap();
+
+        let mut wrapper = TerminalWrapper::Test(terminal);
+        let live = super::LiveTerminal::new(&mut wrapper);
+
+        // Frame count should be 1 after one draw, NOT 0!
+        assert_eq!(live.frame_count(), 1);
+    }
+
+    #[test]
+    fn test_live_terminal_frame_count_increases_with_multiple_draws() {
+        use crate::terminal::TerminalWrapper;
+        use ratatui::{backend::TestBackend, Terminal};
+
+        let backend = TestBackend::new(80, 24);
+        let mut terminal = Terminal::new(backend).unwrap();
+
+        // Draw twice
+        terminal.draw(|_frame| {}).unwrap();
+        terminal.draw(|_frame| {}).unwrap();
+
+        let mut wrapper = TerminalWrapper::Test(terminal);
+        let live = super::LiveTerminal::new(&mut wrapper);
+
+        // Frame count should be 2 after two draws!
+        assert_eq!(live.frame_count(), 2);
     }
 }

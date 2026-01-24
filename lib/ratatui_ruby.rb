@@ -512,8 +512,23 @@ module RatatuiRuby
     alias viewport_size get_viewport_area
   end
 
-  # (Native methods _get_cell_at and _get_terminal_size implemented in Rust)
-  private_class_method :_get_cell_at, :_get_terminal_size
+  ##
+  # Number of frames drawn since terminal initialization.
+  #
+  # TUI applications track render cycles for animations, FPS counters, or
+  # debugging. Manually counting draws is error-prone and clutters app logic.
+  #
+  # This method queries the terminal's internal frame counter. It starts at 0
+  # when the terminal initializes and increments by 1 after each successful
+  # draw. Restoring and re-initializing resets the counter.
+  #
+  # Raises RatatuiRuby::Error::Invariant if terminal not initialized.
+  def self.frame_count
+    _frame_count
+  end
+
+  # (Native methods implemented in Rust)
+  private_class_method :_get_cell_at, :_get_terminal_size, :_frame_count
 
   # Hide native Layout._split helper
   Layout::Layout.singleton_class.__send__(:private, :_split)

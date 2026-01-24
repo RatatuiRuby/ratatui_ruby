@@ -29,8 +29,8 @@ pub use init::{
 
 // Query functions
 pub use queries::{
-    get_buffer_content, get_cell_at, get_cursor_position, get_terminal_area, get_terminal_size,
-    get_viewport_type,
+    frame_count, get_buffer_content, get_cell_at, get_cursor_position, get_terminal_area,
+    get_terminal_size, get_viewport_type,
 };
 
 // Mutation functions

@@ -265,6 +265,7 @@ fn init() -> Result<(), Error> {
         "_get_viewport_type",
         function!(terminal::get_viewport_type, 0),
     )?;
+    m.define_module_function("_frame_count", function!(terminal::frame_count, 0))?;
 
     // Register Terminal class with instance-specific FFI methods
     register_terminal_class(&ruby, m)?;
