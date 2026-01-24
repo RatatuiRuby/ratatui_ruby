@@ -16,6 +16,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+### Removed
+
+## [1.0.0-beta.3] - 2026-01-24
+
+### Added
+
+### Changed
+
+### Fixed
+
 - **Terminal Queries During Draw (Deadlock)**: Calling `viewport_area`, `terminal_size`, `get_cell_at`, `poll_event`, `get_cursor_position`, or `get_viewport_type` from inside a `draw()` block previously caused the application to freeze forever. The thread blocked on a Mutex. Ruby's `Timeout` could not interrupt it. The only recovery was `kill -9`. These reads now work via a snapshot captured before rendering.
 - **Terminal Mutations During Draw (Deadlock)**: Calling `insert_before`, `set_cursor_position`, or `resize_terminal` from inside a `draw()` block previously caused the same silent freeze. These writes now raise `Error::Invariant` with a clear message.
 - **Nested Draw Calls (Deadlock)**: Calling `draw()` from inside another `draw()` block previously froze the application. Nested draws now raise `Error::Invariant`.
@@ -691,6 +701,7 @@ This release is functionally equivalent to v0.10.3. The version bump signals the
 - **Testing Support**: Included `RatatuiRuby::TestHelper` and RSpec integration to make testing your TUI applications possible.
 
 [Unreleased]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/HEAD
+[1.0.0-beta.3]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v1.0.0-beta.3
 [1.0.0-beta.2]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v1.0.0-beta.2
 [1.0.0-beta.1]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v1.0.0-beta.1
 [0.10.3]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.10.3
