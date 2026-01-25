@@ -8,6 +8,101 @@ thread_local! {
     static EVENT_QUEUE: RefCell<Vec<ratatui::crossterm::event::Event>> = const { RefCell::new(Vec::new()) };
 }
 
+use ratatui::crossterm::event::{KeyCode, KeyModifiers, MediaKeyCode, ModifierKeyCode};
+
+/// Single source of truth for base key code mappings.
+const BASE_KEY_MAPPINGS: &[(&str, KeyCode)] = &[
+    // Arrow keys
+    ("up", KeyCode::Up),
+    ("down", KeyCode::Down),
+    ("left", KeyCode::Left),
+    ("right", KeyCode::Right),
+    // Common keys
+    ("enter", KeyCode::Enter),
+    ("esc", KeyCode::Esc),
+    ("backspace", KeyCode::Backspace),
+    ("tab", KeyCode::Tab),
+    ("back_tab", KeyCode::BackTab),
+    ("null", KeyCode::Null),
+    // Navigation keys
+    ("home", KeyCode::Home),
+    ("end", KeyCode::End),
+    ("page_up", KeyCode::PageUp),
+    ("page_down", KeyCode::PageDown),
+    ("insert", KeyCode::Insert),
+    ("delete", KeyCode::Delete),
+    // Lock keys
+    ("caps_lock", KeyCode::CapsLock),
+    ("scroll_lock", KeyCode::ScrollLock),
+    ("num_lock", KeyCode::NumLock),
+    // System keys
+    ("print_screen", KeyCode::PrintScreen),
+    ("pause", KeyCode::Pause),
+    ("menu", KeyCode::Menu),
+    ("keypad_begin", KeyCode::KeypadBegin),
+];
+
+/// Single source of truth for media key mappings.
+const MEDIA_KEY_MAPPINGS: &[(&str, MediaKeyCode)] = &[
+    ("media_play", MediaKeyCode::Play),
+    ("media_pause", MediaKeyCode::Pause),
+    ("media_play_pause", MediaKeyCode::PlayPause),
+    ("media_reverse", MediaKeyCode::Reverse),
+    ("media_stop", MediaKeyCode::Stop),
+    ("media_fast_forward", MediaKeyCode::FastForward),
+    ("media_rewind", MediaKeyCode::Rewind),
+    ("media_track_next", MediaKeyCode::TrackNext),
+    ("media_track_previous", MediaKeyCode::TrackPrevious),
+    ("media_record", MediaKeyCode::Record),
+    ("media_lower_volume", MediaKeyCode::LowerVolume),
+    ("media_raise_volume", MediaKeyCode::RaiseVolume),
+    ("media_mute_volume", MediaKeyCode::MuteVolume),
+];
+
+/// Single source of truth for modifier key mappings.
+const MODIFIER_KEY_MAPPINGS: &[(&str, ModifierKeyCode)] = &[
+    ("left_shift", ModifierKeyCode::LeftShift),
+    ("left_control", ModifierKeyCode::LeftControl),
+    ("left_alt", ModifierKeyCode::LeftAlt),
+    ("left_super", ModifierKeyCode::LeftSuper),
+    ("left_hyper", ModifierKeyCode::LeftHyper),
+    ("left_meta", ModifierKeyCode::LeftMeta),
+    ("right_shift", ModifierKeyCode::RightShift),
+    ("right_control", ModifierKeyCode::RightControl),
+    ("right_alt", ModifierKeyCode::RightAlt),
+    ("right_super", ModifierKeyCode::RightSuper),
+    ("right_hyper", ModifierKeyCode::RightHyper),
+    ("right_meta", ModifierKeyCode::RightMeta),
+    ("iso_level3_shift", ModifierKeyCode::IsoLevel3Shift),
+    ("iso_level5_shift", ModifierKeyCode::IsoLevel5Shift),
+];
+
+/// Single source of truth for keyboard modifier flag mappings.
+const KEYBOARD_MODIFIER_MAPPINGS: &[(&str, KeyModifiers)] = &[
+    ("ctrl", KeyModifiers::CONTROL),
+    ("alt", KeyModifiers::ALT),
+    ("shift", KeyModifiers::SHIFT),
+];
+
+/// Returns all supported key codes for RBS generation.
+pub fn all_key_codes() -> magnus::RHash {
+    let ruby = magnus::Ruby::get().unwrap();
+    let hash = ruby.hash_new();
+
+    let base: Vec<&str> = BASE_KEY_MAPPINGS.iter().map(|(s, _)| *s).collect();
+    let media: Vec<&str> = MEDIA_KEY_MAPPINGS.iter().map(|(s, _)| *s).collect();
+    let modifier_keys: Vec<&str> = MODIFIER_KEY_MAPPINGS.iter().map(|(s, _)| *s).collect();
+    let keyboard_modifiers: Vec<&str> =
+        KEYBOARD_MODIFIER_MAPPINGS.iter().map(|(s, _)| *s).collect();
+
+    let _ = hash.aset(ruby.to_symbol("base_keys"), base);
+    let _ = hash.aset(ruby.to_symbol("media_keys"), media);
+    let _ = hash.aset(ruby.to_symbol("modifier_keys"), modifier_keys);
+    let _ = hash.aset(ruby.to_symbol("keyboard_modifiers"), keyboard_modifiers);
+
+    hash
+}
+
 #[allow(clippy::needless_pass_by_value)]
 pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
@@ -30,132 +125,67 @@ pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), 
     Ok(())
 }
 
-/// Parses a `snake_case` string to `MediaKeyCode`.
-///
-/// Parses a `snake_case` string to `MediaKeyCode`.
-///
-/// Only accepts the `media_`-prefixed codes (canonical). Legacy unprefixed codes are no longer supported.
-fn parse_media_key(s: &str) -> Option<ratatui::crossterm::event::MediaKeyCode> {
-    use ratatui::crossterm::event::MediaKeyCode;
-    match s {
-        // New canonical codes (media_ prefix)
-        "media_play" => Some(MediaKeyCode::Play),
-        "media_pause" => Some(MediaKeyCode::Pause),
-        "media_play_pause" => Some(MediaKeyCode::PlayPause),
-        "media_reverse" => Some(MediaKeyCode::Reverse),
-        "media_stop" => Some(MediaKeyCode::Stop),
-        "media_fast_forward" => Some(MediaKeyCode::FastForward),
-        "media_rewind" => Some(MediaKeyCode::Rewind),
-        "media_track_next" => Some(MediaKeyCode::TrackNext),
-        "media_track_previous" => Some(MediaKeyCode::TrackPrevious),
-        "media_record" => Some(MediaKeyCode::Record),
-        "media_lower_volume" => Some(MediaKeyCode::LowerVolume),
-        "media_raise_volume" => Some(MediaKeyCode::RaiseVolume),
-        "media_mute_volume" => Some(MediaKeyCode::MuteVolume),
-        _ => None,
-    }
+fn parse_base_key(s: &str) -> Option<KeyCode> {
+    BASE_KEY_MAPPINGS
+        .iter()
+        .find(|(key, _)| *key == s)
+        .map(|(_, code)| *code)
 }
 
-/// Parses a `snake_case` string to `ModifierKeyCode`.
-fn parse_modifier_key(s: &str) -> Option<ratatui::crossterm::event::ModifierKeyCode> {
-    use ratatui::crossterm::event::ModifierKeyCode;
-    match s {
-        "left_shift" => Some(ModifierKeyCode::LeftShift),
-        "left_control" => Some(ModifierKeyCode::LeftControl),
-        "left_alt" => Some(ModifierKeyCode::LeftAlt),
-        "left_super" => Some(ModifierKeyCode::LeftSuper),
-        "left_hyper" => Some(ModifierKeyCode::LeftHyper),
-        "left_meta" => Some(ModifierKeyCode::LeftMeta),
-        "right_shift" => Some(ModifierKeyCode::RightShift),
-        "right_control" => Some(ModifierKeyCode::RightControl),
-        "right_alt" => Some(ModifierKeyCode::RightAlt),
-        "right_super" => Some(ModifierKeyCode::RightSuper),
-        "right_hyper" => Some(ModifierKeyCode::RightHyper),
-        "right_meta" => Some(ModifierKeyCode::RightMeta),
-        "iso_level3_shift" => Some(ModifierKeyCode::IsoLevel3Shift),
-        "iso_level5_shift" => Some(ModifierKeyCode::IsoLevel5Shift),
-        _ => None,
-    }
+fn parse_media_key(s: &str) -> Option<MediaKeyCode> {
+    MEDIA_KEY_MAPPINGS
+        .iter()
+        .find(|(key, _)| *key == s)
+        .map(|(_, code)| *code)
+}
+
+fn parse_modifier_key(s: &str) -> Option<ModifierKeyCode> {
+    MODIFIER_KEY_MAPPINGS
+        .iter()
+        .find(|(key, _)| *key == s)
+        .map(|(_, code)| *code)
+}
+
+fn parse_keyboard_modifier(s: &str) -> Option<KeyModifiers> {
+    KEYBOARD_MODIFIER_MAPPINGS
+        .iter()
+        .find(|(key, _)| *key == s)
+        .map(|(_, mods)| *mods)
 }
 
 fn parse_key_event(
     data: magnus::RHash,
     ruby: &magnus::Ruby,
 ) -> Result<ratatui::crossterm::event::Event, Error> {
-    use ratatui::crossterm::event::KeyCode;
-
     let code_val: Value = data
         .get(ruby.to_symbol("code"))
         .ok_or_else(|| Error::new(ruby.exception_arg_error(), "Missing 'code' in key event"))?;
     let code_str: String = String::try_convert(code_val)?;
-    let code = match code_str.as_str() {
-        // Arrow keys
-        "up" => KeyCode::Up,
-        "down" => KeyCode::Down,
-        "left" => KeyCode::Left,
-        "right" => KeyCode::Right,
-        // Common keys
-        "enter" => KeyCode::Enter,
-        "esc" => KeyCode::Esc,
-        "backspace" => KeyCode::Backspace,
-        "tab" => KeyCode::Tab,
-        "back_tab" => KeyCode::BackTab,
-        // Navigation keys
-        "home" => KeyCode::Home,
-        "end" => KeyCode::End,
-        "page_up" => KeyCode::PageUp,
-        "page_down" => KeyCode::PageDown,
-        "insert" => KeyCode::Insert,
-        "delete" => KeyCode::Delete,
-        // Lock keys
-        "caps_lock" => KeyCode::CapsLock,
-        "scroll_lock" => KeyCode::ScrollLock,
-        "num_lock" => KeyCode::NumLock,
-        // System keys
-        "print_screen" => KeyCode::PrintScreen,
-        "pause" => KeyCode::Pause,
-        "menu" => KeyCode::Menu,
-        "keypad_begin" => KeyCode::KeypadBegin,
-        "null" => KeyCode::Null,
-        // Dynamic parsing for media, modifiers, function keys, and characters
-        s => {
-            // Media keys (check first - "fast_forward" starts with 'f' but isn't F-key)
-            if let Some(m) = parse_media_key(s) {
-                KeyCode::Media(m)
-            }
-            // Modifier keys
-            else if let Some(m) = parse_modifier_key(s) {
-                KeyCode::Modifier(m)
-            }
-            // Function keys: f1, f2, ..., f12, etc.
-            else if let Some(num_str) = s.strip_prefix('f') {
-                if let Ok(n) = num_str.parse::<u8>() {
-                    KeyCode::F(n)
-                } else {
-                    // "f" alone or invalid suffix - treat as character
-                    KeyCode::Char(s.chars().next().unwrap_or('\0'))
-                }
-            }
-            // Single character
-            else if s.len() == 1 {
-                KeyCode::Char(s.chars().next().unwrap())
-            }
-            // Unknown - default to Null
-            else {
-                KeyCode::Null
-            }
+
+    let code = if let Some(kc) = parse_base_key(&code_str) {
+        kc
+    } else if let Some(m) = parse_media_key(&code_str) {
+        KeyCode::Media(m)
+    } else if let Some(m) = parse_modifier_key(&code_str) {
+        KeyCode::Modifier(m)
+    } else if let Some(num_str) = code_str.strip_prefix('f') {
+        if let Ok(n) = num_str.parse::<u8>() {
+            KeyCode::F(n)
+        } else {
+            KeyCode::Char(code_str.chars().next().unwrap_or('\0'))
         }
+    } else if code_str.len() == 1 {
+        KeyCode::Char(code_str.chars().next().unwrap())
+    } else {
+        KeyCode::Null
     };
 
-    let mut modifiers = ratatui::crossterm::event::KeyModifiers::empty();
+    let mut modifiers = KeyModifiers::empty();
     if let Some(mods_val) = data.get(ruby.to_symbol("modifiers")) {
         let mods: Vec<String> = Vec::try_convert(mods_val)?;
         for m in mods {
-            match m.as_str() {
-                "ctrl" => modifiers |= ratatui::crossterm::event::KeyModifiers::CONTROL,
-                "alt" => modifiers |= ratatui::crossterm::event::KeyModifiers::ALT,
-                "shift" => modifiers |= ratatui::crossterm::event::KeyModifiers::SHIFT,
-                _ => {}
+            if let Some(mod_flag) = parse_keyboard_modifier(&m) {
+                modifiers |= mod_flag;
             }
         }
     }
@@ -327,50 +357,25 @@ fn handle_event(event: ratatui::crossterm::event::Event) -> Result<Value, Error>
     }
 }
 
-/// Converts `MediaKeyCode` to `snake_case` string.
-///
-/// All media keys are consistently prefixed with `media_` to reflect that they
-/// belong to the `KeyCode::Media(_)` variant in Crossterm. This allows Ruby's
-/// "Smart Predicates" to provide DWIM behavior (e.g., `pause?` matching both
-/// system and media pause).
-fn media_key_to_string(m: ratatui::crossterm::event::MediaKeyCode) -> &'static str {
-    use ratatui::crossterm::event::MediaKeyCode;
-    match m {
-        MediaKeyCode::Play => "media_play",
-        MediaKeyCode::Pause => "media_pause",
-        MediaKeyCode::PlayPause => "media_play_pause",
-        MediaKeyCode::Reverse => "media_reverse",
-        MediaKeyCode::Stop => "media_stop",
-        MediaKeyCode::FastForward => "media_fast_forward",
-        MediaKeyCode::Rewind => "media_rewind",
-        MediaKeyCode::TrackNext => "media_track_next",
-        MediaKeyCode::TrackPrevious => "media_track_previous",
-        MediaKeyCode::Record => "media_record",
-        MediaKeyCode::LowerVolume => "media_lower_volume",
-        MediaKeyCode::RaiseVolume => "media_raise_volume",
-        MediaKeyCode::MuteVolume => "media_mute_volume",
-    }
+fn media_key_to_string(m: MediaKeyCode) -> &'static str {
+    MEDIA_KEY_MAPPINGS
+        .iter()
+        .find(|(_, code)| *code == m)
+        .map_or("unknown", |(s, _)| *s)
 }
 
-/// Converts `ModifierKeyCode` to `snake_case` string.
-fn modifier_key_to_string(m: ratatui::crossterm::event::ModifierKeyCode) -> &'static str {
-    use ratatui::crossterm::event::ModifierKeyCode;
-    match m {
-        ModifierKeyCode::LeftShift => "left_shift",
-        ModifierKeyCode::LeftControl => "left_control",
-        ModifierKeyCode::LeftAlt => "left_alt",
-        ModifierKeyCode::LeftSuper => "left_super",
-        ModifierKeyCode::LeftHyper => "left_hyper",
-        ModifierKeyCode::LeftMeta => "left_meta",
-        ModifierKeyCode::RightShift => "right_shift",
-        ModifierKeyCode::RightControl => "right_control",
-        ModifierKeyCode::RightAlt => "right_alt",
-        ModifierKeyCode::RightSuper => "right_super",
-        ModifierKeyCode::RightHyper => "right_hyper",
-        ModifierKeyCode::RightMeta => "right_meta",
-        ModifierKeyCode::IsoLevel3Shift => "iso_level3_shift",
-        ModifierKeyCode::IsoLevel5Shift => "iso_level5_shift",
-    }
+fn modifier_key_to_string(m: ModifierKeyCode) -> &'static str {
+    MODIFIER_KEY_MAPPINGS
+        .iter()
+        .find(|(_, code)| *code == m)
+        .map_or("unknown", |(s, _)| *s)
+}
+
+fn base_key_to_string(kc: KeyCode) -> Option<&'static str> {
+    BASE_KEY_MAPPINGS
+        .iter()
+        .find(|(_, code)| *code == kc)
+        .map(|(s, _)| *s)
 }
 
 fn handle_key_event(key: ratatui::crossterm::event::KeyEvent) -> Result<Value, Error> {
@@ -415,65 +420,28 @@ fn handle_key_event(key: ratatui::crossterm::event::KeyEvent) -> Result<Value, E
         | KeyCode::KeypadBegin => "system",
     };
 
-    let code = match key.code {
-        // Characters
-        KeyCode::Char(c) => c.to_string(),
-        // Arrow keys
-        KeyCode::Up => "up".to_string(),
-        KeyCode::Down => "down".to_string(),
-        KeyCode::Left => "left".to_string(),
-        KeyCode::Right => "right".to_string(),
-        // Common keys
-        KeyCode::Enter => "enter".to_string(),
-        KeyCode::Esc => "esc".to_string(),
-        KeyCode::Backspace => "backspace".to_string(),
-        KeyCode::Tab => "tab".to_string(),
-        KeyCode::BackTab => "back_tab".to_string(),
-        // Navigation keys
-        KeyCode::Home => "home".to_string(),
-        KeyCode::End => "end".to_string(),
-        KeyCode::PageUp => "page_up".to_string(),
-        KeyCode::PageDown => "page_down".to_string(),
-        KeyCode::Insert => "insert".to_string(),
-        KeyCode::Delete => "delete".to_string(),
-        // Function keys
-        KeyCode::F(n) => format!("f{n}"),
-        // Lock keys
-        KeyCode::CapsLock => "caps_lock".to_string(),
-        KeyCode::ScrollLock => "scroll_lock".to_string(),
-        KeyCode::NumLock => "num_lock".to_string(),
-        // System keys
-        KeyCode::PrintScreen => "print_screen".to_string(),
-        KeyCode::Pause => "pause".to_string(),
-        KeyCode::Menu => "menu".to_string(),
-        KeyCode::KeypadBegin => "keypad_begin".to_string(),
-        KeyCode::Null => "null".to_string(),
-        // Compound variants
-        KeyCode::Media(m) => media_key_to_string(m).to_string(),
-        KeyCode::Modifier(m) => modifier_key_to_string(m).to_string(),
+    let code = if let KeyCode::Char(c) = key.code {
+        c.to_string()
+    } else if let KeyCode::F(n) = key.code {
+        format!("f{n}")
+    } else if let KeyCode::Media(m) = key.code {
+        media_key_to_string(m).to_string()
+    } else if let KeyCode::Modifier(m) = key.code {
+        modifier_key_to_string(m).to_string()
+    } else if let Some(s) = base_key_to_string(key.code) {
+        s.to_string()
+    } else {
+        "unknown".to_string()
     };
 
     hash.aset(ruby.to_symbol("code"), code)?;
     hash.aset(ruby.to_symbol("kind"), ruby.to_symbol(kind))?;
 
     let mut modifiers = Vec::new();
-    if key
-        .modifiers
-        .contains(ratatui::crossterm::event::KeyModifiers::CONTROL)
-    {
-        modifiers.push("ctrl");
-    }
-    if key
-        .modifiers
-        .contains(ratatui::crossterm::event::KeyModifiers::ALT)
-    {
-        modifiers.push("alt");
-    }
-    if key
-        .modifiers
-        .contains(ratatui::crossterm::event::KeyModifiers::SHIFT)
-    {
-        modifiers.push("shift");
+    for (name, flag) in KEYBOARD_MODIFIER_MAPPINGS {
+        if key.modifiers.contains(*flag) {
+            modifiers.push(*name);
+        }
     }
     if !modifiers.is_empty() {
         hash.aset(ruby.to_symbol("modifiers"), modifiers)?;

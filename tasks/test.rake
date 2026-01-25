@@ -30,4 +30,7 @@ namespace :test do
   Minitest::TestTask.create(:ruby) do |t|
     t.test_globs = ["test/**/*.rb", "examples/**/test_*.rb"]
   end
+
+  # Regenerate predicate tests before running Ruby tests
+  Rake::Task["test:ruby"].enhance(["rbs:tests"])
 end

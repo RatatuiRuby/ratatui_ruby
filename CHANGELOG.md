@@ -27,6 +27,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Frame Count Query**: `RatatuiRuby.frame_count` returns the number of frames drawn since terminal initialization. The count starts at 0 when the terminal is created, increments by 1 after each draw, and resets when the terminal is restored and re-initialized.
 - **Mouse and Resize Symbol Comparison**: `Event::Mouse` and `Event::Resize` now support symbol comparison via `to_sym` and `==`, matching `Event::Key`. Use `event == :mouse_left_down`, `event == :scroll_up`, or `event == :resize` for cleaner event handling.
 - **Key Event DWIM Predicates**: `Event::Key` now supports alternate predicate forms for disambiguation and case handling. Arrow key aliases (`arrow_up?`, `up_arrow?`) distinguish keyboard input from `Mouse#up?`/`Mouse#down?`. The `key_` prefix and `_key` suffix (`key_up?`, `q_key?`) provide explicit key event matching in mixed event contexts. Capital letters match their shifted form naturally (`G?` matches `code="G"` with shift), and uppercase in predicates implies shift (`alt_B?` matches `alt_shift_B`).
+- **Generated RBS Predicate Declarations**: New `rake rbs:predicates` task generates RBS type declarations for all 1,328 `Event::Key` predicate methods (base keys, modifiers, characters, function keys, and all modifier combinations). Predicates are derived from a single source of truth in Rust FFI.
 
 ### Changed
 
