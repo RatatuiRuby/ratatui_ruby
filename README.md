@@ -20,9 +20,6 @@ Mailing List: Announcements](https://img.shields.io/badge/mailing_list-announcem
 **ratatui_ruby** is a Ruby wrapper for [Ratatui](https://ratatui.rs). It allows you to cook up Terminal User Interfaces in Ruby.
 **ratatui_ruby** is a community wrapper that is not affiliated with [the Ratatui team](https://github.com/orgs/ratatui/people).
 
-> [!WARNING]
-> **ratatui_ruby** is currently in **BETA**. Please report any bugs you find!
-
 **[Why RatatuiRuby?](./doc/getting_started/why.md)** — Native Rust performance, zero runtime overhead, and Ruby's expressiveness. [See how we compare](./doc/getting_started/why.md) to CharmRuby, raw Rust, and Go.
 
 Please join the **announce** mailing list at https://lists.sr.ht/~kerrick/ratatui_ruby-announce to stay up-to-date on new releases and announcements. See the [`trunk` branch](https://git.sr.ht/~kerrick/ratatui_ruby/tree/trunk) for pre-release updates.
@@ -91,7 +88,7 @@ Or install it yourself with:
   SPDX-License-Identifier: MIT-0
 -->
 ```bash
-gem install ratatui_ruby --pre
+gem install ratatui_ruby
 ```
 <!-- SPDX-SnippetEnd -->
 
