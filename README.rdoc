@@ -5,7 +5,7 @@ RatatuiRuby[https://rubygems.org/gems/ratatui_ruby] is a RubyGem built on
 Ratatui[https://ratatui.rs], a leading TUI library written in
 Rust[https://rust-lang.org]. You get native performance with the joy of Ruby.
 
-  gem install ratatui_ruby --pre
+  gem install ratatui_ruby
 
 {rdoc-image:https://ratatui-ruby.dev/hero.gif}[https://www.ratatui-ruby.dev/docs/v0.10/examples/app_cli_rich_moments/README_md.html]
 
