@@ -11,10 +11,11 @@ require_relative "bump/sem_ver"
 require_relative "bump/manifest"
 require_relative "bump/cargo_lockfile"
 require_relative "bump/ruby_gem"
-require_relative "bump/changelog"
+require_relative "bump/release_from_trunk"
+require_relative "bump/patch_release"
 
 namespace :bump do
-  ratatuiRuby = RubyGem.new(
+  gem = RubyGem.new(
     manifests: [
       Manifest.new(
         path: "lib/ratatui_ruby/version.rb",
@@ -31,21 +32,30 @@ namespace :bump do
       path: "ext/ratatui_ruby/Cargo.lock",
       dir: "ext/ratatui_ruby",
       name: "ratatui_ruby"
-    ),
-    changelog: Changelog.new
+    )
   )
 
-  SemVer::SEGMENTS.each do |segment|
-    desc "Bump #{segment} version"
-    task segment do
-      ratatuiRuby.bump(segment)
-      Rake::Task["sourcehut"].invoke
-    end
+  desc "Bump major version"
+  task :major do
+    ReleaseFromTrunk.new(gem:).call(:major)
+  end
+
+  desc "Bump minor version"
+  task :minor do
+    ReleaseFromTrunk.new(gem:).call(:minor)
+  end
+
+  desc "Bump patch version"
+  task :patch do
+    PatchRelease.new(gem:).call(:patch)
   end
 
   desc "Set exact version (e.g. rake bump:exact[0.1.0])"
   task :exact, [:version] do |_, args|
-    ratatuiRuby.set(args[:version])
+    target = SemVer.parse(args[:version])
+    changelog = Changelog.new
+    changelog.release(target)
+    gem.update_version(target)
     Rake::Task["sourcehut"].invoke
   end
 end

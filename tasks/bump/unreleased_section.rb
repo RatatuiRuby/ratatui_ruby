@@ -53,4 +53,21 @@ class UnreleasedSection
       .map { |line| formatter.wrap(line, 72) }
       .join("\n\n")
   end
+
+  # Returns all changelog entry lines (lines starting with "- ")
+  def entries
+    @content.lines.select { |line| line.strip.start_with?("- ") }.map(&:strip)
+  end
+
+  # Returns a new UnreleasedSection with entries removed that appear in the given list.
+  def without_entries(entries_to_remove)
+    return self if entries_to_remove.empty?
+
+    new_lines = @content.lines.reject do |line|
+      stripped = line.strip
+      entries_to_remove.include?(stripped)
+    end
+
+    self.class.new(new_lines.join)
+  end
 end

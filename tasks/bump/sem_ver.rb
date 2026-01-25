@@ -22,6 +22,10 @@ class SemVer
     @prerelease = prerelease
   end
 
+  def major = @segments[0]
+  def minor = @segments[1]
+  def patch = @segments[2]
+
   def next(segment)
     index = SEGMENTS.index(segment)
     raise ArgumentError, "Invalid segment: #{segment}" unless index

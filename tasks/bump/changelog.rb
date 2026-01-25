@@ -37,11 +37,68 @@ class Changelog
     nil
   end
 
+  # Removes entries from [Unreleased] that were released in the given version.
+  # Used when creating a release branch from trunk.
+  def prune_released_entries(released_entries)
+    content = File.read(@path)
+
+    header = Header.parse(content)
+    unreleased = UnreleasedSection.parse(content)
+    links = Links.from_markdown(content)
+
+    raise "Could not parse CHANGELOG.md" unless header && unreleased && links
+
+    history = History.parse(content, header.length, unreleased.to_s.length, links.to_s)
+
+    pruned = unreleased.without_entries(released_entries)
+
+    File.write(@path, "#{header}#{pruned}\n\n#{history}\n#{links}")
+    nil
+  end
+
+  # Imports a release section from another branch's changelog.
+  # Adds the version section to history and dedupes from [Unreleased].
+  # Uses "first wins" — if entry already deduped, doesn't re-add it.
+  def import_release(version, release_changelog_content)
+    release_section = extract_version_section(release_changelog_content, version)
+    return unless release_section
+
+    content = File.read(@path)
+
+    header = Header.parse(content)
+    unreleased = UnreleasedSection.parse(content)
+    links = Links.from_markdown(content)
+
+    raise "Could not parse CHANGELOG.md" unless header && unreleased && links
+
+    history = History.parse(content, header.length, unreleased.to_s.length, links.to_s)
+
+    # Add the release section to history (inserted in version order)
+    history.add(release_section)
+    links.release(version)
+
+    # Dedupe from [Unreleased] (first-wins: if already gone, no-op)
+    release_entries = release_section.lines.select { |l| l.strip.start_with?("- ") }.map(&:strip)
+    pruned = unreleased.without_entries(release_entries)
+
+    File.write(@path, "#{header}#{pruned}\n\n#{history}\n#{links}")
+    nil
+  end
+
   def commit_message(version)
     content = File.read(@path)
     unreleased = UnreleasedSection.parse(content)
     return nil unless unreleased
 
     "chore: release v#{version}\n\n#{unreleased.commit_body}"
+  end
+
+  private def extract_version_section(changelog_content, version)
+    # Match the version heading and capture until the next version heading or links section
+    pattern = /^## \[#{Regexp.escape(version.to_s)}\][^\n]*\n(.*?)(?=^## \[|\n\[Unreleased\]:)/m
+    match = changelog_content.match(pattern)
+    return nil unless match
+
+    "## [#{version}]#{match[0].split("\n", 2).first.split(']', 2).last}\n#{match[1]}"
   end
 end

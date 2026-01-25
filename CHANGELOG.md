@@ -33,6 +33,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+- **back_tab? DWIM**: `back_tab?` and `backtab?` predicates now match events with code "back_tab" regardless of whether the shift modifier is explicitly present, since back_tab semantically implies shift.
 - **Terminal Queries During Draw (Deadlock)**: Calling `viewport_area`, `terminal_size`, `get_cell_at`, `poll_event`, `get_cursor_position`, or `get_viewport_type` from inside a `draw()` block previously caused the application to freeze forever. The thread blocked on a Mutex. Ruby's `Timeout` could not interrupt it. The only recovery was `kill -9`. These reads now work via a snapshot captured before rendering.
 - **Terminal Mutations During Draw (Deadlock)**: Calling `insert_before`, `set_cursor_position`, or `resize_terminal` from inside a `draw()` block previously caused the same silent freeze. These writes now raise `Error::Invariant` with a clear message.
 - **Nested Draw Calls (Deadlock)**: Calling `draw()` from inside another `draw()` block previously froze the application. Nested draws now raise `Error::Invariant`.
