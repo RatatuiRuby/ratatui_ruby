@@ -28,6 +28,12 @@ module RatatuiRuby
 
         # Handles navigation-specific DWIM logic for method_missing.
         private def match_navigation_dwim?(key_name, key_sym)
+          # DWIM: back_tab?/backtab? matches back_tab code even with shift modifier
+          # (since back_tab semantically implies shift)
+          if (key_name == "back_tab" || key_name == "backtab") && @code == "back_tab" && (@modifiers.empty? || @modifiers == ["shift"])
+            return true
+          end
+
           # DWIM: reverse_tab? matches both BackTab key and Shift+Tab combo
           if key_name == "reverse_tab"
             return true if @code == "back_tab"
