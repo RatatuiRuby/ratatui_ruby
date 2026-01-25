@@ -106,5 +106,55 @@ module RatatuiRuby
         flunk "Pattern match failed"
       end
     end
+
+    def test_symbol_comparison_left_button
+      assert_operator Event::Mouse.new(kind: "down", x: 0, y: 0, button: "left"), :==, :mouse_left_down
+      assert_operator Event::Mouse.new(kind: "up", x: 0, y: 0, button: "left"), :==, :mouse_left_up
+      assert_operator Event::Mouse.new(kind: "drag", x: 0, y: 0, button: "left"), :==, :mouse_left_drag
+    end
+
+    def test_symbol_comparison_right_button
+      assert_operator Event::Mouse.new(kind: "down", x: 0, y: 0, button: "right"), :==, :mouse_right_down
+      assert_operator Event::Mouse.new(kind: "up", x: 0, y: 0, button: "right"), :==, :mouse_right_up
+      assert_operator Event::Mouse.new(kind: "drag", x: 0, y: 0, button: "right"), :==, :mouse_right_drag
+    end
+
+    def test_symbol_comparison_middle_button
+      assert_operator Event::Mouse.new(kind: "down", x: 0, y: 0, button: "middle"), :==, :mouse_middle_down
+      assert_operator Event::Mouse.new(kind: "up", x: 0, y: 0, button: "middle"), :==, :mouse_middle_up
+      assert_operator Event::Mouse.new(kind: "drag", x: 0, y: 0, button: "middle"), :==, :mouse_middle_drag
+    end
+
+    def test_symbol_comparison_scroll
+      assert_operator Event::Mouse.new(kind: "scroll_up", x: 0, y: 0, button: "none"), :==, :scroll_up
+      assert_operator Event::Mouse.new(kind: "scroll_down", x: 0, y: 0, button: "none"), :==, :scroll_down
+    end
+
+    def test_symbol_comparison_move
+      assert_operator Event::Mouse.new(kind: "moved", x: 0, y: 0, button: "none"), :==, :mouse_moved
+    end
+
+    def test_symbol_comparison_negative
+      left_down = Event::Mouse.new(kind: "down", x: 0, y: 0, button: "left")
+      refute_operator left_down, :==, :resize
+      refute_operator left_down, :==, :mouse_right_down
+      refute_operator left_down, :==, :mouse_left_up
+      refute_operator left_down, :==, :scroll_up
+    end
+
+    def test_to_sym_button_events
+      assert_equal :mouse_left_down, Event::Mouse.new(kind: "down", x: 0, y: 0, button: "left").to_sym
+      assert_equal :mouse_right_up, Event::Mouse.new(kind: "up", x: 0, y: 0, button: "right").to_sym
+      assert_equal :mouse_middle_drag, Event::Mouse.new(kind: "drag", x: 0, y: 0, button: "middle").to_sym
+    end
+
+    def test_to_sym_scroll_events
+      assert_equal :scroll_up, Event::Mouse.new(kind: "scroll_up", x: 0, y: 0, button: "none").to_sym
+      assert_equal :scroll_down, Event::Mouse.new(kind: "scroll_down", x: 0, y: 0, button: "none").to_sym
+    end
+
+    def test_to_sym_move_events
+      assert_equal :mouse_moved, Event::Mouse.new(kind: "moved", x: 0, y: 0, button: "none").to_sym
+    end
   end
 end

@@ -178,10 +178,80 @@ module RatatuiRuby
       end
 
       ##
-      # Compares this event with another for equality.
+      # Converts the event to a Symbol representation.
+      #
+      # The format varies by event type:
+      #
+      # [Left Button]
+      #   <tt>:mouse_left_down</tt>, <tt>:mouse_left_up</tt>, <tt>:mouse_left_drag</tt>
+      # [Right Button]
+      #   <tt>:mouse_right_down</tt>, <tt>:mouse_right_up</tt>, <tt>:mouse_right_drag</tt>
+      # [Middle Button]
+      #   <tt>:mouse_middle_down</tt>, <tt>:mouse_middle_up</tt>, <tt>:mouse_middle_drag</tt>
+      # [Scroll]
+      #   <tt>:scroll_up</tt>, <tt>:scroll_down</tt>
+      # [Move]
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   <tt>:mouse_moved</tt>
+      #
+      #--
+      # SPDX-SnippetEnd
+      #++
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   event = Event::Mouse.new(kind: "down", x: 10, y: 5, button: "left")
+      #   event.to_sym  # => :mouse_left_down
+      #
+      #   scroll = Event::Mouse.new(kind: "scroll_up", x: 0, y: 0, button: "none")
+      #   scroll.to_sym # => :scroll_up
+      #--
+      # SPDX-SnippetEnd
+      #++
+      def to_sym
+        if @kind.start_with?("scroll")
+          @kind.to_sym
+        elsif @button == "none"
+          :"mouse_#{@kind}"
+        else
+          :"mouse_#{@button}_#{@kind}"
+        end
+      end
+
+      ##
+      # Compares the event with another object.
+      #
+      # - If +other+ is a +Symbol+, compares against #to_sym.
+      # - If +other+ is a +Mouse+, compares as a value object.
+      # - Otherwise, returns +false+.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   if event == :mouse_left_down
+      #     handle_click(event)
+      #   end
+      #--
+      # SPDX-SnippetEnd
+      #++
       def ==(other)
-        return false unless other.is_a?(Mouse)
-        kind == other.kind && x == other.x && y == other.y && button == other.button && modifiers == other.modifiers
+        case other
+        when Symbol then to_sym == other
+        when Mouse then kind == other.kind && x == other.x && y == other.y && button == other.button && modifiers == other.modifiers
+        else false
+        end
       end
     end
   end

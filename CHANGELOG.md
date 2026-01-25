@@ -25,6 +25,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - `Terminal.force_color_output(enable)` — globally overrides NO_COLOR detection for `--color=always` flags
 - **Alignment Constants**: New `RatatuiRuby::Layout::HorizontalAlignment` and `RatatuiRuby::Layout::VerticalAlignment` modules with discoverable constants (`LEFT`, `CENTER`, `RIGHT`, `TOP`, `BOTTOM`). `Layout::Alignment` is an alias for `HorizontalAlignment`. Use the constants for IDE discoverability, or continue passing symbols (`:left`, `:center`, etc.) directly—both work.
 - **Frame Count Query**: `RatatuiRuby.frame_count` returns the number of frames drawn since terminal initialization. The count starts at 0 when the terminal is created, increments by 1 after each draw, and resets when the terminal is restored and re-initialized.
+- **Mouse and Resize Symbol Comparison**: `Event::Mouse` and `Event::Resize` now support symbol comparison via `to_sym` and `==`, matching `Event::Key`. Use `event == :mouse_left_down`, `event == :scroll_up`, or `event == :resize` for cleaner event handling.
 
 ### Changed
 

@@ -104,10 +104,52 @@ module RatatuiRuby
       end
 
       ##
-      # Compares this event with another for equality.
+      # Converts the event to a Symbol representation.
+      #
+      # Always returns <tt>:resize</tt>.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   event = Event::Resize.new(width: 80, height: 24)
+      #   event.to_sym # => :resize
+      #--
+      # SPDX-SnippetEnd
+      #++
+      def to_sym
+        :resize
+      end
+
+      ##
+      # Compares the event with another object.
+      #
+      # - If +other+ is a +Symbol+, compares against #to_sym.
+      # - If +other+ is a +Resize+, compares as a value object.
+      # - Otherwise, returns +false+.
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   if event == :resize
+      #     handle_resize(event)
+      #   end
+      #--
+      # SPDX-SnippetEnd
+      #++
       def ==(other)
-        return false unless other.is_a?(Resize)
-        width == other.width && height == other.height
+        case other
+        when Symbol then to_sym == other
+        when Resize then width == other.width && height == other.height
+        else false
+        end
       end
     end
   end

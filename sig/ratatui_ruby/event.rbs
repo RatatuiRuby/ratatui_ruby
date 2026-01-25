@@ -114,6 +114,8 @@ module RatatuiRuby
       def left?: () -> bool
       def right?: () -> bool
       def middle?: () -> bool
+      def to_sym: () -> Symbol
+      def ==: (top other) -> bool
       def deconstruct_keys: (Array[Symbol]?) -> { type: :mouse, kind: String, x: Integer, y: Integer, button: String, modifiers: Array[String] }
     end
 
@@ -122,6 +124,8 @@ module RatatuiRuby
       attr_reader height: Integer
 
       def initialize: (width: Integer, height: Integer) -> void
+      def to_sym: () -> Symbol
+      def ==: (top other) -> bool
       def deconstruct_keys: (Array[Symbol]?) -> { type: :resize, width: Integer, height: Integer }
     end
 

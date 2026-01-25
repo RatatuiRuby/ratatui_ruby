@@ -53,5 +53,16 @@ module RatatuiRuby
         flunk "Pattern match failed"
       end
     end
+
+    def test_symbol_comparison
+      event = Event::Resize.new(width: 80, height: 24)
+      assert_operator event, :==, :resize, "Resize event should equal :resize symbol"
+      refute_operator event, :==, :mouse, "Resize event should not equal :mouse symbol"
+    end
+
+    def test_to_sym
+      event = Event::Resize.new(width: 80, height: 24)
+      assert_equal :resize, event.to_sym
+    end
   end
 end
