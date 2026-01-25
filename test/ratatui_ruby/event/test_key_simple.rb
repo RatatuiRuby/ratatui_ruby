@@ -337,6 +337,22 @@ module RatatuiRuby
       end
     end
 
+    def test_shift_back_tab_dwim
+      with_test_terminal do
+        inject_event(RatatuiRuby::Event::Key.new(code: "back_tab", modifiers: ["shift"]))
+        event = RatatuiRuby.poll_event
+
+        # Precise
+        assert_equal "back_tab", event.code
+        assert event.shift_back_tab?
+
+        # DWIM: back_tab? should match even with shift, since back_tab implies shift
+        assert event.back_tab?
+        assert event.backtab?
+        assert event.reverse_tab?
+      end
+    end
+
     def test_delete
       with_test_terminal do
         inject_keys("delete")
