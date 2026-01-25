@@ -27,6 +27,7 @@ Architecture:
 
 ### STRICT REQUIREMENTS
 
+- **Check Before Implementing:** FIRST check tests for existing coverage. If it works, say so and point to the test.
 - Every file MUST begin with an SPDX-compliant header. Use `AGPL-3.0-or-later` for code; `CC-BY-SA-4.0` for documentation. `reuse annotate` can help you generate the header. **For Ruby files**, wrap SPDX comments in `#--` / `#++` to hide them from RDoc output.
 - Every line of Ruby MUST be covered by tests that would stand up to mutation testing.
   - Tests must be meaningful and verify specific behavior or rendering output; simply verifying that code "doesn't crash" is insufficient and unacceptable.
