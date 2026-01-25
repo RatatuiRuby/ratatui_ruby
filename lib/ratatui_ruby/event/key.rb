@@ -327,6 +327,60 @@ module RatatuiRuby
       #++
       #   event.media_pause?  # => true ONLY for media pause
       #   event.code == "pause"  # => true ONLY for system pause
+      #
+      #--
+      # SPDX-SnippetEnd
+      #++
+      # === Arrow Key Aliases
+      #
+      # Arrow keys respond to <tt>arrow_up?</tt> and <tt>up_arrow?</tt> variants.
+      # This disambiguates from Mouse events, which also respond to <tt>up?</tt>
+      # and <tt>down?</tt>:
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   event.arrow_up?     # => true for up arrow key
+      #   event.up_arrow?     # => true for up arrow key
+      #   event.arrow_down?   # => true for down arrow key
+      #
+      #--
+      # SPDX-SnippetEnd
+      #++
+      # === Key Prefix and Suffix
+      #
+      # Predicates accept <tt>key_</tt> prefix or <tt>_key</tt> suffix for explicit
+      # key event matching in mixed event contexts:
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   event.key_up?       # => true for up arrow key
+      #   event.key_q?        # => true for "q" key
+      #   event.q_key?        # => true for "q" key
+      #   event.enter_key?    # => true for enter key
+      #
+      #--
+      # SPDX-SnippetEnd
+      #++
+      # === Capital Letters and Shift
+      #
+      # Capital letter predicates match shifted keys naturally. The terminal reports
+      # the produced character with shift in the modifiers:
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   event.G?            # => true for code="G" modifiers=["shift"]
+      #   event.shift_g?      # => true for code="G" modifiers=["shift"]
+      #   event.alt_B?        # => true for code="B" modifiers=["alt", "shift"]
+      #
       #--
       # SPDX-SnippetEnd
       #++
@@ -344,6 +398,36 @@ module RatatuiRuby
           return true if match_modifier_dwim?(key_name, key_sym)
           return true if match_navigation_dwim?(key_name, key_sym)
           return true if match_system_dwim?(key_name, key_sym)
+
+          # DWIM: key_ prefix and _key suffix (disambiguate from mouse events)
+          # key_up? → up?, q_key? → q?, etc.
+          key_name = key_name.delete_prefix("key_").delete_suffix("_key")
+
+          # Fast path after prefix/suffix stripping
+          return true if self == key_name.to_sym
+
+          # DWIM: Single character codes match even with shift modifier present
+          # G? matches code="G" modifiers=["shift"], B? matches code="B" modifiers=["alt","shift"]
+          # @? matches code="@" modifiers=["shift"]
+          # The terminal reports the produced character, shift is implicit for these
+          if key_name.length == 1 && @code == key_name && @modifiers.include?("shift")
+            return true
+          end
+
+          # DWIM: Uppercase in predicate implies shift, so alt_B? matches alt_shift_B
+          # Parse predicate to extract modifiers and final letter
+          if key_name.match?(/\A([a-z_]+_)?([A-Z])\z/)
+            pred_letter = key_name[-1]
+            pred_mods = key_name.chop.delete_suffix("_").split("_").reject(&:empty?)
+            expected_mods = (pred_mods + ["shift"]).sort
+            return true if @code == pred_letter && @modifiers == expected_mods
+          end
+
+          # DWIM: Case-insensitive letter matching with modifiers
+          # shift_g? matches code="G" modifiers=["shift"]
+          if @code.length == 1 && @code.match?(/[A-Za-z]/) && (to_sym.to_s.downcase == key_name.downcase)
+            return true
+          end
 
           # DWIM: Universal underscore-insensitivity
           # Normalize both predicate and code by stripping underscores

@@ -137,6 +137,29 @@ module RatatuiRuby
       assert_predicate event_enter, :enter?
       refute_predicate event_enter, :tab?
 
+      # Capital letters
+      event_cap_g = Event::Key.new(code: "G", modifiers: ["shift"])
+      event_alt_cap_b = Event::Key.new(code: "B", modifiers: ["alt", "shift"])
+      assert_predicate event_cap_g, :G?
+      assert_predicate event_alt_cap_b, :B?
+      assert_predicate event_cap_g, :shift_g?
+      assert_predicate event_cap_g, :shift_G?
+      assert_predicate event_alt_cap_b, :alt_shift_b?
+      assert_predicate event_alt_cap_b, :alt_shift_B?
+      assert_predicate event_alt_cap_b, :alt_B?
+      refute_predicate event_cap_g, :shift_b?
+      refute_predicate event_alt_cap_b, :shift_g?
+
+      # Numbers/Symbols
+      event_1 = Event::Key.new(code: "1")
+      event_at_sign = Event::Key.new(code: "@", modifiers: ["shift"])
+      assert_predicate event_1, :"1?"
+      refute_predicate event_1, :"2?"
+      assert_predicate event_at_sign, :"@?"
+      refute_predicate event_at_sign, :"1?"
+      assert_predicate event_at_sign, :"shift_@?"
+      refute_predicate event_at_sign, :shift_1? # i18n means this would be impractical
+
       # With modifiers
       event_ctrl_c = Event::Key.new(code: "c", modifiers: ["ctrl"])
       assert_predicate event_ctrl_c, :ctrl_c?
@@ -148,6 +171,81 @@ module RatatuiRuby
       assert_predicate event_alt_shift_up, :alt_shift_up?
       refute_predicate event_alt_shift_up, :alt_up?
       refute_predicate event_alt_shift_up, :shift_up?
+    end
+
+    # Arrow keys have DWIM aliases so you can be explicit about arrows vs mouse
+    # Mouse events also respond to up?/down?, so arrow_up? disambiguates
+    def test_arrow_key_dwim_aliases
+      up = Event::Key.new(code: "up")
+      down = Event::Key.new(code: "down")
+      left = Event::Key.new(code: "left")
+      right = Event::Key.new(code: "right")
+
+      # arrow_* variants
+      assert_predicate up, :arrow_up?
+      assert_predicate down, :arrow_down?
+      assert_predicate left, :arrow_left?
+      assert_predicate right, :arrow_right?
+
+      # *_arrow variants
+      assert_predicate up, :up_arrow?
+      assert_predicate down, :down_arrow?
+      assert_predicate left, :left_arrow?
+      assert_predicate right, :right_arrow?
+
+      # Negative cases: arrows shouldn't match other arrows
+      refute_predicate up, :arrow_down?
+      refute_predicate down, :arrow_up?
+      refute_predicate left, :arrow_right?
+      refute_predicate right, :arrow_left?
+    end
+
+    # All key predicates work with key_ prefix or _key suffix
+    # This disambiguates from mouse events (e.g., key_up? vs mouse up?)
+    def test_key_prefix_and_suffix_predicates
+      up = Event::Key.new(code: "up")
+      enter = Event::Key.new(code: "enter")
+      q = Event::Key.new(code: "q")
+      cap_g = Event::Key.new(code: "G", modifiers: ["shift"])
+      alt_cap_b = Event::Key.new(code: "B", modifiers: ["alt", "shift"])
+      one = Event::Key.new(code: "1")
+      at_sign = Event::Key.new(code: "@", modifiers: ["shift"])
+
+      # key_ prefix
+      assert_predicate up, :key_up?
+      assert_predicate enter, :key_enter?
+      assert_predicate q, :key_q?
+      assert_predicate cap_g, :key_G?
+      assert_predicate alt_cap_b, :key_B?
+      assert_predicate alt_cap_b, :key_alt_shift_b?
+      assert_predicate one, :key_1?
+      assert_predicate at_sign, :"key_@?"
+
+      # _key suffix
+      assert_predicate up, :up_key?
+      assert_predicate enter, :enter_key?
+      assert_predicate q, :q_key?
+      assert_predicate cap_g, :G_key?
+      assert_predicate alt_cap_b, :B_key?
+      assert_predicate alt_cap_b, :alt_shift_b_key?
+      assert_predicate one, :"1_key?"
+      assert_predicate at_sign, :"@_key?"
+
+      # Negative cases
+      refute_predicate up, :key_down?
+      refute_predicate enter, :key_tab?
+      refute_predicate q, :key_p?
+    end
+
+    # key_ prefix should work with underscore insensitivity
+    def test_key_prefix_and_suffix_with_underscore_insensitivity
+      page_up = Event::Key.new(code: "page_up")
+
+      # Both forms should work
+      assert_predicate page_up, :key_page_up?
+      assert_predicate page_up, :key_pageup?
+      assert_predicate page_up, :page_up_key?
+      assert_predicate page_up, :pageup_key?
     end
   end
 end

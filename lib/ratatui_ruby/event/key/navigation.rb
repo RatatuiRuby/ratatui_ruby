@@ -39,9 +39,18 @@ module RatatuiRuby
             return true if @code == "back_tab"
             return true if @code == "tab" && @modifiers.include?("shift")
           end
-
           # DWIM: Check explicit aliases
           navigation_aliases = {
+            # Arrow key aliases (disambiguate from Mouse#up? and Mouse#down?)
+            arrow_up: "up",
+            up_arrow: "up",
+            arrow_down: "down",
+            down_arrow: "down",
+            arrow_left: "left",
+            left_arrow: "left",
+            arrow_right: "right",
+            right_arrow: "right",
+            # Other navigation aliases
             return: "enter",
             back: "backspace",
             del: "delete",
