@@ -12,6 +12,17 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+
+### Changed
+
+### Fixed
+
+### Removed
+
+## [1.1.0] - 2026-01-25
+
+### Added
+
 - **Terminal Capability Detection**: New class methods on `RatatuiRuby::Terminal` for environment-based capability detection before initializing TUI mode:
   - `Terminal.tty?` — checks if stdout is connected to a terminal
   - `Terminal.dumb?` — checks if TERM is explicitly set to "dumb"
@@ -34,6 +45,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Fixed
 
 ### Removed
+
+
 
 ## [1.0.0] - 2026-01-25
 
@@ -701,6 +714,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Testing Support**: Included `RatatuiRuby::TestHelper` and RSpec integration to make testing your TUI applications possible.
 
 [Unreleased]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/HEAD
+[1.1.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v1.1.0
 [1.0.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v1.0.0
 [0.10.3]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.10.3
 [0.10.2]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.10.2

@@ -8,5 +8,5 @@
 module RatatuiRuby
   # The version of the ratatui_ruby gem.
   # See https://semver.org/spec/v2.0.0.html
-  VERSION = "1.0.0"
+  VERSION = "1.1.0"
 end
