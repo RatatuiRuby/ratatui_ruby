@@ -12,6 +12,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Removed
+
+## [1.2.0] - 2026-01-25
+
+### Added
+
 - **Inline Sync Mode**: `SyntheticEvents.inline_sync!` enables deterministic ordering of sync events with key events. When enabled, `inject_sync` routes through the native event queue and `poll_event` returns `Event::Sync` in sequence. Runtimes that need ordering guarantees (like Rooibos) should call this at startup.
 
 ### Changed
@@ -715,6 +725,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Testing Support**: Included `RatatuiRuby::TestHelper` and RSpec integration to make testing your TUI applications possible.
 
 [Unreleased]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/HEAD
+[1.2.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v1.2.0
 [1.1.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v1.1.0
 [1.0.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v1.0.0
 [0.10.3]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v0.10.3
