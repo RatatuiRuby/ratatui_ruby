@@ -139,7 +139,7 @@ class TestDebug < Minitest::Test
 
     output = IO.popen(
       {},
-      ["timeout", "2", "ruby", "-I", "lib", "-e", script], # 0.5 seconds was too short
+      ["timeout", "3", "ruby", "-I", "lib", "-e", script], # 2 seconds was too short
       err: [:child, :out]
     ) { |io| io.read.strip }
 

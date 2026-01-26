@@ -68,6 +68,18 @@ namespace :sourcehut do
       abort "Fatal: Version mismatch! 'lib/ratatui_ruby/version.rb' says #{tag_name}, but the latest git tag is #{latest_tag}."
     end
 
+    # Get current stable version (if stable branch exists)
+    stable_version_str = `git show stable:lib/ratatui_ruby/version.rb 2>/dev/null`.match(/VERSION = "(.+?)"/)&.[](1)
+    if stable_version_str
+      stable_version = Gem::Version.new(stable_version_str)
+      new_version = Gem::Version.new(version)
+
+      if new_version <= stable_version
+        puts "Skipping stable update: #{version} is not newer than current stable #{stable_version_str}"
+        next
+      end
+    end
+
     puts "Updating stable branch to point to #{tag_name}..."
     # Resolve the tag to a commit hash (peel annotated tags)
     # This renders a commit SHA that can be pushed to a branch head
@@ -77,8 +89,8 @@ namespace :sourcehut do
     sh "git branch -f stable #{commit_sha}"
 
     # Push the commit to remote stable branch
-    # This creates 'stable' if it doesn't exist, or fast-forwards it.
-    sh "git push origin #{commit_sha}:stable"
+    # Force-push because stable is reset to each release, not fast-forwarded.
+    sh "git push --force origin #{commit_sha}:stable"
   end
 end
 
