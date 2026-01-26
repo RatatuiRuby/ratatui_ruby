@@ -12,7 +12,10 @@ module RatatuiRuby
   # Used primarily for testing and the andThen-like integration pattern.
   module SyntheticEvents
     @queue: Array[Event]
+    @inline_sync: bool
 
+    def self.inline_sync!: () -> void
+    def self.inline_sync?: () -> bool
     def self.push: (Event event) -> void
     def self.pop: () -> Event?
     def self.clear: () -> void

@@ -48,8 +48,28 @@ module RatatuiRuby
   module SyntheticEvents
     @queue = [] #: Array[Event]
     @mutex = Mutex.new
+    @inline_sync = false #: bool
 
     class << self
+      ##
+      # Enables inline sync mode for deterministic event ordering.
+      #
+      # Call once at startup. Cannot be disabled.
+      #
+      # When enabled, +inject_sync+ routes through the native event queue
+      # and +poll_event+ returns +Event::Sync+ like any other event.
+      # This ensures sync events are processed in sequence with key events.
+      #
+      # Runtimes that need ordering guarantees (like Rooibos) should call
+      # this before entering their event loop.
+      def inline_sync!
+        @inline_sync = true
+      end
+
+      def inline_sync? # :nodoc:
+        @inline_sync
+      end
+
       ##
       # Pushes an event to the synthetic queue.
       #

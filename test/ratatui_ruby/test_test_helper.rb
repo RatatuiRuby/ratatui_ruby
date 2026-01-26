@@ -174,4 +174,41 @@ class TestTestHelper < Minitest::Test
       assert_predicate event, :sync?, "Expected a Sync event"
     end
   end
+  # Test 1: Existing 1.0 behavior (default) - sync immediately visible in SyntheticEvents
+  # (covered by test_inject_sync_injects_sync_event above)
+
+  def test_inline_sync_disabled_by_default
+    # Default behavior should be off for backward compatibility
+    refute RatatuiRuby::SyntheticEvents.inline_sync?,
+      "inline_sync should be false by default for 1.0 compatibility"
+  end
+
+  def test_inline_sync_routes_through_poll_event
+    # When inline_sync! is called, inject_sync routes through native queue.
+    # poll_event returns Event::Sync in order with other events.
+    with_test_terminal do
+      RatatuiRuby::SyntheticEvents.inline_sync!
+
+      inject_key("a")
+      inject_sync
+      inject_key("b")
+
+      # Sync should NOT be in SyntheticEvents (it's in native queue)
+      refute RatatuiRuby::SyntheticEvents.pending?,
+        "With inline_sync!, sync should not appear in SyntheticEvents"
+
+      # poll_event returns events in order: a, sync, b
+      event_a = RatatuiRuby.poll_event
+      assert_equal "a", event_a.code
+
+      sync_event = RatatuiRuby.poll_event
+      assert_predicate sync_event, :sync?, "poll_event should return Event::Sync"
+
+      event_b = RatatuiRuby.poll_event
+      assert_equal "b", event_b.code
+    ensure
+      # Reset for other tests
+      RatatuiRuby::SyntheticEvents.instance_variable_set(:@inline_sync, false)
+    end
+  end
 end

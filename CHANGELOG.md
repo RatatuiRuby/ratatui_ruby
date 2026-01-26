@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **Inline Sync Mode**: `SyntheticEvents.inline_sync!` enables deterministic ordering of sync events with key events. When enabled, `inject_sync` routes through the native event queue and `poll_event` returns `Event::Sync` in sequence. Runtimes that need ordering guarantees (like Rooibos) should call this at startup.
 
 ### Changed
 

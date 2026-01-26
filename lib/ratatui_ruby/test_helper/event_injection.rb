@@ -89,8 +89,13 @@ module RatatuiRuby
         when RatatuiRuby::Event::FocusLost
           RatatuiRuby.inject_test_event("focus_lost", {})
         when RatatuiRuby::Event::Sync
-          # Sync events use the engine-level synthetic queue
-          RatatuiRuby::SyntheticEvents.push(event)
+          if RatatuiRuby::SyntheticEvents.inline_sync?
+            # Route through native queue for deterministic ordering with key events
+            RatatuiRuby.inject_test_event("sync", {})
+          else
+            # Default 1.0 behavior: use the engine-level synthetic queue
+            RatatuiRuby::SyntheticEvents.push(event)
+          end
         else
           raise ArgumentError, "Unknown event type: #{event.class}"
         end

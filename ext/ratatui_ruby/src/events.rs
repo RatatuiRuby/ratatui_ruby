@@ -4,8 +4,15 @@
 use magnus::{Error, IntoValue, TryConvert, Value};
 use std::cell::RefCell;
 
+/// Wrapper enum for test events - includes crossterm events and our Sync event.
+#[derive(Debug, Clone)]
+enum TestEvent {
+    Crossterm(ratatui::crossterm::event::Event),
+    Sync,
+}
+
 thread_local! {
-    static EVENT_QUEUE: RefCell<Vec<ratatui::crossterm::event::Event>> = const { RefCell::new(Vec::new()) };
+    static EVENT_QUEUE: RefCell<Vec<TestEvent>> = const { RefCell::new(Vec::new()) };
 }
 
 use ratatui::crossterm::event::{KeyCode, KeyModifiers, MediaKeyCode, ModifierKeyCode};
@@ -107,12 +114,13 @@ pub fn all_key_codes() -> magnus::RHash {
 pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let event = match event_type.as_str() {
-        "key" => parse_key_event(data, &ruby)?,
-        "mouse" => parse_mouse_event(data, &ruby)?,
-        "resize" => parse_resize_event(data, &ruby)?,
-        "paste" => parse_paste_event(data, &ruby)?,
-        "focus_gained" => ratatui::crossterm::event::Event::FocusGained,
-        "focus_lost" => ratatui::crossterm::event::Event::FocusLost,
+        "key" => TestEvent::Crossterm(parse_key_event(data, &ruby)?),
+        "mouse" => TestEvent::Crossterm(parse_mouse_event(data, &ruby)?),
+        "resize" => TestEvent::Crossterm(parse_resize_event(data, &ruby)?),
+        "paste" => TestEvent::Crossterm(parse_paste_event(data, &ruby)?),
+        "focus_gained" => TestEvent::Crossterm(ratatui::crossterm::event::Event::FocusGained),
+        "focus_lost" => TestEvent::Crossterm(ratatui::crossterm::event::Event::FocusLost),
+        "sync" => TestEvent::Sync,
         _ => {
             return Err(Error::new(
                 ruby.exception_arg_error(),
@@ -317,7 +325,7 @@ pub fn poll_event(ruby: &magnus::Ruby, timeout_val: Option<f64>) -> Result<Value
     });
 
     if let Some(e) = event {
-        return handle_event(e);
+        return handle_test_event(e);
     }
 
     let is_test_mode = crate::terminal::with_query(|q| q.is_test_mode()).unwrap_or(false);
@@ -334,7 +342,7 @@ pub fn poll_event(ruby: &magnus::Ruby, timeout_val: Option<f64>) -> Result<Value
         {
             let event = ratatui::crossterm::event::read()
                 .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
-            handle_event(event)
+            handle_crossterm_event(event)
         } else {
             Ok(ruby.qnil().into_value_with(ruby))
         }
@@ -342,11 +350,18 @@ pub fn poll_event(ruby: &magnus::Ruby, timeout_val: Option<f64>) -> Result<Value
         // Blocking: wait indefinitely for an event
         let event = ratatui::crossterm::event::read()
             .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
-        handle_event(event)
+        handle_crossterm_event(event)
     }
 }
 
-fn handle_event(event: ratatui::crossterm::event::Event) -> Result<Value, Error> {
+fn handle_test_event(event: TestEvent) -> Result<Value, Error> {
+    match event {
+        TestEvent::Crossterm(e) => handle_crossterm_event(e),
+        TestEvent::Sync => handle_sync_event(),
+    }
+}
+
+fn handle_crossterm_event(event: ratatui::crossterm::event::Event) -> Result<Value, Error> {
     match event {
         ratatui::crossterm::event::Event::Key(key) => handle_key_event(key),
         ratatui::crossterm::event::Event::Mouse(event) => handle_mouse_event(event),
@@ -355,6 +370,13 @@ fn handle_event(event: ratatui::crossterm::event::Event) -> Result<Value, Error>
         ratatui::crossterm::event::Event::FocusGained => handle_focus_event("focus_gained"),
         ratatui::crossterm::event::Event::FocusLost => handle_focus_event("focus_lost"),
     }
+}
+
+fn handle_sync_event() -> Result<Value, Error> {
+    let ruby = magnus::Ruby::get().unwrap();
+    let hash = ruby.hash_new();
+    hash.aset(ruby.to_symbol("type"), ruby.to_symbol("sync"))?;
+    Ok(hash.into_value_with(&ruby))
 }
 
 fn media_key_to_string(m: MediaKeyCode) -> &'static str {

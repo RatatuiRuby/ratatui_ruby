@@ -409,6 +409,8 @@ module RatatuiRuby
       Event::FocusGained.new.freeze
     when :focus_lost
       Event::FocusLost.new.freeze
+    when :sync
+      Event::Sync.new.freeze
     else
       # Return None for unknown event types
       Event::None.new.freeze
