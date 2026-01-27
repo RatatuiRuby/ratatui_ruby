@@ -67,11 +67,46 @@ module RatatuiRuby
         private def match_system_dwim?: (String key_name, Symbol key_sym) -> bool
       end
 
+      # DWIM predicates for common key patterns
+      module Dwim
+        NAVIGATION_KEYS: Array[String]
+        ARROW_KEYS: Array[String]
+        VIM_MOVEMENT_KEYS: Array[String]
+        PUNCTUATION_NAMES: Hash[Symbol, String]
+
+        def space?: () -> bool
+        def cr?: () -> bool
+        def letter?: () -> bool
+        def digit?: () -> bool
+        def alphanumeric?: () -> bool
+        def punctuation?: () -> bool
+        def whitespace?: () -> bool
+        def interrupt?: () -> bool
+        def eof?: () -> bool
+        def cancel?: () -> bool
+        def sigint?: () -> bool
+        def suspend?: () -> bool
+        def quit?: () -> bool
+        def navigation?: () -> bool
+        def arrow?: () -> bool
+        def vim?: () -> bool
+        def vim_left?: () -> bool
+        def vim_down?: () -> bool
+        def vim_up?: () -> bool
+        def vim_right?: () -> bool
+        def vim_word_forward?: () -> bool
+        def vim_word_backward?: () -> bool
+        def vim_top?: () -> bool
+        def vim_bottom?: () -> bool
+        def quote?: () -> bool
+      end
+
       include Character
       include Modifier
       include Media
       include Navigation
       include System
+      include Dwim
 
       attr_reader code: String
       attr_reader modifiers: Array[String]
@@ -114,6 +149,23 @@ module RatatuiRuby
       def left?: () -> bool
       def right?: () -> bool
       def middle?: () -> bool
+      def scroll?: () -> bool
+      def moved?: () -> bool
+      def hover?: () -> bool
+      def hovering?: () -> bool
+      def move?: () -> bool
+      def primary?: () -> bool
+      def secondary?: () -> bool
+      def context_menu?: () -> bool
+      def aux?: () -> bool
+      def auxiliary?: () -> bool
+      def wheel_up?: () -> bool
+      def wheel_down?: () -> bool
+      def release?: () -> bool
+      def released?: () -> bool
+      def press?: () -> bool
+      def pressed?: () -> bool
+      def dragging?: () -> bool
       def to_sym: () -> Symbol
       def ==: (top other) -> bool
       def deconstruct_keys: (Array[Symbol]?) -> { type: :mouse, kind: String, x: Integer, y: Integer, button: String, modifiers: Array[String] }
@@ -127,6 +179,20 @@ module RatatuiRuby
       def to_sym: () -> Symbol
       def ==: (top other) -> bool
       def deconstruct_keys: (Array[Symbol]?) -> { type: :resize, width: Integer, height: Integer }
+
+      # DWIM predicates
+      VT100_WIDTH: Integer
+      VT100_HEIGHT: Integer
+      def sigwinch?: () -> bool
+      def winch?: () -> bool
+      def sig_winch?: () -> bool
+      def landscape?: () -> bool
+      def portrait?: () -> bool
+      def vt100?: () -> bool
+      def at_least_vt100?: () -> bool
+      def over_vt100?: () -> bool
+      def cramped?: () -> bool
+      def constrained?: () -> bool
     end
 
     class Paste < Event
@@ -134,14 +200,45 @@ module RatatuiRuby
 
       def initialize: (content: String) -> void
       def deconstruct_keys: (Array[Symbol]?) -> { type: :paste, content: String }
+
+      # DWIM predicates
+      def clipboard?: () -> bool
+      def pasteboard?: () -> bool
+      def pasted?: () -> bool
+      def empty?: () -> bool
+      def blank?: () -> bool
+      def multiline?: () -> bool
+      def multi_line?: () -> bool
+      def single_line?: () -> bool
+      def singleline?: () -> bool
     end
 
     class FocusGained < Event
       def deconstruct_keys: (Array[Symbol]?) -> { type: :focus_gained }
+
+      # DWIM predicates
+      def focus?: () -> bool
+      def gained?: () -> bool
+      def lost?: () -> bool
+      def blur?: () -> bool
+      def active?: () -> bool
+      def inactive?: () -> bool
+      def foreground?: () -> bool
+      def background?: () -> bool
     end
 
     class FocusLost < Event
       def deconstruct_keys: (Array[Symbol]?) -> { type: :focus_lost }
+
+      # DWIM predicates
+      def focus?: () -> bool
+      def gained?: () -> bool
+      def lost?: () -> bool
+      def blur?: () -> bool
+      def active?: () -> bool
+      def inactive?: () -> bool
+      def foreground?: () -> bool
+      def background?: () -> bool
     end
 
     class None < Event

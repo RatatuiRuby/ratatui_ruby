@@ -6,6 +6,7 @@
 #++
 
 require_relative "key/character"
+require_relative "key/dwim"
 require_relative "key/media"
 require_relative "key/modifier"
 require_relative "key/navigation"
@@ -88,6 +89,7 @@ module RatatuiRuby
     # These keys will not work in Terminal.app, iTerm2, or GNOME Terminal.
     class Key < Event
       include Character
+      include Dwim
       include Media
       include Modifier
       include Navigation
@@ -434,6 +436,13 @@ module RatatuiRuby
           normalized_predicate = key_name.delete("_")
           normalized_code = @code.delete("_")
           return true if normalized_predicate == normalized_code && @modifiers.empty?
+
+          # DWIM: Underscore variants delegate to existing methods
+          # space_bar? → spacebar? → space?, sig_int? → sigint?
+          normalized_method = :"#{normalized_predicate}?"
+          if normalized_method != name && respond_to?(normalized_method)
+            return public_send(normalized_method)
+          end
 
           false
         else

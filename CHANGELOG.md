@@ -12,6 +12,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **Punctuation Name Predicates**: `Event::Key` now supports intuitive name-based predicates for symbol keys. Use `tilde?`, `slash?`, `backslash?`, `comma?`, `period?`/`dot?`, `colon?`, `semicolon?`, `question?`, `exclamation?`/`bang?`, `at?`, `hash?`/`pound?`, `dollar?`, `percent?`, `caret?`, `ampersand?`, `asterisk?`/`star?`, `underscore?`, `hyphen?`/`dash?`/`minus?`, `plus?`, `equals?`, `pipe?`/`bar?`, `lessthan?`/`lt?`, `greaterthan?`/`gt?`, bracket predicates (`lparen?`, `rparen?`, `lbracket?`, `rbracket?`, `lbrace?`, `rbrace?` and spelled-out variants like `left_parenthesis?`), and quote predicates (`backtick?`/`grave?`, `singlequote?`/`apostrophe?`, `doublequote?`, `quote?`). The `quote?` predicate matches both single and double quotes. Underscore variants (e.g., `at_sign?`, `less_than?`) are handled automatically via method normalization.
+- **Mouse Event DWIM Predicates**: `Event::Mouse` now supports platform-neutral button predicates (`primary?`, `secondary?`, `context_menu?`, `aux?`/`auxiliary?`), wheel aliases (`wheel_up?`, `wheel_down?`, `scroll?`), movement predicates (`moved?`, `hover?`, `hovering?`, `move?`), press/release aliases (`press?`/`pressed?`, `release?`/`released?`), and a drag predicate (`dragging?`).
+- **Resize Event DWIM Predicates**: `Event::Resize` now supports Unix signal aliases (`sigwinch?`, `winch?`, `sig_winch?`), orientation predicates (`landscape?`, `portrait?`), and VT100 terminal size predicates (`vt100?`, `at_least_vt100?`, `over_vt100?`, `cramped?`, `constrained?`).
+- **Focus Event DWIM Predicates**: `Event::FocusGained` and `Event::FocusLost` now support symmetric predicates for intuitive focus handling. Both respond to `focus?`, `blur?`, `gained?`, `lost?`, `active?`, `inactive?`, `foreground?`, and `background?` with semantically correct boolean values.
+- **Paste Event DWIM Predicates**: `Event::Paste` now supports content predicates (`empty?`, `blank?`, `multiline?`/`multi_line?`, `single_line?`/`singleline?`), clipboard aliases (`clipboard?`, `pasteboard?`), and a confirmation predicate (`pasted?`).
+
 
 ### Changed
 

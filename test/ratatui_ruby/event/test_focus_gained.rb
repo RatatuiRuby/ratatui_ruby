@@ -48,5 +48,41 @@ module RatatuiRuby
         flunk "Pattern match failed"
       end
     end
+
+    # =========================================================================
+    # DWIM Predicates - Things People Might Try
+    # =========================================================================
+
+    # Generic focus predicates
+    def test_dwim_focus_aliases
+      event = Event::FocusGained.new
+
+      # focus? - generic "something about focus"
+      assert_predicate event, :focus?
+      assert_predicate event, :focused?
+
+      # gained?/lost? - the action
+      assert_predicate event, :gained?
+      refute_predicate event, :lost?
+    end
+
+    # Opposite of blur
+    def test_dwim_blur_negative
+      event = Event::FocusGained.new
+
+      refute_predicate event, :blur?
+      refute_predicate event, :blurred?
+    end
+
+    # Active/foreground terminology
+    def test_dwim_activity_state
+      event = Event::FocusGained.new
+
+      assert_predicate event, :active?
+      assert_predicate event, :foreground?
+
+      refute_predicate event, :inactive?
+      refute_predicate event, :background?
+    end
   end
 end

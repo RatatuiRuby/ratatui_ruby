@@ -67,6 +67,9 @@ module RatatuiRuby
       def paste?
         true
       end
+      alias clipboard? paste?
+      alias pasteboard? paste?
+      alias pasted? paste?
 
       # Creates a new Paste event.
       #
@@ -100,6 +103,28 @@ module RatatuiRuby
         return false unless other.is_a?(Paste)
         content == other.content
       end
+
+      # Returns true if the pasted content is empty.
+      def empty?
+        @content.empty?
+      end
+
+      # Returns true if the pasted content is empty or whitespace-only.
+      def blank?
+        @content.strip.empty?
+      end
+
+      # Returns true if the pasted content spans multiple lines.
+      def multiline?
+        @content.include?("\n")
+      end
+      alias multi_line? multiline?
+
+      # Returns true if the pasted content is a single line.
+      def single_line?
+        !multiline?
+      end
+      alias singleline? single_line?
     end
   end
 end

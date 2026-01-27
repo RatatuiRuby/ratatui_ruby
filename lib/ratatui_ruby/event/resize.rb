@@ -151,6 +151,71 @@ module RatatuiRuby
         else false
         end
       end
+
+      # Returns true. Unix <tt>SIGWINCH</tt> triggers terminal resize.
+      #
+      #   event.sigwinch? # => true
+      def sigwinch?
+        true
+      end
+
+      alias winch? sigwinch?
+      alias sig_winch? sigwinch?
+
+      alias terminal_resize? resize?
+      alias window_resize? resize?
+      alias window_change? resize?
+      alias viewport_resize? resize?
+      alias viewport_change? resize?
+      alias size_change? resize?
+      alias resized? resize?
+
+      VT100_WIDTH = 80 # :nodoc:
+      VT100_HEIGHT = 24 # :nodoc:
+
+      # Returns true if width exceeds height.
+      #
+      #   Event::Resize.new(width: 120, height: 24).landscape? # => true
+      def landscape?
+        @width > @height
+      end
+
+      # Returns true if height exceeds or equals width.
+      #
+      #   Event::Resize.new(width: 40, height: 80).portrait? # => true
+      def portrait?
+        @height >= @width
+      end
+
+      # Returns true if dimensions are exactly 80x24.
+      #
+      #   Event::Resize.new(width: 80, height: 24).vt100? # => true
+      def vt100?
+        @width == VT100_WIDTH && @height == VT100_HEIGHT
+      end
+
+      # Returns true if both dimensions meet or exceed 80x24.
+      #
+      #   Event::Resize.new(width: 120, height: 40).at_least_vt100? # => true
+      def at_least_vt100?
+        @width >= VT100_WIDTH && @height >= VT100_HEIGHT
+      end
+
+      # Returns true if both dimensions exceed 80x24.
+      #
+      #   Event::Resize.new(width: 81, height: 25).over_vt100? # => true
+      def over_vt100?
+        @width > VT100_WIDTH && @height > VT100_HEIGHT
+      end
+
+      # Returns true if either dimension falls below VT100 standard.
+      #
+      #   Event::Resize.new(width: 60, height: 24).cramped? # => true
+      def cramped?
+        @width < VT100_WIDTH || @height < VT100_HEIGHT
+      end
+
+      alias constrained? cramped?
     end
   end
 end

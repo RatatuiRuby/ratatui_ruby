@@ -253,6 +253,39 @@ module RatatuiRuby
         else false
         end
       end
+
+      alias wheel_up? scroll_up?
+      alias wheel_down? scroll_down?
+
+      # Returns true for any scroll event.
+      #
+      #   event.scroll? # => true for scroll_up or scroll_down
+      def scroll?
+        scroll_up? || scroll_down?
+      end
+
+      alias primary? left?
+      alias secondary? right?
+      alias context_menu? right?
+      alias aux? middle?
+      alias auxiliary? aux?
+
+      # Returns true for mouse movement without button press.
+      #
+      #   event.moved? # => true for moved (no button)
+      def moved?
+        @kind == "moved"
+      end
+
+      alias hover? moved?
+      alias hovering? moved?
+      alias move? moved?
+      alias dragging? drag?
+
+      alias release? up?
+      alias released? up?
+      alias press? down?
+      alias pressed? down?
     end
   end
 end

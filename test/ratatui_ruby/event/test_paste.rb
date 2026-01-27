@@ -51,5 +51,47 @@ module RatatuiRuby
         flunk "Pattern match failed"
       end
     end
+
+    # =========================================================================
+    # DWIM Predicates - Things People Might Try
+    # =========================================================================
+
+    # Generic paste aliases
+    def test_dwim_paste_aliases
+      event = Event::Paste.new(content: "hello")
+
+      assert_predicate event, :clipboard?
+      assert_predicate event, :pasteboard? # macOS terminology
+      assert_predicate event, :pasted?
+    end
+
+    # Content type predicates
+    def test_dwim_content_predicates
+      text_paste = Event::Paste.new(content: "hello world")
+      empty_paste = Event::Paste.new(content: "")
+      multiline_paste = Event::Paste.new(content: "line1\nline2")
+      whitespace_paste = Event::Paste.new(content: "   ")
+
+      # empty?
+      assert_predicate empty_paste, :empty?
+      refute_predicate text_paste, :empty?
+
+      # blank? - empty or whitespace only
+      assert_predicate empty_paste, :blank?
+      assert_predicate whitespace_paste, :blank?
+      refute_predicate text_paste, :blank?
+
+      # multiline?
+      assert_predicate multiline_paste, :multi_line?
+      refute_predicate text_paste, :multi_line?
+      assert_predicate multiline_paste, :multiline?
+      refute_predicate text_paste, :multiline?
+
+      # single_line?
+      assert_predicate text_paste, :single_line?
+      refute_predicate multiline_paste, :single_line?
+      assert_predicate text_paste, :singleline?
+      refute_predicate multiline_paste, :singleline?
+    end
   end
 end

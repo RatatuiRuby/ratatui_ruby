@@ -156,5 +156,84 @@ module RatatuiRuby
     def test_to_sym_move_events
       assert_equal :mouse_moved, Event::Mouse.new(kind: "moved", x: 0, y: 0, button: "none").to_sym
     end
+
+    # =========================================================================
+    # DWIM Predicates - Things People Might Try
+    # =========================================================================
+
+    # Wheel aliases
+    def test_dwim_wheel_predicates
+      scroll_up = Event::Mouse.new(kind: "scroll_up", x: 0, y: 0, button: "none")
+      scroll_down = Event::Mouse.new(kind: "scroll_down", x: 0, y: 0, button: "none")
+      left_down = Event::Mouse.new(kind: "down", x: 0, y: 0, button: "left")
+
+      # wheel_up?/wheel_down? as aliases
+      assert_predicate scroll_up, :wheel_up?
+      assert_predicate scroll_down, :wheel_down?
+      refute_predicate scroll_up, :wheel_down?
+
+      # scroll? - any scroll event
+      assert_predicate scroll_up, :scroll?
+      assert_predicate scroll_down, :scroll?
+      refute_predicate left_down, :scroll?
+    end
+
+    # Platform-neutral button names
+    def test_dwim_button_aliases
+      left = Event::Mouse.new(kind: "down", x: 0, y: 0, button: "left")
+      right = Event::Mouse.new(kind: "down", x: 0, y: 0, button: "right")
+      middle = Event::Mouse.new(kind: "down", x: 0, y: 0, button: "middle")
+
+      # primary?/secondary? (convention: left=primary, right=secondary)
+      assert_predicate left, :primary?
+      refute_predicate right, :primary?
+
+      assert_predicate right, :secondary?
+      refute_predicate left, :secondary?
+
+      # context_menu? - right click opens context menu
+      assert_predicate right, :context_menu?
+      refute_predicate left, :context_menu?
+
+      # aux? for middle/auxiliary button
+      assert_predicate middle, :aux?
+      assert_predicate middle, :auxiliary?
+      refute_predicate left, :aux?
+    end
+
+    # Movement predicates
+    def test_dwim_movement_predicates
+      moved = Event::Mouse.new(kind: "moved", x: 10, y: 10, button: "none")
+      drag_left = Event::Mouse.new(kind: "drag", x: 10, y: 10, button: "left")
+      down_event = Event::Mouse.new(kind: "down", x: 10, y: 10, button: "left")
+
+      # hover?/hovering?/move? for mouse movement without button
+      assert_predicate moved, :hover?
+      assert_predicate moved, :hovering?
+      assert_predicate moved, :move?
+      assert_predicate moved, :moved?
+      refute_predicate drag_left, :hover? # drag is not hover
+      refute_predicate down_event, :hover?
+
+      # dragging? as alias for drag?
+      assert_predicate drag_left, :dragging?
+      refute_predicate moved, :dragging?
+    end
+
+    # Release predicates
+    def test_dwim_release_predicates
+      up_event = Event::Mouse.new(kind: "up", x: 0, y: 0, button: "left")
+      down_event = Event::Mouse.new(kind: "down", x: 0, y: 0, button: "left")
+
+      # release? as alias for up?
+      assert_predicate up_event, :release?
+      assert_predicate up_event, :released?
+      refute_predicate down_event, :release?
+
+      # press?/pressed? as alias for down?
+      assert_predicate down_event, :press?
+      assert_predicate down_event, :pressed?
+      refute_predicate up_event, :pressed?
+    end
   end
 end

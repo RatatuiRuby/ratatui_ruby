@@ -70,6 +70,56 @@ module RatatuiRuby
       def ==(other)
         other.is_a?(FocusGained)
       end
+
+      # =========================================================================
+      # DWIM Predicates
+      # =========================================================================
+
+      # Returns true. The terminal window is now in focus.
+      #
+      #   event.focus? # => true
+      def focus?
+        true
+      end
+      alias focused? focus?
+
+      # Returns true. The application gained focus.
+      #
+      #   event.gained? # => true
+      def gained?
+        true
+      end
+
+      # Returns false. This is not a focus lost event.
+      #
+      #   event.lost? # => false
+      def lost?
+        false
+      end
+
+      # Returns false. Blur is the opposite of focus gained.
+      #
+      #   event.blur? # => false
+      def blur?
+        false
+      end
+      alias blurred? blur?
+
+      # Returns true. The application is active.
+      #
+      #   event.active? # => true
+      def active?
+        true
+      end
+      alias foreground? active?
+
+      # Returns false. The application is not inactive.
+      #
+      #   event.inactive? # => false
+      def inactive?
+        false
+      end
+      alias background? inactive?
     end
   end
 end

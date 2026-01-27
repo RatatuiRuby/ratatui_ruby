@@ -64,5 +64,79 @@ module RatatuiRuby
       event = Event::Resize.new(width: 80, height: 24)
       assert_equal :resize, event.to_sym
     end
+
+    # =========================================================================
+    # DWIM Predicates - Things People Might Try
+    # =========================================================================
+
+    # The classic Unix signal name - SIGWINCH
+    def test_dwim_sigwinch_alias
+      event = Event::Resize.new(width: 80, height: 24)
+
+      assert_predicate event, :sigwinch?
+      assert_predicate event, :winch?
+      assert_predicate event, :sig_winch?
+    end
+
+    # Alternative names people might try
+    def test_dwim_resize_aliases
+      event = Event::Resize.new(width: 80, height: 24)
+
+      assert_predicate event, :terminal_resize?
+      assert_predicate event, :window_resize?
+      assert_predicate event, :window_change?
+      assert_predicate event, :viewport_resize?
+      assert_predicate event, :viewport_change?
+      assert_predicate event, :size_change?
+      assert_predicate event, :resized?
+    end
+
+    # Predicates for checking dimensions
+    def test_dwim_dimension_predicates
+      wide = Event::Resize.new(width: 200, height: 24)
+      tall = Event::Resize.new(width: 80, height: 100)
+
+      # landscape?/portrait? based on aspect ratio
+      assert_predicate wide, :landscape?
+      refute_predicate wide, :portrait?
+
+      assert_predicate tall, :portrait?
+      refute_predicate tall, :landscape?
+    end
+
+    # VT100 standard (80x24) predicates
+    def test_dwim_vt100_predicates
+      exact_vt100 = Event::Resize.new(width: 80, height: 24)
+      larger = Event::Resize.new(width: 120, height: 40)
+      cramped_width = Event::Resize.new(width: 60, height: 24)
+      cramped_height = Event::Resize.new(width: 80, height: 20)
+      cramped_both = Event::Resize.new(width: 40, height: 10)
+
+      # vt100? - exactly 80x24
+      assert_predicate exact_vt100, :vt100?
+      refute_predicate larger, :vt100?
+      refute_predicate cramped_width, :vt100?
+
+      # at_least_vt100? - 80x24 or larger in BOTH dimensions
+      assert_predicate exact_vt100, :at_least_vt100?
+      assert_predicate larger, :at_least_vt100?
+      refute_predicate cramped_width, :at_least_vt100?
+      refute_predicate cramped_height, :at_least_vt100?
+
+      # over_vt100? - larger than 80x24 in BOTH dimensions
+      assert_predicate larger, :over_vt100?
+      refute_predicate exact_vt100, :over_vt100?
+      refute_predicate cramped_width, :over_vt100?
+
+      # cramped?/constrained? - under standard in EITHER dimension
+      assert_predicate cramped_width, :cramped?
+      assert_predicate cramped_height, :cramped?
+      assert_predicate cramped_both, :cramped?
+      refute_predicate exact_vt100, :cramped?
+      refute_predicate larger, :cramped?
+
+      # Alias
+      assert_predicate cramped_width, :constrained?
+    end
   end
 end

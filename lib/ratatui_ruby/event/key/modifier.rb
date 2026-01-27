@@ -40,6 +40,8 @@ module RatatuiRuby
         # Alias for {#super?}.
         alias win? super?
         # Alias for {#super?}.
+        alias windows? super?
+        # Alias for {#super?}.
         alias command? super?
         # Alias for {#super?}.
         alias cmd? super?
