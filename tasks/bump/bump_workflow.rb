@@ -32,15 +32,7 @@ class BumpWorkflow
     @commit_message = changelog.commit_message(target)
     changelog.release(target)
     @gem.update_version(target)
-    generate_ci_manifests
     @repository.commit_all(@commit_message)
-  end
-
-  private def generate_ci_manifests
-    Rake::Task["sourcehut:build:manifest"].reenable
-    Rake::Task["sourcehut:build"].reenable
-    Rake::Task["sourcehut"].reenable
-    Rake::Task["sourcehut"].invoke
   end
 
   # Template methods for subclasses

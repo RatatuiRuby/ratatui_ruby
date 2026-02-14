@@ -1,0 +1,76 @@
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: Test (Ruby ${{ matrix.ruby }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ["3.2", "3.3", "3.4", "4.0"]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    env:
+      CI: "true"
+      BINDGEN_EXTRA_CLANG_ARGS: "-include stdbool.h"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Override Ruby version in mise.toml
+        shell: bash
+        run: sed -i.bak 's/ruby = .*/ruby = "${{ matrix.ruby }}"/' mise.toml
+
+      - name: Install toolchain via mise
+        uses: jdx/mise-action@v2
+
+      - name: Install reuse tool
+        run: pip install reuse
+
+      - name: Install bundler
+        run: gem install bundler:4.0.3
+
+      - name: Bundle install
+        run: |
+          bundle config set --local frozen 'true'
+          bundle install
+
+      - name: Compile native extension
+        run: bundle exec rake compile
+
+      - name: Run tests
+        run: bundle exec rake test
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    env:
+      CI: "true"
+      BINDGEN_EXTRA_CLANG_ARGS: "-include stdbool.h"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install toolchain via mise
+        uses: jdx/mise-action@v2
+
+      - name: Install reuse tool
+        run: pip install reuse
+
+      - name: Install bundler
+        run: gem install bundler:4.0.3
+
+      - name: Bundle install
+        run: |
+          bundle config set --local frozen 'true'
+          bundle install
+
+      - name: Compile native extension
+        run: bundle exec rake compile
+
+      - name: Run linters
+        run: bundle exec rake lint

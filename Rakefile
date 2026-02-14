@@ -8,4 +8,4 @@ require "bundler/gem_tasks"
 # Import all tasks from the tasks/ directory
 Dir.glob("tasks/*.rake").each { |r| import r }
 
-task default: %w[lint:fix sourcehut test lint license:new steep]
+task default: %w[lint:fix test lint license:new steep]

@@ -1,0 +1,52 @@
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+name: Build Gems
+
+on:
+  push:
+    branches:
+      - "release/*"
+
+jobs:
+  build:
+    name: Build (Ruby ${{ matrix.ruby }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ["3.2", "3.3", "3.4", "4.0"]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    env:
+      CI: "true"
+      BINDGEN_EXTRA_CLANG_ARGS: "-include stdbool.h"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Override Ruby version in mise.toml
+        shell: bash
+        run: sed -i.bak 's/ruby = .*/ruby = "${{ matrix.ruby }}"/' mise.toml
+
+      - name: Install toolchain via mise
+        uses: jdx/mise-action@v2
+
+      - name: Install bundler
+        run: gem install bundler:4.0.3
+
+      - name: Bundle install
+        run: |
+          bundle config set --local frozen 'true'
+          bundle install
+
+      - name: Compile native extension
+        run: bundle exec rake compile
+
+      - name: Build gem
+        run: bundle exec rake build
+
+      - name: Upload gem artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gem-ruby${{ matrix.ruby }}-${{ matrix.os }}
+          path: pkg/*.gem
+          retention-days: 30

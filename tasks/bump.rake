@@ -56,6 +56,5 @@ namespace :bump do
     changelog = Changelog.new
     changelog.release(target)
     gem.update_version(target)
-    Rake::Task["sourcehut"].invoke
   end
 end
