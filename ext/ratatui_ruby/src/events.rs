@@ -2,7 +2,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use magnus::{Error, IntoValue, TryConvert, Value};
+use rb_sys::rb_thread_call_without_gvl;
 use std::cell::RefCell;
+use std::os::raw::c_void;
 
 /// Wrapper enum for test events - includes crossterm events and our Sync event.
 #[derive(Debug, Clone)]
@@ -314,6 +316,92 @@ pub fn clear_events() {
     EVENT_QUEUE.with(|q| q.borrow_mut().clear());
 }
 
+/// Result of polling crossterm from outside the GVL.
+///
+/// The blocking I/O (poll + read) happens without the Ruby GVL held,
+/// so other Ruby threads can run concurrently. This enum carries the
+/// result back across the GVL boundary for Ruby object construction.
+#[derive(Debug)]
+enum PollResult {
+    /// A crossterm event was read successfully.
+    Event(ratatui::crossterm::event::Event),
+    /// The timeout expired with no event available.
+    NoEvent,
+    /// An I/O error occurred during poll or read.
+    Error(String),
+}
+
+/// Data passed to the GVL-free polling callback.
+///
+/// The `timeout` field controls the poll behavior:
+/// - `Some(duration)`: poll with a timeout, return `NoEvent` if it expires.
+/// - `None`: block indefinitely until an event arrives.
+struct PollData {
+    timeout: Option<std::time::Duration>,
+    result: PollResult,
+}
+
+/// Polls crossterm for events without the Ruby GVL held.
+///
+/// This is the work function passed to `rb_thread_call_without_gvl`.
+/// It performs blocking I/O that would otherwise starve Ruby threads.
+extern "C" fn poll_without_gvl(data: *mut c_void) -> *mut c_void {
+    // SAFETY: `data` is a valid pointer to `PollData`, passed by
+    // `poll_crossterm_without_gvl` via `rb_thread_call_without_gvl`. The
+    // pointer remains valid for the duration of this callback because the
+    // caller owns the `PollData` on the stack and waits for us to return.
+    let data = unsafe { &mut *data.cast::<PollData>() };
+
+    data.result = match data.timeout {
+        Some(duration) => match ratatui::crossterm::event::poll(duration) {
+            Ok(true) => match ratatui::crossterm::event::read() {
+                Ok(event) => PollResult::Event(event),
+                Err(e) => PollResult::Error(e.to_string()),
+            },
+            Ok(false) => PollResult::NoEvent,
+            Err(e) => PollResult::Error(e.to_string()),
+        },
+        None => match ratatui::crossterm::event::read() {
+            Ok(event) => PollResult::Event(event),
+            Err(e) => PollResult::Error(e.to_string()),
+        },
+    };
+
+    std::ptr::null_mut()
+}
+
+/// Polls crossterm with the GVL released, then converts the result
+/// to a Ruby value after reacquiring the GVL.
+fn poll_crossterm_without_gvl(
+    ruby: &magnus::Ruby,
+    timeout: Option<std::time::Duration>,
+) -> Result<Value, Error> {
+    let mut data = PollData {
+        timeout,
+        result: PollResult::NoEvent,
+    };
+
+    // SAFETY: `data` is a valid stack-local `PollData` whose lifetime
+    // spans this entire call. `poll_without_gvl` only reads/writes
+    // through the pointer while `rb_thread_call_without_gvl` blocks,
+    // and we don't access `data` again until that function returns.
+    unsafe {
+        rb_thread_call_without_gvl(
+            Some(poll_without_gvl),
+            (&raw mut data).cast::<c_void>(),
+            None,
+            std::ptr::null_mut(),
+        );
+    }
+
+    // GVL is now re-held — safe to create Ruby objects.
+    match data.result {
+        PollResult::Event(event) => handle_crossterm_event(event),
+        PollResult::NoEvent => Ok(ruby.qnil().into_value_with(ruby)),
+        PollResult::Error(msg) => Err(Error::new(ruby.exception_runtime_error(), msg)),
+    }
+}
+
 pub fn poll_event(ruby: &magnus::Ruby, timeout_val: Option<f64>) -> Result<Value, Error> {
     let event = EVENT_QUEUE.with(|q| {
         let mut queue = q.borrow_mut();
@@ -334,24 +422,8 @@ pub fn poll_event(ruby: &magnus::Ruby, timeout_val: Option<f64>) -> Result<Value
         return Ok(ruby.qnil().into_value_with(ruby));
     }
 
-    if let Some(secs) = timeout_val {
-        // Timed poll: wait up to the specified duration
-        let duration = std::time::Duration::from_secs_f64(secs);
-        if ratatui::crossterm::event::poll(duration)
-            .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?
-        {
-            let event = ratatui::crossterm::event::read()
-                .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
-            handle_crossterm_event(event)
-        } else {
-            Ok(ruby.qnil().into_value_with(ruby))
-        }
-    } else {
-        // Blocking: wait indefinitely for an event
-        let event = ratatui::crossterm::event::read()
-            .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
-        handle_crossterm_event(event)
-    }
+    let timeout = timeout_val.map(std::time::Duration::from_secs_f64);
+    poll_crossterm_without_gvl(ruby, timeout)
 }
 
 fn handle_test_event(event: TestEvent) -> Result<Value, Error> {
@@ -558,4 +630,71 @@ fn handle_focus_event(event_type: &str) -> Result<Value, Error> {
     let hash = ruby.hash_new();
     hash.aset(ruby.to_symbol("type"), ruby.to_symbol(event_type))?;
     Ok(hash.into_value_with(&ruby))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn poll_data_defaults_to_no_event() {
+        let data = PollData {
+            timeout: Some(std::time::Duration::from_millis(0)),
+            result: PollResult::NoEvent,
+        };
+        assert!(matches!(data.result, PollResult::NoEvent));
+    }
+
+    #[test]
+    fn poll_data_accepts_none_timeout_for_indefinite_blocking() {
+        let data = PollData {
+            timeout: None,
+            result: PollResult::NoEvent,
+        };
+        assert!(data.timeout.is_none());
+    }
+
+    #[test]
+    fn poll_result_error_preserves_message() {
+        let result = PollResult::Error("connection reset".to_string());
+        match result {
+            PollResult::Error(msg) => assert_eq!(msg, "connection reset"),
+            _ => panic!("Expected PollResult::Error"),
+        }
+    }
+
+    #[test]
+    fn poll_result_event_wraps_crossterm_event() {
+        let key_event =
+            ratatui::crossterm::event::Event::Key(ratatui::crossterm::event::KeyEvent::new(
+                ratatui::crossterm::event::KeyCode::Char('q'),
+                ratatui::crossterm::event::KeyModifiers::empty(),
+            ));
+        let result = PollResult::Event(key_event.clone());
+        match result {
+            PollResult::Event(e) => assert_eq!(format!("{e:?}"), format!("{key_event:?}")),
+            _ => panic!("Expected PollResult::Event"),
+        }
+    }
+
+    #[test]
+    fn poll_without_gvl_returns_no_event_on_zero_timeout() {
+        // With a zero-duration timeout, poll returns immediately with no event.
+        // In headless environments (CI), crossterm may return an Error because
+        // there is no terminal to read from — that's also a valid outcome.
+        let mut data = PollData {
+            timeout: Some(std::time::Duration::from_millis(0)),
+            result: PollResult::Error("sentinel — should be overwritten".to_string()),
+        };
+
+        poll_without_gvl(&mut data as *mut PollData as *mut c_void);
+
+        // The callback must have overwritten the sentinel value.
+        match &data.result {
+            PollResult::Error(msg) if msg == "sentinel — should be overwritten" => {
+                panic!("poll_without_gvl did not write to data.result")
+            }
+            _ => {} // NoEvent, Event, or a *different* Error are all fine.
+        }
+    }
 }
