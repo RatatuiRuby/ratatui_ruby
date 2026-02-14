@@ -18,6 +18,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Removed
 
+## [1.2.2] - 2026-02-13
+
+### Added
+
+### Changed
+
+### Fixed
+
+### Removed
+
 ## [1.2.1] - 2026-01-28
 
 ### Added
@@ -738,6 +748,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Testing Support**: Included `RatatuiRuby::TestHelper` and RSpec integration to make testing your TUI applications possible.
 
 [Unreleased]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/HEAD
+[1.2.2]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v1.2.2
 [1.2.1]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v1.2.1
 [1.2.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v1.2.0
 [1.1.0]: https://git.sr.ht/~kerrick/ratatui_ruby/refs/v1.1.0
