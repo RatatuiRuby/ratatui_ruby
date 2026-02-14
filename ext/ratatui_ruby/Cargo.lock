@@ -1065,6 +1065,7 @@ dependencies = [
  "lazy_static",
  "magnus",
  "ratatui",
+ "rb-sys",
  "time",
  "unicode-width 0.1.14",
 ]
