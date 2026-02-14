@@ -211,4 +211,9 @@ class TestTestHelper < Minitest::Test
       RatatuiRuby::SyntheticEvents.instance_variable_set(:@inline_sync, false)
     end
   end
+
+  def test_normalize_snapshots_returns_lines_unchanged_by_default
+    input = ["line one", "line two"]
+    assert_equal input, normalize_snapshots(input)
+  end
 end

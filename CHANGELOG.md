@@ -12,7 +12,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
-
+- **Class-Wide Snapshot Normalization**: `TestHelper::Snapshot` now supports a `normalize_snapshots` template method hook. Override it in your test class to mask dynamic content (timestamps, PIDs, temp paths) across all snapshot assertions without repeating normalization blocks. The hook composes with per-call blocks: the hook runs first, then the block.
 
 ### Changed
 

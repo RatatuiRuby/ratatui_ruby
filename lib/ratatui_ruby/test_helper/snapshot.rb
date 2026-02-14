@@ -99,7 +99,62 @@ module RatatuiRuby
     #--
     # SPDX-SnippetEnd
     #++
+    #
+    # === Class-Wide Normalization
+    #
+    # When every test in a class faces the same dynamic content, override
+    # <tt>normalize_snapshots</tt> instead of repeating the block. Return a callable
+    # (or Array of callables) that transforms lines. The hook runs before any per-call
+    # block, so the two compose naturally. See <tt>normalize_snapshots</tt> for details.
     module Snapshot
+      # Override this method to normalize all snapshots in a test class.
+      #
+      # Snapshot assertions compare screen content against stored files. Dynamic content
+      # (timestamps, temp paths, random IDs) breaks those comparisons. Passing a normalization
+      # block to each assertion fixes one test but creates duplication when every test in a
+      # class faces the same dynamic content.
+      #
+      # Override <tt>normalize_snapshots</tt> in your test class to define class-wide
+      # normalization. Accept an Array of Strings (lines) and return the transformed Array.
+      #
+      # The hook runs before any per-call normalization block, so the two compose naturally:
+      # the hook handles class-wide concerns and the block handles one-off masking.
+      #
+      # Returns <tt>lines</tt> unchanged by default (no normalization).
+      #
+      # === Example
+      #
+      #--
+      # SPDX-SnippetBegin
+      # SPDX-FileCopyrightText: 2026 Kerrick Long
+      # SPDX-License-Identifier: MIT-0
+      #++
+      #   class TestFileExplorer < Minitest::Test
+      #     include RatatuiRuby::TestHelper
+      #
+      #     private def normalize_snapshots(lines)
+      #       lines.map { |l| l.gsub(Dir.pwd, "STABLE_PATH") }
+      #     end
+      #
+      #     def test_initial_render
+      #       # normalize_snapshots runs automatically — no block needed
+      #       assert_snapshots("initial_render")
+      #     end
+      #
+      #     def test_after_scroll
+      #       # Per-call block composes with the hook (hook runs first)
+      #       assert_snapshots("after_scroll") do |lines|
+      #         lines.map { |l| l.gsub(/\d{2}:\d{2}/, "XX:XX") }
+      #       end
+      #     end
+      #   end
+      #
+      #--
+      # SPDX-SnippetEnd
+      #++
+      private def normalize_snapshots(lines)
+        lines
+      end
       ##
       # Asserts that the current screen content matches a stored plain text snapshot.
       #
@@ -181,7 +236,7 @@ module RatatuiRuby
       # Ensure your render logic is deterministic by seeding random number generators and stubbing
       # time where necessary.
       def assert_screen_matches(expected, msg = nil)
-        actual_lines = buffer_content
+        actual_lines = normalize_snapshots(buffer_content)
 
         if block_given?
           actual_lines = yield(actual_lines)
@@ -269,12 +324,11 @@ module RatatuiRuby
 
         actual_content = _render_buffer_with_ansi
 
+        lines = normalize_snapshots(actual_content.split("\n"))
         if block_given?
-          lines = actual_content.split("\n")
-          # Yield lines to user block for modification (e.g. masking IDs/Times)
           lines = yield(lines)
-          actual_content = "#{lines.join("\n")}\n"
         end
+        actual_content = "#{lines.join("\n")}\n"
 
         update_snapshots = ENV["UPDATE_SNAPSHOTS"] == "1" || ENV["UPDATE_SNAPSHOTS"] == "true"
 
