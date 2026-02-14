@@ -46,6 +46,7 @@ class TestParagraph < Minitest::Test
     end
   ensure
     RatatuiRuby.experimental_warnings = false
+    RatatuiRuby.instance_variable_set(:@warned_features, {})
   end
 
   def test_metrics_unwrapped

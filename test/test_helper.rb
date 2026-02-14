@@ -57,4 +57,22 @@ RatatuiRuby.experimental_warnings = false
 
 require "minitest/autorun"
 
+# Defensive session-state isolation.
+# Tests that call init_test_terminal directly (without with_test_terminal)
+# can leak @tui_session_active = true if they error before cleanup.
+# Minitest's random ordering then causes the next test to hit
+# "Cannot initialize terminal: TUI session already active".
+# These hooks reset the flag before and after every test universally.
+class Minitest::Test
+  def before_setup
+    super
+    RatatuiRuby.instance_variable_set(:@tui_session_active, false)
+  end
+
+  def after_teardown
+    RatatuiRuby.instance_variable_set(:@tui_session_active, false)
+    super
+  end
+end
+
 require "ratatui_ruby/test_helper"

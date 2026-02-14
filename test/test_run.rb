@@ -18,7 +18,9 @@ class TestRun < Minitest::Test
       end
 
       # Remove the existing init_terminal before redefining to avoid warnings
-      RatatuiRuby.singleton_class.__send__(:remove_method, :init_terminal)
+      if RatatuiRuby.singleton_class.method_defined?(:init_terminal, false)
+        RatatuiRuby.singleton_class.__send__(:remove_method, :init_terminal)
+      end
       RatatuiRuby.define_singleton_method(:init_terminal) do |**_opts|
         init_test_terminal(80, 24)
       end
@@ -28,9 +30,13 @@ class TestRun < Minitest::Test
   def teardown
     if RatatuiRuby.respond_to?(:original_init_terminal)
       # Remove the mock before restoring the original
-      RatatuiRuby.singleton_class.__send__(:remove_method, :init_terminal)
+      if RatatuiRuby.singleton_class.method_defined?(:init_terminal, false)
+        RatatuiRuby.singleton_class.__send__(:remove_method, :init_terminal)
+      end
       RatatuiRuby.define_singleton_method(:init_terminal, RatatuiRuby.method(:original_init_terminal))
-      RatatuiRuby.singleton_class.__send__(:remove_method, :original_init_terminal)
+      if RatatuiRuby.singleton_class.method_defined?(:original_init_terminal, false)
+        RatatuiRuby.singleton_class.__send__(:remove_method, :original_init_terminal)
+      end
     end
   end
 

@@ -20,8 +20,6 @@ class TestDeferredWarnings < Minitest::Test
 
   def teardown
     RatatuiRuby.experimental_warnings = @original_setting
-    # Reset session state to prevent polluting other tests
-    RatatuiRuby.instance_variable_set(:@tui_session_active, false)
   end
 
   def test_warning_deferred_during_tui_session

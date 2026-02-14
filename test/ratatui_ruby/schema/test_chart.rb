@@ -16,6 +16,10 @@ module RatatuiRuby
       RatatuiRuby.init_test_terminal(80, 24)
     end
 
+    def teardown
+      RatatuiRuby.restore_terminal
+    end
+
     def test_chart_rendering
       datasets = [
         Widgets::Dataset.new(
