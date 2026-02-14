@@ -8,11 +8,10 @@
 # Manages the version comparison links at the botton of the changelog.
 #
 # Release automation needs to update links. Manually calculating git diff URLs
-# for every release is tedious and error-prone. SourceHut does not have
-# standard comparison views, complicating matters further.
+# for every release is tedious and error-prone.
 #
 # This class manages the collection of links. It parses them from the markdown.
-# It generates the correct tree links for SourceHut. It properly shifts the
+# It generates the correct release tag links for GitHub. It properly shifts the
 # "Unreleased" pointer.
 #
 # Use it to update the changelog during a release.

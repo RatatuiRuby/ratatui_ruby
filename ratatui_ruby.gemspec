@@ -15,18 +15,18 @@ Gem::Specification.new do |spec|
 
   spec.summary = "💎 Unofficial Ruby wrapper for the Ratatui 👨‍🍳🐀."
   spec.description = File.read(File.expand_path("README.rdoc", __dir__))
-  spec.homepage = "https://sr.ht/~kerrick/ratatui_ruby/"
+  spec.homepage = "https://www.ratatui-ruby.dev"
   spec.license = "LGPL-3.0-or-later"
   spec.required_ruby_version = [">= 3.2.9", "< 5"]
 
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["bug_tracker_uri"] = "https://todo.sr.ht/~kerrick/ratatui_ruby"
-  spec.metadata["changelog_uri"] = "https://git.sr.ht/~kerrick/ratatui_ruby/tree/stable/item/CHANGELOG.md"
-  spec.metadata["mailing_list_uri"] = "https://lists.sr.ht/~kerrick/ratatui_ruby-discuss"
-  spec.metadata["source_code_uri"] = "https://git.sr.ht/~kerrick/ratatui_ruby"
-  spec.metadata["documentation_uri"] = "https://git.sr.ht/~kerrick/ratatui_ruby/tree/HEAD/doc/index.md"
+  spec.metadata["bug_tracker_uri"] = "https://forum.setdef.com/tags/c/ratatui-ruby/6/bug"
+  spec.metadata["changelog_uri"] = "https://github.com/setdef/RatatuiRuby/blob/stable/CHANGELOG.md"
+  spec.metadata["mailing_list_uri"] = "https://forum.setdef.com/c/ratatui-ruby/6"
+  spec.metadata["source_code_uri"] = "https://github.com/setdef/RatatuiRuby"
+  spec.metadata["documentation_uri"] = "https://www.ratatui-ruby.dev/docs/"
   spec.metadata["wiki_uri"] = "https://man.sr.ht/~kerrick/ratatui_ruby/"
   spec.metadata["funding_uri"] = "https://opencollective.com/ratatui" # Don't fund me, fund the upstream project.
 

@@ -6,13 +6,12 @@
 
 [![
 builds.sr.ht status](https://builds.sr.ht/~kerrick/ratatui_ruby.svg)](https://builds.sr.ht/~kerrick/ratatui_ruby?) [![
-License](https://img.shields.io/badge/dynamic/regex?url=https%3A%2F%2Fgit.sr.ht%2F~kerrick%2Fratatui_ruby%2Fblob%2Fstable%2Fratatui_ruby.gemspec&search=spec%5C.license%20%3D%20%22(.*)%22&replace=%241&label=License&color=a2c93e)](https://spdx.org/licenses/AGPL-3.0-or-later.html) [![
+License](https://img.shields.io/badge/dynamic/regex?url=https%3A%2F%2Fraw.githubusercontent.com%2Fsetdef%2FRatatuiRuby%2Fstable%2Fratatui_ruby.gemspec&search=spec%5C.license%20%3D%20%22(.*)%22&replace=%241&label=License&color=a2c93e)](https://spdx.org/licenses/AGPL-3.0-or-later.html) [![
 Gem Total Downloads](https://img.shields.io/gem/dt/ratatui_ruby)](https://rubygems.org/gems/ratatui_ruby) [![
 Gem Version](https://img.shields.io/gem/v/ratatui_ruby)](https://rubygems.org/gems/ratatui_ruby) [![
-Ratatui Version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fgit.sr.ht%2F~kerrick%2Fratatui_ruby%2Fblob%2Fstable%2Fext%2Fratatui_ruby%2FCargo.toml&query=%24.dependencies.ratatui.version&prefix=v&logo=ratatui&label=Ratatui)](https://crates.io/crates/ratatui/0.30) [![
-Mailing List: Discussion](https://img.shields.io/badge/mailing_list-discussion-5865F2.svg?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0iaWNvbiBpY29uLXRhYmxlciBpY29ucy10YWJsZXItb3V0bGluZSBpY29uLXRhYmxlci1tYWlsIj48cGF0aCBzdHJva2U9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNMyA3YTIgMiAwIDAgMSAyIC0yaDE0YTIgMiAwIDAgMSAyIDJ2MTBhMiAyIDAgMCAxIC0yIDJoLTE0YTIgMiAwIDAgMSAtMiAtMnYtMTB6IiAvPjxwYXRoIGQ9Ik0zIDdsOSA2bDkgLTYiIC8+PC9zdmc+Cg==)](https://lists.sr.ht/~kerrick/ratatui_ruby-discuss) [![
-Mailing List: Development](https://img.shields.io/badge/mailing_list-development-4954d5.svg?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0iaWNvbiBpY29uLXRhYmxlciBpY29ucy10YWJsZXItb3V0bGluZSBpY29uLXRhYmxlci1tYWlsIj48cGF0aCBzdHJva2U9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNMyA3YTIgMiAwIDAgMSAyIC0yaDE0YTIgMiAwIDAgMSAyIDJ2MTBhMiAyIDAgMCAxIC0yIDJoLTE0YTIgMiAwIDAgMSAtMiAtMnYtMTB6IiAvPjxwYXRoIGQ9Ik0zIDdsOSA2bDkgLTYiIC8+PC9zdmc+Cg==)](https://lists.sr.ht/~kerrick/ratatui_ruby-devel) [![
-Mailing List: Announcements](https://img.shields.io/badge/mailing_list-announcements-3b44ac.svg?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0iaWNvbiBpY29uLXRhYmxlciBpY29ucy10YWJsZXItb3V0bGluZSBpY29uLXRhYmxlci1tYWlsIj48cGF0aCBzdHJva2U9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNMyA3YTIgMiAwIDAgMSAyIC0yaDE0YTIgMiAwIDAgMSAyIDJ2MTBhMiAyIDAgMCAxIC0yIDJoLTE0YTIgMiAwIDAgMSAtMiAtMnYtMTB6IiAvPjxwYXRoIGQ9Ik0zIDdsOSA2bDkgLTYiIC8+PC9zdmc+Cg==)](https://lists.sr.ht/~kerrick/ratatui_ruby-announce)
+Ratatui Version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fsetdef%2FRatatuiRuby%2Fstable%2Fext%2Fratatui_ruby%2FCargo.toml&query=%24.dependencies.ratatui.version&prefix=v&logo=ratatui&label=Ratatui)](https://crates.io/crates/ratatui/0.30) [![
+Forum: Discussion](https://img.shields.io/badge/forum-discussion-5865F2.svg?logo=discourse)](https://forum.setdef.com/tags/c/ratatui-ruby/6/discussion) [![
+Forum: Announcements](https://img.shields.io/badge/forum-announcements-3b44ac.svg?logo=discourse)](https://forum.setdef.com/tags/c/ratatui-ruby/6/announcement)
 
 
 ## Introduction
@@ -22,7 +21,7 @@ Mailing List: Announcements](https://img.shields.io/badge/mailing_list-announcem
 
 **[Why RatatuiRuby?](./doc/getting_started/why.md)** — Native Rust performance, zero runtime overhead, and Ruby's expressiveness. [See how we compare](./doc/getting_started/why.md) to CharmRuby, raw Rust, and Go.
 
-Please join the **announce** mailing list at https://lists.sr.ht/~kerrick/ratatui_ruby-announce to stay up-to-date on new releases and announcements. See the [`trunk` branch](https://git.sr.ht/~kerrick/ratatui_ruby/tree/trunk) for pre-release updates.
+Please join the [announcement forum](https://forum.setdef.com/tags/c/ratatui-ruby/6/announcement) to stay up-to-date on new releases and announcements. See the [`trunk` branch](https://github.com/setdef/RatatuiRuby/tree/trunk) for pre-release updates.
 
 ---
 
@@ -30,15 +29,15 @@ Please join the **announce** mailing list at https://lists.sr.ht/~kerrick/ratatu
 
 ### The Ecosystem
 
-**RatatuiRuby:** [Core engine](https://git.sr.ht/~kerrick/ratatui_ruby) • **Tea:** [MVU architecture](https://git.sr.ht/~kerrick/ratatui_ruby-tea) • **Kit:** [Component architecture](https://git.sr.ht/~kerrick/ratatui_ruby-kit) (Planned) • **DSL:** [Glimmer syntax](https://sr.ht/~kerrick/ratatui_ruby/#chapter-4-the-syntax) (Planned) • **Framework:** [Omakase framework](https://git.sr.ht/~kerrick/ratatui_ruby-framework) (Planned) • **UI:** [Polished widgets](https://git.sr.ht/~kerrick/ratatui_ruby-ui) (Planned) • **UI Pro:** [More polished widgets](https://sr.ht/~kerrick/ratatui_ruby#chapter-6-licensing) (Planned)
+**RatatuiRuby:** [Core engine](https://github.com/setdef/RatatuiRuby) • **Rooibos:** [MVU architecture](https://www.rooibos.run) • **Kit:** [Component architecture](https://git.sr.ht/~kerrick/ratatui_ruby-kit) (Planned) • **DSL:** [Glimmer syntax](https://sr.ht/~kerrick/ratatui_ruby/#chapter-4-the-syntax) (Planned) • **Framework:** [Omakase framework](https://git.sr.ht/~kerrick/ratatui_ruby-framework) (Planned) • **UI:** [Polished widgets](https://git.sr.ht/~kerrick/ratatui_ruby-ui) (Planned) • **UI Pro:** [More polished widgets](https://sr.ht/~kerrick/ratatui_ruby#chapter-6-licensing) (Planned)
 
 ### For App Developers
 
-**Get Started:** [Quickstart](https://git.sr.ht/~kerrick/ratatui_ruby/tree/stable/item/doc/getting_started/quickstart.md) • [Examples](https://git.sr.ht/~kerrick/ratatui_ruby/tree/stable/item/examples) ⸺ **Stay Informed:** [Announce List](https://lists.sr.ht/~kerrick/ratatui_ruby-announce) • [FAQ](https://man.sr.ht/~kerrick/ratatui_ruby/troubleshooting.md) ⸺ **Reach Out:** [Discuss List](https://lists.sr.ht/~kerrick/ratatui_ruby-discuss) • [Bug Tracker](https://todo.sr.ht/~kerrick/ratatui_ruby)
+**Get Started:** [Quickstart](./doc/getting_started/quickstart.md) • [Examples](./examples/app_all_events/README.md) ⸺ **Stay Informed:** [Announcements](https://forum.setdef.com/tags/c/ratatui-ruby/6/announcement) • [FAQ](https://man.sr.ht/~kerrick/ratatui_ruby/troubleshooting.md) ⸺ **Reach Out:** [Forum](https://forum.setdef.com/c/ratatui-ruby/6) • [Bug Tracker](https://forum.setdef.com/tags/c/ratatui-ruby/6/bug)
 
 ### For Contributors
 
-**Get Started:** [Contributing Guide](https://man.sr.ht/~kerrick/ratatui_ruby/contributing.md) • [Code of Conduct](https://man.sr.ht/~kerrick/ratatui_ruby/code_of_conduct.md) ⸺ **Stay Informed:** [Announce List](https://lists.sr.ht/~kerrick/ratatui_ruby-announce) • [Project History](https://man.sr.ht/~kerrick/ratatui_ruby/history/index.md) ⸺ **Reach Out:** [Development List](https://lists.sr.ht/~kerrick/ratatui_ruby-devel) • [Bug Tracker](https://todo.sr.ht/~kerrick/ratatui_ruby)
+**Get Started:** [Contributing Guide](https://man.sr.ht/~kerrick/ratatui_ruby/contributing.md) • [Code of Conduct](https://man.sr.ht/~kerrick/ratatui_ruby/code_of_conduct.md) ⸺ **Stay Informed:** [Announcements](https://forum.setdef.com/tags/c/ratatui-ruby/6/announcement) • [Project History](https://man.sr.ht/~kerrick/ratatui_ruby/history/index.md) ⸺ **Reach Out:** [Forum](https://forum.setdef.com/tags/c/ratatui-ruby/6/discussion) • [Bug Tracker](https://forum.setdef.com/tags/c/ratatui-ruby/6/bug)
 
 ---
 
@@ -165,7 +164,7 @@ Plus: flexible layouts with constraints, full keyboard/mouse/paste/resize events
 
 ## Contributing
 
-Bug reports and pull requests are welcome on [sourcehut](https://sourcehut.org) at https://sr.ht/~kerrick/ratatui_ruby/. This project is intended to be a safe, productive collaboration, and contributors are expected to adhere to the [Code of Conduct](https://man.sr.ht/~kerrick/ratatui_ruby/code_of_conduct.md).
+Bug reports and pull requests are welcome on [GitHub](https://github.com/setdef/RatatuiRuby). This project is intended to be a safe, productive collaboration, and contributors are expected to adhere to the [Code of Conduct](https://man.sr.ht/~kerrick/ratatui_ruby/code_of_conduct.md).
 
 Issues for the underlying Rust library should be filed at [ratatui/ratatui](https://github.com/ratatui/ratatui).
 

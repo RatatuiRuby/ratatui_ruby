@@ -202,7 +202,7 @@ snapshot comparisons, and style assertions. RatatuiRuby bundles all of it.
 RatatuiRuby renders. For complex applications, add a framework that manages
 state and composition.
 
-==== Rooibos[https://git.sr.ht/~kerrick/rooibos] (Framework)
+==== Rooibos[https://www.rooibos.run] (Framework)
 
 Model-View-Update architecture. Inspired by Elm, Bubble Tea, and React +
 Redux. Your UI is a pure function of state.
@@ -275,26 +275,26 @@ give Ruby developers TUI options.
   {API Reference}[https://www.ratatui-ruby.dev/docs/v0.10/],
   {Guides}[https://www.ratatui-ruby.dev/docs/v0.10/doc/index_md.html]
 [Ecosystem]
-  Rooibos[https://git.sr.ht/~kerrick/rooibos],
+  Rooibos[https://www.rooibos.run],
   {Kit}[https://sr.ht/~kerrick/ratatui_ruby/#chapter-3-the-object-path--kit] (Planned),
   {Framework}[https://sr.ht/~kerrick/ratatui_ruby/#chapter-5-the-framework] (Planned),
   {UI Widgets}[https://sr.ht/~kerrick/ratatui_ruby/#chapter-6-licensing] (Planned)
 [Community]
-  {Discuss and Chat}[https://lists.sr.ht/~kerrick/ratatui_ruby-discuss],
-  {Announcements}[https://lists.sr.ht/~kerrick/ratatui_ruby-announce],
-  {Development}[https://lists.sr.ht/~kerrick/ratatui_ruby-devel],
-  {Bug Tracker}[https://todo.sr.ht/~kerrick/ratatui_ruby]
+  {Forum}[https://forum.setdef.com/c/ratatui-ruby/6],
+  {Announcements}[https://forum.setdef.com/tags/c/ratatui-ruby/6/announcement],
+  {Discussion}[https://forum.setdef.com/tags/c/ratatui-ruby/6/discussion],
+  {Bug Tracker}[https://forum.setdef.com/tags/c/ratatui-ruby/6/bug]
 [Contribute]
   {Contributing Guide}[https://man.sr.ht/~kerrick/ratatui_ruby/contributing.md],
   {Code of Conduct}[https://man.sr.ht/~kerrick/ratatui_ruby/code_of_conduct.md],
   {Project History}[https://man.sr.ht/~kerrick/ratatui_ruby/history/index.md],
-  {Pull Requests}[https://lists.sr.ht/~kerrick/ratatui_ruby-devel/patches]
+  {Pull Requests}[https://forum.setdef.com/tags/c/ratatui-ruby/6/patch]
 
 
 ---
 
 [Website] https://www.ratatui-ruby.dev
-[Source] https://git.sr.ht/~kerrick/ratatui_ruby
+[Source] https://github.com/setdef/RatatuiRuby
 [RubyGems] https://rubygems.org/gems/ratatui_ruby
 [Upstream] https://ratatui.rs
 [Build Status] https://builds.sr.ht/~kerrick/ratatui_ruby

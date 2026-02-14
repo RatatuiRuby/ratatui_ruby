@@ -288,4 +288,4 @@ Now that you've seen what **ratatui_ruby** can do:
 - **Avoid common mistakes**: See [Terminal Output During TUI Sessions](../troubleshooting/tui_output.md) to prevent screen corruption
 - **Explore the API**: Browse the [full RDoc documentation](../index.md)
 - **Learn the philosophy**: Read [Why RatatuiRuby?](./why.md) for comparisons and design decisions
-- **Get help**: Join the [discussion mailing list](https://lists.sr.ht/~kerrick/ratatui_ruby-discuss)
+- **Get help**: Join the [forum](https://forum.setdef.com/c/ratatui-ruby/6)
