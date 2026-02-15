@@ -66,11 +66,52 @@ class TestLabs < Minitest::Test
 end
 
 ##
+# Tests that A11Y lab is a no-op on Windows.
+#
+# These tests must NOT be skipped on Windows — they verify the guard itself.
+class TestLabsA11yWindowsGuard < Minitest::Test
+  def teardown
+    RatatuiRuby::Labs.reset!
+    FileUtils.rm_f(RatatuiRuby::Labs::A11y::OUTPUT_PATH)
+  end
+
+  ##
+  # Verifies that dump_widget_tree does nothing on Windows.
+  def test_dump_widget_tree_is_noop_on_windows
+    widget = RatatuiRuby::Widgets::Paragraph.new(text: "Hello")
+    FileUtils.rm_f(RatatuiRuby::Labs::A11y::OUTPUT_PATH)
+
+    Gem.stub :win_platform?, true do
+      RatatuiRuby::Labs::A11y.dump_widget_tree(widget)
+    end
+
+    refute File.exist?(RatatuiRuby::Labs::A11y::OUTPUT_PATH),
+      "dump_widget_tree should not write output on Windows"
+  end
+
+  ##
+  # Verifies that dump_widgets does nothing on Windows.
+  def test_dump_widgets_is_noop_on_windows
+    widget = RatatuiRuby::Widgets::Paragraph.new(text: "Hello")
+    area = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 80, height: 24)
+    FileUtils.rm_f(RatatuiRuby::Labs::A11y::OUTPUT_PATH)
+
+    Gem.stub :win_platform?, true do
+      RatatuiRuby::Labs::A11y.dump_widgets([[widget, area]])
+    end
+
+    refute File.exist?(RatatuiRuby::Labs::A11y::OUTPUT_PATH),
+      "dump_widgets should not write output on Windows"
+  end
+end
+
+##
 # Tests for A11Y lab feature - widget tree XML export.
 class TestLabsA11y < Minitest::Test
   include RatatuiRuby::TestHelper
 
   def setup
+    skip "A11Y lab disabled on Windows" if Gem.win_platform?
     RatatuiRuby::Labs.reset!
   end
 
@@ -241,7 +282,7 @@ class TestLabsA11y < Minitest::Test
   def test_xml_omits_empty_elements
     RatatuiRuby::Labs.enable!(:a11y)
 
-    with_test_terminal(width: 80, height: 24, timeout: 5) do
+    with_test_terminal(width: 80, height: 24) do
       RatatuiRuby.draw do |frame|
         # Simple paragraph with no style set
         frame.render_widget(
@@ -471,7 +512,7 @@ class TestLabsA11y < Minitest::Test
   def test_widget_ids_are_stable_across_frames
     RatatuiRuby::Labs.enable!(:a11y)
 
-    with_test_terminal(width: 80, height: 24, timeout: 5) do
+    with_test_terminal(width: 80, height: 24) do
       # Frame 1
       RatatuiRuby.draw do |frame|
         frame.render_widget(
@@ -538,7 +579,7 @@ class TestLabsA11y < Minitest::Test
   def test_text_is_child_element_not_attribute
     RatatuiRuby::Labs.enable!(:a11y)
 
-    with_test_terminal(width: 80, height: 24, timeout: 5) do
+    with_test_terminal(width: 80, height: 24) do
       RatatuiRuby.draw do |frame|
         frame.render_widget(
           RatatuiRuby::Widgets::Paragraph.new(text: "Line 1\nLine 2"),
