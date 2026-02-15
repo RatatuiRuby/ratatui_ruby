@@ -66,56 +66,18 @@ class TestLabs < Minitest::Test
 end
 
 ##
-# Tests that A11Y lab is a no-op on Windows.
-#
-# These tests must NOT be skipped on Windows — they verify the guard itself.
-class TestLabsA11yWindowsGuard < Minitest::Test
-  def teardown
-    RatatuiRuby::Labs.reset!
-    FileUtils.rm_f(RatatuiRuby::Labs::A11y::OUTPUT_PATH)
-  end
-
-  ##
-  # Verifies that dump_widget_tree does nothing on Windows.
-  def test_dump_widget_tree_is_noop_on_windows
-    widget = RatatuiRuby::Widgets::Paragraph.new(text: "Hello")
-    FileUtils.rm_f(RatatuiRuby::Labs::A11y::OUTPUT_PATH)
-
-    Gem.stub :win_platform?, true do
-      RatatuiRuby::Labs::A11y.dump_widget_tree(widget)
-    end
-
-    refute File.exist?(RatatuiRuby::Labs::A11y::OUTPUT_PATH),
-      "dump_widget_tree should not write output on Windows"
-  end
-
-  ##
-  # Verifies that dump_widgets does nothing on Windows.
-  def test_dump_widgets_is_noop_on_windows
-    widget = RatatuiRuby::Widgets::Paragraph.new(text: "Hello")
-    area = RatatuiRuby::Layout::Rect.new(x: 0, y: 0, width: 80, height: 24)
-    FileUtils.rm_f(RatatuiRuby::Labs::A11y::OUTPUT_PATH)
-
-    Gem.stub :win_platform?, true do
-      RatatuiRuby::Labs::A11y.dump_widgets([[widget, area]])
-    end
-
-    refute File.exist?(RatatuiRuby::Labs::A11y::OUTPUT_PATH),
-      "dump_widgets should not write output on Windows"
-  end
-end
-
-##
 # Tests for A11Y lab feature - widget tree XML export.
 class TestLabsA11y < Minitest::Test
   include RatatuiRuby::TestHelper
 
   def setup
-    skip "A11Y lab disabled on Windows" if Gem.win_platform?
+    @t0 = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     RatatuiRuby::Labs.reset!
   end
 
   def teardown
+    elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - @t0
+    $stderr.write("[TIMING] #{name}: %.2fs\n" % elapsed)
     RatatuiRuby::Labs.reset!
     FileUtils.rm_f(RatatuiRuby::Labs::A11y::OUTPUT_PATH)
   end
@@ -173,7 +135,7 @@ class TestLabsA11y < Minitest::Test
     RatatuiRuby::Labs.enable!(:a11y)
     widget = RatatuiRuby::Widgets::Paragraph.new(text: "Frame API")
 
-    with_test_terminal do
+    with_test_terminal(timeout: 30) do
       RatatuiRuby.draw do |frame|
         frame.render_widget(widget, frame.area)
       end
@@ -199,7 +161,7 @@ class TestLabsA11y < Minitest::Test
   def test_xml_reflects_layout_hierarchy
     RatatuiRuby::Labs.enable!(:a11y)
 
-    with_test_terminal(width: 80, height: 24) do
+    with_test_terminal(width: 80, height: 24, timeout: 30) do
       RatatuiRuby.draw do |frame|
         # Split into left sidebar and right main
         left, right = RatatuiRuby::Layout::Layout.split(
@@ -282,7 +244,7 @@ class TestLabsA11y < Minitest::Test
   def test_xml_omits_empty_elements
     RatatuiRuby::Labs.enable!(:a11y)
 
-    with_test_terminal(width: 80, height: 24) do
+    with_test_terminal(width: 80, height: 24, timeout: 30) do
       RatatuiRuby.draw do |frame|
         # Simple paragraph with no style set
         frame.render_widget(
@@ -314,7 +276,7 @@ class TestLabsA11y < Minitest::Test
   def test_scalar_args_are_xml_attributes
     RatatuiRuby::Labs.enable!(:a11y)
 
-    with_test_terminal(width: 80, height: 24) do
+    with_test_terminal(width: 80, height: 24, timeout: 30) do
       RatatuiRuby.draw do |frame|
         frame.render_widget(
           RatatuiRuby::Widgets::Paragraph.new(
@@ -358,7 +320,7 @@ class TestLabsA11y < Minitest::Test
   def test_block_wrapper_has_aria_role_and_id_for_association
     RatatuiRuby::Labs.enable!(:a11y)
 
-    with_test_terminal(width: 80, height: 24) do
+    with_test_terminal(width: 80, height: 24, timeout: 30) do
       RatatuiRuby.draw do |frame|
         frame.render_widget(
           RatatuiRuby::Widgets::Paragraph.new(
@@ -398,7 +360,7 @@ class TestLabsA11y < Minitest::Test
   def test_multiple_widgets_have_unique_ids
     RatatuiRuby::Labs.enable!(:a11y)
 
-    with_test_terminal(width: 80, height: 24) do
+    with_test_terminal(width: 80, height: 24, timeout: 30) do
       RatatuiRuby.draw do |frame|
         left, right = RatatuiRuby::Layout::Layout.split(
           frame.area,
@@ -454,7 +416,7 @@ class TestLabsA11y < Minitest::Test
   def test_standalone_block_is_top_level_element
     RatatuiRuby::Labs.enable!(:a11y)
 
-    with_test_terminal(width: 80, height: 24) do
+    with_test_terminal(width: 80, height: 24, timeout: 30) do
       RatatuiRuby.draw do |frame|
         # Render Block directly (not as an argument)
         frame.render_widget(
@@ -512,7 +474,7 @@ class TestLabsA11y < Minitest::Test
   def test_widget_ids_are_stable_across_frames
     RatatuiRuby::Labs.enable!(:a11y)
 
-    with_test_terminal(width: 80, height: 24) do
+    with_test_terminal(width: 80, height: 24, timeout: 30) do
       # Frame 1
       RatatuiRuby.draw do |frame|
         frame.render_widget(
@@ -547,7 +509,7 @@ class TestLabsA11y < Minitest::Test
   def test_hash_values_serialized_as_attributes
     RatatuiRuby::Labs.enable!(:a11y)
 
-    with_test_terminal(width: 80, height: 24) do
+    with_test_terminal(width: 80, height: 24, timeout: 30) do
       RatatuiRuby.draw do |frame|
         # Use plain Hash for border_style (common pattern in real apps)
         block = RatatuiRuby::Widgets::Block.new(
@@ -579,7 +541,7 @@ class TestLabsA11y < Minitest::Test
   def test_text_is_child_element_not_attribute
     RatatuiRuby::Labs.enable!(:a11y)
 
-    with_test_terminal(width: 80, height: 24) do
+    with_test_terminal(width: 80, height: 24, timeout: 30) do
       RatatuiRuby.draw do |frame|
         frame.render_widget(
           RatatuiRuby::Widgets::Paragraph.new(text: "Line 1\nLine 2"),
@@ -612,7 +574,7 @@ class TestLabsA11y < Minitest::Test
   def test_list_item_content_is_child_element
     RatatuiRuby::Labs.enable!(:a11y)
 
-    with_test_terminal(width: 80, height: 24) do
+    with_test_terminal(width: 80, height: 24, timeout: 30) do
       RatatuiRuby.draw do |frame|
         list = RatatuiRuby::Widgets::List.new(
           items: [

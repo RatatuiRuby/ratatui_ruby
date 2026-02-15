@@ -12,7 +12,7 @@ module RatatuiRuby
     # A11Y lab: exports widget tree as XML.
     #
     # Writes an XML representation of the widget tree to a temporary file
-    # every frame when enabled. Not available on Windows.
+    # every frame when enabled.
     module A11y
       # Path to the XML output file in the system temp directory.
       OUTPUT_PATH = File.join(Dir.tmpdir, "ratatui_ruby_a11y.xml").freeze
@@ -20,8 +20,6 @@ module RatatuiRuby
       class << self
         # Dumps the widget tree to XML (single widget for tree mode).
         def dump_widget_tree(widget, _area = nil)
-          return if Gem.win_platform?
-
           ensure_rexml_loaded
           doc = REXML::Document.new
           doc.add(REXML::XMLDecl.new("1.0", "UTF-8"))
@@ -44,8 +42,6 @@ module RatatuiRuby
 
         # Dumps multiple widgets captured from Frame API mode.
         def dump_widgets(widgets_with_areas)
-          return if Gem.win_platform?
-
           ensure_rexml_loaded
           Labs.warn_once!("Labs::A11y (RR_LABS=A11Y)")
 
