@@ -59,4 +59,4 @@ jobs:
         run: bin/setup.ps1
 
       - name: Default task
-        run: bundle exec rake
+        run: mise x -- bundle exec rake
