@@ -241,7 +241,7 @@ class TestLabsA11y < Minitest::Test
   def test_xml_omits_empty_elements
     RatatuiRuby::Labs.enable!(:a11y)
 
-    with_test_terminal(width: 80, height: 24) do
+    with_test_terminal(width: 80, height: 24, timeout: 5) do
       RatatuiRuby.draw do |frame|
         # Simple paragraph with no style set
         frame.render_widget(
@@ -471,7 +471,7 @@ class TestLabsA11y < Minitest::Test
   def test_widget_ids_are_stable_across_frames
     RatatuiRuby::Labs.enable!(:a11y)
 
-    with_test_terminal(width: 80, height: 24) do
+    with_test_terminal(width: 80, height: 24, timeout: 5) do
       # Frame 1
       RatatuiRuby.draw do |frame|
         frame.render_widget(
@@ -538,7 +538,7 @@ class TestLabsA11y < Minitest::Test
   def test_text_is_child_element_not_attribute
     RatatuiRuby::Labs.enable!(:a11y)
 
-    with_test_terminal(width: 80, height: 24) do
+    with_test_terminal(width: 80, height: 24, timeout: 5) do
       RatatuiRuby.draw do |frame|
         frame.render_widget(
           RatatuiRuby::Widgets::Paragraph.new(text: "Line 1\nLine 2"),
