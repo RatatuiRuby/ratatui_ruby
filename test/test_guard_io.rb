@@ -85,7 +85,7 @@ class TestGuardIO < Minitest::Test
       RatatuiRuby.restore_terminal
       puts "success"
     RUBY
-    output = `ruby -Ilib -e '#{script}' 2>&1`
+    output = IO.popen(["ruby", "-Ilib", "-e", script], err: [:child, :out], &:read)
     assert_equal "success\n", output, "All output built-ins should be swallowed when terminal active"
   end
 end

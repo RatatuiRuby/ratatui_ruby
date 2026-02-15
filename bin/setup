@@ -6,13 +6,23 @@ set -euo pipefail
 IFS=$'\n\t'
 set -vx
 
-if command -v mise >/dev/null 2>&1; then
-  mise install
-  mise x -- pip install reuse
-  mise x -- bundle install
-  pre-commit install
-  bundle exec rake rdoc
-else
+if ! command -v mise >/dev/null 2>&1; then
   echo "mise isn't installed. Please install it to continue." >&2
   exit 1
+fi
+
+mise install
+mise x -- rustup component add rustfmt clippy
+mise x -- pip install reuse
+mise x -- gem install bundler:4.0.3
+
+if [ "${CI:-}" = "true" ]; then
+  bundle config set --local frozen 'true'
+fi
+
+mise x -- bundle install
+
+if [ "${CI:-}" != "true" ]; then
+  pre-commit install
+  bundle exec rake rdoc
 fi

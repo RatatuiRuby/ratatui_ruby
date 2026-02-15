@@ -258,9 +258,6 @@ module RatatuiRuby
 
               # Write with explicit mode to ensure clean write
               File.write(snapshot_path, content_to_write, mode: "w")
-
-              # Flush filesystem buffers to ensure durability
-              File.open(snapshot_path, "r", &:fsync) if File.exist?(snapshot_path)
             rescue => e
               warn "Failed to write snapshot #{snapshot_path}: #{e.message}"
               raise
@@ -341,9 +338,6 @@ module RatatuiRuby
 
             # Write with explicit mode to ensure clean write
             File.write(snapshot_path, actual_content, mode: "w")
-
-            # Flush filesystem buffers to ensure durability
-            File.open(snapshot_path, "r", &:fsync) if File.exist?(snapshot_path)
           rescue => e
             warn "Failed to write rich snapshot #{snapshot_path}: #{e.message}"
             raise

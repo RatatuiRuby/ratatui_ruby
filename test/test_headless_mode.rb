@@ -56,7 +56,7 @@ class TestHeadlessMode < Minitest::Test
         puts "block executed"
       end
     RUBY
-    output = `ruby -Ilib -e '#{script}' 2>&1`
+    output = IO.popen(["ruby", "-Ilib", "-e", script], err: [:child, :out], &:read)
 
     assert_includes output, "guard_io"
     assert_includes output, "headless"

@@ -9,6 +9,7 @@ source "https://rubygems.org"
 gemspec
 
 gem "irb"
+gem "fiddle" # Required by reline on Windows; removed from default gems in Ruby 4.0
 gem "rake", "~> 13.0"
 
 gem "chroma"

@@ -7,6 +7,7 @@
 
 require "ratatui_ruby"
 require "minitest/autorun"
+require "ratatui_ruby/test_helper/subprocess_timeout"
 
 ##
 # Tests for RatatuiRuby::Debug module.
@@ -22,6 +23,7 @@ require "minitest/autorun"
 # state resets. The module is designed as a progressive enhancement: once
 # enabled, it stays enabled.
 class TestDebug < Minitest::Test
+  include RatatuiRuby::TestHelper::SubprocessTimeout
   ##
   # Verifies that Debug.enabled? is a boolean predicate.
   #
@@ -132,16 +134,17 @@ class TestDebug < Minitest::Test
   # Uses subprocess isolation since debug_mode! loads debug gem.
   def test_debug_mode_convenience_method_enables_debug
     script = <<~RUBY
+      $stdout.sync = true
       require "ratatui_ruby"
       RatatuiRuby.debug_mode!
       puts RatatuiRuby::Debug.enabled?
     RUBY
 
-    output = IO.popen(
+    output = popen_with_timeout(
       {},
-      ["timeout", "3", "ruby", "-I", "lib", "-e", script], # 2 seconds was too short
-      err: [:child, :out]
-    ) { |io| io.read.strip }
+      ["ruby", "-I", "lib", "-e", script],
+      timeout: 5
+    )
 
     assert_includes output, "true",
       "RatatuiRuby.debug_mode! should enable full debug mode"
@@ -290,16 +293,17 @@ class TestDebug < Minitest::Test
   # Uses subprocess isolation since test mode skips remote debugging setup.
   def test_programmatic_enable_sets_nonstop_mode
     script = <<~RUBY
+      $stdout.sync = true
       require "ratatui_ruby"
       RatatuiRuby.debug_mode!
       puts RatatuiRuby::Debug.remote_debugging_mode.inspect
     RUBY
 
-    output = IO.popen(
+    output = popen_with_timeout(
       {},
-      ["timeout", "2", "ruby", "-I", "lib", "-e", script], # 0.5 seconds was too short
-      err: [:child, :out]
-    ) { |io| io.read.strip }
+      ["ruby", "-I", "lib", "-e", script],
+      timeout: 5
+    )
 
     assert_includes output, ":open_nonstop",
       "Programmatic enable! should set remote_debugging_mode to :open_nonstop"
@@ -312,6 +316,7 @@ end
 # These tests use subprocesses because Debug module state is set at load time.
 # We need a fresh process to test the env var auto-enable behavior.
 class TestDebugEnvMode < Minitest::Test
+  include RatatuiRuby::TestHelper::SubprocessTimeout
   ##
   # Verifies that RR_DEBUG=1 sets remote_debugging_mode to :open.
   #
@@ -330,15 +335,16 @@ class TestDebugEnvMode < Minitest::Test
     end
 
     script = <<~RUBY
+      $stdout.sync = true
       require "ratatui_ruby"
     RUBY
 
     # Use timeout because RR_DEBUG=1 waits for debugger connection
-    output = IO.popen(
+    output = popen_with_timeout(
       { "RR_DEBUG" => "1" },
-      ["timeout", "2", "ruby", "-I", "lib", "-e", script], # 0.5 seconds was too short
-      err: [:child, :out]
-    ) { |io| io.read.strip }
+      ["ruby", "-I", "lib", "-e", script],
+      timeout: 5
+    )
 
     # :open mode shows "wait for debugger connection" because it stops
     # :open_nonstop mode does NOT show this message because it continues
@@ -365,11 +371,11 @@ class TestDebugEnvMode < Minitest::Test
     RUBY
 
     # Use timeout because the debugger waits for connection
-    output = IO.popen(
+    output = popen_with_timeout(
       { "RR_DEBUG" => "1" },
-      ["timeout", "2", "ruby", "-I", "lib", "-e", script], # 0.5 seconds was too short
-      err: [:child, :out]
-    ) { |io| io.read.strip }
+      ["ruby", "-I", "lib", "-e", script],
+      timeout: 2
+    )
 
     assert_match(/UNIX domain socket/, output,
       "RR_DEBUG=1 should start remote debugging with UNIX socket")
@@ -385,6 +391,7 @@ class TestDebugEnvMode < Minitest::Test
   # Fail fast with a clear message is better DX.
   def test_missing_debug_gem_crashes_with_helpful_message
     script = <<~RUBY
+      $stdout.sync = true
       # Simulate debug gem not being available by hiding it
       $LOAD_PATH.reject! { |p| p.include?("/debug-") || p.end_with?("/debug") }
       
@@ -418,17 +425,18 @@ class TestDebugEnvMode < Minitest::Test
     end
 
     script = <<~RUBY
+      $stdout.sync = true
       require "ratatui_ruby"
       socket = RatatuiRuby.debug_mode!
       puts socket if socket
     RUBY
 
     # Use timeout to prevent hang — nonstop mode continues but script exits quickly
-    output = IO.popen(
+    output = popen_with_timeout(
       {},
-      ["timeout", "2", "ruby", "-I", "lib", "-e", script], # 0.5 seconds was too short
-      err: [:child, :out]
-    ) { |io| io.read.strip }
+      ["ruby", "-I", "lib", "-e", script],
+      timeout: 5
+    )
 
     assert_match(/rdbg-/, output,
       "Programmatic enable! should return socket path containing 'rdbg-'")
@@ -448,16 +456,17 @@ class TestDebugEnvMode < Minitest::Test
     end
 
     script = <<~RUBY
+      $stdout.sync = true
       require "ratatui_ruby"
       socket = RatatuiRuby.debug_mode!
       puts "SOCKET:\#{socket}"
     RUBY
 
-    output = IO.popen(
+    output = popen_with_timeout(
       {},
-      ["timeout", "2", "ruby", "-I", "lib", "-e", script],
-      err: [:child, :out]
-    ) { |io| io.read.strip }
+      ["ruby", "-I", "lib", "-e", script],
+      timeout: 5
+    )
 
     assert_match(%r{SOCKET:.*/rdbg-}, output,
       "debug_mode! should return the socket path")
@@ -478,15 +487,16 @@ class TestDebugEnvMode < Minitest::Test
     end
 
     script = <<~RUBY
+      $stdout.sync = true
       require "ratatui_ruby"
       RatatuiRuby.debug_mode!
     RUBY
 
-    output = IO.popen(
+    output = popen_with_timeout(
       {},
-      ["timeout", "2", "ruby", "-I", "lib", "-e", script],
-      err: [:child, :out]
-    ) { |io| io.read.strip }
+      ["ruby", "-I", "lib", "-e", script],
+      timeout: 5
+    )
 
     refute_match(/Debugger can attach via/, output,
       "debug_mode! should suppress the debug gem's socket announcement")

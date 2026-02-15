@@ -145,6 +145,9 @@ class TestTerminalCapabilities < Minitest::Test
   end
 
   def test_available_color_count_with_256color_term
+    # crossterm::ansi_support::supports_ansi() short-circuits to u16::MAX on Windows 10+
+    skip "crossterm hardcodes truecolor on Windows" if Gem.win_platform?
+
     with_env("COLORTERM", nil) do
       with_env("TERM", "xterm-256color") do
         assert_equal 256, RatatuiRuby::Terminal.available_color_count
@@ -153,6 +156,9 @@ class TestTerminalCapabilities < Minitest::Test
   end
 
   def test_available_color_count_default
+    # crossterm::ansi_support::supports_ansi() short-circuits to u16::MAX on Windows 10+
+    skip "crossterm hardcodes truecolor on Windows" if Gem.win_platform?
+
     with_env("COLORTERM", nil) do
       with_env("TERM", nil) do
         assert_equal 8, RatatuiRuby::Terminal.available_color_count
@@ -180,6 +186,9 @@ class TestTerminalCapabilities < Minitest::Test
   end
 
   def test_color_support_maps_256_to_ansi256
+    # crossterm::ansi_support::supports_ansi() short-circuits to u16::MAX on Windows 10+
+    skip "crossterm hardcodes truecolor on Windows" if Gem.win_platform?
+
     with_env("COLORTERM", nil) do
       with_env("TERM", "xterm-256color") do
         assert_equal :ansi256, RatatuiRuby::Terminal.color_support
@@ -194,6 +203,9 @@ class TestTerminalCapabilities < Minitest::Test
   end
 
   def test_color_support_maps_8_to_basic
+    # crossterm::ansi_support::supports_ansi() short-circuits to u16::MAX on Windows 10+
+    skip "crossterm hardcodes truecolor on Windows" if Gem.win_platform?
+
     with_env("COLORTERM", nil) do
       with_env("TERM", nil) do
         assert_equal :basic, RatatuiRuby::Terminal.color_support

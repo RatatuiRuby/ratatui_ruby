@@ -12,6 +12,7 @@ require_relative "test_helper/event_injection"
 require_relative "test_helper/style_assertions"
 require_relative "test_helper/test_doubles"
 require_relative "test_helper/global_state"
+require_relative "test_helper/subprocess_timeout"
 
 module RatatuiRuby
   ##
@@ -109,5 +110,6 @@ module RatatuiRuby
     include StyleAssertions
     include TestDoubles
     include GlobalState
+    include SubprocessTimeout
   end
 end

@@ -18,6 +18,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+- **Windows Compilation**: Fixed gem compilation failures on Windows caused by clang header errors during Rust extension compilation.
 - **GVL Contention in `poll_event`**: `poll_event` now releases Ruby's Global VM Lock while waiting for terminal events. Previously, background threads (e.g., those executing shell commands via `Open3`) were starved of the GVL during the blocking poll, causing up to 190× slower subprocess execution in multi-threaded applications.
 - **Gem Size**: Reduced gem size from many MB to hundreds of KB by excluding doc/, examples/, and other development files.
 
