@@ -5,55 +5,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
-desc "Generate SourceHut build manifests from template"
-task sourcehut: "sourcehut:build"
-
-namespace :sourcehut do
-  desc "Build SourceHut manifests"
-  task build: "sourcehut:build:manifest"
-
-  namespace :build do
-    desc "Generate SourceHut build manifests from template"
-    task :manifest do
-      require "erb"
-      require "yaml"
-
-      spec = Gem::Specification.load("ratatui_ruby.gemspec")
-
-      # Read version directly from file to ensure we get the latest version
-      # even if it was just bumped in the same Rake execution
-      version_content = File.read("lib/ratatui_ruby/version.rb")
-      version = version_content.match(/VERSION = "(.+?)"/)[1]
-
-      # Normalize version using Gem::Version - RubyGems converts hyphens
-      # (e.g., "1.0.0-beta.1" -> "1.0.0.pre.beta.1")
-      normalized_version = Gem::Version.new(version).to_s
-
-      gem_filename = "#{spec.name}-#{normalized_version}.gem"
-
-      rubies = YAML.load_file("tasks/resources/rubies.yml")
-
-      bundler_version = File.read("Gemfile.lock").match(/BUNDLED WITH\n\s+([\d.]+)/)[1]
-
-      template = File.read("tasks/resources/build.yml.erb")
-      erb = ERB.new(template, trim_mode: "-")
-
-      FileUtils.mkdir_p ".builds"
-
-      # Remove old generated files to ensure a clean state
-      Dir.glob(".builds/*.yml").each { |f| File.delete(f) }
-
-      rubies.each do |ruby_version|
-        filename = ".builds/ruby-#{ruby_version}.yml"
-        puts "Generating #{filename}..."
-        gem_name = spec.name
-        has_rust = File.exist?("ext/#{gem_name}/Cargo.toml")
-        content = erb.result_with_hash(ruby_version:, gem_name:, gem_filename:, bundler_version:, has_rust:)
-        File.write(filename, content)
-      end
-    end
-  end
-
+namespace :release do
   desc "Update stable branch to match release and set as default"
   task :update_stable do
     # Read version to determine tag
@@ -117,6 +69,6 @@ if Rake::Task.task_defined?("release")
       end
     end
 
-    Rake::Task["sourcehut:update_stable"].invoke
+    Rake::Task["release:update_stable"].invoke
   end
 end

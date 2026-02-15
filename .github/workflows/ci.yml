@@ -1,0 +1,62 @@
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+name: CI
+
+on:
+  push:
+    branches-ignore:
+      - "release/*"
+  pull_request:
+
+jobs:
+  test:
+    name: Test (Ruby ${{ matrix.ruby }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ["3.2", "3.3", "3.4", "4.0"]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    env:
+      CI: "true"
+      BINDGEN_EXTRA_CLANG_ARGS: "-include stdbool.h"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Override Ruby version in mise.toml
+        shell: bash
+        run: sed -i.bak 's/ruby = .*/ruby = "${{ matrix.ruby }}"/' mise.toml
+
+      - name: Install Ruby via RubyInstaller (Windows)
+        if: runner.os == 'Windows'
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+
+      - name: Configure Windows build environment
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Add-Content -Path .mise.local.toml -Value "[settings]`ndisable_tools = [`"ruby`"]"
+          $msysRoot = (Join-Path $env:RI_DEVKIT "ucrt64") -replace '\\', '/'
+          $clangArgs = "-include stdbool.h --target=x86_64-w64-mingw32 --sysroot=$msysRoot -I$msysRoot/include"
+          Add-Content -Path $env:GITHUB_ENV -Value "BINDGEN_EXTRA_CLANG_ARGS=$clangArgs"
+          Add-Content -Path $env:GITHUB_ENV -Value "CARGO_BUILD_TARGET=x86_64-pc-windows-gnu"
+          rustup target add x86_64-pc-windows-gnu
+
+      - name: Install toolchain via mise
+        uses: jdx/mise-action@v2
+
+      - name: Setup (Unix)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: bin/setup
+
+      - name: Setup (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: bin/setup.ps1
+
+      - name: Default task
+        run: mise x -- bundle exec rake

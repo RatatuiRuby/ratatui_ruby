@@ -37,7 +37,6 @@ class ReleaseFromTrunk < BumpWorkflow
     trunk_changelog = Changelog.new
     trunk_changelog.import_release(target, @released_changelog_content)
     @gem.update_version(target)
-    generate_ci_manifests
     @repository.commit_all("chore: import v#{target} to trunk")
     puts "Committed on trunk."
   end
