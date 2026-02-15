@@ -60,8 +60,8 @@ jobs:
       - name: Default task
         run: mise x -- bundle exec rake
 
-      - name: Build gem
-        run: mise x -- bundle exec rake build
+      - name: Build native gem
+        run: mise x -- bundle exec rake native gem
 
       - name: Upload gem artifact
         uses: actions/upload-artifact@v4
