@@ -5,6 +5,8 @@ name: CI
 
 on:
   push:
+    branches-ignore:
+      - "release/*"
   pull_request:
 
 jobs:
@@ -29,48 +31,9 @@ jobs:
       - name: Install toolchain via mise
         uses: jdx/mise-action@v2
 
-      - name: Install reuse tool
-        run: pip install reuse
+      - name: Setup
+        shell: bash
+        run: bin/setup
 
-      - name: Install bundler
-        run: gem install bundler:4.0.3
-
-      - name: Bundle install
-        run: |
-          bundle config set --local frozen 'true'
-          bundle install
-
-      - name: Compile native extension
-        run: bundle exec rake compile
-
-      - name: Run tests
-        run: bundle exec rake test
-
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    env:
-      CI: "true"
-      BINDGEN_EXTRA_CLANG_ARGS: "-include stdbool.h"
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install toolchain via mise
-        uses: jdx/mise-action@v2
-
-      - name: Install reuse tool
-        run: pip install reuse
-
-      - name: Install bundler
-        run: gem install bundler:4.0.3
-
-      - name: Bundle install
-        run: |
-          bundle config set --local frozen 'true'
-          bundle install
-
-      - name: Compile native extension
-        run: bundle exec rake compile
-
-      - name: Run linters
-        run: bundle exec rake lint
+      - name: Default task
+        run: bundle exec rake
