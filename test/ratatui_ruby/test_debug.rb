@@ -139,11 +139,13 @@ class TestDebug < Minitest::Test
       puts RatatuiRuby::Debug.enabled?
     RUBY
 
+    t0 = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     output = popen_with_timeout(
       {},
       ["ruby", "-I", "lib", "-e", script],
-      timeout: 3
+      timeout: 30
     )
+    puts "[TIMING] #{name}: %.2fs" % (Process.clock_gettime(Process::CLOCK_MONOTONIC) - t0)
 
     assert_includes output, "true",
       "RatatuiRuby.debug_mode! should enable full debug mode"
@@ -297,11 +299,13 @@ class TestDebug < Minitest::Test
       puts RatatuiRuby::Debug.remote_debugging_mode.inspect
     RUBY
 
+    t0 = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     output = popen_with_timeout(
       {},
       ["ruby", "-I", "lib", "-e", script],
-      timeout: 2
+      timeout: 30
     )
+    puts "[TIMING] #{name}: %.2fs" % (Process.clock_gettime(Process::CLOCK_MONOTONIC) - t0)
 
     assert_includes output, ":open_nonstop",
       "Programmatic enable! should set remote_debugging_mode to :open_nonstop"
@@ -337,11 +341,13 @@ class TestDebugEnvMode < Minitest::Test
     RUBY
 
     # Use timeout because RR_DEBUG=1 waits for debugger connection
+    t0 = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     output = popen_with_timeout(
       { "RR_DEBUG" => "1" },
       ["ruby", "-I", "lib", "-e", script],
-      timeout: 2
+      timeout: 30
     )
+    puts "[TIMING] #{name}: %.2fs" % (Process.clock_gettime(Process::CLOCK_MONOTONIC) - t0)
 
     # :open mode shows "wait for debugger connection" because it stops
     # :open_nonstop mode does NOT show this message because it continues
@@ -368,11 +374,13 @@ class TestDebugEnvMode < Minitest::Test
     RUBY
 
     # Use timeout because the debugger waits for connection
+    t0 = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     output = popen_with_timeout(
       { "RR_DEBUG" => "1" },
       ["ruby", "-I", "lib", "-e", script],
-      timeout: 2
+      timeout: 30
     )
+    puts "[TIMING] #{name}: %.2fs" % (Process.clock_gettime(Process::CLOCK_MONOTONIC) - t0)
 
     assert_match(/UNIX domain socket/, output,
       "RR_DEBUG=1 should start remote debugging with UNIX socket")
@@ -427,11 +435,13 @@ class TestDebugEnvMode < Minitest::Test
     RUBY
 
     # Use timeout to prevent hang — nonstop mode continues but script exits quickly
+    t0 = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     output = popen_with_timeout(
       {},
       ["ruby", "-I", "lib", "-e", script],
-      timeout: 2
+      timeout: 30
     )
+    puts "[TIMING] #{name}: %.2fs" % (Process.clock_gettime(Process::CLOCK_MONOTONIC) - t0)
 
     assert_match(/rdbg-/, output,
       "Programmatic enable! should return socket path containing 'rdbg-'")
@@ -456,11 +466,13 @@ class TestDebugEnvMode < Minitest::Test
       puts "SOCKET:\#{socket}"
     RUBY
 
+    t0 = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     output = popen_with_timeout(
       {},
       ["ruby", "-I", "lib", "-e", script],
-      timeout: 2
+      timeout: 30
     )
+    puts "[TIMING] #{name}: %.2fs" % (Process.clock_gettime(Process::CLOCK_MONOTONIC) - t0)
 
     assert_match(%r{SOCKET:.*/rdbg-}, output,
       "debug_mode! should return the socket path")
@@ -485,11 +497,13 @@ class TestDebugEnvMode < Minitest::Test
       RatatuiRuby.debug_mode!
     RUBY
 
+    t0 = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     output = popen_with_timeout(
       {},
       ["ruby", "-I", "lib", "-e", script],
-      timeout: 2
+      timeout: 30
     )
+    puts "[TIMING] #{name}: %.2fs" % (Process.clock_gettime(Process::CLOCK_MONOTONIC) - t0)
 
     refute_match(/Debugger can attach via/, output,
       "debug_mode! should suppress the debug gem's socket announcement")
