@@ -29,9 +29,15 @@ jobs:
       - name: Install toolchain via mise
         uses: jdx/mise-action@v2
 
-      - name: Setup
+      - name: Setup (Unix)
+        if: runner.os != 'Windows'
         shell: bash
         run: bin/setup
+
+      - name: Setup (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: bin/setup.ps1
 
       - name: Default task
         run: bundle exec rake
