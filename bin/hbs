@@ -2,20 +2,20 @@
 # frozen_string_literal: true
 
 #--
-# SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+# SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
 ####
 # ======================================================================
-# hbs - watch SourceHut builds for current commit
+# hbs - Head Build Status: watch GitHub Actions for HEAD commit
 # ======================================================================
 #
 # SYNOPSIS
 #     bin/hbs [-N|--no-wait] [-b|--builds N] [-y|--yes] [-S|--no-say]
 #
 # DESCRIPTION
-#     Check SourceHut builds for the current HEAD commit and wait for
+#     Check GitHub Actions for the current HEAD commit and wait for
 #     them to complete. Announces result via macOS text-to-speech.
 #
 #     Fetches from origin first. If HEAD has not been pushed, prompts
@@ -28,7 +28,7 @@
 # OPTIONS
 #     -N, --no-wait      Exit 1 immediately if no builds exist for HEAD.
 #     -b, --builds N     Number of builds to watch (default: count of
-#                        .yml files in .builds/ directory).
+#                        workflows matching current branch).
 #     -y, --yes          Auto-confirm all prompts (non-interactive).
 #     -S, --no-say       Disable text-to-speech announcements.
 #
@@ -47,7 +47,7 @@
 #     bin/hbs -N
 #
 # DEPENDENCIES
-#     hut                SourceHut CLI (https://sr.ht/~xenrox/hut/)
+#     gh                 GitHub CLI (https://cli.github.com)
 #     git                To get current HEAD commit
 #     say                macOS text-to-speech
 #
@@ -55,14 +55,18 @@
 
 require "optparse"
 require "open3"
+require "json"
+require "yaml"
 require "rdoc"
 
-Commit = Data.define(:short_sha) do
+Commit = Data.define(:sha) do
+  def short_sha = sha[0, 7]
+
   def self.head
-    sha = `git rev-parse --short HEAD 2>/dev/null`.strip
+    sha = `git rev-parse HEAD 2>/dev/null`.strip
     raise "Not in a git repository" if sha.empty?
 
-    new(short_sha: sha)
+    new(sha:)
   end
 
   def self.upstream_ref
@@ -72,14 +76,14 @@ Commit = Data.define(:short_sha) do
   end
 
   def self.origin_head
-    sha = `git rev-parse --short #{upstream_ref} 2>/dev/null`.strip
+    sha = `git rev-parse #{upstream_ref} 2>/dev/null`.strip
     return nil if sha.empty?
 
-    new(short_sha: sha)
+    new(sha:)
   end
 
   def pushed?
-    system("git", "merge-base", "--is-ancestor", short_sha, self.class.upstream_ref,
+    system("git", "merge-base", "--is-ancestor", sha, self.class.upstream_ref,
       out: File::NULL, err: File::NULL)
   end
 
@@ -88,99 +92,94 @@ Commit = Data.define(:short_sha) do
   end
 end
 
-Build = Data.define(:id, :status) do
+Build = Data.define(:id, :name, :status, :conclusion, :url) do
+  def self.from_json(data)
+    new(
+      id: data.fetch("databaseId"),
+      name: data.fetch("workflowName"),
+      status: data.fetch("status"),
+      conclusion: data.fetch("conclusion") || "",
+      url: data.fetch("url")
+    )
+  end
+
   def running?
-    %w[RUNNING PENDING QUEUED].include?(status)
+    %w[in_progress queued requested waiting pending].include?(status)
   end
 
   def failed?
-    status == "FAILED"
-  end
-
-  def url
-    "https://builds.sr.ht/~kerrick/job/#{id}"
+    status == "completed" && conclusion != "success"
   end
 
   def output
-    out, = Open3.capture2("hut", "builds", "show", id.to_s)
+    out, = Open3.capture2("gh", "run", "view", id.to_s)
     out
   end
 
   def content_lines
-    # Skip the URL line (first line) since it becomes the title
-    output.lines.drop(1).map(&:rstrip)
+    output.lines.map(&:rstrip)
   end
 
   def last_timestamp
-    # Extract the latest timestamp from the runtime log (format: YYYY/MM/DD HH:MM:SS)
-    timestamps = output.scan(%r{\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}})
-    timestamps.last
+    out, st = Open3.capture2("gh", "run", "view", id.to_s, "--json", "updatedAt", "--jq", ".updatedAt")
+    return nil unless st.success?
+    ts = out.strip
+    ts.empty? ? nil : ts
   end
 
   def refresh
-    out, = Open3.capture2("hut", "builds", "show", id.to_s)
-    new_status = out.lines.first(3).join.match(/RUNNING|SUCCESS|FAILED|PENDING|QUEUED/)&.[](0) || status
-    Build.new(id:, status: new_status)
+    out, st = Open3.capture2("gh", "run", "view", id.to_s, "--json", "databaseId,workflowName,status,conclusion,url")
+    return self unless st.success?
+    Build.from_json(JSON.parse(out))
   end
 end
 
 BuildSet = Data.define(:builds) do
   def self.for_commit(commit)
-    output, = Open3.capture2("hut", "builds", "list")
-    ids = output.lines
-      .each_cons(6)
-      .select { |chunk| chunk.any? { |l| l.include?(commit.short_sha) } }
-      .filter_map { |chunk| chunk.first[/#(\d+)/, 1]&.to_i }
-      .uniq
+    out, status = Open3.capture2(
+      "gh", "run", "list",
+      "--commit", commit.sha,
+      "--json", "databaseId,workflowName,status,conclusion,url",
+      "--limit", "20"
+    )
+    return new(builds: []) unless status.success?
 
-    builds = ids.map { |id| Build.new(id:, status: fetch_status(id)) }
-    new(builds:)
+    data = JSON.parse(out)
+    new(builds: data.map { |d| Build.from_json(d) })
   end
 
-  def self.running
-    output, = Open3.capture2("hut", "builds", "list")
-    ids = output.lines
-      .select { |l| l.match?(/RUNNING|PENDING|QUEUED/) }
-      .filter_map { |l| l[/#(\d+)/, 1]&.to_i }
-      .uniq
+  def self.latest(count = 12)
+    out, status = Open3.capture2(
+      "gh", "run", "list",
+      "--json", "databaseId,workflowName,status,conclusion,url",
+      "--limit", count.to_s
+    )
+    return new(builds: []) unless status.success?
 
-    builds = ids.map { |id| Build.new(id:, status: fetch_status(id)) }
-    new(builds:)
-  end
-
-  def self.latest(count = 4)
-    output, = Open3.capture2("hut", "builds", "list")
-    ids = output.lines
-      .filter_map { |l| l[/#(\d+)/, 1]&.to_i }
-      .uniq
-      .first(count)
-
-    builds = ids.map { |id| Build.new(id:, status: fetch_status(id)) }
-    new(builds:)
+    data = JSON.parse(out)
+    new(builds: data.map { |d| Build.from_json(d) })
   end
 
   def self.with_status(target_status, count = 4)
-    output, = Open3.capture2("hut", "builds", "list")
-    all_ids = output.lines
-      .filter_map { |l| l[/#(\d+)/, 1]&.to_i }
-      .uniq
+    out, status = Open3.capture2(
+      "gh", "run", "list",
+      "--json", "databaseId,workflowName,status,conclusion,url",
+      "--limit", "50"
+    )
+    return new(builds: []) unless status.success?
+
+    all = JSON.parse(out).map { |d| Build.from_json(d) }
 
     # Group builds into sets of `count` and find the first set with any matching status
-    all_ids.each_slice(count) do |set_ids|
-      builds = set_ids.map { |id| Build.new(id:, status: fetch_status(id)) }
+    all.each_slice(count) do |set_builds|
       has_match = case target_status
-                  when "FAILED" then builds.any?(&:failed?)
-                  when "SUCCESS" then builds.none?(&:failed?)
+                  when "FAILED" then set_builds.any?(&:failed?)
+                  when "SUCCESS" then set_builds.none?(&:failed?)
       end
-      return new(builds:) if has_match
+      return new(builds: set_builds) if has_match
     end
 
     new(builds: [])
-  end
-
-  def self.fetch_status(id)
-    output, = Open3.capture2("hut", "builds", "show", id.to_s)
-    output.lines.first(3).join.match(/RUNNING|SUCCESS|FAILED|PENDING|QUEUED/)&.[](0) || "UNKNOWN"
   end
 
   def empty?
@@ -196,11 +195,13 @@ BuildSet = Data.define(:builds) do
   end
 
   def commit_sha
-    # Extract commit SHA from the first build's output - this is the canonical source
+    # Extract commit SHA from the first build - this is the canonical source
     return nil if builds.empty?
 
-    sha_match = builds.first.output.match(/\[([a-f0-9]{7})\]\[0\]/)
-    sha_match&.[](1)
+    out, st = Open3.capture2("gh", "run", "view", builds.first.id.to_s, "--json", "headSha", "--jq", ".headSha")
+    return nil unless st.success?
+    sha = out.strip
+    sha.empty? ? nil : sha[0, 7]
   end
 
   def refresh
@@ -337,7 +338,7 @@ class BuildWatch
           puts block_line
           puts
         end
-        system("hut", "builds", "show", build.id.to_s)
+        system("gh", "run", "view", build.id.to_s)
       end
     else
       # Normal builds: gray single-boxes with URL titles
@@ -395,11 +396,16 @@ class BuildWatch
   end
 
   private def check_dependencies!
-    %w[hut say].each do |cmd|
+    %w[gh say].each do |cmd|
       unless system("command", "-v", cmd, out: File::NULL, err: File::NULL)
         warn "Error: '#{cmd}' not found."
         exit 1
       end
+    end
+
+    unless system("gh", "auth", "status", out: File::NULL, err: File::NULL)
+      warn "Error: 'gh' is not authenticated. Run: gh auth login"
+      exit 1
     end
   end
 
@@ -431,7 +437,7 @@ class BuildWatch
     )
 
     unless @auto_yes
-      print "Watch latest SourceHut builds anyway? [Y/n] "
+      print "Watch latest GitHub Actions builds anyway? [Y/n] "
       reply = $stdin.gets&.strip || ""
       if reply.downcase.start_with?("n")
         puts
@@ -445,7 +451,7 @@ class BuildWatch
     if build_set.empty?
       puts
       say("No builds found")
-      box("✗✗✗ NO BUILDS ON SOURCEHUT ✗✗✗", style: :error)
+      box("✗✗✗ NO BUILDS ON GITHUB ✗✗✗", style: :error)
       exit 1
     end
 
@@ -515,8 +521,25 @@ class BuildWatch
   end
 end
 
-# Parse options
-default_build_count = Dir.glob(".builds/*.yml").size
+# Count workflows that would trigger for the current branch
+default_build_count = begin
+  branch = `git branch --show-current 2>/dev/null`.strip
+  Dir.glob(".github/workflows/*.yml").count do |f|
+    on = YAML.safe_load_file(f).dig("on", "push") || {}
+    branches = on["branches"]
+    ignores = on["branches-ignore"]
+
+    if branches
+      branches.any? { |pattern| File.fnmatch(pattern, branch) }
+    elsif ignores
+      ignores.none? { |pattern| File.fnmatch(pattern, branch) }
+    else
+      true # No branch filter means all branches
+    end
+  end
+rescue
+  0
+end
 default_build_count = 4 if default_build_count.zero?
 
 options = { wait_for_builds: true, build_count: default_build_count, auto_yes: false, no_say: false }
