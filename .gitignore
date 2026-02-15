@@ -5,7 +5,7 @@
 /.bundle/
 /.yardoc
 /_yardoc/
-
+.mise.local.toml
 
 /pkg/
 /spec/reports/

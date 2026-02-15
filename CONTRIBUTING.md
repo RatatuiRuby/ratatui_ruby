@@ -43,18 +43,12 @@ bin/setup.ps1
 ```
 <!-- SPDX-SnippetEnd -->
 
-Both scripts do the same work:
-
-1. Install Ruby, Rust, and Python via mise.
-2. Add Rust components (`rustfmt`, `clippy`).
-3. Install the [REUSE](https://reuse.software/) license checker.
-4. Install Bundler and all gem dependencies.
-5. Set up pre-commit hooks and build the API docs (skipped in CI).
-
-On Windows, the script configures mise to use precompiled Ruby from
-RubyInstaller, which bundles the MSYS2 devkit for native gem compilation. If
-Visual Studio Build Tools are missing (Rust depends on them), the script offers
-to install them via winget.
+Both scripts install Rust, Python, Bundler, and gem dependencies. On macOS
+and Linux, mise handles everything including Ruby. On Windows, the script
+installs Ruby via [RubyInstaller](https://rubyinstaller.org/) (winget) since
+mise cannot compile working Ruby on Windows. RubyInstaller bundles the MSYS2
+devkit for native gem compilation. If Visual Studio Build Tools are missing
+(Rust depends on them), the script offers to install them via winget.
 
 ## Running Tests
 

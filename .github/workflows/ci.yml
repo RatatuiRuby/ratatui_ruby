@@ -28,6 +28,23 @@ jobs:
         shell: bash
         run: sed -i.bak 's/ruby = .*/ruby = "${{ matrix.ruby }}"/' mise.toml
 
+      - name: Install Ruby via RubyInstaller (Windows)
+        if: runner.os == 'Windows'
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+
+      - name: Configure Windows build environment
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Add-Content -Path .mise.local.toml -Value "[settings]`ndisable_tools = [`"ruby`"]"
+          $msysRoot = (Join-Path $env:RI_DEVKIT "ucrt64") -replace '\\', '/'
+          $clangArgs = "-include stdbool.h --target=x86_64-w64-mingw32 --sysroot=$msysRoot -I$msysRoot/include"
+          Add-Content -Path $env:GITHUB_ENV -Value "BINDGEN_EXTRA_CLANG_ARGS=$clangArgs"
+          Add-Content -Path $env:GITHUB_ENV -Value "CARGO_BUILD_TARGET=x86_64-pc-windows-gnu"
+          rustup target add x86_64-pc-windows-gnu
+
       - name: Install toolchain via mise
         uses: jdx/mise-action@v2
 
