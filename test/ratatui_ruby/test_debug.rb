@@ -134,6 +134,7 @@ class TestDebug < Minitest::Test
   # Uses subprocess isolation since debug_mode! loads debug gem.
   def test_debug_mode_convenience_method_enables_debug
     script = <<~RUBY
+      $stdout.sync = true
       require "ratatui_ruby"
       RatatuiRuby.debug_mode!
       puts RatatuiRuby::Debug.enabled?
@@ -292,6 +293,7 @@ class TestDebug < Minitest::Test
   # Uses subprocess isolation since test mode skips remote debugging setup.
   def test_programmatic_enable_sets_nonstop_mode
     script = <<~RUBY
+      $stdout.sync = true
       require "ratatui_ruby"
       RatatuiRuby.debug_mode!
       puts RatatuiRuby::Debug.remote_debugging_mode.inspect
@@ -333,6 +335,7 @@ class TestDebugEnvMode < Minitest::Test
     end
 
     script = <<~RUBY
+      $stdout.sync = true
       require "ratatui_ruby"
     RUBY
 
@@ -388,6 +391,7 @@ class TestDebugEnvMode < Minitest::Test
   # Fail fast with a clear message is better DX.
   def test_missing_debug_gem_crashes_with_helpful_message
     script = <<~RUBY
+      $stdout.sync = true
       # Simulate debug gem not being available by hiding it
       $LOAD_PATH.reject! { |p| p.include?("/debug-") || p.end_with?("/debug") }
       
@@ -421,6 +425,7 @@ class TestDebugEnvMode < Minitest::Test
     end
 
     script = <<~RUBY
+      $stdout.sync = true
       require "ratatui_ruby"
       socket = RatatuiRuby.debug_mode!
       puts socket if socket
@@ -451,6 +456,7 @@ class TestDebugEnvMode < Minitest::Test
     end
 
     script = <<~RUBY
+      $stdout.sync = true
       require "ratatui_ruby"
       socket = RatatuiRuby.debug_mode!
       puts "SOCKET:\#{socket}"
@@ -481,6 +487,7 @@ class TestDebugEnvMode < Minitest::Test
     end
 
     script = <<~RUBY
+      $stdout.sync = true
       require "ratatui_ruby"
       RatatuiRuby.debug_mode!
     RUBY
