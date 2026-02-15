@@ -49,21 +49,14 @@ if (-not (Test-Path $vsWhere) -or -not (& $vsWhere -products * -requires Microso
 #   - disable_tools: prevents mise from installing its own (broken) Ruby
 #   - BINDGEN_EXTRA_CLANG_ARGS: tells clang where to find MSYS2 POSIX headers
 #     (e.g. strings.h) that Ruby's defines.h includes
+#   - _.path: adds mise's Python Scripts directory to PATH so pip-installed
+#     tools like reuse are available as commands
 if (-not (Test-Path .mise.local.toml) -or -not (Select-String -Path .mise.local.toml -Pattern 'disable_tools' -Quiet)) {
   $localToml = @"
 
 [settings]
 disable_tools = ["ruby"]
 "@
-  if ($env:RI_DEVKIT) {
-    $msysRoot = (Join-Path $env:RI_DEVKIT "ucrt64") -replace '\\', '/'
-    $localToml += @"
-
-[env]
-BINDGEN_EXTRA_CLANG_ARGS = "-include stdbool.h --target=x86_64-w64-mingw32 --sysroot=$msysRoot -I$msysRoot/include"
-CARGO_BUILD_TARGET = "x86_64-pc-windows-gnu"
-"@
-  }
   Add-Content -Path .mise.local.toml -Value $localToml
 }
 
@@ -72,6 +65,27 @@ mise install
 mise x -- rustup target add x86_64-pc-windows-gnu
 mise x -- rustup component add rustfmt clippy
 mise x -- python -m pip install reuse
+
+# Build the [env] section: pip Scripts on PATH, plus BINDGEN/CARGO if needed.
+# pip installs scripts (like reuse.exe) to Python's Scripts directory,
+# which mise does not add to PATH.
+if (-not (Select-String -Path .mise.local.toml -Pattern '\[env\]' -Quiet -ErrorAction SilentlyContinue)) {
+  $scriptsDir = (mise x -- python -c "import sysconfig; print(sysconfig.get_path('scripts'))").Trim()
+  $envToml = @"
+
+[env]
+_.path = ["$($scriptsDir -replace '\\', '/')"]
+"@
+  if ($env:RI_DEVKIT) {
+    $msysRoot = (Join-Path $env:RI_DEVKIT "ucrt64") -replace '\\', '/'
+    $envToml += @"
+
+BINDGEN_EXTRA_CLANG_ARGS = "-include stdbool.h --target=x86_64-w64-mingw32 --sysroot=$msysRoot -I$msysRoot/include"
+CARGO_BUILD_TARGET = "x86_64-pc-windows-gnu"
+"@
+  }
+  Add-Content -Path .mise.local.toml -Value $envToml
+}
 gem install bundler:4.0.3
 
 if ($env:CI -eq "true") {
