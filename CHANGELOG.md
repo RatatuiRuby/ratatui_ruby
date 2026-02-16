@@ -12,6 +12,18 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+
+### Changed
+
+### Fixed
+
+
+### Removed
+
+## [1.4.0] - 2026-02-15
+
+### Added
+
 - **Class-Wide Snapshot Normalization**: `TestHelper::Snapshot` now supports a `normalize_snapshots` template method hook. Override it in your test class to mask dynamic content (timestamps, PIDs, temp paths) across all snapshot assertions without repeating normalization blocks. The hook composes with per-call blocks: the hook runs first, then the block.
 - **Precompiled Native Gems**: Precompiled native gems are now published for Windows (x64-mingw-ucrt), macOS, and Linux, eliminating the need to compile the Rust extension from source.
 
@@ -24,6 +36,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Gem Size**: Reduced gem size from many MB to hundreds of KB by excluding doc/, examples/, and other development files.
 
 ### Removed
+
+
 
 ## [1.3.0] - 2026-01-27
 
