@@ -5,7 +5,7 @@
 # ratatui_ruby
 
 [![
-builds.sr.ht status](https://builds.sr.ht/~kerrick/ratatui_ruby.svg)](https://builds.sr.ht/~kerrick/ratatui_ruby?) [![
+CI](https://github.com/setdef/RatatuiRuby/actions/workflows/ci.yml/badge.svg?branch=stable)](https://github.com/setdef/RatatuiRuby/actions/workflows/ci.yml) [![
 License](https://img.shields.io/badge/dynamic/regex?url=https%3A%2F%2Fraw.githubusercontent.com%2Fsetdef%2FRatatuiRuby%2Fstable%2Fratatui_ruby.gemspec&search=spec%5C.license%20%3D%20%22(.*)%22&replace=%241&label=License&color=a2c93e)](https://spdx.org/licenses/AGPL-3.0-or-later.html) [![
 Gem Total Downloads](https://img.shields.io/gem/dt/ratatui_ruby)](https://rubygems.org/gems/ratatui_ruby) [![
 Gem Version](https://img.shields.io/gem/v/ratatui_ruby)](https://rubygems.org/gems/ratatui_ruby) [![
