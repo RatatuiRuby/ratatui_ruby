@@ -11,11 +11,12 @@ on:
 
 jobs:
   build:
-    name: Build (${{ matrix.os }})
+    name: Build (${{ matrix.os }}, Ruby ${{ matrix.ruby }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        ruby: ["3.2", "3.3", "3.4", "4.0"]
         os: [ubuntu-latest, macos-latest, windows-latest]
     env:
       CI: "true"
@@ -25,13 +26,13 @@ jobs:
 
       - name: Override Ruby version in mise.toml
         shell: bash
-        run: sed -i.bak 's/ruby = .*/ruby = "4.0"/' mise.toml
+        run: sed -i.bak 's/ruby = .*/ruby = "${{ matrix.ruby }}"/' mise.toml
 
       - name: Install Ruby via RubyInstaller (Windows)
         if: runner.os == 'Windows'
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "4.0"
+          ruby-version: ${{ matrix.ruby }}
 
       - name: Configure Windows build environment
         if: runner.os == 'Windows'
@@ -60,11 +61,79 @@ jobs:
       - name: Default task
         run: mise x -- bundle exec rake
 
-      - name: Build native gem
-        run: mise x -- bundle exec rake native gem
+      - name: Upload compiled binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-${{ matrix.os }}-ruby${{ matrix.ruby }}
+          path: lib/ratatui_ruby/ratatui_ruby.*
+          if-no-files-found: error
+
+  package:
+    name: Package (${{ matrix.os }})
+    needs: build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Ruby via RubyInstaller (Windows)
+        if: runner.os == 'Windows'
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4"
+
+      - name: Override Ruby version in mise.toml (Unix)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: sed -i.bak 's/ruby = .*/ruby = "3.4"/' mise.toml
+
+      - name: Install toolchain via mise (Unix)
+        if: runner.os != 'Windows'
+        uses: jdx/mise-action@v2
+
+      - name: Configure Windows mise (skip Ruby)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Add-Content -Path .mise.local.toml -Value "[settings]`ndisable_tools = [`"ruby`"]"
+
+      - name: Install toolchain via mise (Windows)
+        if: runner.os == 'Windows'
+        uses: jdx/mise-action@v2
+
+      - name: Download Ruby 3.2 binary
+        uses: actions/download-artifact@v4
+        with:
+          name: native-${{ matrix.os }}-ruby3.2
+          path: lib/ratatui_ruby/3.2
+
+      - name: Download Ruby 3.3 binary
+        uses: actions/download-artifact@v4
+        with:
+          name: native-${{ matrix.os }}-ruby3.3
+          path: lib/ratatui_ruby/3.3
+
+      - name: Download Ruby 3.4 binary
+        uses: actions/download-artifact@v4
+        with:
+          name: native-${{ matrix.os }}-ruby3.4
+          path: lib/ratatui_ruby/3.4
+
+      - name: Download Ruby 4.0 binary
+        uses: actions/download-artifact@v4
+        with:
+          name: native-${{ matrix.os }}-ruby4.0
+          path: lib/ratatui_ruby/4.0
+
+      - name: Build platform gem
+        run: ruby tasks/release/platform_gem.rb
 
       - name: Upload gem artifact
         uses: actions/upload-artifact@v4
         with:
           name: gem-${{ matrix.os }}
           path: pkg/*.gem
+          if-no-files-found: error

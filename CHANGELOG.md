@@ -12,11 +12,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
-
 ### Changed
 
 ### Fixed
 
+- **Precompiled Native Gems**: Now support Ruby 3.2, 3.3, 3.4, and 4.0 (previously only 4.0)
 
 ### Removed
 
