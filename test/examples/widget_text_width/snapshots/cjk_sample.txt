@@ -1,5 +1,5 @@
 ┌Text Width Calculator─────────────────────────────────────────────────────────┐
-│Sample: 你e好l世,界W                                                              │
+│Sample: 你好世界                                                              │
 │                                                                              │
 │Display Width (text_width): 8 cells                                           │
 │Display Width (span.width): 8 cells                                           │

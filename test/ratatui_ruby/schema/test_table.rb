@@ -720,6 +720,34 @@ class TestTable < Minitest::Test
     assert_equal :space_evenly, RatatuiRuby::Widgets::Table::FLEX_SPACE_EVENLY
   end
 
+  # Reduced test case: emoji highlight symbol must not displace the right block border.
+  # ➡️ (U+27A1 + U+FE0F) is 2 columns wide in terminals and in Ratatui's own Text::width().
+  # If the binding miscalculates its width, the selected row's content shifts and the
+  # right │ border no longer aligns with unselected rows.
+  def test_emoji_highlight_symbol_right_border_alignment
+    with_test_terminal(20, 4) do
+      table = RatatuiRuby::Widgets::Table.new(
+        rows: [["Row 1"], ["Row 2"]],
+        widths: [RatatuiRuby::Layout::Constraint.length(14)],
+        selected_row: 0,
+        highlight_symbol: "➡️",
+        highlight_spacing: :always,
+        block: RatatuiRuby::Widgets::Block.new(borders: :all)
+      )
+      RatatuiRuby.draw { |f| f.render_widget(table, f.area) }
+
+      # Every line of the buffer output should have exactly 20 display columns.
+      # If the emoji is stored as width 1 in the buffer, the line containing it
+      # will measure as 21 display columns (emoji renders as 2 but only 1 cell
+      # was allocated), causing the right border to shift visually.
+      buffer_content.each_with_index do |line, y|
+        width = RatatuiRuby::Text.width(line)
+        assert_equal 20, width,
+          "Line #{y} should be 20 display columns wide, got #{width}: #{line.inspect}"
+      end
+    end
+  end
+
   # NOTE: No 'selection' alias - it's ambiguous whether it returns a row or an index.
   # Use selected_row for the row index, selected_column for the column index.
 end

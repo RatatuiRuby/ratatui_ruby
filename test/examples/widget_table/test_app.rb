@@ -117,4 +117,15 @@ class TestWidgetTableDemo < Minitest::Test
       assert_rich_snapshot("after_header_toggle")
     end
   end
+
+  def test_emoji_highlight_symbol
+    with_test_terminal do
+      # Cycle highlight symbol: "> " → ">" → "➡️"
+      inject_keys(:y, :y, :q)
+      @app.run
+
+      assert_snapshots("after_emoji_highlight")
+      assert_rich_snapshot("after_emoji_highlight")
+    end
+  end
 end

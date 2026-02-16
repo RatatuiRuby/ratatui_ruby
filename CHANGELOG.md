@@ -16,6 +16,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+- **`Text.width` emoji width**: `Text.width` now delegates to Ratatui's `Text::width()` instead of summing per-character widths. The per-character approach returned 1 for emoji with variation selectors (e.g. `➡️`), while the grapheme-aware `Text::width()` correctly returns 2.
+- **Buffer serialization of wide characters**: `buffer_content` now skips continuation cells after wide characters (emoji, CJK). Previously, the continuation cell's space was included in the serialized string, inflating its display width by 1 per wide character.
+
 ### Removed
 
 ## [1.4.1] - 2026-02-15
