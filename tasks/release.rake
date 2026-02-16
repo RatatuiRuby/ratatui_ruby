@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #++
 
-require_relative "release/native_gem_release"
+require_relative "release/native_gem_version"
 
 namespace :release do
   desc "Update stable branch to match release and set as default"
@@ -72,7 +72,7 @@ if Rake::Task.task_defined?("release")
     end
 
     release_sha = `git rev-parse v#{version}^{}`.strip
-    NativeGemRelease.new(version:, sha: release_sha).call
+    NativeGemVersion.new(version:, sha: release_sha).release
 
     Rake::Task["release:update_stable"].invoke
   end

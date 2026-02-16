@@ -38,11 +38,12 @@ require_relative "ratatui_ruby/tui"
 # Synthetic events queue (for async synchronization)
 require_relative "ratatui_ruby/synthetic_events"
 
+# Precompiled gems store binaries in versioned subdirectories
 begin
-  require "ratatui_ruby/ratatui_ruby"
+  RUBY_VERSION =~ /(\d+\.\d+)/
+  require "ratatui_ruby/#{$1}/ratatui_ruby"
 rescue LoadError
-  # Fallback for development/CI if the bundle is not in the load path
-  require_relative "ratatui_ruby/ratatui_ruby"
+  require "ratatui_ruby/ratatui_ruby"
 end
 
 # Debug mode (for Rust backtraces and diagnostic features)
