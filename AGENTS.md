@@ -28,7 +28,7 @@ Architecture:
 ### STRICT REQUIREMENTS
 
 - **Check Before Implementing:** FIRST check tests for existing coverage. If it works, say so and point to the test.
-- Every file MUST begin with an SPDX-compliant header. Use `AGPL-3.0-or-later` for code; `CC-BY-SA-4.0` for documentation. `reuse annotate` can help you generate the header. **For Ruby files**, wrap SPDX comments in `#--` / `#++` to hide them from RDoc output.
+- Every file MUST begin with an SPDX-compliant header. License by directory: `LGPL-3.0-or-later` for library source (`lib/`, `ext/`, `test/`, `sig/`); `MIT-0` for widget and verify examples (`examples/widget_*`, `examples/verify_*`); `AGPL-3.0-or-later` for app examples, tasks, and tooling (`examples/app_*`, `tasks/`, `bin/`); `CC-BY-SA-4.0` for documentation. `reuse annotate` can help you generate the header. **For Ruby files**, wrap SPDX comments in `#--` / `#++` to hide them from RDoc output.
 - Every line of Ruby MUST be covered by tests that would stand up to mutation testing.
   - Tests must be meaningful and verify specific behavior or rendering output; simply verifying that code "doesn't crash" is insufficient and unacceptable.
   - **Prefer snapshot tests** (`assert_snapshots`, plural) over manual `buffer_content` assertions for UI widgets. Snapshots are self-documenting and easier to maintain.
