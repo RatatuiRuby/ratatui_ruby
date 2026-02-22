@@ -16,6 +16,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+- **Rust source SPDX headers**: All 42 `.rs` files in `ext/` were incorrectly tagged `AGPL-3.0-or-later` instead of `LGPL-3.0-or-later`. The v0.9.0 relicensing to LGPL was applied to `lib/` and `sig/` but missed the Rust extension source in `ext/`.
 - **`Text.width` emoji width**: `Text.width` now delegates to Ratatui's `Text::width()` instead of summing per-character widths. The per-character approach returned 1 for emoji with variation selectors (e.g. `➡️`), while the grapheme-aware `Text::width()` correctly returns 2.
 - **Buffer serialization of wide characters**: `buffer_content` now skips continuation cells after wide characters (emoji, CJK). Previously, the continuation cell's space was included in the serialized string, inflating its display width by 1 per wide character.
 

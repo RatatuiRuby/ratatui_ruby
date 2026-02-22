@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
 //
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: LGPL-3.0-or-later
 
 use crate::style::parse_block;
 use bumpalo::Bump;
