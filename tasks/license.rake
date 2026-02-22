@@ -13,16 +13,23 @@ namespace :license do
       ruby "tasks/license/headers_md.rb #{files}"
     end
 
-    desc "Ensure Ruby files have correct AGPL-3.0-or-later headers"
+    desc "Ensure Ruby files have correct SPDX headers"
     task :rb, [:files] do |_t, args|
       files = args[:files] || ""
       ruby "tasks/license/headers_rb.rb #{files}"
+    end
+
+    desc "Ensure Rust files have correct SPDX headers"
+    task :rs, [:files] do |_t, args|
+      files = args[:files] || ""
+      ruby "tasks/license/headers_rs.rb #{files}"
     end
 
     desc "Ensure all files have correct license headers"
     task :all do
       Rake::Task["license:headers:md"].invoke
       Rake::Task["license:headers:rb"].invoke
+      Rake::Task["license:headers:rs"].invoke
     end
   end
 
@@ -51,25 +58,31 @@ namespace :license do
 
   desc "Run license tasks on changed files only (staged + unstaged)"
   task :new do
-    # Get changed .md and .rb files (staged and unstaged)
+    # Get changed .md, .rb, and .rs files (staged and unstaged)
     changed_md = `git diff --name-only --diff-filter=ACMR HEAD -- '*.md' 2>/dev/null`.split("\n")
     staged_md = `git diff --name-only --cached --diff-filter=ACMR -- '*.md' 2>/dev/null`.split("\n")
     changed_rb = `git diff --name-only --diff-filter=ACMR HEAD -- '*.rb' 2>/dev/null`.split("\n")
     staged_rb = `git diff --name-only --cached --diff-filter=ACMR -- '*.rb' 2>/dev/null`.split("\n")
+    changed_rs = `git diff --name-only --diff-filter=ACMR HEAD -- '*.rs' 2>/dev/null`.split("\n")
+    staged_rs = `git diff --name-only --cached --diff-filter=ACMR -- '*.rs' 2>/dev/null`.split("\n")
 
     # Also get untracked new files
     untracked = `git ls-files --others --exclude-standard`.split("\n")
     untracked_md = untracked.select { |f| f.end_with?(".md") }
     untracked_rb = untracked.select { |f| f.end_with?(".rb") }
+    untracked_rs = untracked.select { |f| f.end_with?(".rs") }
 
     md_files = (changed_md + staged_md + untracked_md).uniq.join(" ")
     rb_files = (changed_rb + staged_rb + untracked_rb).uniq
+    rs_files = (changed_rs + staged_rs + untracked_rs).uniq
 
     # Filter rb files to only lib/
     lib_rb_files = rb_files.select { |f| f.start_with?("lib/") }.join(" ")
+    # Filter rs files to only ext/
+    ext_rs_files = rs_files.select { |f| f.start_with?("ext/") }.join(" ")
 
-    if md_files.empty? && lib_rb_files.empty?
-      puts "No changed .md or lib/*.rb files to process"
+    if md_files.empty? && lib_rb_files.empty? && ext_rs_files.empty?
+      puts "No changed .md, lib/*.rb, or ext/*.rs files to process"
     else
       unless md_files.empty?
         puts "Processing #{md_files.split.count} changed .md file(s)..."
@@ -85,6 +98,12 @@ namespace :license do
         Rake::Task["license:headers:rb"].reenable
         Rake::Task["license:snippets:rdoc"].invoke(lib_rb_files)
         Rake::Task["license:snippets:rdoc"].reenable
+      end
+
+      unless ext_rs_files.empty?
+        puts "Processing #{ext_rs_files.split.count} changed ext/*.rs file(s)..."
+        Rake::Task["license:headers:rs"].invoke(ext_rs_files)
+        Rake::Task["license:headers:rs"].reenable
       end
     end
   end

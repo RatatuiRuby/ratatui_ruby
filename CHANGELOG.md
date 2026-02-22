@@ -16,6 +16,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+- **Rust source SPDX headers**: All 42 `.rs` files in `ext/` were incorrectly tagged `AGPL-3.0-or-later` instead of `LGPL-3.0-or-later`. The v0.9.0 relicensing to LGPL was applied to `lib/` and `sig/` but missed the Rust extension source in `ext/`.
+- **`Text.width` emoji width**: `Text.width` now delegates to Ratatui's `Text::width()` instead of summing per-character widths. The per-character approach returned 1 for emoji with variation selectors (e.g. `➡️`), while the grapheme-aware `Text::width()` correctly returns 2.
+- **Buffer serialization of wide characters**: `buffer_content` now skips continuation cells after wide characters (emoji, CJK). Previously, the continuation cell's space was included in the serialized string, inflating its display width by 1 per wide character.
+
 ### Removed
 
 ## [1.3.2] - 2026-02-13
@@ -25,6 +29,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Changed
 
 ### Fixed
+
+- **GVL Contention in `poll_event`**: `poll_event` now releases Ruby's Global VM Lock while waiting for terminal events. Previously, background threads (e.g., those executing shell commands via `Open3`) were starved of the GVL during the blocking poll, causing up to 190× slower subprocess execution in multi-threaded applications.
 
 ### Removed
 
@@ -36,7 +42,6 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
-- **GVL Contention in `poll_event`**: `poll_event` now releases Ruby's Global VM Lock while waiting for terminal events. Previously, background threads (e.g., those executing shell commands via `Open3`) were starved of the GVL during the blocking poll, causing up to 190× slower subprocess execution in multi-threaded applications.
 - **Gem Size**: Reduced gem size from many MB to hundreds of KB by excluding doc/, examples/, and other development files.
 
 ### Removed
