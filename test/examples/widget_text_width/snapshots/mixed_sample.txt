@@ -1,5 +1,5 @@
 ┌Text Width Calculator─────────────────────────────────────────────────────────┐
-│Sample: Hi 你o好👍 👍W                                                            │
+│Sample: Hi 你好 👍                                                            │
 │                                                                              │
 │Display Width (text_width): 10 cells                                          │
 │Display Width (span.width): 10 cells                                          │

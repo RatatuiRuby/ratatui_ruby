@@ -27,6 +27,7 @@ Data grids are complex. Users expect to navigate them with keys, select rows, an
 - **Arrows (←/→)**: Navigate Columns (`selected_column`)
 - **x**: Toggle Row Selection (`selected_row` = nil)
 - **s**: Cycle Table Style (`style`)
+- **y**: Cycle Symbol (`highlight_symbol`)
 - **p**: Cycle Spacing (`highlight_spacing`)
 - **c**: Toggle Column Highlight (`column_highlight_style`)
 - **z**: Toggle Cell Highlight (`cell_highlight_style`)

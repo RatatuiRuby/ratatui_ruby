@@ -22,6 +22,11 @@ module RatatuiRuby
       assert_equal 2, RatatuiRuby::Text.width("🌍")
       # "Hello 👍" = 5 + space (1) + emoji (2) = 8
       assert_equal 8, RatatuiRuby::Text.width("Hello 👍")
+      # ➡️ is U+27A1 + U+FE0F (variation selector). Terminals render it as 2 cells.
+      # Must match what Ratatui's own Text::width() reports.
+      assert_equal 2, RatatuiRuby::Text.width("➡️")
+      # ⭐️ is U+2B50 + U+FE0F (variation selector), as used in the Rooibos TUI.
+      assert_equal 2, RatatuiRuby::Text.width("⭐️")
     end
 
     def test_width_cjk

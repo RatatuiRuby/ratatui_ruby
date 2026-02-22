@@ -18,10 +18,28 @@ pub fn get_buffer_content() -> Result<String, Error> {
             let area = buffer.area;
             let mut result = String::new();
             for y in 0..area.height {
+                // SPDX-SnippetBegin
+                // SPDX-License-Identifier: MIT
+                // SPDX-SnippetCopyrightText: The Ratatui Developers
+                // Derived from ratatui-core/src/buffer/buffer.rs (Buffer Debug impl)
+                let mut skip: usize = 0;
                 for x in 0..area.width {
+                    if skip > 0 {
+                        skip -= 1;
+                        continue;
+                    }
                     let cell = buffer.cell((x, y)).unwrap();
-                    result.push_str(cell.symbol());
+                    let symbol = cell.symbol();
+                    result.push_str(symbol);
+                    // Skip continuation cells after wide characters (e.g. emoji, CJK).
+                    // Ratatui's set_stringn resets these to " ", but they don't represent
+                    // an additional display column — the preceding wide symbol covers them.
+                    let width = ratatui::text::Text::raw(symbol).width();
+                    if width > 1 {
+                        skip = width - 1;
+                    }
                 }
+                // SPDX-SnippetEnd
                 result.push('\n');
             }
             Ok(result)

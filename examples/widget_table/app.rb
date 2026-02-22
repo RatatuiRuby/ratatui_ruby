@@ -21,7 +21,14 @@ PROCESSES = [
 ].freeze
 
 class WidgetTable
-  attr_reader :selected_index, :selected_col, :current_style_index, :column_spacing, :highlight_spacing, :column_highlight_style, :cell_highlight_style
+  attr_reader :selected_index, :selected_col, :current_style_index, :column_spacing, :column_highlight_style, :cell_highlight_style
+
+  HIGHLIGHT_SYMBOLS = [
+    "> ",
+    ">",
+    "➡️",
+    "→",
+  ].freeze
 
   HIGHLIGHT_SPACINGS = [
     { name: "When Selected", spacing: :when_selected },
@@ -50,6 +57,7 @@ class WidgetTable
     @selected_col = 1
     @current_style_index = 0
     @column_spacing = 1
+    @highlight_symbol_index = 0
     @highlight_spacing_index = 0
     @show_column_highlight = true
     @show_cell_highlight = true
@@ -126,6 +134,7 @@ class WidgetTable
 
     current_style_entry = @styles[@current_style_index]
     current_spacing_entry = HIGHLIGHT_SPACINGS[@highlight_spacing_index]
+    current_symbol_entry = HIGHLIGHT_SYMBOLS[@highlight_symbol_index]
     offset_mode_entry = OFFSET_MODES[@offset_mode_index]
     flex_mode_entry = FLEX_MODES[@flex_mode_index]
 
@@ -145,7 +154,7 @@ class WidgetTable
       selected_column: @selected_col,
       offset: effective_offset,
       row_highlight_style:,
-      highlight_symbol: "> ",
+      highlight_symbol: current_symbol_entry,
       highlight_spacing: current_spacing_entry[:spacing],
       column_highlight_style: @show_column_highlight ? @column_highlight_style : nil,
       cell_highlight_style: @show_cell_highlight ? @cell_highlight_style : nil,
@@ -183,6 +192,8 @@ class WidgetTable
               @tui.text_span(content: ": Style (#{current_style_entry[:name]})  "),
               @tui.text_span(content: "p", style: @hotkey_style),
               @tui.text_span(content: ": Spacing (#{current_spacing_entry[:name]})  "),
+              @tui.text_span(content: "y", style: @hotkey_style),
+              @tui.text_span(content: ": Symbol (#{current_symbol_entry})  "),
               @tui.text_span(content: "t", style: @hotkey_style),
               @tui.text_span(content: ": Tamp Row"),
             ]),
@@ -250,6 +261,8 @@ class WidgetTable
       @column_spacing += 1
     in type: :key, code: "-"
       @column_spacing = [@column_spacing - 1, 0].max
+    in type: :key, code: "y"
+      @highlight_symbol_index = (@highlight_symbol_index + 1) % HIGHLIGHT_SYMBOLS.length
     in type: :key, code: "p"
       @highlight_spacing_index = (@highlight_spacing_index + 1) % HIGHLIGHT_SPACINGS.length
     in type: :key, code: "x"
