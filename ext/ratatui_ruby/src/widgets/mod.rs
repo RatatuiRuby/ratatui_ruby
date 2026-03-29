@@ -18,6 +18,7 @@ pub mod overlay;
 pub mod paragraph;
 pub mod ratatui_logo;
 pub mod ratatui_mascot;
+pub mod scroll_view;
 pub mod scrollbar;
 pub mod scrollbar_state;
 pub mod sparkline;
