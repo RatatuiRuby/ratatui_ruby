@@ -143,6 +143,12 @@ module RatatuiRuby
         Widgets::Axis.coerce_args(first, kwargs)
       end
 
+      # Creates a Widgets::ScrollView.
+      # @return [Widgets::ScrollView]
+      def scroll_view(first = nil, **kwargs)
+        Widgets::ScrollView.coerce_args(first, kwargs)
+      end
+
       # Creates a Widgets::Scrollbar.
       # @return [Widgets::Scrollbar]
       def scrollbar(first = nil, **kwargs)
@@ -251,6 +257,7 @@ module RatatuiRuby
         when :sparkline then sparkline(first, **)
         when :bar_chart then bar_chart(first, **)
         when :chart then chart(first, **)
+        when :scroll_view then scroll_view(first, **)
         when :scrollbar then scrollbar(first, **)
         when :calendar then calendar(first, **)
         when :canvas then canvas(first, **)

@@ -56,6 +56,7 @@ pub fn render_node(buffer: &mut Buffer, area: Rect, node: Value) -> Result<(), E
         "RatatuiRuby::Widgets::Table" => widgets::table::render(buffer, area, node)?,
         "RatatuiRuby::Widgets::Block" => widgets::block::render(buffer, area, node)?,
         "RatatuiRuby::Widgets::Tabs" => widgets::tabs::render(buffer, area, node)?,
+        "RatatuiRuby::Widgets::ScrollView" => widgets::scroll_view::render(buffer, area, node)?,
         "RatatuiRuby::Widgets::Scrollbar" => widgets::scrollbar::render(buffer, area, node)?,
         "RatatuiRuby::Widgets::BarChart" => widgets::barchart::render(buffer, area, node)?,
         "RatatuiRuby::Widgets::Canvas" => widgets::canvas::render(buffer, area, node)?,
