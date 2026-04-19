@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+// SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
 //! Terminal initialization and restoration functions.
@@ -20,6 +20,12 @@ thread_local! {
     static IS_FULLSCREEN: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
 }
 
+// Track whether keyboard enhancement flags were pushed (so restore_terminal
+// knows whether to pop them). Only written by init_terminal / restore_terminal.
+thread_local! {
+    static KEYBOARD_ENHANCEMENT_PUSHED: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
+}
+
 // Instance-based terminal tracking (Proposal 1 from terminal.md)
 thread_local! {
     static TERMINAL_INSTANCES: std::cell::RefCell<HashMap<u64, TerminalWrapper>> =
@@ -31,6 +37,7 @@ static NEXT_TERMINAL_ID: AtomicU64 = AtomicU64::new(1);
 pub fn init_terminal(
     focus_events: bool,
     bracketed_paste: bool,
+    keyboard_enhancement: bool,
     viewport_type: String,
     viewport_height: Option<u16>,
 ) -> Result<(), Error> {
@@ -74,6 +81,19 @@ pub fn init_terminal(
     if bracketed_paste {
         ratatui::crossterm::execute!(stdout, ratatui::crossterm::event::EnableBracketedPaste)
             .map_err(|e| Error::new(error_class, e.to_string()))?;
+    }
+    // Kitty keyboard protocol: opt-in because it changes key event shapes
+    // app-wide (e.g. Ctrl+I stops collapsing to Tab). Terminals that don't
+    // support the protocol silently ignore the CSI sequence.
+    if keyboard_enhancement {
+        ratatui::crossterm::execute!(
+            stdout,
+            ratatui::crossterm::event::PushKeyboardEnhancementFlags(
+                ratatui::crossterm::event::KeyboardEnhancementFlags::DISAMBIGUATE_ESCAPE_CODES,
+            )
+        )
+        .map_err(|e| Error::new(error_class, e.to_string()))?;
+        KEYBOARD_ENHANCEMENT_PUSHED.with(|f| f.set(true));
     }
 
     let backend = CrosstermBackend::new(stdout);
@@ -163,6 +183,17 @@ pub fn restore_terminal() {
     if let Some(wrapper) = super::take_terminal() {
         match wrapper {
             TerminalWrapper::Crossterm(mut t) => {
+                // Pop keyboard enhancement flags (if pushed by init_terminal)
+                // before tearing down the rest of the terminal state.
+                let keyboard_enhancement_pushed =
+                    KEYBOARD_ENHANCEMENT_PUSHED.with(|f| f.replace(false));
+                if keyboard_enhancement_pushed {
+                    let _ = ratatui::crossterm::execute!(
+                        t.backend_mut(),
+                        ratatui::crossterm::event::PopKeyboardEnhancementFlags
+                    );
+                }
+
                 let _ = ratatui::crossterm::terminal::disable_raw_mode();
 
                 // Only leave alternate screen if we were in fullscreen mode

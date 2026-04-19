@@ -65,6 +65,16 @@ class TestRun < Minitest::Test
     end
   end
 
+  def test_run_accepts_keyboard_enhancement_kwarg
+    # The kwarg must thread through run → init_terminal. The mocked
+    # init in #setup absorbs it without forwarding to the native side.
+    yielded = nil
+    RatatuiRuby.run(keyboard_enhancement: true) do |tui|
+      yielded = tui
+    end
+    assert_kind_of RatatuiRuby::TUI, yielded
+  end
+
   def test_temporarily_exit_and_reenter_tui_mode
     # Tests the "lazygit pattern" where you temporarily exit TUI mode
     # to let the user interact with stdin/stdout, then re-enter TUI mode.

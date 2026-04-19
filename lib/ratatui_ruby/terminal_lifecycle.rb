@@ -54,10 +54,15 @@ module RatatuiRuby
     #
     # [focus_events] whether to enable focus gain/loss events (default: true).
     # [bracketed_paste] whether to enable bracketed paste mode (default: true).
+    # [keyboard_enhancement] whether to push the Kitty keyboard protocol's
+    # +DISAMBIGUATE_ESCAPE_CODES+ flag (default: false). Opt-in because it
+    # changes key events app-wide: Ctrl+I stops collapsing to Tab, Ctrl+M
+    # to Enter, Ctrl+H to Backspace. Terminals without protocol support
+    # silently ignore the flag; probe with {Terminal.supports_keyboard_enhancement?}.
     #
     # @raise [Error::Invariant] if headless mode is enabled or a session is already active
     # @see headless!
-    def init_terminal(focus_events: true, bracketed_paste: true, viewport: nil, height: nil)
+    def init_terminal(focus_events: true, bracketed_paste: true, keyboard_enhancement: false, viewport: nil, height: nil)
       if @headless_mode
         raise Error::Invariant, "Cannot initialize terminal: headless mode is enabled"
       end
@@ -74,7 +79,7 @@ module RatatuiRuby
       @tui_session_active = true
 
       viewport_obj = resolve_viewport(viewport, height)
-      _init_terminal(focus_events, bracketed_paste, viewport_obj.type.to_s, viewport_obj.height)
+      _init_terminal(focus_events, bracketed_paste, keyboard_enhancement, viewport_obj.type.to_s, viewport_obj.height)
     end
 
     ##
@@ -144,8 +149,8 @@ module RatatuiRuby
     #++
     # @raise [Error::Invariant] if headless mode is enabled
     # @see headless!
-    def run(focus_events: true, bracketed_paste: true, viewport: nil, height: nil)
-      init_terminal(focus_events:, bracketed_paste:, viewport:, height:)
+    def run(focus_events: true, bracketed_paste: true, keyboard_enhancement: false, viewport: nil, height: nil)
+      init_terminal(focus_events:, bracketed_paste:, keyboard_enhancement:, viewport:, height:)
       yield TUI.new
     ensure
       restore_terminal

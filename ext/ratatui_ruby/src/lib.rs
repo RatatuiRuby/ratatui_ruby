@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+// SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
 // Require SAFETY comments on all unsafe blocks
@@ -202,7 +202,7 @@ fn init() -> Result<(), Error> {
     let ruby = magnus::Ruby::get().unwrap();
     let m = ruby.define_module("RatatuiRuby")?;
 
-    m.define_module_function("_init_terminal", function!(init_terminal, 4))?;
+    m.define_module_function("_init_terminal", function!(init_terminal, 5))?;
     m.define_module_function("_restore_terminal", function!(restore_terminal, 0))?;
     m.define_module_function("_draw", function!(draw, -1))?;
     m.define_module_function(

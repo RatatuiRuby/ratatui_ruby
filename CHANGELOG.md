@@ -12,6 +12,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **Kitty keyboard protocol opt-in**: `init_terminal` and `run` now accept a `keyboard_enhancement:` keyword (default `false`). When set, RatatuiRuby pushes the `DISAMBIGUATE_ESCAPE_CODES` flag on init and pops it on restore, so terminals that speak the Kitty keyboard protocol stop collapsing Ctrl+I into Tab (and Ctrl+M into Enter, Ctrl+H into Backspace). Terminals without protocol support silently ignore the flag, so the default-false opt-in preserves legacy key-event shapes for existing apps.
+
 ### Changed
 
 ### Fixed

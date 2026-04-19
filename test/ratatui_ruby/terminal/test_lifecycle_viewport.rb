@@ -19,10 +19,11 @@ class TestTerminalLifecycleViewport < Minitest::Test
     # to the low-level _init_terminal method.
 
     mock = Minitest::Mock.new
-    # _init_terminal(focus_events, bracketed_paste, viewport_type, viewport_height)
-    mock.expect :call, nil do |focus, paste, type_str, height|
+    # _init_terminal(focus_events, bracketed_paste, keyboard_enhancement, viewport_type, viewport_height)
+    mock.expect :call, nil do |focus, paste, kbd_enhancement, type_str, height|
       focus == true &&
         paste == true &&
+        kbd_enhancement == false &&
         type_str == "inline" &&
         height == 8
     end

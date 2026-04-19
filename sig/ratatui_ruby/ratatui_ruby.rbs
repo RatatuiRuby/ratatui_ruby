@@ -40,11 +40,11 @@ module RatatuiRuby
 
 
   # Core module methods
-  def self.init_terminal: (?focus_events: bool, ?bracketed_paste: bool, ?viewport: (Terminal::Viewport | :fullscreen | :inline)?, ?height: Integer?) -> void
+  def self.init_terminal: (?focus_events: bool, ?bracketed_paste: bool, ?keyboard_enhancement: bool, ?viewport: (Terminal::Viewport | :fullscreen | :inline)?, ?height: Integer?) -> void
   def self.init_test_terminal: (Integer width, Integer height, ?String viewport_type, ?Integer? viewport_height) -> void
   def self.restore_terminal: () -> void
   def self.terminal_active?: () -> bool
-  def self.run: (?focus_events: bool, ?bracketed_paste: bool, ?viewport: (Terminal::Viewport | :fullscreen | :inline)?, ?height: Integer?) { (TUI) -> void } -> void
+  def self.run: (?focus_events: bool, ?bracketed_paste: bool, ?keyboard_enhancement: bool, ?viewport: (Terminal::Viewport | :fullscreen | :inline)?, ?height: Integer?) { (TUI) -> void } -> void
   def self.draw: (?widget? tree) -> void
                | () { (Frame) -> void } -> void
   # untyped: FFI boundary - Rust returns dynamic event hash with varying keys per event type

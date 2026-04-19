@@ -14,11 +14,11 @@ module RatatuiRuby
     @tui_session_active: bool?
     @headless_mode: bool?
 
-    def init_terminal: (?focus_events: bool, ?bracketed_paste: bool, ?viewport: (Terminal::Viewport | :fullscreen | :inline)?, ?height: Integer?) -> void
+    def init_terminal: (?focus_events: bool, ?bracketed_paste: bool, ?keyboard_enhancement: bool, ?viewport: (Terminal::Viewport | :fullscreen | :inline)?, ?height: Integer?) -> void
     def restore_terminal: () -> void
     def terminal_active?: () -> (bool | nil)
     def init_test_terminal: (Integer width, Integer height, ?String viewport_type, ?Integer? viewport_height) -> void
-    def run: (?focus_events: bool, ?bracketed_paste: bool, ?viewport: (Terminal::Viewport | :fullscreen | :inline)?, ?height: Integer?) { (TUI) -> void } -> void
+    def run: (?focus_events: bool, ?bracketed_paste: bool, ?keyboard_enhancement: bool, ?viewport: (Terminal::Viewport | :fullscreen | :inline)?, ?height: Integer?) { (TUI) -> void } -> void
     def insert_before: (Integer height, ?widget? widget) ?{ () -> widget } -> void
     def cursor_position=: (Layout::Position | [Integer, Integer] position) -> void
     def cursor_position: () -> Layout::Position
@@ -26,7 +26,7 @@ module RatatuiRuby
     def get_cursor_position: () -> [Integer, Integer]
 
     # Private native methods
-    def _init_terminal: (bool focus_events, bool bracketed_paste, String viewport_type, Integer? viewport_height) -> void
+    def _init_terminal: (bool focus_events, bool bracketed_paste, bool keyboard_enhancement, String viewport_type, Integer? viewport_height) -> void
     def _init_test_terminal: (Integer width, Integer height, String viewport_type, Integer? viewport_height) -> void
     def _restore_terminal: () -> void
     def _get_viewport_type: () -> String
