@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2025 Kerrick Long <me@kerricklong.com>
+// SPDX-FileCopyrightText: 2026 Kerrick Long <me@kerricklong.com>
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
 use magnus::{Error, IntoValue, TryConvert, Value};
@@ -11,6 +11,7 @@ use std::os::raw::c_void;
 enum TestEvent {
     Crossterm(ratatui::crossterm::event::Event),
     Sync,
+    None,
 }
 
 thread_local! {
@@ -123,6 +124,7 @@ pub fn inject_test_event(event_type: String, data: magnus::RHash) -> Result<(), 
         "focus_gained" => TestEvent::Crossterm(ratatui::crossterm::event::Event::FocusGained),
         "focus_lost" => TestEvent::Crossterm(ratatui::crossterm::event::Event::FocusLost),
         "sync" => TestEvent::Sync,
+        "none" => TestEvent::None,
         _ => {
             return Err(Error::new(
                 ruby.exception_arg_error(),
@@ -430,6 +432,10 @@ fn handle_test_event(event: TestEvent) -> Result<Value, Error> {
     match event {
         TestEvent::Crossterm(e) => handle_crossterm_event(e),
         TestEvent::Sync => handle_sync_event(),
+        TestEvent::None => {
+            let ruby = magnus::Ruby::get().unwrap();
+            Ok(ruby.qnil().into_value_with(&ruby))
+        }
     }
 }
 

@@ -129,6 +129,27 @@ end
 
 See [RatatuiRuby::TestHelper::EventInjection](../../lib/ratatui_ruby/test_helper/event_injection.rb) for helper methods like `inject_keys` and `inject_click`.
 
+### Idle Frame Injection
+
+Inject `Event::None` to simulate idle frames at deterministic positions in the event queue. This is useful for testing frameworks or applications that process every frame (including frames with no user input):
+
+<!-- SPDX-SnippetBegin -->
+<!--
+  SPDX-FileCopyrightText: 2026 Kerrick Long
+  SPDX-License-Identifier: MIT-0
+-->
+```ruby
+with_test_terminal do
+  inject_event(RatatuiRuby::Event::Key.new(code: "a"))
+  inject_event(RatatuiRuby::Event::None.new)  # idle frame
+  inject_event(RatatuiRuby::Event::Key.new(code: "b"))
+
+  # Events arrive in exact injection order:
+  # 1. Key "a", 2. None (idle), 3. Key "b"
+end
+```
+<!-- SPDX-SnippetEnd -->
+
 ## Snapshot Testing
 
 Snapshots let you verify complex layouts without manually asserting every line.

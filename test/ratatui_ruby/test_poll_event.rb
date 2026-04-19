@@ -134,4 +134,20 @@ class TestPollEvent < Minitest::Test
     assert_predicate result, :frozen?, "Event::FocusLost should be frozen for Ractor safety"
     assert Ractor.shareable?(result), "Event::FocusLost should be Ractor.shareable?"
   end
+
+  def test_inject_none_returns_none_event_at_correct_queue_position
+    RatatuiRuby.inject_test_event("key", { code: "a" })
+    RatatuiRuby.inject_test_event("none", {})
+    RatatuiRuby.inject_test_event("key", { code: "b" })
+
+    first = RatatuiRuby.poll_event
+    second = RatatuiRuby.poll_event
+    third = RatatuiRuby.poll_event
+
+    assert_predicate first, :key?, "first event should be a key"
+    assert_equal "a", first.code
+    assert_predicate second, :none?, "second event should be None"
+    assert_predicate third, :key?, "third event should be a key"
+    assert_equal "b", third.code
+  end
 end

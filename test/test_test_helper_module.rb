@@ -66,6 +66,24 @@ class TestTestHelperModule < Minitest::Test
     end
   end
 
+  def test_inject_event_none
+    with_test_terminal(20, 10) do
+      inject_event(RatatuiRuby::Event::Key.new(code: "a"))
+      inject_event(RatatuiRuby::Event::None.new)
+      inject_event(RatatuiRuby::Event::Key.new(code: "b"))
+
+      first = RatatuiRuby.poll_event
+      second = RatatuiRuby.poll_event
+      third = RatatuiRuby.poll_event
+
+      assert_predicate first, :key?, "first event should be a key"
+      assert_equal "a", first.code
+      assert_predicate second, :none?, "second event should be None (idle frame)"
+      assert_predicate third, :key?, "third event should be a key"
+      assert_equal "b", third.code
+    end
+  end
+
   def test_timeout_enforcement
     # Should raise Timeout::Error if app doesn't exit within 0.1s
     assert_raises(Timeout::Error) do

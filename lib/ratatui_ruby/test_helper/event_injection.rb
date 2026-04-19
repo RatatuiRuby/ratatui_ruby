@@ -57,6 +57,7 @@ module RatatuiRuby
       #   inject_event(RatatuiRuby::Event::Key.new(code: "q"))
       #   inject_event(RatatuiRuby::Event::Mouse.new(kind: "down", button: "left", x: 10, y: 5))
       #   inject_event(RatatuiRuby::Event::Paste.new(content: "Hello"))
+      #   inject_event(RatatuiRuby::Event::None.new)  # idle frame
       #
       #--
       # SPDX-SnippetEnd
@@ -96,6 +97,8 @@ module RatatuiRuby
             # Default 1.0 behavior: use the engine-level synthetic queue
             RatatuiRuby::SyntheticEvents.push(event)
           end
+        when RatatuiRuby::Event::None
+          RatatuiRuby.inject_test_event("none", {})
         else
           raise ArgumentError, "Unknown event type: #{event.class}"
         end
