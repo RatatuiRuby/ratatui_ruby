@@ -5,4 +5,4 @@
 ruby = "4.0.0"
 rust = "1.91.1"
 python = "3.12"
-pre-commit = "latest"
+"pipx:pre-commit" = "latest"
