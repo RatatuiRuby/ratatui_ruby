@@ -12,6 +12,18 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+
+### Changed
+
+### Fixed
+
+
+### Removed
+
+## [1.5.0] - 2026-04-19
+
+### Added
+
 - **`inject_event` accepts `Event::None`**: `inject_event(RatatuiRuby::Event::None.new)` now places an idle-frame event at a deterministic position in the test event queue. Use this to test frameworks and applications that process `None` events (e.g., per-frame update loops).
 
 ### Changed
@@ -24,6 +36,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Precompiled Native Gems**: Now support Ruby 3.2, 3.3, 3.4, and 4.0 (previously only 4.0)
 
 ### Removed
+
+
 
 ## [1.4.0] - 2026-02-15
 
